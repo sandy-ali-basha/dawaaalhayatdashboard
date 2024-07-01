@@ -1,7 +1,7 @@
 import { useTheme } from "@mui/material";
 import React from "react";
 
-import logoDark from "assets/images/logodark.svg";
+import logoDark from "assets/images/logodark.png";
 import logoLight from "assets/images/logolight.svg";
 
 import { useTranslation } from "react-i18next";

@@ -13,7 +13,7 @@ export const HttpRequestInterceptor = () => {
         request.headers.Accept = "application/json";
         // request.headers("Access-Control-Allow-Origin", "*");
 
-        request.headers.lang = ["en", "ar"].includes(
+        request.headers.locale =  ["en", "ar", "kr"].includes(
           localStorage.getItem("i18nextLng")
         )
           ? localStorage.getItem("i18nextLng")

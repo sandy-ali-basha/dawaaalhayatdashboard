@@ -25,13 +25,18 @@ const TermsView = () => {
   async () => {
     return await _axios
       .get('/terms/' + params.id)
-      .then((res) => res.data?.termss);
+      .then((res) => res.data?.data);
   },
     {}
   )
 
 const columns = [
-  { head: t("first name"), value: data?.first_name },
+  { head: t("name"), value: data?.translation[0]?.name },
+  { head: t("text"), value: data?.translation[0]?.text },
+  { head: t("name"), value: data?.translation[1]?.name },
+  { head: t("text"), value: data?.translation[1]?.text },
+  { head: t("name"), value: data?.translation[2]?.name },
+  { head: t("text"), value: data?.translation[2]?.text },
 ];
 
 return (
@@ -53,7 +58,7 @@ return (
           }}
           variant="h5"
         >
-          {data.first_name}
+          {data?.name}
         </Typography>
         <Box
           key={params.id}

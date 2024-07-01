@@ -13,7 +13,7 @@ import CardContent from '@mui/material/CardContent'
 import { MailLockOutlined, ModeEditOutline } from "@mui/icons-material";
 // ** images
 import coverImg from "assets/images/profile-banner.png"
-import logo from "assets/images/logo.jfif"
+import logo from "assets/images/logodark.png"
 import { useState } from "react";
 
 import ChangePassword from "./ChangePassword";

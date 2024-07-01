@@ -12,14 +12,14 @@ const neutral = {
   900: "#111827",
 };
 
-const divider = "#f7f6f9";
+const divider = "#ececec";
 
 const colors = {
   origin: {
     main: "#FFBF69",
   },
   background: {
-    main: "#FFF8F0",
+    main: "#ececec",
     paper: "#FFF"
   },
   edit: {
@@ -88,7 +88,7 @@ export const lightThemeOptions = {
           },
           style: {
             backgroundColor: colors.background.main,
-            color: colors.primary.main,
+            color: colors.text.main,
             boxShadow: "0px 4px 18px 0px rgba(47, 43, 61, 0.1)",
             "&:hover": {
               backgroundColor: colors.background.hover,
@@ -102,7 +102,7 @@ export const lightThemeOptions = {
           },
           style: {
             backgroundColor: colors.background.main,
-            color: colors.primary.main,
+            color: colors.text.main,
             "&:hover": {
               backgroundColor: colors.background.paper,
             },
@@ -110,17 +110,7 @@ export const lightThemeOptions = {
         },
       ],
     },
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          ":hover": {
-            transform: "scale(1.1)",
-            transition: "150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-          },
-        },
-      },
-    },
-
+  
     MuiTableHead: {
       styleOverrides: {
         root: {
@@ -132,10 +122,10 @@ export const lightThemeOptions = {
             textTransform: "capitalize",
           },
           ".MuiTableCell-root.MuiTableCell-head:first-of-type": {
-            borderRadius: "10px 0 0 10px",
+            borderRadius: "10px",
           },
           ".MuiTableCell-root.MuiTableCell-head:last-of-type": {
-            borderRadius: "0 10px 10px 0",
+            borderRadius: "10px",
           },
         },
       },
@@ -224,6 +214,7 @@ export const lightThemeOptions = {
           textTransform: "capitalize",
           textAlign: "center",
           borderBottom: `1px solid ${divider}`,
+          borderRadius:"7px"
         },
       },
     },
@@ -241,8 +232,7 @@ export const lightThemeOptions = {
         root: {
           ".MuiDialog-container .MuiPaper-root": {
             backgroundColor: colors.background.main,
-            borderRadius: 8,
-            width: "35%", // this one will be deleted in the end
+            borderRadius: 8, 
             zIndex: "1200",
           },
         },

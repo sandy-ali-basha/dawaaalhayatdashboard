@@ -1,35 +1,130 @@
-import React from "react";
 import {
   Typography,
   Box,
+  TableRow,
+  TableCell,
   IconButton,
   Tooltip,
   Button,
+  Checkbox,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { BoxStyled } from "components/styled/BoxStyled";
+import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
+import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
+import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
-import { useTerms } from "hooks/terms/useTerms";
-
+import { colorStore } from "store/ColorsStore";
+import { useService } from "hooks/service/useService";
 import DeleteDialog from "../components/Dialog";
-import { MessageOutlined, TitleOutlined } from "@mui/icons-material";
+import { Close, Delete, RestoreFromTrashOutlined } from "@mui/icons-material";
+import TermsUpdate from "./TermsUpdate";
+import { useTerms } from "hooks/terms/useTerms";
 
 const TermsIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, isLoading, count } = useTerms();
+  const { data, page, setPage, isLoading, count, query, setQuery } = useTerms();
+  console.log(data);
+  const [restore, setRestore] = useState(false);
+  const [restoreId, setRestoreId] = useState(null);
 
   const navigate = useNavigate();
   const [direction] = settingsStore((state) => [state.direction]);
 
-  const handleCreate = () => navigate("create")
+  const [editedID, setEditedID] = colorStore((state) => [
+    state.editedID,
+    state.setEditedID,
+  ]);
+
+  const columns = useMemo(() => {
+    return [t("name"), t("Text"),t("Edit")];
+  }, [t]);
+
+  const handleView = useCallback(
+    (id) => {
+      navigate("view/" + id);
+    },
+    [navigate]
+  );
+  const handleEdit = useCallback(
+    (id) => {
+      setEditedID(id);
+    },
+    [setEditedID]
+  );
+
+  const handleRestore = useCallback((id) => {
+    setRestore(true);
+    setRestoreId(id);
+  }, []);
+
+  const rows = useMemo(() => {
+    return data?.data?.terms?.map((term, id) => (
+      <TableRow sx={{ height: "65px" }} key={term.id} hover>
+        <TableCell sx={{ minWidth: 50 }}>{term?.name ?? "Null"}</TableCell>
+        <TableCell
+          sx={{ minWidth: 50 }}
+          dangerouslySetInnerHTML={{
+            __html: term?.text ?? "Null",
+          }}
+        ></TableCell>
+        <TableCell
+          align="center"
+          sx={{
+            minWidth: 200,
+          }}
+        >
+          <IconButton onClick={() => handleEdit(term?.id)}>
+            <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+              <ModeTwoToneIcon sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
+          {query ? (
+            <IconButton onClick={() => handleRestore(term?.id)}>
+              <Tooltip title={direction === "ltr" ? "restore" : "استعادة"}>
+                <RestoreFromTrashOutlined
+                  sx={{ color: "text.main", cursor: "pointer" }}
+                />
+              </Tooltip>
+            </IconButton>
+          ) : (
+            <IconButton>
+              <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
+                <DeleteDialog id={term?.id} count={count} page={page} />
+              </Tooltip>
+            </IconButton>
+          )}
+
+          <IconButton onClick={() => handleView(term.id)}>
+            <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
+              <VisibilityTwoToneIcon color="primary" />
+            </Tooltip>
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    ));
+  }, [
+    data,
+    count,
+    direction,
+    handleEdit,
+    handleView,
+    page,
+    navigate,
+    query,
+    handleRestore,
+  ]);
+
+  const handleCreate = () => navigate("create");
 
   return (
     <>
       {isLoading && <Loader />}
-
+      {editedID && <TermsUpdate id={editedID} />}
       <Box
         sx={{
           width: { sl: "300px" },
@@ -46,7 +141,7 @@ const TermsIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("terms")}
+            {t("Terms")}
           </Typography>
 
           <Button
@@ -58,47 +153,19 @@ const TermsIndex = () => {
             }}
             onClick={handleCreate}
           >
-            {t("New terms")}
+            {t("New Terms")}
           </Button>
-          <IconButton>
-            <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-              <DeleteDialog id={data?.term?.id} count={count} page={page} />
-            </Tooltip>
-          </IconButton>
         </Box>
-        {data?.term?.id ?
-          <BoxStyled sx={{ px: "10px" }}>
-            <Box sx={{ display: 'flex', color: 'text.main', justifyContent: 'flex-start', py: '10px', alignItems: 'center' }}>
-              <TitleOutlined />
-              <Typography sx={{ px: '10px' }}>{t("Title de")}</Typography>
-              <Typography sx={{ px: '10px' }}>{data?.term?.translations[0]?.name}</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', color: 'text.main', justifyContent: 'flex-start', py: '10px', alignItems: 'center' }}>
-              <MessageOutlined />
-              <Typography sx={{ px: '10px' }}>{t("text ar")}</Typography>
-              <Typography sx={{ px: '10px' }} dangerouslySetInnerHTML={{ __html: data?.term?.translations[0]?.text }}></Typography>
-            </Box>
-            <Box sx={{ display: 'flex', color: 'text.main', justifyContent: 'flex-start', py: '10px', alignItems: 'center' }}>
-              <TitleOutlined />
-              <Typography sx={{ px: '10px' }}>{t("text en")}</Typography>
-              <Typography sx={{ px: '10px' }}>{data?.term?.translations[1]?.name}</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', color: 'text.main', justifyContent: 'flex-start', py: '10px', alignItems: 'center' }}>
-              <MessageOutlined />
-              <Typography sx={{ px: '10px' }}>{t("text ar")}</Typography>
-              <Typography sx={{ px: '10px' }} dangerouslySetInnerHTML={{ __html: data?.term?.translations[1]?.text }}></Typography>
-            </Box>
-            <Box sx={{ display: 'flex', color: 'text.main', justifyContent: 'flex-start', py: '10px', alignItems: 'center' }}>
-              <TitleOutlined />
-              <Typography sx={{ px: '10px' }}>{t("text kr")}</Typography>
-              <Typography sx={{ px: '10px' }}>{data?.term?.translations[2]?.name}</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', color: 'text.main', justifyContent: 'flex-start', py: '10px', alignItems: 'center' }}>
-              <MessageOutlined />
-              <Typography sx={{ px: '10px' }}>{t("text kr")}</Typography>
-              <Typography sx={{ px: '10px' }} dangerouslySetInnerHTML={{ __html: data?.term?.translations[2]?.text }}></Typography>
-            </Box>
-          </BoxStyled> : <BoxStyled sx={{ color: 'text.main', textAlign: 'center', my: '10px' }}>{t("No Terms Added")}</BoxStyled>}
+
+        <BoxStyled sx={{ px: "10px" }}>
+          <Table
+            columns={columns}
+            rows={rows}
+            page={page}
+            setPage={setPage}
+            count={Math.ceil(data?.pagination?.total / count)}
+          />
+        </BoxStyled>
       </Box>
     </>
   );

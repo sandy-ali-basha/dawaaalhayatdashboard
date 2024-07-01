@@ -1,13 +1,21 @@
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState, convertToRaw, ContentState, convertFromHTML } from "draft-js";
 import draftToHtml from 'draftjs-to-html';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const EditorInput = ({ control, register, name, setValue, errors }) => {
+const EditorInput = ({ control, register, name, setValue, errors, initialValue }) => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+    useEffect(() => {
+        if (initialValue) {
+            const blocksFromHTML = convertFromHTML(initialValue);
+            const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
+            setEditorState(EditorState.createWithContent(contentState));
+        }
+    }, [initialValue]);
 
     const onEditorStateChange = (editorState) => {
         setEditorState(editorState);
@@ -36,4 +44,4 @@ const EditorInput = ({ control, register, name, setValue, errors }) => {
     );
 }
 
-export default EditorInput
+export default EditorInput;

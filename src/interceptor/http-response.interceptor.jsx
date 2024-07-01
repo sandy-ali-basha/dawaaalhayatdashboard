@@ -16,15 +16,13 @@ const showSnackbar = (enqueueSnackbar, message, variant) => {
 export const HttpResponseInterceptor = (navigate, enqueueSnackbar) => {
   Axios.interceptors.response.use(function (response) {
     const { code } = response.data;
-    const  errMessage  = response?.data?.error?.message;
-   
+    const errMessage = response?.data?.error?.message;
+    if (response?.status === 404)
+      showSnackbar(enqueueSnackbar, errMessage, "warning");
     if (code !== undefined) {
       switch (code) {
         case 200:
-          showSnackbar(enqueueSnackbar,'success', "success");
-          break;
-        case 404:
-          showSnackbar(enqueueSnackbar, errMessage, "warning");
+          showSnackbar(enqueueSnackbar, "success", "success");
           break;
 
         case 422:

@@ -38,9 +38,12 @@ const Login = () => {
 
     _AuthApi
       .login(input)
-      .then((res) => {
-        navigate("/dashboard");
-        setLoading(true);
+      .then((response) => {
+        if (response.data.code === 200) {
+          navigate("/dashboard");
+          setLoading(true);
+        }
+        console.log("Login successful:", response);
       })
       .finally(() => setLoading(false));
   };
@@ -64,8 +67,8 @@ const Login = () => {
             padding: "40px",
             zIndex: 10000,
             background: "#878d8b",
-            mixBlendMode: 'luminosity',
-            boxShadow: '0px 0px 24px 1px rgb(102 165 171)'
+            mixBlendMode: "luminosity",
+            boxShadow: "0px 0px 24px 1px rgb(102 165 171)",
           }}
         >
           <Grid
@@ -75,13 +78,10 @@ const Login = () => {
             alignItems="center"
           >
             <Box sx={{ width: "120px" }}></Box>
-            <Typography variant="h5" sx={{ color: "white", mt: "10px" }} >
+            <Typography variant="h5" sx={{ color: "white", mt: "10px" }}>
               {t("Hi, Welcome Back")}
             </Typography>
-            <Typography
-              variant="h6"
-              sx={{ color: "white", mt: "10px" }}
-            >
+            <Typography variant="h6" sx={{ color: "white", mt: "10px" }}>
               {t("pleas Enter your credentials to continue")}
             </Typography>
           </Grid>
@@ -92,7 +92,9 @@ const Login = () => {
           >
             <Box sx={{ width: "100%", mt: "20px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle" sx={{ color: "white" }}>{t("Email")}</Typography>
+                <Typography variant="inputTitle" sx={{ color: "white" }}>
+                  {t("Email")}
+                </Typography>
               </Box>
               <TextFieldStyled
                 sx={{
@@ -110,7 +112,9 @@ const Login = () => {
             </Box>
             <Box sx={{ width: "100%", mt: "20px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography sx={{ color: "white" }} variant="inputTitle">{t("Password")}</Typography>
+                <Typography sx={{ color: "white" }} variant="inputTitle">
+                  {t("Password")}
+                </Typography>
               </Box>
               <TextFieldStyled
                 sx={{
@@ -175,7 +179,7 @@ const Login = () => {
                 </Button>
               )}
             </Box>
-            <Box
+            {/* <Box
               sx={{
                 margin: "20px 0 8px 5px",
                 display: "flex",
@@ -187,7 +191,7 @@ const Login = () => {
                   {t("Reset Password")}
                 </Typography>
               </NavLink>
-            </Box>
+            </Box> */}
           </Box>
           {/* <Box
             sx={{

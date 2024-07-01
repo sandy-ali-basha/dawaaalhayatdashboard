@@ -10,6 +10,8 @@ import TermsRouting from "modules/Terms/TermsRouting";
 import TransactionRouting from "modules/transaction/TransactionRouting";
 import ReviewRouting from "modules/review/ReviewRouting";
 import PolicyRouting from "modules/policy/PolicyRouting";
+import CareersRouting from "modules/careers/CareersRouting";
+import CareerscategoryRouting from "modules/careersCategory/CareerscategoryRouting";
 
 const DashboardRouting = () => {
   return (
@@ -21,10 +23,13 @@ const DashboardRouting = () => {
           <Route path="/profile/*" element={<ProfileRouting />} />
           <Route path="/service/*" element={<ServiceRouting />} />
           <Route path="/heroImage/*" element={<HeroimageRouting />} />
-          <Route path="/terms/*" element={<TermsRouting />} />
           <Route path="/policy/*" element={<PolicyRouting />} />
           <Route path="/transaction/*" element={<TransactionRouting />} />
           <Route path="/review/*" element={<ReviewRouting />} />
+
+          <Route path="/terms/*" element={<TermsRouting />} />
+          <Route path="/careers/*" element={<CareersRouting />} />
+          <Route path="/careersCategory/*" element={<CareerscategoryRouting />} />
         </Route>
       }
 

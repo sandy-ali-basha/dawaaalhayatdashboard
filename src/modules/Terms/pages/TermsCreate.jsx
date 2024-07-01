@@ -1,12 +1,23 @@
-import { Typography, Box, Button, Grid } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Button,
+  Grid,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
-import React from "react";
+import React, { useState } from "react";
 import Loader from "components/shared/Loader";
 import ButtonAction from "components/shared/ButtonAction";
 import { useTermsCreate } from "../hooks/useTermsCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
+
 const TermsCreate = () => {
   const {
     handleCancel,
@@ -19,58 +30,110 @@ const TermsCreate = () => {
     errors,
     control,
     details,
-    setValue
-  } = useTermsCreate()
+    setValue,
+  } = useTermsCreate();
+
+  const [language, setLanguage] = useState(localStorage.getItem("i18nextLng"));
+
+  const handleLanguageChange = (event) => {
+    const selectedLanguage = event.target.value;
+    setLanguage(selectedLanguage);
+    localStorage.setItem("i18nextLng", selectedLanguage);
+  };
 
   return (
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Terms}")}
+        {t("Create New Term")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
-        <Box component="form">
-          <Grid container spacing={2}>
-            {/* * //details */}
-            {details.map((item, index) => (
-              <Grid key={index} xs={6} sx={{ p: "10px" }}>
-                <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle">{item.head}</Typography>
-                </Box>
-                <TextFieldStyled
-                  sx={{ width: "100%" }}
-                  type={item.type}
-                  placeholder={item.placeholder}
-                  name={item.name}
-                  {...register(item.register)}
-                  error={errors[item.error]?.message}
-                  helperText={errors[item.helperText]?.message || ""}
-                />
-              </Grid>
-            ))}
-            <Grid item xs={12} sx={{ p: "10px", }}>
-              <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle" sx={{ color: 'text.main' }}>{t('text_en')}</Typography>
-              </Box>
-
-              <EditorInput control={control} register={register} name={'text_en'} setValue={setValue} errors={errors?.text_en?.message} />
-            </Grid>
-            <Grid item xs={12} sx={{ p: "10px", }}>
-              <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle" sx={{ color: 'text.main' }}>{t('text_ar')}</Typography>
-              </Box>
-              <EditorInput control={control} register={register} name={'text_ar'} setValue={setValue} errors={errors?.text_ar?.message} />
-            </Grid>
-            <Grid item xs={12} sx={{ p: "10px", }}>
-              <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle" sx={{ color: 'text.main' }}>{t('text_kr')}</Typography>
-              </Box>
-              <EditorInput control={control} register={register} name={'text_kr'} setValue={setValue} errors={errors?.text_kr?.message} />
-            </Grid>
-
+        <Grid container component="form">
+          <Grid item md={12} sx={{ p: "10px" }}>
+            <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+              name arabic
+            </Typography>
+            <TextFieldStyled
+              sx={{ width: "100%" }}
+              type={"text"}
+              placeholder="name"
+              defaultValue=""
+              {...register(`ar.name`)}
+              error={!!errors.ar?.name}
+              helperText={errors.ar?.name?.message || ""}
+            />
           </Grid>
-        </Box>
-
+          <Grid item xs={12} sx={{ p: "10px" }}>
+            <Box sx={{ margin: "0 0 8px 5px" }}>
+              <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+                {t("text arabic")}
+              </Typography>
+            </Box>
+            <EditorInput
+              control={control}
+              register={register}
+              name={"ar.text"}
+              setValue={setValue}
+              errors={errors?.ar?.text?.message}
+            />
+          </Grid>
+          <Grid item md={12} sx={{ p: "10px" }}>
+            <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+              Name Kurdish
+            </Typography>
+            <TextFieldStyled
+              sx={{ width: "100%" }}
+              type={"text"}
+              placeholder="name"
+              defaultValue=""
+              {...register(`kr.name`)}
+              error={!!errors.kr?.name}
+              helperText={errors.kr?.name?.message || ""}
+            />
+          </Grid>
+          <Grid item xs={12} sx={{ p: "10px" }}>
+            <Box sx={{ margin: "0 0 8px 5px" }}>
+              <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+                {t("text_kr")}
+              </Typography>
+            </Box>
+            <EditorInput
+              control={control}
+              register={register}
+              name={"kr.text"}
+              setValue={setValue}
+              errors={errors?.kr?.text?.message}
+            />
+          </Grid>
+          <Grid item md={12} sx={{ p: "10px" }}>
+            <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+              Name English
+            </Typography>
+            <TextFieldStyled
+              sx={{ width: "100%" }}
+              type={"text"}
+              placeholder="name"
+              defaultValue=""
+              {...register(`en.name`)}
+              error={!!errors.en?.name}
+              helperText={errors.en?.name?.message || ""}
+            />
+          </Grid>
+          <Grid item xs={12} sx={{ p: "10px" }}>
+            <Box sx={{ margin: "0 0 8px 5px" }}>
+              <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+                {t("text English")}
+              </Typography>
+            </Box>
+            <EditorInput
+              control={control}
+              register={register}
+              name={"en.text"}
+              setValue={setValue}
+              errors={!!errors?.en?.text}
+            />
+          </Grid>
+        </Grid>
         <Box
           sx={{
             mt: "20px",
@@ -93,18 +156,15 @@ const TermsCreate = () => {
           >
             {t("Cancel")}
           </Button>
-          <ButtonAction
-            name={t("Reset")}
-            onClick={handleReset}
-            type="reset"
-          />
-          <ButtonLoader name={t("Submit")}
+          <ButtonAction name={t("Reset")} onClick={handleReset} type="reset" />
+          <ButtonLoader
+            name={t("Submit")}
             onClick={() => handleSubmit(hanldeCreate)()}
             type="submit"
             loading={loading}
             disableOnLoading
           >
-            {t("Submit")}
+            {t("Submit")} {language}
           </ButtonLoader>
         </Box>
       </BoxStyled>

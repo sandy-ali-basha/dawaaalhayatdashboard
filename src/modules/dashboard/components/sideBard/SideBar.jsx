@@ -13,6 +13,7 @@ import {
   Reviews,
   Security,
   Settings,
+  WorkOutlineTwoTone,
 } from "@mui/icons-material";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import GavelIcon from "@mui/icons-material/Gavel";
@@ -35,36 +36,46 @@ const SideBar = ({ open, setOpen }) => {
       icon: <AdminPanelSettingsTwoToneIcon />,
     },
 
-    {
-      name: t("Profile"),
-      link: "/dashboard/profile",
-      icon: <PeopleAltTwoToneIcon />,
-    },
-    {
-      name: t("hero image"),
-      link: "/dashboard/heroImage",
-      icon: <Image />,
-    },
+    // {
+    //   name: t("Profile"),
+    //   link: "/dashboard/profile",
+    //   icon: <PeopleAltTwoToneIcon />,
+    // },
+    // {
+    //   name: t("hero image"),
+    //   link: "/dashboard/heroImage",
+    //   icon: <Image />,
+    // },
     {
       name: t("terms"),
       link: "/dashboard/terms",
       icon: <GavelIcon />,
     },
-    {
-      name: t("policy"),
-      link: "/dashboard/policy",
-      icon: <Security />,
-    },
+    // {
+    //   name: t("policy"),
+    //   link: "/dashboard/policy",
+    //   icon: <Security />,
+    // },
 
+    // {
+    //   name: t("transaction"),
+    //   link: "/dashboard/transaction",
+    //   icon: <ReceiptIcon />,
+    // },
+    // {
+    //   name: t("review"),
+    //   link: "/dashboard/review",
+    //   icon: <Reviews />,
+    // },
     {
-      name: t("transaction"),
-      link: "/dashboard/transaction",
-      icon: <ReceiptIcon />,
+      name: t("Careers"),
+      link: "/dashboard/careers",
+      icon: <WorkOutlineTwoTone />,
     },
-    {
-      name: t("review"),
-      link: "/dashboard/review",
-      icon: <Reviews />,
+    { 
+      name: t("Careers Categories"),
+      link: "/dashboard/careersCategory",
+      icon: <WorkOutlineTwoTone />,
     },
   ];
 

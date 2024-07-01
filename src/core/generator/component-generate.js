@@ -965,8 +965,8 @@ export const useDelete${ComponentName} = ({ page, count }) => {
   });
 };
 `
-fs.writeFileSync(path.join(dirPath, componentName, `${ComponentName} Routing.jsx`), tsContent);
-fs.writeFileSync(path.join(dirPath, componentName, `${ComponentName} Component.jsx`), component);
+fs.writeFileSync(path.join(dirPath, componentName, `${ComponentName}Routing.jsx`), tsContent);
+fs.writeFileSync(path.join(dirPath, componentName, `${ComponentName}Component.jsx`), component);
 // * folders
 fs.mkdirSync(path.join(dirPath, fileName, 'hooks'));
 fs.mkdirSync(path.join(dirPath, fileName, 'components'));
@@ -977,7 +977,7 @@ fs.writeFileSync(path.join(dirPath, componentName, 'components', `ChangeStatus.j
 fs.writeFileSync(path.join(dirPath, componentName, 'components', `Dialog.jsx`), dialog);
 // *creating component hooks
 fs.writeFileSync(path.join(dirPath, componentName, 'hooks', `useChangeStatus.js`), useChangStatus);
-fs.writeFileSync(path.join(dirPath, componentName, 'hooks', `use${ComponentName} Create.js`), useCreate);
+fs.writeFileSync(path.join(dirPath, componentName, 'hooks', `use${ComponentName}Create.js`), useCreate);
 // *creating pages
 fs.writeFileSync(path.join(dirPath, componentName, 'pages', `${ComponentName}Create.jsx`), create);
 fs.writeFileSync(path.join(dirPath, componentName, 'pages', `${ComponentName}Index.jsx`), index);
