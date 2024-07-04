@@ -10,6 +10,7 @@ import PeopleAltTwoToneIcon from "@mui/icons-material/PeopleAltTwoTone";
 import {
   BookOnline,
   Image,
+  InsertEmoticonTwoTone,
   Reviews,
   Security,
   Settings,
@@ -75,6 +76,11 @@ const SideBar = ({ open, setOpen }) => {
     { 
       name: t("Careers Categories"),
       link: "/dashboard/careersCategory",
+      icon: <WorkOutlineTwoTone />,
+    },
+    { 
+      name: t("Products"),
+      link: "/dashboard/products",
       icon: <WorkOutlineTwoTone />,
     },
   ];

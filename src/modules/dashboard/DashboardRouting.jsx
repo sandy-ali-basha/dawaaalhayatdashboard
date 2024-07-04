@@ -12,6 +12,7 @@ import ReviewRouting from "modules/review/ReviewRouting";
 import PolicyRouting from "modules/policy/PolicyRouting";
 import CareersRouting from "modules/careers/CareersRouting";
 import CareerscategoryRouting from "modules/careersCategory/CareerscategoryRouting";
+import ProductsRouting from "modules/products/ProductsRouting";
 
 const DashboardRouting = () => {
   return (
@@ -30,6 +31,7 @@ const DashboardRouting = () => {
           <Route path="/terms/*" element={<TermsRouting />} />
           <Route path="/careers/*" element={<CareersRouting />} />
           <Route path="/careersCategory/*" element={<CareerscategoryRouting />} />
+          <Route path="/products/*" element={<ProductsRouting />} />
         </Route>
       }
 
