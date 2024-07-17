@@ -64,7 +64,6 @@ const CareersUpdate = ({ id }) => {
   const { register, handleSubmit, formState, control, setValue } =
   useForm(formOptions);
   const { errors } = formState;
-  console.log(errors);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
@@ -74,7 +73,7 @@ const CareersUpdate = ({ id }) => {
     _axios
       .get("/careers/" + editedID, {
         headers: {
-          with_translations: true,
+          translations: true,
         },
       })
       .then((res) => {

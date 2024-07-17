@@ -1,13 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { _Brand } from "api/brand/brand";
+import { _Product_opt_val } from "api/product_opt_val/product_opt_val";
 
-let schema = yup.object().shape({
+const schema = yup.object().shape({
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name is required"),
   }),
@@ -19,7 +19,7 @@ let schema = yup.object().shape({
   }),
 });
 
-export const useBrandCreate = () => {
+export const useProduct_opt_valCreate = () => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -28,11 +28,11 @@ export const useBrandCreate = () => {
     useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
-  const [details, setDetails] = useState([]);
+  const params = useParams();
 
   async function createPost(data) {
-    _Brand
-      .post(data, setLoading)
+    _Product_opt_val
+      .post(data, params.id, setLoading)
       .then((res) => {
         if (res.success) navigate(-1);
         setLoading(true);
@@ -50,10 +50,23 @@ export const useBrandCreate = () => {
   };
 
   const hanldeCreate = (input) => {
-
     mutate(input);
     setLoading(true);
-  }
+  };
+  const languages = [
+    { code: "ar", name: "Arabic" },
+    { code: "en", name: "English" },
+    { code: "kr", name: "Kurdish" },
+  ];
+  const details = languages.flatMap((lang) => [
+    {
+      head: t(`name ${lang.name.toLowerCase()}`),
+      type: "text",
+      placeholder: t("name"),
+      register: `${lang.code}.name`,
+      helperText: `${lang.code}.name`,
+    },
+  ]);
 
   return {
     handleCancel,

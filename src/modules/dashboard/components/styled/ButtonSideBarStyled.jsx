@@ -10,11 +10,11 @@ export const ButtonSideBarStyled = styled(Button, {
   color: theme.palette.text?.main,
   display: "flex",
   justifyContent: "start",
-  padding: "6px 12px 6px 12px",
-  borderRadius: "6px",
+  padding: "6px 16px",
+  borderRadius: 4,
   alignItems: "center",
   minHeight: 40,
-  columnGap: "15px",
+  columnGap: 3,
 
   "& .MuiSvgIcon-root": {
     transition: "250ms",

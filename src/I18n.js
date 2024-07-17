@@ -31,7 +31,7 @@ i18n
   .init({
     fallbackLng: "en",
     resources,
-    debug: true,
+    // debug: true,
     ns: ["translation"],
     defualtNS: "trnaslation",
     interpolation: {

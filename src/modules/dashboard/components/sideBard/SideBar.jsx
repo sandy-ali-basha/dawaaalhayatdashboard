@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Drawer } from "../styled/Drawer";
-import { Box } from "@mui/material";
+import { Box, Collapse } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import SideBarHeader from "./SideBarHeader";
@@ -9,25 +9,37 @@ import AdminPanelSettingsTwoToneIcon from "@mui/icons-material/AdminPanelSetting
 import PeopleAltTwoToneIcon from "@mui/icons-material/PeopleAltTwoTone";
 import {
   BookOnline,
+  BrandingWatermarkTwoTone,
   Image,
   InsertEmoticonTwoTone,
   Reviews,
   Security,
   Settings,
+  Shop,
   WorkOutlineTwoTone,
 } from "@mui/icons-material";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import GavelIcon from "@mui/icons-material/Gavel";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 const SideBar = ({ open, setOpen }) => {
   const { t } = useTranslation("sidebar");
-  const [hoverd, setHoverd] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [openSections, setOpenSections] = useState({});
 
   const handleMouseEnter = () => {
-    setHoverd(true);
+    setHovered(true);
   };
   const handleMouseLeave = () => {
-    setHoverd(false);
+    setHovered(false);
+  };
+
+  const handleToggleSection = (sectionName) => {
+    setOpenSections((prevState) => ({
+      ...prevState,
+      [sectionName]: !prevState[sectionName],
+    }));
   };
 
   const links = [
@@ -36,52 +48,32 @@ const SideBar = ({ open, setOpen }) => {
       link: "/dashboard/admin",
       icon: <AdminPanelSettingsTwoToneIcon />,
     },
-
-    // {
-    //   name: t("Profile"),
-    //   link: "/dashboard/profile",
-    //   icon: <PeopleAltTwoToneIcon />,
-    // },
-    // {
-    //   name: t("hero image"),
-    //   link: "/dashboard/heroImage",
-    //   icon: <Image />,
-    // },
     {
       name: t("terms"),
       link: "/dashboard/terms",
       icon: <GavelIcon />,
     },
-    // {
-    //   name: t("policy"),
-    //   link: "/dashboard/policy",
-    //   icon: <Security />,
-    // },
-
-    // {
-    //   name: t("transaction"),
-    //   link: "/dashboard/transaction",
-    //   icon: <ReceiptIcon />,
-    // },
-    // {
-    //   name: t("review"),
-    //   link: "/dashboard/review",
-    //   icon: <Reviews />,
-    // },
     {
       name: t("Careers"),
-      link: "/dashboard/careers",
-      icon: <WorkOutlineTwoTone />,
+      icon: <BrandingWatermarkTwoTone />,
+      subOptions: [
+        { name: t("Careers"), link: "/dashboard/careers" },
+        { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
+      ],
     },
-    { 
-      name: t("Careers Categories"),
-      link: "/dashboard/careersCategory",
-      icon: <WorkOutlineTwoTone />,
-    },
-    { 
+    {
       name: t("Products"),
-      link: "/dashboard/products",
-      icon: <WorkOutlineTwoTone />,
+      icon: <Shop />,
+      subOptions: [
+        { name: t("Products"), link: "/dashboard/product" },
+        { name: t("product type"), link: "/dashboard/product_type" },
+        { name: t("product options"), link: "/dashboard/Product_options" },
+      ],
+    },
+    {
+      name: t("brands"),
+      link: "/dashboard/brands",
+      icon: <BrandingWatermarkTwoTone />,
     },
   ];
 
@@ -89,7 +81,7 @@ const SideBar = ({ open, setOpen }) => {
     <Drawer
       variant="permanent"
       open={open}
-      hoverd={hoverd ? "true" : ""}
+      hovered={hovered ? "true" : ""}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       sx={{
@@ -102,7 +94,7 @@ const SideBar = ({ open, setOpen }) => {
       <SideBarHeader
         open={open}
         setOpen={setOpen}
-        hoverd={hoverd ? "true" : ""}
+        hovered={hovered ? "true" : ""}
       />
       <Box
         sx={{
@@ -115,16 +107,57 @@ const SideBar = ({ open, setOpen }) => {
         }}
       >
         {links.map((link, index) => (
-          <NavLink to={link.link} key={index}>
-            {({ isActive }) => (
-              <SideBarLink
-                text={t(link.name)}
-                active={isActive}
-                icon={link.icon}
-                open={open || hoverd}
-              />
+          <React.Fragment key={index}>
+            {link.subOptions ? (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleToggleSection(link.name)}
+                >
+                  <SideBarLink
+                    text={t(link.name)}
+                    icon={link.icon}
+                    open={open || hovered}
+                  />
+                  {openSections[link.name] ? (
+                    <ExpandLessIcon />
+                  ) : (
+                    <ExpandMoreIcon />
+                  )}
+                </Box>
+                <Collapse in={openSections[link.name]} timeout="auto" unmountOnExit>
+                  {link.subOptions.map((subOption, subIndex) => (
+                    <NavLink to={subOption.link} key={subIndex}>
+                      {({ isActive }) => (
+                        <SideBarLink
+                          style={{ paddingTop: "5px" }}
+                          text={t(subOption.name)}
+                          active={isActive}
+                          icon={null}
+                          open={open || hovered}
+                        />
+                      )}
+                    </NavLink>
+                  ))}
+                </Collapse>
+              </>
+            ) : (
+              <NavLink to={link.link} key={index}>
+                {({ isActive }) => (
+                  <SideBarLink
+                    text={t(link.name)}
+                    active={isActive}
+                    icon={link.icon}
+                    open={open || hovered}
+                  />
+                )}
+              </NavLink>
             )}
-          </NavLink>
+          </React.Fragment>
         ))}
       </Box>
     </Drawer>

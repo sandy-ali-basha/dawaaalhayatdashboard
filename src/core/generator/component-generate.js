@@ -5,9 +5,7 @@ const getFileName = require("./file-name.utiles");
 const args = process.argv.slice(2);
 
 if (args.length < 1) {
-  throw new Error(
-    "Must Provide Component Name"
-  );
+  throw new Error("Must Provide Component Name");
 }
 
 const componentName = args[0];
@@ -15,9 +13,18 @@ const fileName = getFileName(componentName);
 const ComponentName = fileName.charAt(0).toUpperCase() + fileName.slice(1);
 
 // const dirPath = args.length > 1 ? args[1] : process.env.INIT_CWD;
-const dirPath = path.join(args.length > 1 ? args[1] : process.env.INIT_CWD, 'src/modules');
-const apidirPath = path.join(args.length > 1 ? args[1] : process.env.INIT_CWD, 'src/api');
-const HooksdirPath = path.join(args.length > 1 ? args[1] : process.env.INIT_CWD, 'src/hooks');
+const dirPath = path.join(
+  args.length > 1 ? args[1] : process.env.INIT_CWD,
+  "src/modules"
+);
+const apidirPath = path.join(
+  args.length > 1 ? args[1] : process.env.INIT_CWD,
+  "src/api"
+);
+const HooksdirPath = path.join(
+  args.length > 1 ? args[1] : process.env.INIT_CWD,
+  "src/hooks"
+);
 
 fs.lstatSync(dirPath).isDirectory();
 fs.mkdirSync(path.join(dirPath, componentName));
@@ -48,7 +55,7 @@ const ${ComponentName}Routing = () => {
 };
 
 export default ${ComponentName}Routing;
-`
+`;
 const component = `import React from "react";
 import { Outlet } from "react-router-dom";
 const ${fileName}Component = () => {
@@ -59,7 +66,7 @@ const ${fileName}Component = () => {
   );
 };
 export default ${fileName}Component
-`
+`;
 const changeStatus = `
 import {
     Button,
@@ -140,7 +147,7 @@ import {
   }
   
   export default ChangeStatus;
-  `
+  `;
 const dialog = `
   import React, { useState } from "react";
 import Button from "@mui/material/Button";
@@ -217,7 +224,7 @@ const DeleteDialog = ({ id, page, count }) => {
 };
 
 export default DeleteDialog;
-`
+`;
 const useChangStatus = `import { _axios } from "interceptor/http-config";
 import { useQueryClient, useMutation } from "react-query";
 export const useChangeStatus = ({ status, id }) => {
@@ -268,7 +275,7 @@ export const useChangeStatus = ({ status, id }) => {
     }
   );
 };
-`
+`;
 const useCreate = `
 import { useEffect, useState,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -279,9 +286,17 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _${ComponentName} } from "api/${fileName}/${fileName}";
 
-let schema = yup.object().shape({
-  first_name: yup.string().trim().required("first name is required"),
-})
+const schema = yup.object().shape({
+  kr: yup.object().shape({
+    name: yup.string().required("Kurdish name is required"),
+  }),
+  ar: yup.object().shape({
+    name: yup.string().required("Arabic name is required"),
+  }),
+  en: yup.object().shape({
+    name: yup.string().required("English name is required"),
+  }),
+});
 
 export const use${ComponentName}Create = () => {
   const { t } = useTranslation("index")
@@ -291,7 +306,6 @@ export const use${ComponentName}Create = () => {
   const { register, handleSubmit, formState, setValue, control } = useForm(formOptions)
   const { errors } = formState
   const { mutate } = useMutation((data) => createPost(data))
-  const [details, setDetails] = useState([])
 
   async function createPost(data) {
     _${ComponentName}
@@ -323,29 +337,18 @@ export const use${ComponentName}Create = () => {
     setLoading(true);
   }
 
-  useEffect(() => {
-    const fields = [
-      ["first_name", "text"],
+  const languages = [
+    { code: "ar", name: "Arabic" },
+    { code: "en", name: "English" },
+    { code: "kr", name: "Kurdish" },
+  ];
 
-    ]
-    const data = []
-    fields.map(item => {
-      const key = item[0]
-      const type = item[1];
-      var element = {
-        head: t(key).replace('_', ' '),
-        type: type,
-        placeholder: t(key).replace('_', ' '),
-        name: key,
-        register: key,
-        error: key,
-        helperText: key
-      }
-      data.push(element)
-      return data
-    })
-    setDetails(data)
-  }, [t])
+  const details = languages.map((lang, index) => ({
+    head: t("name " + lang.name.toLowerCase()),
+    type: "text",
+    placeholder: t("name"),
+    register: lang.code + ".name",
+  }));
 
   return {
     handleCancel,
@@ -362,7 +365,7 @@ export const use${ComponentName}Create = () => {
   };
 };
 
-`
+`;
 const create = `import { Typography, Box, Button, Grid } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
@@ -398,7 +401,7 @@ const ${ComponentName}Create = () => {
             {details.map((item, index) => (
               <Grid item key={index} xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle">{item.head}</Typography>
+                  <Typography variant="body1">{item.head}</Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
@@ -458,7 +461,7 @@ const ${ComponentName}Create = () => {
 };
 
 export default ${ComponentName}Create;
-`
+`;
 const index = `
 import {
   Typography,
@@ -602,7 +605,7 @@ const ${ComponentName}Index = () => {
 };
 
 export default ${ComponentName}Index;
-`
+`;
 
 const update = `
 import { React, useEffect, useState } from "react";
@@ -622,9 +625,17 @@ import { useMutation } from "react-query";
 import { _${ComponentName} } from "api/${fileName}/${fileName}";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
-let schema = yup.object().shape({
-  first_name: yup.string().trim().required("first name Arabic is required"),
-})
+const schema = yup.object().shape({
+  kr: yup.object().shape({
+    name: yup.string().required("Kurdish name is required"),
+  }),
+  ar: yup.object().shape({
+    name: yup.string().required("Arabic name is required"),
+  }),
+  en: yup.object().shape({
+    name: yup.string().required("English name is required"),
+  }),
+});
 
 const ${ComponentName}Update = ({ id }) => {
   const { t } = useTranslation("index");
@@ -642,14 +653,23 @@ const ${ComponentName}Update = ({ id }) => {
 
   useEffect(() => {
     _axios.get('/${fileName}/'+ editedID).then((res) => {
-      setData(res.data?.${fileName});
+      // setData(res.data?.${fileName});
+        setData(res.data?.data);
     });
   }, [id,editedID]);
+  const languages = [
+    { code: "ar", name: "Arabic" },
+    { code: "en", name: "English" },
+    { code: "kr", name: "Kurdish" },
+  ];
 
-  const details = [
-    { head: t("first name"), type: "text", placeholder: t("first_name"), name: "first_name", register: "first_name", error: "first_name", helperText: "first_name", defaultValue: data?.first_name, },
-  ]
-
+  const details = languages.map((lang, index) => ({
+    head: t("name"+ lang.name.toLowerCase()),
+    type: "text",
+    placeholder: t("name"),
+    register: lang.code+".name",
+    defaultValue: data?.translations[index]?.name,
+  }));
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
@@ -670,11 +690,7 @@ const ${ComponentName}Update = ({ id }) => {
   }
 
   const hanldeUpdate = (input) => {
-    const formData = new FormData()
-    formData.append("first_name", input.first_name);
-    formData.append("_method", 'put');
-
-    mutate(formData);
+    mutate(input);
     setLoading(true);
   }
 
@@ -686,23 +702,26 @@ const ${ComponentName}Update = ({ id }) => {
         {!!data && (
           <>
             <Grid container component="form" key={id}>
-              {details?.map((item, index) => (
-                <Grid key={index} item md={6} sx={{ p: "10px" }}>
-                  <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography variant="inputTitle">{item.head}</Typography>
-                  </Box>
-                  <TextFieldStyled
-                    sx={{ width: "100%" }}
-                    type={item.type}
-                    placeholder={item.placeholder}
-                    defaultValue={item.defaultValue}
-                    name={item.name}
-                    {...register(item.register)}
-                    error={errors[item.error]?.message}
-                    helperText={errors[item.helperText]?.message || ""}
-                  />
-                </Grid>
-              ))}
+              {details?.map((item, index) => {
+                const error = errors?.[item.register.split(".")[0]]?.name;
+                return (
+                  <Grid key={index} item md={6} sx={{ p: "10px" }}>
+                    <Box sx={{ margin: "0 0 8px 5px" }}>
+                      <Typography variant="body1">{item.head}</Typography>
+                    </Box>
+                    <TextFieldStyled
+                      sx={{ width: "100%" }}
+                      type={item.type}
+                      placeholder={item.placeholder}
+                      defaultValue={item.defaultValue}
+                      name={item.register}
+                      {...register(item.register)}
+                      error={!!error}
+                      helperText={error?.message || ""}
+                    />
+                  </Grid>
+                );
+              })}
             </Grid>
           </>
         )}
@@ -730,7 +749,7 @@ const ${ComponentName}Update = ({ id }) => {
 
 export default ${ComponentName}Update;
 
-`
+`;
 const view = `
 import { Box, Typography } from "@mui/material";
 import ButtonAction from "components/shared/ButtonAction";
@@ -885,7 +904,7 @@ return (
 };
 
 export default ${ComponentName}View;
-`
+`;
 
 const api = `
 import { _axios } from "../../interceptor/http-config";
@@ -901,7 +920,7 @@ export const _${ComponentName} = {
 
     update: ({ editedID, formData }) => _axios.post( Link +'/' + editedID, formData).then((res) => res?.data),
 };
-`
+`;
 const useFile = `
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -935,7 +954,7 @@ export const use${ComponentName} = (id) => {
     setQuery,
   };
 };
-`
+`;
 const useDelete = `
 import { useQueryClient, useMutation } from "react-query";
 import { _${ComponentName} } from "api/${fileName}/${fileName}";
@@ -964,30 +983,66 @@ export const useDelete${ComponentName} = ({ page, count }) => {
     },
   });
 };
-`
-fs.writeFileSync(path.join(dirPath, componentName, `${ComponentName}Routing.jsx`), tsContent);
-fs.writeFileSync(path.join(dirPath, componentName, `${ComponentName}Component.jsx`), component);
+`;
+fs.writeFileSync(
+  path.join(dirPath, componentName, `${ComponentName}Routing.jsx`),
+  tsContent
+);
+fs.writeFileSync(
+  path.join(dirPath, componentName, `${ComponentName}Component.jsx`),
+  component
+);
 // * folders
-fs.mkdirSync(path.join(dirPath, fileName, 'hooks'));
-fs.mkdirSync(path.join(dirPath, fileName, 'components'));
-fs.mkdirSync(path.join(dirPath, fileName, 'pages'));
+fs.mkdirSync(path.join(dirPath, fileName, "hooks"));
+fs.mkdirSync(path.join(dirPath, fileName, "components"));
+fs.mkdirSync(path.join(dirPath, fileName, "pages"));
 
 // * creating components
-fs.writeFileSync(path.join(dirPath, componentName, 'components', `ChangeStatus.jsx`), changeStatus);
-fs.writeFileSync(path.join(dirPath, componentName, 'components', `Dialog.jsx`), dialog);
+fs.writeFileSync(
+  path.join(dirPath, componentName, "components", `ChangeStatus.jsx`),
+  changeStatus
+);
+fs.writeFileSync(
+  path.join(dirPath, componentName, "components", `Dialog.jsx`),
+  dialog
+);
 // *creating component hooks
-fs.writeFileSync(path.join(dirPath, componentName, 'hooks', `useChangeStatus.js`), useChangStatus);
-fs.writeFileSync(path.join(dirPath, componentName, 'hooks', `use${ComponentName}Create.js`), useCreate);
+fs.writeFileSync(
+  path.join(dirPath, componentName, "hooks", `useChangeStatus.js`),
+  useChangStatus
+);
+fs.writeFileSync(
+  path.join(dirPath, componentName, "hooks", `use${ComponentName}Create.js`),
+  useCreate
+);
 // *creating pages
-fs.writeFileSync(path.join(dirPath, componentName, 'pages', `${ComponentName}Create.jsx`), create);
-fs.writeFileSync(path.join(dirPath, componentName, 'pages', `${ComponentName}Index.jsx`), index);
-fs.writeFileSync(path.join(dirPath, componentName, 'pages', `${ComponentName}Update.jsx`), update);
-fs.writeFileSync(path.join(dirPath, componentName, 'pages', `${ComponentName}View.jsx`), view);
+fs.writeFileSync(
+  path.join(dirPath, componentName, "pages", `${ComponentName}Create.jsx`),
+  create
+);
+fs.writeFileSync(
+  path.join(dirPath, componentName, "pages", `${ComponentName}Index.jsx`),
+  index
+);
+fs.writeFileSync(
+  path.join(dirPath, componentName, "pages", `${ComponentName}Update.jsx`),
+  update
+);
+fs.writeFileSync(
+  path.join(dirPath, componentName, "pages", `${ComponentName}View.jsx`),
+  view
+);
 
-//* creating api file 
+//* creating api file
 fs.writeFileSync(path.join(apidirPath, fileName, `${fileName}.js`), api);
 // * hooks
-fs.writeFileSync(path.join(HooksdirPath, fileName, `use${ComponentName}.js`), useFile);
-fs.writeFileSync(path.join(HooksdirPath, fileName, `useDelete${ComponentName}.js`), useDelete);
+fs.writeFileSync(
+  path.join(HooksdirPath, fileName, `use${ComponentName}.js`),
+  useFile
+);
+fs.writeFileSync(
+  path.join(HooksdirPath, fileName, `useDelete${ComponentName}.js`),
+  useDelete
+);
 
 // fs.writeFileSync(path.join(dirPath, componentName, fileName, `${ fileName } View.js`), view);

@@ -1,3 +1,4 @@
+
 import {
   Typography,
   Box,
@@ -11,7 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
@@ -20,13 +21,13 @@ import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
 import ChangeStatus from "../components/ChangeStatus";
-import { useBrand } from "hooks/brand/useBrand";
-import BrandUpdate from "./BrandUpdate";
+import { useProduct_type } from "hooks/product_type/useProduct_type";
+import Product_typeUpdate from "./Product_typeUpdate";
 import DeleteDialog from "../components/Dialog";
 
-const BrandIndex = () => {
+const Product_typeIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useBrand();
+  const { data, page, setPage, isLoading, count } = useProduct_type();
 
   const navigate = useNavigate();
   const [direction] = settingsStore((state) => [state.direction]);
@@ -37,32 +38,26 @@ const BrandIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t(" name"), t("operations")];
+    return [
+      t(" name"),
+      // t("status"),
+      t("operations"),
+    ];
   }, [t]);
-
-  const handleView = useCallback(
-    (id) => {
-      navigate("view/" + id);
-    },
-    [navigate]
-  );
-  const handleEdit = useCallback(
-    (id) => {
-      setEditedID(id);
-    },
-    [setEditedID]
-  );
+  
+  const handleView = useCallback((id) => { navigate('view/' + id) }, [navigate])
+  const handleEdit = useCallback((id) => { setEditedID(id) }, [setEditedID])
 
   const rows = useMemo(() => {
-    return data?.data?.brands?.map((brand, id) => (
-      <TableRow sx={{ height: "65px" }} key={brand.id} hover>
-        <TableCell sx={{ minWidth: 50 }}>{brand?.name ?? "Null"}</TableCell>
+    return data?.data?.producttypes?.map((product_type, id) => (
+      <TableRow sx={{ height: "65px" }} key={product_type.id} hover>
+        <TableCell sx={{ minWidth: 50 }}>{product_type?.name ?? "Null"}</TableCell>
         {/* <TableCell sx={{ minWidth: 120 }} align="center">
           <ChangeStatus
-            id={brand.id}
-            action={brand.status === "active" && "change-status"}
+            id={product_type.id}
+            action={product_type.status === "active" && "change-status"}
           >
-            {brand.status === "Active" ? t("Active") : t("Not Active")}
+            {product_type.status === "Active" ? t("Active") : t("Not Active")}
           </ChangeStatus>
         </TableCell> */}
         <TableCell
@@ -71,32 +66,32 @@ const BrandIndex = () => {
             minWidth: 200,
           }}
         >
-          <IconButton onClick={() => handleEdit(brand?.id)}>
+          <IconButton onClick={() => handleEdit(product_type?.id)}>
             <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
               <ModeTwoToneIcon sx={{ color: "text.main" }} />
             </Tooltip>
           </IconButton>
           <IconButton>
             <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-              <DeleteDialog id={brand?.id} count={count} page={page} />
+              <DeleteDialog id={product_type?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>
-          {/* <IconButton onClick={() => handleView(brand.id)}>
+          <IconButton onClick={() => handleView(product_type.id)}>
             <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
               <VisibilityTwoToneIcon color="primary" />
             </Tooltip>
-          </IconButton> */}
+          </IconButton>
         </TableCell>
       </TableRow>
     ));
-  }, [data, count, direction, handleEdit, handleView, page, t]);
+  },[data, count, direction, handleEdit, handleView, page,t]);
 
-  const handleCreate = () => navigate("create");
+  const handleCreate = () => navigate("create")
 
   return (
     <>
       {isLoading && <Loader />}
-      {editedID && <BrandUpdate id={editedID} />}
+      {editedID && <Product_typeUpdate id={editedID} />}
 
       <Box
         sx={{
@@ -114,7 +109,7 @@ const BrandIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("brand")}
+            {t("product_type")}
           </Typography>
 
           <Button
@@ -126,7 +121,7 @@ const BrandIndex = () => {
             }}
             onClick={handleCreate}
           >
-            {t("New brand")}
+            {t("New product_type")}
           </Button>
         </Box>
 
@@ -144,4 +139,4 @@ const BrandIndex = () => {
   );
 };
 
-export default BrandIndex;
+export default Product_typeIndex;

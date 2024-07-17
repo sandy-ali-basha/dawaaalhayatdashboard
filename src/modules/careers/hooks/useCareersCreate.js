@@ -69,7 +69,7 @@ export const useCareersCreate = () => {
   useEffect(() => {
     _axios.get("/careers_categories").then((res) => {
       setCareersCategoriesData(res?.data?.data?.careers_categories);
-      console.log("careersCategoriesData", res?.data?.data?.careers_categories);
+    
     });
   }, []);
   const hanldeCreate = (input) => {

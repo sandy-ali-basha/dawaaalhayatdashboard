@@ -12,7 +12,10 @@ import ReviewRouting from "modules/review/ReviewRouting";
 import PolicyRouting from "modules/policy/PolicyRouting";
 import CareersRouting from "modules/careers/CareersRouting";
 import CareerscategoryRouting from "modules/careersCategory/CareerscategoryRouting";
-import ProductsRouting from "modules/products/ProductsRouting";
+import ProductRouting from "modules/product/ProductRouting";
+import BrandRouting from "modules/brand/BrandRouting";
+import Product_typeRouting from "modules/product_type/Product_typeRouting";
+import Product_optionsRouting from "modules/product_options/Product_optionsRouting";
 
 const DashboardRouting = () => {
   return (
@@ -31,7 +34,10 @@ const DashboardRouting = () => {
           <Route path="/terms/*" element={<TermsRouting />} />
           <Route path="/careers/*" element={<CareersRouting />} />
           <Route path="/careersCategory/*" element={<CareerscategoryRouting />} />
-          <Route path="/products/*" element={<ProductsRouting />} />
+          <Route path="/product/*" element={<ProductRouting />} />
+          <Route path="/brands/*" element={<BrandRouting />} />
+          <Route path="/product_type/*" element={<Product_typeRouting />} />
+          <Route path="/Product_options/*" element={<Product_optionsRouting />} />
         </Route>
       }
 

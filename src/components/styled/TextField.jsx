@@ -14,7 +14,6 @@ export const TextFieldStyled = styled(TextField)(({ theme }) => ({
   },
   "& .MuiInputBase-root": {
     width: "100%",
-    borderRadius: 8,
     backgroundColor: "transparent !important",
     border: `1px solid rgba(${theme.palette.main}, 0.2)`,
     transition: theme.transitions.create(["border-color", "box-shadow"], {
@@ -26,9 +25,7 @@ export const TextFieldStyled = styled(TextField)(({ theme }) => ({
     "&:before, &:after": {
       display: "none",
     },
-    "&.MuiInputBase-sizeSmall": {
-      borderRadius: 6,
-    },
+
     "&.Mui-error": {
       borderColor: theme.palette.error.main,
     },
@@ -160,7 +157,7 @@ export const SelectStyled = styled(Select)(({ theme }) => ({
   color: theme.palette.origin.main,
   "& .MuiInputBase-input": {
     color: theme.palette.origin.main,
-    borderRadius: "3px !important",
+   
   },
   "& .MuiOutlinedInput-root": {
     color: "red",
@@ -172,7 +169,7 @@ export const SelectStyled = styled(Select)(({ theme }) => ({
     borderColor: theme.palette.origin.main,
   },
   "& .MuiOutlinedInput-notchedOutline": {
-    borderRadius: "3px",
+    
     color: theme.palette.origin.main,
     borderColor: theme.palette.lightGray.main,
     "&:hover": {

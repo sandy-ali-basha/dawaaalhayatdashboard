@@ -20,13 +20,13 @@ import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
 import ChangeStatus from "../components/ChangeStatus";
-import { useBrand } from "hooks/brand/useBrand";
-import BrandUpdate from "./BrandUpdate";
+import { useProduct } from "hooks/product/useProduct";
+import ProductUpdate from "./ProductUpdate";
 import DeleteDialog from "../components/Dialog";
 
-const BrandIndex = () => {
+const ProductIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useBrand();
+  const { data, page, setPage, isLoading, count } = useProduct();
 
   const navigate = useNavigate();
   const [direction] = settingsStore((state) => [state.direction]);
@@ -37,7 +37,14 @@ const BrandIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t(" name"), t("operations")];
+    return [
+      t("brand_id"),
+      t("sku"),
+      t("name"),
+      t("description"),
+      t("status"),
+      t("operations"),
+    ];
   }, [t]);
 
   const handleView = useCallback(
@@ -54,15 +61,29 @@ const BrandIndex = () => {
   );
 
   const rows = useMemo(() => {
-    return data?.data?.brands?.map((brand, id) => (
-      <TableRow sx={{ height: "65px" }} key={brand.id} hover>
-        <TableCell sx={{ minWidth: 50 }}>{brand?.name ?? "Null"}</TableCell>
+    return data?.data?.products?.map((product, id) => (
+      <TableRow sx={{ height: "65px" }} key={product.id} hover>
+        <TableCell sx={{ minWidth: 50 }}>
+          {product?.brand_id ?? "Null"}
+        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          {product?.sku ?? "Null"}
+        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          {product?.name ?? "Null"}
+        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          {product?.description ?? "Null"}
+        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          {product?.status ?? "Null"}
+        </TableCell>
         {/* <TableCell sx={{ minWidth: 120 }} align="center">
           <ChangeStatus
-            id={brand.id}
-            action={brand.status === "active" && "change-status"}
-          >
-            {brand.status === "Active" ? t("Active") : t("Not Active")}
+            id={product.id}
+            action={product.status === "active" && "change-status"}
+          >{product.status  }
+            {product.status === "Active" ? t("Active") : t("Not Active")}
           </ChangeStatus>
         </TableCell> */}
         <TableCell
@@ -71,21 +92,21 @@ const BrandIndex = () => {
             minWidth: 200,
           }}
         >
-          <IconButton onClick={() => handleEdit(brand?.id)}>
+          <IconButton onClick={() => handleEdit(product?.id)}>
             <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
               <ModeTwoToneIcon sx={{ color: "text.main" }} />
             </Tooltip>
           </IconButton>
           <IconButton>
             <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-              <DeleteDialog id={brand?.id} count={count} page={page} />
+              <DeleteDialog id={product?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>
-          {/* <IconButton onClick={() => handleView(brand.id)}>
+          <IconButton onClick={() => handleView(product.id)}>
             <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
               <VisibilityTwoToneIcon color="primary" />
             </Tooltip>
-          </IconButton> */}
+          </IconButton>
         </TableCell>
       </TableRow>
     ));
@@ -96,7 +117,7 @@ const BrandIndex = () => {
   return (
     <>
       {isLoading && <Loader />}
-      {editedID && <BrandUpdate id={editedID} />}
+      {editedID && <ProductUpdate id={editedID} />}
 
       <Box
         sx={{
@@ -114,7 +135,7 @@ const BrandIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("brand")}
+            {t("product")}
           </Typography>
 
           <Button
@@ -126,7 +147,7 @@ const BrandIndex = () => {
             }}
             onClick={handleCreate}
           >
-            {t("New brand")}
+            {t("New product")}
           </Button>
         </Box>
 
@@ -144,4 +165,4 @@ const BrandIndex = () => {
   );
 };
 
-export default BrandIndex;
+export default ProductIndex;

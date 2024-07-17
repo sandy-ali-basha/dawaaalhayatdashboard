@@ -1,4 +1,3 @@
-
 import { React, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -13,10 +12,10 @@ import { _axios } from "interceptor/http-config";
 import { TextFieldStyled } from "components/styled/TextField";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
-import { _Brand } from "api/brand/brand";
+import { _Product_options } from "api/product_options/product_options";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
-let schema = yup.object().shape({
+const schema = yup.object().shape({
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name is required"),
   }),
@@ -28,7 +27,7 @@ let schema = yup.object().shape({
   }),
 });
 
-const BrandUpdate = ({ id }) => {
+const Product_optionsUpdate = ({ id }) => {
   const { t } = useTranslation("index");
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
@@ -43,73 +42,88 @@ const BrandUpdate = ({ id }) => {
   const [data, setData] = useState();
 
   useEffect(() => {
-    _axios.get('/brand/'+ editedID, {
-      headers: {
-        translations: true,
-      },
-    }).then((res) => {
-      setData(res.data?.data);
-    });
-  }, [id,editedID]);
+    _axios
+      .get("/product_options/" + editedID, {
+        headers: {
+          translations: true,
+        },
+      })
+      .then((res) => {
+        // setData(res.data?.product_options);
+        setData(res.data?.data);
+      });
+  }, [id, editedID]);
+  const languages = [
+    { code: "ar", name: "Arabic" },
+    { code: "en", name: "English" },
+    { code: "kr", name: "Kurdish" },
+  ];
 
-  const details = [
-    { head: t("arabic name"), type: "text", placeholder: t("ar.name"), name: "ar.name", register: "ar.name", error: "ar.name", helperText: "ar.name", defaultValue: data?.translations[0]?.name },
-    { head: t("english name"), type: "text", placeholder: t("en.name"), name: "en.name", register: "en.name", error: "en.name", helperText: "en.name", defaultValue: data?.translations[1]?.name, },
-    { head: t("kurdish name"), type: "text", placeholder: t("kr.name"), name: "kr.name", register: "kr.name", error: "kr.name", helperText: "kr.name", defaultValue: data?.translations[2]?.name, },
-  ]
-
+  const details = languages.map((lang, index) => ({
+    head: t("name " + lang.name.toLowerCase()),
+    type: "text",
+    placeholder: t("name"),
+    register: lang.code + ".name",
+    defaultValue: data?.translations[index]?.name,
+  }));
+  
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
   };
 
-  const { mutate } = useMutation((data) => createPost(data))
+  const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
-    _Brand.update({
-      editedID: editedID,
-      formData: data,
-    }).catch(err => {
-      setLoading(false)
-    }).then(() => {
-      setLoading(false)
-      // handleClose()
-    })
+    _Product_options
+      .update({
+        editedID: editedID,
+        formData: data,
+      })
+      .catch((err) => {
+        setLoading(false);
+      })
+      .then(() => {
+        setLoading(false);
+        // handleClose()
+      });
   }
 
   const hanldeUpdate = (input) => {
-
     mutate(input);
     setLoading(true);
-  }
+  };
 
   return (
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>{t("Edit Row")}</DialogTitle>
+        <DialogTitle sx={{ color: "primary.main" }}>
+          {t("Edit Row")}
+        </DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
-              {details?.map((item, index) => (
-                <Grid key={index} item md={6} sx={{ p: "10px" }}>
-                  <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography sx={{ margin: "0 0 8px 8px" }}
-                color="text.primary"
-                variant="body2">{item.head}</Typography>
-                  </Box>
-                  <TextFieldStyled
-                    sx={{ width: "100%" }}
-                    type={item.type}
-                    placeholder={item.placeholder}
-                    defaultValue={item.defaultValue}
-                    name={item.name}
-                    {...register(item.register)}
-                    error={errors[item.error]?.message}
-                    helperText={errors[item.helperText]?.message || ""}
-                  />
-                </Grid>
-              ))}
+              {details?.map((item, index) => {
+                const error = errors?.[item.register.split(".")[0]]?.name;
+                return (
+                  <Grid key={index} item md={6} sx={{ p: "10px" }}>
+                    <Box sx={{ margin: "0 0 8px 5px" }}>
+                      <Typography variant="inputTitle">{item.head}</Typography>
+                    </Box>
+                    <TextFieldStyled
+                      sx={{ width: "100%" }}
+                      type={item.type}
+                      placeholder={item.placeholder}
+                      defaultValue={item.defaultValue}
+                      name={item.register}
+                      {...register(item.register)}
+                      error={!!error}
+                      helperText={error?.message || ""}
+                    />
+                  </Grid>
+                );
+              })}
             </Grid>
           </>
         )}
@@ -120,7 +134,8 @@ const BrandUpdate = ({ id }) => {
           </Button>
           {loading && <Loader />}
 
-          <ButtonLoader name={t("Submit")}
+          <ButtonLoader
+            name={t("Submit")}
             onClick={() => handleSubmit(hanldeUpdate)()}
             type="save"
             loading={loading}
@@ -128,12 +143,10 @@ const BrandUpdate = ({ id }) => {
           >
             {t("Submit")}
           </ButtonLoader>
-
         </DialogActions>
       </Dialog>
     </>
   );
 };
 
-export default BrandUpdate;
-
+export default Product_optionsUpdate;

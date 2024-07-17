@@ -17,8 +17,7 @@ const BrandCreate = () => {
     t,
     errors,
     details,
-  } = useBrandCreate()
-
+  } = useBrandCreate();
 
   return (
     <Box>
@@ -28,26 +27,63 @@ const BrandCreate = () => {
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
-          <Grid  container spacing={2}>
+          <Grid container spacing={2}>
             {/* * //details */}
-            {details.map((item, index) => (
-              <Grid item key={index} xs={6} sx={{ p: "10px" }}>
-                <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle">{item.head}</Typography>
-                </Box>
-                <TextFieldStyled
-                  sx={{ width: "100%" }}
-                  type={item.type}
-                  placeholder={item.placeholder}
-                  name={item.name}
-                  {...register(item.register)}
-                  error={errors[item.error]?.message}
-                  helperText={errors[item.helperText]?.message || ""}
-                />
-              </Grid>
-            ))}
+            <Grid item md={12} sx={{ p: "10px" }}>
+              <Typography
+                sx={{ margin: "0 0 8px 8px" }}
+                color="text.primary"
+                variant="body2"
+              >
+                kurdish name
+              </Typography>
 
-          
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"kurdish Name"}
+                defaultValue=""
+                {...register("kr.name")}
+                error={errors?.kr?.name}
+                helperText={errors?.kr?.name?.message || ""}
+              />
+            </Grid>
+            <Grid item md={12} sx={{ p: "10px" }}>
+              <Typography
+                sx={{ margin: "0 0 8px 8px" }}
+                color="text.primary"
+                variant="body2"
+              >
+                Arabic name
+              </Typography>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"Arabic Name"}
+                defaultValue=""
+                {...register("ar.name")}
+                error={errors?.ar?.name}
+                helperText={errors?.ar?.name?.message || ""}
+              />
+            </Grid>
+            <Grid item md={12} sx={{ p: "10px" }}>
+              <Typography
+                sx={{ margin: "0 0 8px 8px" }}
+                color="text.primary"
+                variant="body2"
+              >
+                English name
+              </Typography>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"English Name"}
+                defaultValue=""
+                {...register("en.name")}
+                error={errors?.en?.name}
+                helperText={errors?.en?.name?.message || ""}
+              />
+            </Grid>
           </Grid>
         </Box>
 
@@ -73,19 +109,16 @@ const BrandCreate = () => {
           >
             {t("Cancel")}
           </Button>
-          <ButtonAction
-            name={t("Reset")}
-            onClick={handleReset}
-            type="reset"
-          />
-          <ButtonLoader name={t("Submit")}
-          onClick={() => handleSubmit(hanldeCreate)()}
-          type="submit"
-          loading={loading}
-          disableOnLoading
-        >
-          {t("Submit")}
-        </ButtonLoader>
+          <ButtonAction name={t("Reset")} onClick={handleReset} type="reset" />
+          <ButtonLoader
+            name={t("Submit")}
+            onClick={() => handleSubmit(hanldeCreate)()}
+            type="submit"
+            loading={loading}
+            disableOnLoading
+          >
+            {t("Submit")}
+          </ButtonLoader>
         </Box>
       </BoxStyled>
     </Box>
