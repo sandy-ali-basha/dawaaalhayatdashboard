@@ -11,10 +11,10 @@ import {
   import React, { useState } from "react";
   import { useTranslation } from "react-i18next";
   import { useChangeStatus } from "../hooks/useChangeStatus";
-  import { useProduct_opt_val } from "hooks/product_opt_val/useProduct_opt_val";
+  import { useProduct_medicalForm } from "hooks/Product_medicalForm/useProduct_medicalForm";
   const ChangeStatus = ({ id, children, action }) => {
     const { t } = useTranslation("index")
-    const { refetch } = useProduct_opt_val()
+    const { refetch } = useProduct_medicalForm()
     const changeStatus = useChangeStatus({ id: id, is_blocked: action });
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = React.useState(false);

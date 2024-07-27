@@ -19,17 +19,15 @@ import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import ChangeStatus from "../components/ChangeStatus";
-import { useProduct_opt_val } from "hooks/product_opt_val/useProduct_opt_val";
+import { useProduct_medicalForm } from "hooks/Product_medicalForm/useProduct_medicalForm";
 import DeleteDialog from "../components/Dialog";
-import { useQuery } from "react-query";
 import { _axios } from "interceptor/http-config";
 
-const Product_opt_valIndex = () => {
+const Product_medicalFormIndex = () => {
   const { t } = useTranslation("index");
 
   const params = useParams();
-  const { data, page, setPage, isLoading, count } = useProduct_opt_val(
+  const { data, page, setPage, isLoading, count } = useProduct_medicalForm(
     params.id
   );
 
@@ -42,7 +40,7 @@ const Product_opt_valIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t("name"), t("status"), t("operations")];
+    return [t("name"), t("operations")];
   }, [t]);
 
   const handleView = useCallback(
@@ -52,53 +50,57 @@ const Product_opt_valIndex = () => {
     [navigate]
   );
   const rows = useMemo(() => {
-    // return data?.data?.map((product_opt_val, id) => (
-    //   <TableRow sx={{ height: "65px" }} key={product_opt_val.id}>
-    //     <TableCell sx={{ minWidth: 50 }}>
-    //       {product_opt_val?.name ?? "Null"}
-    //     </TableCell>
-    //     <TableCell
-    //       align="center"
-    //       sx={{
-    //         minWidth: 200,
-    //       }}
-    //     >
-    //       <IconButton>
-    //         <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-    //           <DeleteDialog
-    //             id={product_opt_val?.id}
-    //             count={count}
-    //             page={page}
-    //           />
-    //         </Tooltip>
-    //       </IconButton>
-    //       <IconButton onClick={() => handleView(product_opt_val.id)}>
-    //         <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
-    //           <VisibilityTwoToneIcon color="primary" />
-    //         </Tooltip>
-    //       </IconButton>
-    //     </TableCell>
-    //   </TableRow>
-    // ));
+    return data?.data?.product_options_values?.map(
+      (Product_medicalForm, id) => (
+        <TableRow sx={{ height: "65px" }} key={Product_medicalForm.id}>
+          <TableCell sx={{ minWidth: 50 }}>
+            {Product_medicalForm?.name ?? "Null"}
+          </TableCell>
+
+          <TableCell sx={{ minWidth: 50 }}>
+            {Product_medicalForm?.translations
+              ? Product_medicalForm?.translations[0]?.name
+              : "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {Product_medicalForm?.translations
+              ? Product_medicalForm?.translations[1]?.name
+              : "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {Product_medicalForm?.translations
+              ? Product_medicalForm?.translations[2]?.name
+              : "Null"}
+          </TableCell>
+
+          <TableCell
+            align="center"
+            sx={{
+              minWidth: 200,
+            }}
+          >
+            <IconButton>
+              <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
+                <DeleteDialog
+                  id={Product_medicalForm?.id}
+                  count={count}
+                  page={page}
+                />
+              </Tooltip>
+            </IconButton>
+            {/* <IconButton onClick={() => handleView(Product_medicalForm.id)}>
+              <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
+                <VisibilityTwoToneIcon color="primary" />
+              </Tooltip>
+            </IconButton> */}
+          </TableCell>
+        </TableRow>
+      )
+    );
   }, [data, count, direction, handleView, page, t]);
 
   const handleCreate = () => navigate("create");
-  const { data: option_data, error } = useQuery(
-    ["product_options", "id-" + params.id],
-    async () => {
-      return await _axios
-        .get("/product_options/" + params.id, {
-          headers: {
-            translations: "yes",
-          },
-        })
-        .then((res) => res?.data?.data);
-    },
-    {
-      enabled: !!params.id, // Ensure the query only runs if params.id is not null
-    }
-  );
-  console.log("option_data", option_data);
+
   return (
     <>
       {isLoading && <Loader />}
@@ -118,19 +120,8 @@ const Product_opt_valIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            product option values
+            medical Forms
           </Typography>
-          <Box display="flex">
-            <Typography sx={{ mx: 2 }} variant="body1" color="text.primary">
-              Arabic :{option_data?.translations[0].name}
-            </Typography>
-            <Typography sx={{ mx: 2 }} variant="body1" color="text.primary">
-              English :{option_data?.translations[1].name}
-            </Typography>
-            <Typography sx={{ mx: 2 }} variant="body1" color="text.primary">
-              Kurdish :{option_data?.translations[2].name}
-            </Typography>
-          </Box>
           <Button
             startIcon={<AddIcon />}
             sx={{
@@ -140,7 +131,7 @@ const Product_opt_valIndex = () => {
             }}
             onClick={handleCreate}
           >
-            new value
+            new medical form
           </Button>
         </Box>
 
@@ -158,4 +149,4 @@ const Product_opt_valIndex = () => {
   );
 };
 
-export default Product_opt_valIndex;
+export default Product_medicalFormIndex;

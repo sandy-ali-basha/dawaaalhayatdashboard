@@ -109,7 +109,7 @@ const Product_typeIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("product_type")}
+            {t("product types")}
           </Typography>
 
           <Button
@@ -121,7 +121,7 @@ const Product_typeIndex = () => {
             }}
             onClick={handleCreate}
           >
-            {t("New product_type")}
+            {t("New product type")}
           </Button>
         </Box>
 

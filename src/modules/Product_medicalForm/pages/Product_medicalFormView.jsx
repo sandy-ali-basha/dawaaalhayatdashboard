@@ -8,7 +8,7 @@ import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { settingsStore } from "store/settingsStore";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
-const Product_opt_valView = () => {
+const Product_medicalFormView = () => {
   const { t } = useTranslation("index");
   const [direction] = settingsStore((state) => [state.direction]);
   const params = useParams();
@@ -20,7 +20,7 @@ const Product_opt_valView = () => {
   };
 
   const { data, isLoading } = useQuery(
-    ["product_opt_val", "id-" + params.id],
+    ["Product_medicalForm", "id-" + params.id],
     async () => {
       return await _axios
         .get("/product_options/" + params.id, {
@@ -141,4 +141,4 @@ const Product_opt_valView = () => {
   );
 };
 
-export default Product_opt_valView;
+export default Product_medicalFormView;

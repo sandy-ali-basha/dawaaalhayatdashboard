@@ -1,10 +1,10 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-const product_opt_valComponent = () => {
+const Product_medicalFormComponent = () => {
   return (
     <>
       <Outlet />
     </>
   );
 };
-export default product_opt_valComponent
+export default Product_medicalFormComponent

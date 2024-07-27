@@ -11,19 +11,19 @@ import Loader from "components/shared/Loader";
 import { Tooltip } from "@mui/material";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
-import { useDeleteProduct_opt_val } from "hooks/product_opt_val/useDeleteProduct_opt_val";
-import { useProduct_opt_val } from "hooks/product_opt_val/useProduct_opt_val";
+import { useDeleteProduct_medicalForm } from "hooks/Product_medicalForm/useDeleteProduct_medicalForm";
+import { useProduct_medicalForm } from "hooks/Product_medicalForm/useProduct_medicalForm";
 const DeleteDialog = ({ id, page, count }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const deleteproduct_opt_val = useDeleteProduct_opt_val({ page, count });
+  const deleteProduct_medicalForm = useDeleteProduct_medicalForm({ page, count });
   const handleClickOpen = (e) => setOpen(true)
   const handleClose = () => setOpen(false)
-  const { refetch } = useProduct_opt_val();
-  const DeleteProduct_opt_val = () => {
+  const { refetch } = useProduct_medicalForm();
+  const DeleteProduct_medicalForm = () => {
     setLoading(true);
-    deleteproduct_opt_val.mutate(id, {
+    deleteProduct_medicalForm.mutate(id, {
       onSuccess: () => {
         setOpen(false);
         refetch()
@@ -64,7 +64,7 @@ const DeleteDialog = ({ id, page, count }) => {
         <DialogActions>
           <Button onClick={handleClose}>{t('Disagree')}</Button>
           {loading && <Loader />}
-          <Button autoFocus sx={{}} variant="contained" onClick={DeleteProduct_opt_val}>
+          <Button autoFocus sx={{}} variant="contained" onClick={DeleteProduct_medicalForm}>
             {t("Agree")}
           </Button>
         </DialogActions>

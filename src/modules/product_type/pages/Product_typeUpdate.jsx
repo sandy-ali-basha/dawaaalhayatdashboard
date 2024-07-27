@@ -98,7 +98,7 @@ const Product_typeUpdate = ({ id }) => {
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
         <DialogTitle sx={{ color: "primary.main" }}>
-          {t("Edit Row")}
+          {t("Edit product type")}
         </DialogTitle>
         {!!data && (
           <>

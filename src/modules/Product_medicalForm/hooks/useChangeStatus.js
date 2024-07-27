@@ -3,23 +3,23 @@ import { useQueryClient, useMutation } from "react-query";
 export const useChangeStatus = ({ status, id }) => {
   const queryClient = useQueryClient();
   return useMutation(
-    () => _axios.get('/product_opt_val/change-status/'+ id),
+    () => _axios.get('/Product_medicalForm/change-status/'+ id),
     {
       onMutate: async (id) => {
-        await queryClient.cancelQueries(["product_opt_val", true, 1, 10]);
+        await queryClient.cancelQueries(["Product_medicalForm", true, 1, 10]);
         const previousData = queryClient.getQueriesData([
-          "product_opt_val",
+          "Product_medicalForm",
           true,
           1,
           10,
         ]);
         queryClient.setQueryData(
-          ["product_opt_val", true, 1, 10],
+          ["Product_medicalForm", true, 1, 10],
           (oldQueryData) => {
-            const oldQueryDataCopy = oldQueryData?.product_opt_vals?.filter(
+            const oldQueryDataCopy = oldQueryData?.Product_medicalForms?.filter(
               (old) => +old.id !== +id
             )[0];
-            const queryUpdated = oldQueryData?.product_opt_vals?.filter(
+            const queryUpdated = oldQueryData?.Product_medicalForms?.filter(
               (old) => +old.id === +id
             )[0];
 
@@ -37,11 +37,11 @@ export const useChangeStatus = ({ status, id }) => {
         };
       },
       onSuccess: () => {
-        return queryClient.invalidateQueries(["product_opt_val", true, 1, 10]);
+        return queryClient.invalidateQueries(["Product_medicalForm", true, 1, 10]);
       },
       onError: (_error, _hero, context) => {
         queryClient.setQueryData(
-          ["product_opt_val", true, 1, 10],
+          ["Product_medicalForm", true, 1, 10],
           context.prevuiosQuery
         );
       },

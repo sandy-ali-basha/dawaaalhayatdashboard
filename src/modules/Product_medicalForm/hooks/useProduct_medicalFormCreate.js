@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { _Product_opt_val } from "api/product_opt_val/product_opt_val";
+import { _Product_medicalForm } from "api/Product_medicalForm/Product_medicalForm";
 
 const schema = yup.object().shape({
   kr: yup.object().shape({
@@ -19,7 +19,7 @@ const schema = yup.object().shape({
   }),
 });
 
-export const useProduct_opt_valCreate = () => {
+export const useProduct_medicalFormCreate = () => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export const useProduct_opt_valCreate = () => {
   const params = useParams();
 
   async function createPost(data) {
-    _Product_opt_val
+    _Product_medicalForm
       .post(data, params.id, setLoading)
       .then((res) => {
         if (res.success) navigate(-1);

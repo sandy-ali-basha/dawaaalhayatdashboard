@@ -4,9 +4,9 @@ import { TextFieldStyled } from "components/styled/TextField";
 import React from "react";
 import Loader from "components/shared/Loader";
 import ButtonAction from "components/shared/ButtonAction";
-import { useProduct_opt_valCreate } from "../hooks/useProduct_opt_valCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
-const Product_opt_valCreate = () => {
+import { useProduct_medicalFormCreate } from "../hooks/useProduct_medicalFormCreate";
+const Product_medicalFormCreate = () => {
   const {
     handleCancel,
     hanldeCreate,
@@ -17,13 +17,13 @@ const Product_opt_valCreate = () => {
     t,
     errors,
     details,
-  } = useProduct_opt_valCreate();
+  } = useProduct_medicalFormCreate();
 
   return (
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Product_opt_val")}
+        {t("Create Product_medicalForm")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
@@ -97,4 +97,4 @@ const Product_opt_valCreate = () => {
   );
 };
 
-export default Product_opt_valCreate;
+export default Product_medicalFormCreate;

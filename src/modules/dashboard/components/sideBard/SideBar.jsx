@@ -66,8 +66,8 @@ const SideBar = ({ open, setOpen }) => {
       icon: <Shop />,
       subOptions: [
         { name: t("Products"), link: "/dashboard/product" },
-        { name: t("product type"), link: "/dashboard/product_type" },
-        { name: t("product options"), link: "/dashboard/Product_options" },
+        { name: t("product types"), link: "/dashboard/product_type" },
+        { name: t("Medical Forms"), link: "/dashboard/medical_forms/1" },
       ],
     },
     {
