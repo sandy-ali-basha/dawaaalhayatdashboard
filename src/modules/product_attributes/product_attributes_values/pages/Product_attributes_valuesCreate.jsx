@@ -4,9 +4,9 @@ import { TextFieldStyled } from "components/styled/TextField";
 import React from "react";
 import Loader from "components/shared/Loader";
 import ButtonAction from "components/shared/ButtonAction";
-import { useProduct_typeCreate } from "../hooks/useProduct_typeCreate";
+import { useProduct_attributes_valuesCreate } from "../hooks/useProduct_attributes_valuesCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
-const Product_typeCreate = () => {
+const Product_attributes_valuesCreate = () => {
   const {
     handleCancel,
     hanldeCreate,
@@ -17,37 +17,37 @@ const Product_typeCreate = () => {
     t,
     errors,
     details,
-  } = useProduct_typeCreate()
+  } = useProduct_attributes_valuesCreate()
+
 
   return (
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Product_type}")}
+        {t("Create Product_attributes_values}")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
           <Grid  container spacing={2}>
-            {/* //* details */}
-            {details?.map((item, index) => {
-                const error = errors?.[item.register.split(".")[0]]?.name;
-                return (
-                  <Grid key={index} item md={6} sx={{ p: "10px" }}>
-                    <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography  variant="body1" color="text.main">{item.head}</Typography>
-                    </Box>
-                    <TextFieldStyled
-                      sx={{ width: "100%" }}
-                      type={item.type}
-                      placeholder={item.placeholder}
-                      name={item.register}
-                      {...register(item.register)}
-                      error={!!error}
-                      helperText={error?.message || ""}
-                    />
-                  </Grid>
-                );
-              })}
+            {/* * //details */}
+            {details.map((item, index) => (
+              <Grid item key={index} xs={6} sx={{ p: "10px" }}>
+                <Box sx={{ margin: "0 0 8px 5px" }}>
+                  <Typography  variant="body1" color="text.main">{item.head}</Typography>
+                </Box>
+                <TextFieldStyled
+                  sx={{ width: "100%" }}
+                  type={item.type}
+                  placeholder={item.placeholder}
+                  name={item.name}
+                  {...register(item.register)}
+                  error={errors[item.error]?.message}
+                  helperText={errors[item.helperText]?.message || ""}
+                />
+              </Grid>
+            ))}
+
+          
           </Grid>
         </Box>
 
@@ -92,4 +92,4 @@ const Product_typeCreate = () => {
   );
 };
 
-export default Product_typeCreate;
+export default Product_attributes_valuesCreate;

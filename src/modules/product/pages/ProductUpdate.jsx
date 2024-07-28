@@ -240,7 +240,7 @@ const ProductUpdate = ({ id }) => {
                 return (
                   <Grid key={index} item md={12} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography variant="body1">{item.head}</Typography>
+                      <Typography  variant="body1" color="text.main">{item.head}</Typography>
                     </Box>
                     <EditorInput
                       control={control}

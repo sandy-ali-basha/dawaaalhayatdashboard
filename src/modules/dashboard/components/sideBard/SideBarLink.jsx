@@ -26,7 +26,7 @@ const SideBarLink = (props) => {
 
   return (
     <ButtonSideBarStyled variant="contained" fullWidth active={props.active}>
-      <Typography variant="body1">{props.text}</Typography>
+      <Typography  variant="body1" color="text.main">{props.text}</Typography>
     </ButtonSideBarStyled>
   );
 };

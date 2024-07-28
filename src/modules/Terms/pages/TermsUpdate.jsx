@@ -49,7 +49,11 @@ const TermsUpdate = () => {
     state.setEditedID,
   ]);
   useEffect(() => {
-    _axios.get("/terms/" + editedID).then((res) => {
+    _axios.get("/terms/" + editedID,{
+      headers:{
+        with_translations:true
+      }
+    }).then((res) => {
       setData(res.data);
     });
   }, [editedID]);
@@ -111,6 +115,7 @@ const TermsUpdate = () => {
                   {...register(`ar.name`)}
                   error={!!errors.ar?.name}
                   helperText={errors.ar?.name?.message || ""}
+                  // initialValue={data?.}
                 />
               </Grid>
               <Grid item xs={12} sx={{ p: "10px" }}>

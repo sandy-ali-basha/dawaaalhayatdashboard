@@ -66,8 +66,8 @@ const SideBar = ({ open, setOpen }) => {
       icon: <Shop />,
       subOptions: [
         { name: t("Products"), link: "/dashboard/product" },
-        { name: t("product types"), link: "/dashboard/product_type" },
         { name: t("Medical Forms"), link: "/dashboard/medical_forms/1" },
+        { name: t("categories"), link: "/dashboard/products/categories" },
       ],
     },
     {
@@ -129,7 +129,11 @@ const SideBar = ({ open, setOpen }) => {
                     <ExpandMoreIcon />
                   )}
                 </Box>
-                <Collapse in={openSections[link.name]} timeout="auto" unmountOnExit>
+                <Collapse
+                  in={openSections[link.name]}
+                  timeout="auto"
+                  unmountOnExit
+                >
                   {link.subOptions.map((subOption, subIndex) => (
                     <NavLink to={subOption.link} key={subIndex}>
                       {({ isActive }) => (
