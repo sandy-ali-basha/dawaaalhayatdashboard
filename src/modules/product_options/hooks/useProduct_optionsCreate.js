@@ -54,9 +54,9 @@ export const useProduct_optionsCreate = () => {
     setLoading(true);
   }
   const languages = [
-    { code: "ar", name: "Arabic" },
-    { code: "en", name: "English" },
+  { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
+    { code: "en", name: "English" },
   ];
 
   const details = languages.map((lang, index) => ({

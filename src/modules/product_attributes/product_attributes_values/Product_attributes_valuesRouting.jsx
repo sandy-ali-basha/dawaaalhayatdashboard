@@ -15,7 +15,7 @@ const Product_attributes_valuesRouting = () => {
           element={<Product_attributes_valuesUpdate />}
         />
         <Route
-          path="/create/:id"
+          path=":id/create"
           element={<Product_attributes_valuesCreate />}
         />
       </Route>

@@ -20,6 +20,7 @@ import { colorStore } from "store/ColorsStore";
 import { useProduct_attributes } from "hooks/product_attributes/useProduct_attributes";
 import Product_attributesUpdate from "./Product_attributesUpdate";
 import DeleteDialog from "../components/Dialog";
+import { ViewAgendaRounded } from "@mui/icons-material";
 
 const Product_attributesIndex = () => {
   const { t } = useTranslation("index");
@@ -36,8 +37,8 @@ const Product_attributesIndex = () => {
   const columns = useMemo(() => {
     return [
       t("title arabic"),
-      t("title english"),
       t("title kurdish"),
+      t("title english"),
       t("operations"),
     ];
   }, [t]);
@@ -59,14 +60,15 @@ const Product_attributesIndex = () => {
     return data?.data?.product_attributes?.map((product_attributes, id) => (
       <TableRow sx={{ height: "65px" }} key={product_attributes.id}>
         {/* //todo add translation */}
+
         <TableCell sx={{ minWidth: 50 }}>
-          {product_attributes?.title ?? "Null"}
+          {product_attributes?.translations[0]?.value ?? "Null"}
         </TableCell>
         <TableCell sx={{ minWidth: 50 }}>
-          {product_attributes?.title ?? "Null"}
+          {product_attributes?.translations[1]?.value ?? "Null"}
         </TableCell>
         <TableCell sx={{ minWidth: 50 }}>
-          {product_attributes?.title ?? "Null"}
+          {product_attributes?.translations[2]?.value ?? "Null"}
         </TableCell>
         {/* <TableCell sx={{ minWidth: 120 }} align="center">
           <ChangeStatus
@@ -98,7 +100,14 @@ const Product_attributesIndex = () => {
               />
             </Tooltip>
           </IconButton>
-          <Link to={`values/${product_attributes?.id}`}>values</Link>
+          <IconButton>
+            <Tooltip title={"show values"}>
+              <Link to={`values/${product_attributes?.id}`}>
+                {" "}
+                <ViewAgendaRounded sx={{ color: "text.main" }} />
+              </Link>
+            </Tooltip>
+          </IconButton>
         </TableCell>
       </TableRow>
     ));

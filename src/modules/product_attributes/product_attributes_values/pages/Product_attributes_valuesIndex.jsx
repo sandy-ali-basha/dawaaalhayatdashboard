@@ -38,7 +38,12 @@ const Product_attributes_valuesIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t("value"), t("operations")];
+    return [
+      t("value arabic"),
+      t("value kurdish"),
+      t("value english"),
+      t("operations"),
+    ];
   }, [t]);
 
   const handleView = useCallback(
@@ -63,7 +68,13 @@ const Product_attributes_valuesIndex = () => {
           hover
         >
           <TableCell sx={{ minWidth: 50 }}>
-            {product_attributes_values?.value ?? "Null"}
+            {product_attributes_values?.translations[0]?.value ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {product_attributes_values?.translations[1]?.value ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {product_attributes_values?.translations[2]?.value ?? "Null"}
           </TableCell>
           {/* <TableCell sx={{ minWidth: 120 }} align="center">
             <ChangeStatus

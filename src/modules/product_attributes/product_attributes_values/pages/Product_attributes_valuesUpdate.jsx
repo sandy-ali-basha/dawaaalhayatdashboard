@@ -49,24 +49,24 @@ const Product_attributes_valuesUpdate = ({ id }) => {
         },
       })
       .then((res) => {
-        // setData(res.data?.product_attributes_values);
         setData(res.data?.data);
       });
   }, [id, editedID]);
-  console.log(data);
+
   const languages = [
     { code: "ar", name: "Arabic" },
-    { code: "en", name: "English" },
     { code: "kr", name: "Kurdish" },
+    { code: "en", name: "English" },
   ];
 
   const details = languages.map((lang, index) => ({
-    head: t("name" + lang.name.toLowerCase()),
+    head: t("value name" + lang.name.toLowerCase()),
     type: "text",
     placeholder: t("name"),
     register: lang.code + ".name",
     defaultValue: data?.translations[index]?.value,
   }));
+
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
@@ -92,7 +92,13 @@ const Product_attributes_valuesUpdate = ({ id }) => {
   }
 
   const hanldeUpdate = (input) => {
-    mutate(input);
+    const Values = {
+      ar: { value: input.ar.name },
+      kr: { value: input.kr.name },
+      en: { value: input.en.name },
+      // product_attributes_id: params.id,
+    };
+    mutate(Values);
     setLoading(true);
   };
 
@@ -108,6 +114,7 @@ const Product_attributes_valuesUpdate = ({ id }) => {
             <Grid container component="form" key={id}>
               {details?.map((item, index) => {
                 const error = errors?.[item.register.split(".")[0]]?.name;
+                console.log(error);
                 return (
                   <Grid key={index} item md={6} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>

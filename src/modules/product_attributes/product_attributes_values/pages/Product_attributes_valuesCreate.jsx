@@ -17,39 +17,39 @@ const Product_attributes_valuesCreate = () => {
     t,
     errors,
     details,
-  } = useProduct_attributes_valuesCreate()
-
+  } = useProduct_attributes_valuesCreate();
 
   return (
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Product_attributes_values}")}
+        {t("Create Product_attributes_values")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
-        <Box component="form">
-          <Grid  container spacing={2}>
-            {/* * //details */}
-            {details.map((item, index) => (
-              <Grid item key={index} xs={6} sx={{ p: "10px" }}>
+        <Grid container component="form">
+          {details?.map((item, index) => {
+            const error = errors?.[item.register.split(".")[0]]?.name;
+
+            return (
+              <Grid key={index} item md={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography  variant="body1" color="text.main">{item.head}</Typography>
+                  <Typography variant="body1" color="text.main">
+                    {item.head}
+                  </Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
                   type={item.type}
                   placeholder={item.placeholder}
-                  name={item.name}
+                  name={item.register}
                   {...register(item.register)}
-                  error={errors[item.error]?.message}
-                  helperText={errors[item.helperText]?.message || ""}
+                  error={!!error}
+                  helperText={error?.message || ""}
                 />
               </Grid>
-            ))}
-
-          
-          </Grid>
-        </Box>
+            );
+          })}
+        </Grid>
 
         <Box
           sx={{
@@ -73,19 +73,16 @@ const Product_attributes_valuesCreate = () => {
           >
             {t("Cancel")}
           </Button>
-          <ButtonAction
-            name={t("Reset")}
-            onClick={handleReset}
-            type="reset"
-          />
-          <ButtonLoader name={t("Submit")}
-          onClick={() => handleSubmit(hanldeCreate)()}
-          type="submit"
-          loading={loading}
-          disableOnLoading
-        >
-          {t("Submit")}
-        </ButtonLoader>
+          <ButtonAction name={t("Reset")} onClick={handleReset} type="reset" />
+          <ButtonLoader
+            name={t("Submit")}
+            onClick={() => handleSubmit(hanldeCreate)()}
+            type="submit"
+            loading={loading}
+            disableOnLoading
+          >
+            {t("Submit")}
+          </ButtonLoader>
         </Box>
       </BoxStyled>
     </Box>
