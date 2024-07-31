@@ -1,5 +1,4 @@
-
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import ButtonAction from "components/shared/ButtonAction";
 import Loader from "components/shared/Loader";
 import { _axios } from "interceptor/http-config";
@@ -18,137 +17,167 @@ const ProductView = () => {
   const handleBack = (e) => {
     e.preventDefault();
     navigate(-1);
-  }
+  };
 
   const { data, isLoading } = useQuery(
-    ["product", 'id-'+ params.id],
-  async () => {
-    return await _axios
-      .get('/product/' + params.id)
-      .then((res) => res.data?.products);
-  },
+    ["product", "id-" + params.id],
+    async () => {
+      return await _axios
+        .get("/product/" + params.id, {
+          headers: {
+            translations: "true",
+          },
+        })
+        .then((res) => res.data?.data);
+    },
     {}
-  )
+  );
+  console.log(data);
+  const columns = [
+    { head: t("name english"), value: data?.translations[0]?.name },
+    { head: t("name arabic"), value: data?.translations[1]?.name },
+    { head: t("name kurdish"), value: data?.translations[2]?.name },
+    { head: t("description"), value: data?.description },
 
-const columns = [
-  { head: t("first name"), value: data?.first_name },
-];
+    { head: t("brand"), value: data?.brand.name },
+    { head: t("product type"), value: data?.product_type.name },
+    { head: t("status"), value: data?.status },
+    { head: t("sku"), value: data?.sku },
+  ];
+  const disc = [
+    {
+      head: t("description english"),
+      value: data?.translations[0]?.description,
+    },
+    {
+      head: t("description arabic"),
+      value: data?.translations[1]?.description,
+    },
+    {
+      head: t("description kurdish"),
+      value: data?.translations[2]?.description,
+    },
+  ];
 
-return (
-  <>
-    {isLoading && <Loader />}
-    {!!data && (
-      <div>
-        <Typography
-          sx={{
-            backgroundColor: "card.main",
-            borderRadius: "5px",
-            color: 'primary.main',
-            width: "40%",
-            marginInline: 'auto',
-            height: "100%",
-            textTransform: "uppercase",
-            padding: '10px 20px',
-            textAlign: 'center'
-          }}
-          variant="h5"
-        >
-          {data.first_name}
-        </Typography>
-        <Box
-          key={params.id}
-          sx={{
-            display: "flex",
-            color: "lightGray.main",
-            columnGap: 10,
-            marginTop: "4%",
-            justifyContent: "center",
-          }}
-        >
+  return (
+    <>
+      {isLoading && <Loader />}
+      {!!data && (
+        <div>
+          <Typography
+            sx={{
+              backgroundColor: "card.main",
+              borderRadius: "5px",
+              color: "text.main",
+              width: "40%",
+              marginInline: "auto",
+              height: "100%",
+              textTransform: "uppercase",
+              padding: "10px 20px",
+              textAlign: "center",
+            }}
+            variant="h5"
+          >
+            {data?.name}
+          </Typography>
           <Box
-            hover
+            key={params.id}
             sx={{
               display: "flex",
-              justifyContent: 'center',
               color: "text.main",
-              height: "100%",
-              flexWrap: 'wrap',
-              columnGap: 2,
+              columnGap: 10,
+              marginTop: "2%",
+              justifyContent: "center",
             }}
           >
             <Box
               sx={{
-                width: "70%",
                 backgroundColor: "card.main",
                 borderRadius: "5px",
-                padding: '20px'
+                padding: "20px",
+                width: "-webkit-fill-available",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  rowGap: 2.1,
-                }}
-              >
-                <h3>
-                  {t("Details")}
-                </h3>
-                <Box sx={{
-                  display: 'flex',
-                  width: '100%',
-                  flexWrap: "wrap",
-                }}>
-                  {columns?.map((item, index, id) => (
-                    <Box
-                      key={id}
-                      sx={{
-                        display: "flex",
-                        pl: "10px",
-                        width: "50%",
-                        my: '5px'
+              <Grid container>
+                <Grid item md={6}>
+                  <Box>
+                    <h3>{t("Details")}</h3>
+
+                    {columns?.map((item, index, id) => (
+                      <Box key={id}>
+                        <Typography
+                          variant="p"
+                          sx={{
+                            fontWeight: "700",
+                            marginInlineEnd: "15px",
+                          }}
+                        >
+                          {item.head}:
+                        </Typography>
+                        <Typography variant="p">
+                          {typeof item?.value === "object"
+                            ? JSON.stringify(item?.value)
+                            : item?.value ?? "null"}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Grid>
+                <Grid item md={6}>
+                  {data?.images?.map((item, idx) => (
+                    <img
+                      style={{
+                        margin: "5px",
+                        width: "20vw",
+                        border: "1px solid #ddd",
+                        height: "30vh",
+                        objectFit: "contain",
                       }}
-                    >
+                      key={idx}
+                      sec={item}
+                    />
+                  ))}
+                </Grid>
+                <Grid item md={12}>
+                  {disc?.map((item, index, id) => (
+                    <Box key={id} mt={3}>
                       <Typography
                         variant="p"
                         sx={{
                           fontWeight: "700",
-                          fontSize: "15px",
                           marginInlineEnd: "15px",
                         }}
                       >
                         {item.head}:
                       </Typography>
-                      <Typography variant="p">
-                        {typeof item?.value === "object"
-                          ? JSON.stringify(item?.value)
-                          : item?.value ?? "null"}
-                      </Typography>
+                      <Typography
+                        variant="p"
+                        dangerouslySetInnerHTML={{ __html: item?.value }}
+                      ></Typography>
                     </Box>
                   ))}
-                </Box>
-              </Box>
+                </Grid>
+              </Grid>
             </Box>
           </Box>
-        </Box>
-      </div>
-    )}
+        </div>
+      )}
 
-    <div
-      style={{
-        minWidth: "200px",
-        float: direction === "ltr" ? "right" : "left",
-        marginTop: "20px",
-      }}
-    >
-      <ButtonAction
-        name={t("Back")}
-        onClick={handleBack}
-        endIcon={direction === "ltr" ? <ArrowForward /> : <ArrowBack />}
-      />
-    </div>
-  </>
-);
+      <div
+        style={{
+          minWidth: "200px",
+          float: direction === "ltr" ? "right" : "left",
+          marginTop: "20px",
+        }}
+      >
+        <ButtonAction
+          name={t("Back")}
+          onClick={handleBack}
+          endIcon={direction === "ltr" ? <ArrowForward /> : <ArrowBack />}
+        />
+      </div>
+    </>
+  );
 };
 
 export default ProductView;

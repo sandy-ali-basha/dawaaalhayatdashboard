@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { _Product_attributes_values } from "api/product_attributes_values/product_attributes_values";
 
@@ -17,8 +17,17 @@ export const useProduct_attributes_values = (id) => {
           count,
           id,
         })
-        .then((res) => res)
+        .then((res) => res),
+    {
+      enabled: !!id, // The query will only run if id is defined and truthy
+    }
   );
+
+  useEffect(() => {
+    if (id) {
+      refetch(); // Manually trigger a refetch when id changes
+    }
+  }, [id, refetch]);
 
   return {
     data,

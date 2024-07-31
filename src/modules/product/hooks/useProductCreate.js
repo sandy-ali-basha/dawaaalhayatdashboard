@@ -10,7 +10,7 @@ import { _axios } from "interceptor/http-config";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
-  product_type_id: yup.string().trim().required("product type is required"),
+  // product_type_id: yup.string().trim().required("product type is required"),
   status: yup.string().trim().required("status type is required"),
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
@@ -53,7 +53,7 @@ export const useProductCreate = () => {
     _Product
       .post(data, setLoading)
       .then((res) => {
-        if (res.success) navigate(-1);
+        if (res.data.code === 200) navigate(-1);
         setLoading(true);
       })
       .finally(() => {
@@ -70,15 +70,7 @@ export const useProductCreate = () => {
       error: "ar.name",
       helperText: "ar.name",
     },
-    {
-      head: t("arabic description"),
-      type: "text",
-      placeholder: t("ar.description"),
-      name: "ar.description",
-      register: "ar.description",
-      error: "ar.description",
-      helperText: "ar.description",
-    },
+
     {
       head: t("english name"),
       type: "text",
@@ -88,15 +80,7 @@ export const useProductCreate = () => {
       error: "en.name",
       helperText: "en.name",
     },
-    {
-      head: t("english description"),
-      type: "text",
-      placeholder: t("en.description"),
-      name: "en.description",
-      register: "en.description",
-      error: "en.description",
-      helperText: "en.description",
-    },
+
     {
       head: t("kurdish name"),
       type: "text",
@@ -106,24 +90,7 @@ export const useProductCreate = () => {
       error: "kr.name",
       helperText: "kr.name",
     },
-    {
-      head: t("kurdish description"),
-      type: "text",
-      placeholder: t("kr.description"),
-      name: "kr.description",
-      register: "kr.description",
-      error: "kr.description",
-      helperText: "kr.description",
-    },
-    {
-      head: t("description"),
-      type: "text",
-      placeholder: t("description"),
-      name: "description",
-      register: "description",
-      error: "description",
-      helperText: "description",
-    },
+
     {
       head: t("sku"),
       type: "text",
@@ -141,6 +108,35 @@ export const useProductCreate = () => {
       register: "status",
       error: "status",
       helperText: "status",
+    },
+  ];
+  const Discription = [
+    {
+      head: t("arabic description"),
+      type: "text",
+      placeholder: t("ar.description"),
+      name: "ar.description",
+      register: "ar.description",
+      error: "ar.description",
+      helperText: "ar.description",
+    },
+    {
+      head: t("kurdish description"),
+      type: "text",
+      placeholder: t("kr.description"),
+      name: "kr.description",
+      register: "kr.description",
+      error: "kr.description",
+      helperText: "kr.description",
+    },
+    {
+      head: t("english description"),
+      type: "text",
+      placeholder: t("en.description"),
+      name: "en.description",
+      register: "en.description",
+      error: "en.description",
+      helperText: "en.description",
     },
   ];
   const handleCancel = () => navigate(-1);
@@ -170,5 +166,6 @@ export const useProductCreate = () => {
     brands,
     statuses,
     producttypes,
+    Discription,
   };
 };

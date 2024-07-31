@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
@@ -28,12 +28,21 @@ export const useProduct_attributesCreate = () => {
     useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
+  const queryClient = useQueryClient();
+
+  const handleReset = () => {
+    const form = document.querySelector("form");
+    if (form) form.reset();
+  };
 
   async function createPost(data) {
     _Product_attributes
       .post(data, setLoading)
       .then((res) => {
-        if (res.success) navigate(-1);
+        if (res.success) {
+          handleReset();
+          queryClient.invalidateQueries(["product_attributes"]);
+        }
         setLoading(true);
       })
       .finally(() => {
@@ -42,11 +51,6 @@ export const useProduct_attributesCreate = () => {
   }
 
   const handleCancel = () => navigate(-1);
-
-  const handleReset = () => {
-    const form = document.querySelector("form");
-    if (form) form.reset();
-  };
 
   const hanldeCreate = (input) => {
     mutate(input);

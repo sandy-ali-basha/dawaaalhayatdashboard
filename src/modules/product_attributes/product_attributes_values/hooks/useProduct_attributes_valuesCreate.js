@@ -24,19 +24,24 @@ export const useProduct_attributes_valuesCreate = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, setValue, control } =
+  const { register, handleSubmit, formState, setValue, control, reset } =
     useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
-
+  const handleReset = () => {
+    reset();
+  };
   async function createPost(data) {
     _Product_attributes_values
       .post(data, setLoading)
       .then((res) => {
-        console.log(res)
-        if (res.code === 200) navigate(-1);
+        console.log(res);
+        if (res.code === 200) {
+          handleReset();
+        }
         setLoading(true);
       })
+
       .finally(() => {
         setLoading(false);
       });
@@ -44,10 +49,6 @@ export const useProduct_attributes_valuesCreate = () => {
 
   const handleCancel = () => navigate(-1);
 
-  const handleReset = () => {
-    const form = document.querySelector("form");
-    if (form) form.reset();
-  };
   const params = useParams();
   const hanldeCreate = (input) => {
     const Values = {
@@ -60,7 +61,7 @@ export const useProduct_attributes_valuesCreate = () => {
     setLoading(true);
   };
   const languages = [
-  { code: "ar", name: "Arabic" },
+    { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
     { code: "en", name: "English" },
   ];

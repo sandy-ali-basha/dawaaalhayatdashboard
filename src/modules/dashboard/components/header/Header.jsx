@@ -56,7 +56,7 @@ const Header = ({ open }) => {
             }}
           >
             <Tooltip title={mode === "dark" ? "light mode" : "dark mode"}>
-              {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+              {mode === "dark" ? <LightModeIcon sx={{color:"text.main"}}/> : <DarkModeIcon sx={{color:"text.main"}}/>}
             </Tooltip>
           </IconButton>
           {/* <IconButton>

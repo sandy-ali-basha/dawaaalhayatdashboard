@@ -8,10 +8,9 @@ import {
   Button,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
@@ -19,10 +18,13 @@ import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import ChangeStatus from "../components/ChangeStatus";
 import { useProduct } from "hooks/product/useProduct";
 import ProductUpdate from "./ProductUpdate";
 import DeleteDialog from "../components/Dialog";
+import AddImages from "./AddImages";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import ProductAttr from "./ProductAttr";
+import LinkIcon from "@mui/icons-material/Link";
 
 const ProductIndex = () => {
   const { t } = useTranslation("index");
@@ -30,6 +32,7 @@ const ProductIndex = () => {
 
   const navigate = useNavigate();
   const [direction] = settingsStore((state) => [state.direction]);
+  const [id, setID] = useState();
 
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
@@ -46,6 +49,10 @@ const ProductIndex = () => {
       t("operations"),
     ];
   }, [t]);
+  const handleCreate = () => navigate("create");
+
+  const [open, setOpen] = useState(false);
+  const [openAttr, setOpenAttr] = useState(false);
 
   const handleView = useCallback(
     (id) => {
@@ -59,6 +66,20 @@ const ProductIndex = () => {
     },
     [setEditedID]
   );
+  const handleAddImages = useCallback(
+    (id) => {
+      setID(id);
+      setOpen(true);
+    },
+    [setEditedID]
+  );
+  const handleCat = useCallback(
+    (id) => {
+      setID(id);
+      setOpenAttr(true);
+    },
+    [setEditedID]
+  );
 
   const rows = useMemo(() => {
     return data?.data?.products?.map((product, id) => (
@@ -66,26 +87,13 @@ const ProductIndex = () => {
         <TableCell sx={{ minWidth: 50 }}>
           {product?.brand_id ?? "Null"}
         </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {product?.sku ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {product?.name ?? "Null"}
-        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>{product?.sku ?? "Null"}</TableCell>
+        <TableCell sx={{ minWidth: 50 }}>{product?.name ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {product?.description ?? "Null"}
         </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {product?.status ?? "Null"}
-        </TableCell>
-        {/* <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus
-            id={product.id}
-            action={product.status === "active" && "change-status"}
-          >{product.status  }
-            {product.status === "Active" ? t("Active") : t("Not Active")}
-          </ChangeStatus>
-        </TableCell> */}
+        <TableCell sx={{ minWidth: 50 }}>{product?.status ?? "Null"}</TableCell>
+
         <TableCell
           align="center"
           sx={{
@@ -107,17 +115,33 @@ const ProductIndex = () => {
               <VisibilityTwoToneIcon color="primary" />
             </Tooltip>
           </IconButton>
+          <IconButton>
+            <Tooltip
+              title={"Add Images"}
+              onClick={() => handleAddImages(product?.id)}
+            >
+              <AddPhotoAlternateIcon sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
+          <IconButton>
+            <Tooltip
+              title={"link to categories"}
+              onClick={() => handleCat(product?.id)}
+            >
+              <LinkIcon sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
         </TableCell>
       </TableRow>
     ));
   }, [data, count, direction, handleEdit, handleView, page, t]);
 
-  const handleCreate = () => navigate("create");
-
   return (
     <>
       {isLoading && <Loader />}
       {editedID && <ProductUpdate id={editedID} />}
+      {id && <AddImages id={id} open={open} setOpen={setOpen} />}
+      {id && <ProductAttr id={id} open={openAttr} setOpen={setOpenAttr} />}
 
       <Box
         sx={{

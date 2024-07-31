@@ -68,6 +68,7 @@ const SideBar = ({ open, setOpen }) => {
         { name: t("Products"), link: "/dashboard/product" },
         { name: t("Medical Forms"), link: "/dashboard/medical_forms/1" },
         { name: t("categories"), link: "/dashboard/products/categories" },
+        { name: t("product type"), link: "/dashboard/product_type" },
       ],
     },
     {
@@ -124,9 +125,9 @@ const SideBar = ({ open, setOpen }) => {
                     open={open || hovered}
                   />
                   {openSections[link.name] ? (
-                    <ExpandLessIcon />
+                    <ExpandLessIcon sx={{ color: "text.main" }} />
                   ) : (
-                    <ExpandMoreIcon />
+                    <ExpandMoreIcon sx={{ color: "text.main" }} />
                   )}
                 </Box>
                 <Collapse

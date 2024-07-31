@@ -32,7 +32,7 @@ const BrandCreate = () => {
             <Grid item md={12} sx={{ p: "10px" }}>
               <Typography
                 sx={{ margin: "0 0 8px 8px" }}
-                color="text.primary"
+                color="text.main"
                 variant="body2"
               >
                 kurdish name
@@ -51,7 +51,7 @@ const BrandCreate = () => {
             <Grid item md={12} sx={{ p: "10px" }}>
               <Typography
                 sx={{ margin: "0 0 8px 8px" }}
-                color="text.primary"
+                color="text.main"
                 variant="body2"
               >
                 Arabic name
@@ -69,7 +69,7 @@ const BrandCreate = () => {
             <Grid item md={12} sx={{ p: "10px" }}>
               <Typography
                 sx={{ margin: "0 0 8px 8px" }}
-                color="text.primary"
+                color="text.main"
                 variant="body2"
               >
                 English name

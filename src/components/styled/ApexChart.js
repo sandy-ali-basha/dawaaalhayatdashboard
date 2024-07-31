@@ -16,7 +16,7 @@
 //                 background: theme.palette.background.paper
 //             },
 //             '&.apexcharts-theme-light': {
-//                 color: theme.palette.text.primary
+//                 color: theme.palette.text.main
 //             },
 //             '&.apexcharts-theme-dark': {
 //                 color: 'white'
@@ -49,7 +49,7 @@
 //             }
 //         },
 //         '& .apexcharts-xaxistooltip-text, & .apexcharts-yaxistooltip-text': {
-//             color: theme.palette.text.primary
+//             color: theme.palette.text.main
 //         },
 //         '& .apexcharts-yaxis .apexcharts-yaxis-texts-g .apexcharts-yaxis-label': {
 //             textAnchor: theme.direction === 'rtl' ? 'start' : undefined

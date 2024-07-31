@@ -95,7 +95,7 @@ const BrandUpdate = ({ id }) => {
                 <Grid key={index} item md={6} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
                     <Typography sx={{ margin: "0 0 8px 8px" }}
-                color="text.primary"
+                color="text.main"
                 variant="body2">{item.head}</Typography>
                   </Box>
                   <TextFieldStyled

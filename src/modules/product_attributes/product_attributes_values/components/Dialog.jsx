@@ -1,5 +1,4 @@
-
-  import React, { useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -16,20 +15,23 @@ import { useProduct_attributes_values } from "hooks/product_attributes_values/us
 const DeleteDialog = ({ id, page, count }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const deleteproduct_attributes_values = useDeleteProduct_attributes_values({ page, count });
-  const handleClickOpen = (e) => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const [open, setOpen] = useState(false);
+  const deleteproduct_attributes_values = useDeleteProduct_attributes_values({
+    page,
+    count,
+  });
+  const handleClickOpen = (e) => setOpen(true);
+  const handleClose = () => setOpen(false);
   const { refetch } = useProduct_attributes_values();
   const DeleteProduct_attributes_values = () => {
     setLoading(true);
     deleteproduct_attributes_values.mutate(id, {
       onSuccess: () => {
         setOpen(false);
-        refetch()
+        refetch();
       },
     });
-  }
+  };
   const { direction } = settingsStore();
   return (
     <React.Fragment>
@@ -62,9 +64,14 @@ const DeleteDialog = ({ id, page, count }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>{t('Disagree')}</Button>
+          <Button onClick={handleClose}>{t("Disagree")}</Button>
           {loading && <Loader />}
-          <Button autoFocus sx={{}} variant="contained" onClick={DeleteProduct_attributes_values}>
+          <Button
+            autoFocus
+            sx={{}}
+            variant="contained"
+            onClick={DeleteProduct_attributes_values}
+          >
             {t("Agree")}
           </Button>
         </DialogActions>

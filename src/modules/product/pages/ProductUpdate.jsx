@@ -74,7 +74,7 @@ const ProductUpdate = ({ id }) => {
   }, [id, editedID]);
 
   const languages = [
-  { code: "ar", name: "Arabic" },
+    { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
     { code: "en", name: "English" },
   ];
@@ -90,6 +90,7 @@ const ProductUpdate = ({ id }) => {
         data?.translations?.find((tr) => tr.language === lang.code)?.name || "",
     },
   ]);
+
   const TextEditorDetails = languages.flatMap((lang) => [
     {
       head: t(`description ${lang.name.toLowerCase()}`),
@@ -99,27 +100,30 @@ const ProductUpdate = ({ id }) => {
       helperText: `${lang.code}.description`,
       defaultValue:
         data?.translations?.find((tr) => tr.language === lang.code)
-          ?.description  || "",
+          ?.description || "",
     },
   ]);
 
-  details.push({
-    head: t("sku"),
-    type: "text",
-    placeholder: "sku",
-    name: "sku",
-    register: "sku",
-    error: "sku",
-    helperText: "sku",
-    defaultValue: data?.sku,
-  },{
-    head: t("status"),
-    type: "text",
-    placeholder: "status",
-    register: "status",
-    helperText: "status",
-    defaultValue: data?.status,
-  });
+  details.push(
+    {
+      head: t("sku"),
+      type: "text",
+      placeholder: "sku",
+      name: "sku",
+      register: "sku",
+      error: "sku",
+      helperText: "sku",
+      defaultValue: data?.sku,
+    },
+    {
+      head: t("status"),
+      type: "text",
+      placeholder: "status",
+      register: "status",
+      helperText: "status",
+      defaultValue: data?.status,
+    }
+  );
 
   useEffect(() => {
     _axios.get("/brand").then((res) => {
@@ -131,9 +135,17 @@ const ProductUpdate = ({ id }) => {
       setproducttypes(res?.data?.data?.producttypes);
     });
   }, []);
+
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
+  };
+
+  const handleDialogClose = (event, reason) => {
+    if (reason && reason === "backdropClick") {
+      return;
+    }
+    handleClose();
   };
 
   const { mutate } = useMutation((data) => createPost(data));
@@ -157,23 +169,23 @@ const ProductUpdate = ({ id }) => {
     mutate(input);
     setLoading(true);
   };
+  console.log(errors);
 
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={true} onClose={handleClose}>
+      <Dialog open={true} onClose={handleDialogClose}>
         <DialogTitle sx={{ color: "primary.main" }}>
           {t("Edit Row")}
         </DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
-            
               {brands && (
                 <Grid item xs={6} sx={{ p: "10px" }}>
                   <FormControl fullWidth>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography color="text.primary">{t("brand")}</Typography>
+                      <Typography color="text.main">{t("brand")}</Typography>
                     </Box>
                     <SelectStyled
                       sx={{ color: "text.main", borderColor: "text.main" }}
@@ -191,11 +203,12 @@ const ProductUpdate = ({ id }) => {
                   </FormControl>
                 </Grid>
               )}
+            
               {producttypes && (
                 <Grid item xs={6} sx={{ p: "10px" }}>
                   <FormControl fullWidth>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography color="text.primary">
+                      <Typography color="text.main">
                         {t("product type")}
                       </Typography>
                     </Box>
@@ -220,7 +233,7 @@ const ProductUpdate = ({ id }) => {
                 return (
                   <Grid key={index} item md={6} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography color="text.primary">{item.head}</Typography>
+                      <Typography color="text.main">{item.head}</Typography>
                     </Box>
                     <TextFieldStyled
                       sx={{ width: "100%" }}
@@ -240,7 +253,9 @@ const ProductUpdate = ({ id }) => {
                 return (
                   <Grid key={index} item md={12} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography  variant="body1" color="text.main">{item.head}</Typography>
+                      <Typography variant="text.main" color="text.main">
+                        {item.head}
+                      </Typography>
                     </Box>
                     <EditorInput
                       control={control}

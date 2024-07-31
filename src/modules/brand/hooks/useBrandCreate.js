@@ -50,10 +50,14 @@ export const useBrandCreate = () => {
   };
 
   const hanldeCreate = (input) => {
-
-    mutate(input);
+    const newInput = {
+      ...input,
+      name: input.en.name,
+    };
+    mutate(newInput);
     setLoading(true);
-  }
+  };
+  
 
   return {
     handleCancel,

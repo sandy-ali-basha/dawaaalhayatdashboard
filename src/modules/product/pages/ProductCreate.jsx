@@ -17,6 +17,7 @@ import Loader from "components/shared/Loader";
 import ButtonAction from "components/shared/ButtonAction";
 import { useProductCreate } from "../hooks/useProductCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
+import EditorInput from "components/shared/EditorInput";
 const ProductCreate = () => {
   const {
     handleCancel,
@@ -30,7 +31,10 @@ const ProductCreate = () => {
     details,
     brands,
     producttypes,
-    statuses
+    statuses,
+    Discription,
+    control,
+setValue
   } = useProductCreate();
 
   return (
@@ -42,12 +46,11 @@ const ProductCreate = () => {
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
           <Grid container spacing={2}>
-      
             {brands && (
               <Grid item xs={6} sx={{ p: "10px" }}>
                 <FormControl fullWidth>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.primary">{t("brand")}</Typography>
+                    <Typography color="text.main">{t("brand")}</Typography>
                   </Box>
                   <SelectStyled
                     sx={{ color: "text.main", borderColor: "text.main" }}
@@ -69,7 +72,7 @@ const ProductCreate = () => {
               <Grid item xs={6} sx={{ p: "10px" }}>
                 <FormControl fullWidth>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.primary">{t("product type")}</Typography>
+                    <Typography color="text.main">{t("product type")}</Typography>
                   </Box>
                   <SelectStyled
                     sx={{ color: "text.main", borderColor: "text.main" }}
@@ -92,7 +95,7 @@ const ProductCreate = () => {
             {details.map((item, index) => (
               <Grid item key={index} xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography color="text.primary" variant="inputTitle">{item.head}</Typography>
+                  <Typography color="text.main" variant="inputTitle">{item.head}</Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
@@ -102,6 +105,20 @@ const ProductCreate = () => {
                   {...register(item.register)}
                   error={errors[item.error]?.message}
                   helperText={errors[item.helperText]?.message || ""}
+                />
+              </Grid>
+            ))}
+            {Discription.map((item, index) => (
+              <Grid item key={index} xs={12} sx={{ p: "10px" }}>
+                <Box sx={{ margin: "0 0 8px 5px" }}>
+                  <Typography color="text.main" variant="inputTitle">{item.head}</Typography>
+                </Box>
+                <EditorInput
+                  control={control}
+                  register={register}
+                  name={item.name}
+                  setValue={setValue}
+                  errors={errors[item.helperText]?.message || ""}
                 />
               </Grid>
             ))}

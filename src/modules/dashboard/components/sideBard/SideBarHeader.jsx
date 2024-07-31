@@ -59,7 +59,7 @@ const SideBarHeader = ({ setOpen, open, hoverd }) => {
           }}
         ></Box>
       )}
-      {(open || hoverd) && (
+      {/* {(open || hoverd) && (
         <IconButton onClick={toggleOpen}>
           {theme.direction === "rtl" ? (
             <KeyboardDoubleArrowRightIcon
@@ -77,7 +77,7 @@ const SideBarHeader = ({ setOpen, open, hoverd }) => {
             />
           )}
         </IconButton>
-      )}
+      )} */}
     </DrawerHeader>
   );
 };

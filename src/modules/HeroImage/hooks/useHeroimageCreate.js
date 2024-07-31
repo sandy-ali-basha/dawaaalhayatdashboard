@@ -74,7 +74,5 @@ export const useHeroimageCreate = () => {
     control,
     setImage
   };
-
-
 };
 

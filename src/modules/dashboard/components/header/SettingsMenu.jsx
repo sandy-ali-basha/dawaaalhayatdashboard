@@ -16,11 +16,11 @@ const SettingsMenu = ({ open, hoverd }) => {
   const [direction] = settingsStore((state) => [
     state.direction,
     state.setDirection,
-  ])
+  ]);
 
   const logOut = (input) => {
-    _AuthApi.destroyToken(input)
-  }
+    _AuthApi.destroyToken(input);
+  };
 
   return (
     <React.Fragment>
@@ -40,9 +40,9 @@ const SettingsMenu = ({ open, hoverd }) => {
         >
           <Tooltip title={direction === "ltr" ? t("Logout") : t("تسجيل خروج")}>
             {mode === "dark" ? (
-              <LogoutIcon></LogoutIcon>
+              <LogoutIcon sx={{ color: "text.main" }}></LogoutIcon>
             ) : (
-              <LogoutIcon></LogoutIcon>
+              <LogoutIcon sx={{ color: "text.main" }}></LogoutIcon>
             )}
           </Tooltip>
         </IconButton>
