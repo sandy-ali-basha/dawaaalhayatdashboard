@@ -6,6 +6,7 @@ import AdminIndex from "./pages/AdminIndex";
 import AdminUpdate from "./pages/AdminUpdate";
 import AdminCreate from "./pages/AdminCreate";
 import AdminView from "./pages/AdminView";
+import NotFound from "components/NotFound";
 
 const AdminRouting = () => {
   return (
@@ -17,7 +18,7 @@ const AdminRouting = () => {
         <Route path="/create" element={<AdminCreate />} />
       </Route>
 
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import CareerscategoryComponent from "./CareerscategoryComponent";
@@ -6,6 +5,7 @@ import CareerscategoryIndex from "./pages/CareerscategoryIndex";
 import CareerscategoryUpdate from "./pages/CareerscategoryUpdate";
 import CareerscategoryView from "./pages/CareerscategoryView";
 import CareerscategoryCreate from "./pages/CareerscategoryCreate";
+import NotFound from "components/NotFound";
 
 const CareerscategoryRouting = () => {
   return (
@@ -16,7 +16,7 @@ const CareerscategoryRouting = () => {
         <Route path="/view/:id" element={<CareerscategoryView />} />
         <Route path="/create" element={<CareerscategoryCreate />} />
       </Route>
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

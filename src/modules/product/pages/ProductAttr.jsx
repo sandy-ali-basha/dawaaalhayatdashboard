@@ -182,6 +182,9 @@ const ProductAttr = ({ id, open, setOpen }) => {
               </FormControl>
             </Grid>
           )}
+          <Typography>
+            كل اتربيوت مختارة تفوم بتحديث قيم هذه الاتربيوت او اضافتها
+          </Typography>
         </Grid>
 
         <DialogActions>

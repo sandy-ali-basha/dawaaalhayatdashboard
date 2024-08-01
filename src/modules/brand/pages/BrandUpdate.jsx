@@ -1,4 +1,3 @@
-
 import { React, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -36,67 +35,117 @@ const BrandUpdate = ({ id }) => {
   ]);
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { register, handleSubmit, formState ,setValue} = useForm(formOptions);
   const { errors } = formState;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
 
   useEffect(() => {
-    _axios.get('/brand/'+ editedID, {
-      headers: {
-        translations: true,
-      },
-    }).then((res) => {
-      setData(res.data?.data);
-    });
-  }, [id,editedID]);
+    _axios
+      .get("/brand/" + editedID, {
+        headers: {
+          translations: true,
+        },
+      })
+      .then((res) => {
+        setData(res.data?.data);
+        const fetchedData = res.data?.data;
+        setData(fetchedData);
+        if (fetchedData) {
+          setValue(
+            "kr.name",
+            fetchedData?.translations.find((t) => t.locale === "kr")?.name || ""
+          );
+          setValue(
+            "ar.name",
+            fetchedData?.translations.find((t) => t.locale === "ar")?.name || ""
+          );
+          setValue(
+            "en.name",
+            fetchedData?.translations.find((t) => t.locale === "en")?.name || ""
+          );
+        }
+      });
+  }, [id, editedID]);
 
   const details = [
-    { head: t("arabic name"), type: "text", placeholder: t("ar.name"), name: "ar.name", register: "ar.name", error: "ar.name", helperText: "ar.name", defaultValue: data?.translations[0]?.name },
-    { head: t("english name"), type: "text", placeholder: t("en.name"), name: "en.name", register: "en.name", error: "en.name", helperText: "en.name", defaultValue: data?.translations[1]?.name, },
-    { head: t("kurdish name"), type: "text", placeholder: t("kr.name"), name: "kr.name", register: "kr.name", error: "kr.name", helperText: "kr.name", defaultValue: data?.translations[2]?.name, },
-  ]
+    {
+      head: t("arabic name"),
+      type: "text",
+      placeholder: t("ar.name"),
+      name: "ar.name",
+      register: "ar.name",
+      error: "ar.name",
+      helperText: "ar.name",
+    },
+    {
+      head: t("english name"),
+      type: "text",
+      placeholder: t("en.name"),
+      name: "en.name",
+      register: "en.name",
+      error: "en.name",
+      helperText: "en.name",
+    },
+    {
+      head: t("kurdish name"),
+      type: "text",
+      placeholder: t("kr.name"),
+      name: "kr.name",
+      register: "kr.name",
+      error: "kr.name",
+      helperText: "kr.name",
+    },
+  ];
 
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
   };
 
-  const { mutate } = useMutation((data) => createPost(data))
+  const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
-    _Brand.update({
-      editedID: editedID,
-      formData: data,
-    }).catch(err => {
-      setLoading(false)
-    }).then(() => {
-      setLoading(false)
-      // handleClose()
-    })
+    _Brand
+      .update({
+        editedID: editedID,
+        formData: data,
+      })
+      .catch((err) => {
+        setLoading(false);
+      })
+      .then(() => {
+        setLoading(false);
+        // handleClose()
+      });
   }
 
   const hanldeUpdate = (input) => {
-
     mutate(input);
     setLoading(true);
-  }
+  };
 
   return (
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>{t("Edit Row")}</DialogTitle>
+        <DialogTitle sx={{ color: "primary.main" }}>
+          {t("Edit Row")}
+        </DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
               {details?.map((item, index) => (
                 <Grid key={index} item md={6} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography sx={{ margin: "0 0 8px 8px" }}
-                color="text.main"
-                variant="body2">{item.head}</Typography>
+                    <Typography
+                      sx={{ margin: "0 0 8px 8px" }}
+                      color="text.main"
+                      variant="body2"
+                    >
+                      {item.head}
+                    </Typography>
                   </Box>
                   <TextFieldStyled
                     sx={{ width: "100%" }}
@@ -120,7 +169,8 @@ const BrandUpdate = ({ id }) => {
           </Button>
           {loading && <Loader />}
 
-          <ButtonLoader name={t("Submit")}
+          <ButtonLoader
+            name={t("Submit")}
             onClick={() => handleSubmit(hanldeUpdate)()}
             type="save"
             loading={loading}
@@ -128,7 +178,6 @@ const BrandUpdate = ({ id }) => {
           >
             {t("Submit")}
           </ButtonLoader>
-
         </DialogActions>
       </Dialog>
     </>
@@ -136,4 +185,3 @@ const BrandUpdate = ({ id }) => {
 };
 
 export default BrandUpdate;
-

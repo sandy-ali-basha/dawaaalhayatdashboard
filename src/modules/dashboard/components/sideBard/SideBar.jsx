@@ -10,13 +10,7 @@ import PeopleAltTwoToneIcon from "@mui/icons-material/PeopleAltTwoTone";
 import {
   BookOnline,
   BrandingWatermarkTwoTone,
-  Image,
-  InsertEmoticonTwoTone,
-  Reviews,
-  Security,
-  Settings,
   Shop,
-  WorkOutlineTwoTone,
 } from "@mui/icons-material";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import GavelIcon from "@mui/icons-material/Gavel";
@@ -66,9 +60,8 @@ const SideBar = ({ open, setOpen }) => {
       icon: <Shop />,
       subOptions: [
         { name: t("Products"), link: "/dashboard/product" },
-        { name: t("Medical Forms"), link: "/dashboard/medical_forms/1" },
-        { name: t("categories"), link: "/dashboard/products/categories" },
-        { name: t("product type"), link: "/dashboard/product_type" },
+        { name: t("Categories"), link: "/dashboard/products/categories" },
+        { name: t("Medical form"), link: "/dashboard/product_type" },
       ],
     },
     {

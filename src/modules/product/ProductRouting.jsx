@@ -6,6 +6,7 @@ import ProductIndex from "./pages/ProductIndex";
 import ProductUpdate from "./pages/ProductUpdate";
 import ProductView from "./pages/ProductView";
 import ProductCreate from "./pages/ProductCreate";
+import NotFound from "components/NotFound";
 
 const ProductRouting = () => {
   return (
@@ -16,7 +17,7 @@ const ProductRouting = () => {
         <Route path="/view/:id" element={<ProductView />} />
         <Route path="/create" element={<ProductCreate />} />
       </Route>
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

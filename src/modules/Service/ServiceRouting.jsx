@@ -6,6 +6,7 @@ import ServiceIndex from "./pages/ServiceIndex";
 import ServiceUpdate from "./pages/ServiceUpdate";
 import ServiceView from "./pages/ServiceView";
 import ServiceCreate from "./pages/ServiceCreate";
+import NotFound from "components/NotFound";
 
 const ServiceRouting = () => {
   return (
@@ -16,7 +17,7 @@ const ServiceRouting = () => {
         <Route path="/view/:id" element={<ServiceView />} />
         <Route path="/create" element={<ServiceCreate />} />
       </Route>
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

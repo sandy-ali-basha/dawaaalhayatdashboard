@@ -41,7 +41,7 @@ const TermsIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t("name"), t("Text"),t("Edit")];
+    return [t("name"), t("Text"), t("Edit")];
   }, [t]);
 
   const handleView = useCallback(
@@ -69,7 +69,7 @@ const TermsIndex = () => {
         <TableCell
           sx={{ minWidth: 50 }}
           dangerouslySetInnerHTML={{
-            __html: term?.text ?? "Null",
+            __html: term?.text ? `${term.text.substring(0, 50)}. . .` : "Null",
           }}
         ></TableCell>
         <TableCell

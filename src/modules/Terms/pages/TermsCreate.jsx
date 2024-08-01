@@ -94,7 +94,7 @@ const TermsCreate = () => {
           <Grid item xs={12} sx={{ p: "10px" }}>
             <Box sx={{ margin: "0 0 8px 5px" }}>
               <Typography variant="inputTitle" sx={{ color: "text.main" }}>
-                {t("text_kr")}
+                {t("text kurdish")}
               </Typography>
             </Box>
             <EditorInput
@@ -156,7 +156,6 @@ const TermsCreate = () => {
           >
             {t("Cancel")}
           </Button>
-          <ButtonAction name={t("Reset")} onClick={handleReset} type="reset" />
           <ButtonLoader
             name={t("Submit")}
             onClick={() => handleSubmit(hanldeCreate)()}
@@ -164,7 +163,7 @@ const TermsCreate = () => {
             loading={loading}
             disableOnLoading
           >
-            {t("Submit")} {language}
+            {t("Submit")}
           </ButtonLoader>
         </Box>
       </BoxStyled>

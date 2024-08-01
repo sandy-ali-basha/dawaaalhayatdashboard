@@ -15,9 +15,8 @@ import CareerscategoryRouting from "modules/careersCategory/CareerscategoryRouti
 import ProductRouting from "modules/product/ProductRouting";
 import BrandRouting from "modules/brand/BrandRouting";
 import Product_typeRouting from "modules/product_type/Product_typeRouting";
-import Product_medicalFormRouting from "modules/Product_medicalForm/Product_medicalFormRouting";
-import Product_optionsRouting from "modules/product_options/Product_optionsRouting";
 import Product_attributesRouting from "modules/product_attributes/Product_attributesRouting";
+import NotFound from "components/NotFound";
 
 const DashboardRouting = () => {
   return (
@@ -42,10 +41,7 @@ const DashboardRouting = () => {
           <Route path="/product/*" element={<ProductRouting />} />
           <Route path="/brands/*" element={<BrandRouting />} />
           <Route path="/product_type/*" element={<Product_typeRouting />} />
-          <Route
-            path="/medical_forms/*"
-            element={<Product_medicalFormRouting />}
-          />
+      
           <Route
             path="/products/categories/*"
             element={<Product_attributesRouting />}
@@ -54,7 +50,7 @@ const DashboardRouting = () => {
         </Route>
       }
 
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound/>} />
     </Routes>
   );
 };

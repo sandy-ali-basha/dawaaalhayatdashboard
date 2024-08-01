@@ -3,6 +3,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ReviewComponent from "./ReviewComponent";
 import ReviewIndex from "./pages/ReviewIndex";
+import NotFound from "components/NotFound";
 
 const ReviewRouting = () => {
   return (
@@ -10,7 +11,7 @@ const ReviewRouting = () => {
       <Route element={<ReviewComponent />}>
         <Route path="/" element={<ReviewIndex />} />
       </Route>
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

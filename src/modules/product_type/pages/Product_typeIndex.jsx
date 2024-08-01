@@ -11,7 +11,6 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import React, { useMemo,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
@@ -20,7 +19,6 @@ import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import ChangeStatus from "../components/ChangeStatus";
 import { useProduct_type } from "hooks/product_type/useProduct_type";
 import Product_typeUpdate from "./Product_typeUpdate";
 import DeleteDialog from "../components/Dialog";
@@ -76,11 +74,7 @@ const Product_typeIndex = () => {
               <DeleteDialog id={product_type?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>
-          <IconButton onClick={() => handleView(product_type.id)}>
-            <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
-              <VisibilityTwoToneIcon color="primary" />
-            </Tooltip>
-          </IconButton>
+          
         </TableCell>
       </TableRow>
     ));
@@ -109,7 +103,7 @@ const Product_typeIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("product types")}
+            {t("medical form")}
           </Typography>
 
           <Button
@@ -121,7 +115,7 @@ const Product_typeIndex = () => {
             }}
             onClick={handleCreate}
           >
-            {t("New product type")}
+            {t("New medical form")}
           </Button>
         </Box>
 

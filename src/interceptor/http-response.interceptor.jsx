@@ -51,7 +51,7 @@ export const HttpResponseInterceptor = (navigate, enqueueSnackbar) => {
         default:
           showSnackbar(
             enqueueSnackbar,
-            errMessage || "Unknown response code",
+            errMessage || "Unknown response code: " + code,
             "info"
           );
           // showSnackbar(enqueueSnackbar, response.data, "info");

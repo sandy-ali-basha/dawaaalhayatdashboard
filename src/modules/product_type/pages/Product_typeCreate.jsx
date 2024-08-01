@@ -23,7 +23,7 @@ const Product_typeCreate = () => {
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Product_type}")}
+        {t("Create medical form}")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">

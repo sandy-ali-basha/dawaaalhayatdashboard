@@ -41,11 +41,11 @@ const ProductIndex = () => {
 
   const columns = useMemo(() => {
     return [
-      t("brand_id"),
-      t("sku"),
       t("name"),
-      t("description"),
-      t("status"),
+      t("brand"),
+      t("sku"),
+      t("price"),
+      t("Qty"),
       t("operations"),
     ];
   }, [t]);
@@ -84,16 +84,20 @@ const ProductIndex = () => {
   const rows = useMemo(() => {
     return data?.data?.products?.map((product, id) => (
       <TableRow sx={{ height: "65px" }} key={product.id} hover>
-        <TableCell sx={{ minWidth: 50 }}>
-          {product?.brand_id ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>{product?.sku ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>{product?.name ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>
-          {product?.description ?? "Null"}
+          {product?.brand?.name ?? "Null"}
         </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>{product?.status ?? "Null"}</TableCell>
-
+        <TableCell sx={{ minWidth: 50 }}>{product?.sku ?? "Null"}</TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          {product?.price?.value + " " + product?.price?.currency?.code ??
+            "Null"}
+        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          {product?.price?.unitQty ?? "Null"}
+        </TableCell>
+    
+ 
         <TableCell
           align="center"
           sx={{

@@ -10,8 +10,10 @@ import { _axios } from "interceptor/http-config";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
-  // product_type_id: yup.string().trim().required("product type is required"),
+  product_type_id: yup.string().trim().required("medical form is required"),
   status: yup.string().trim().required("status type is required"),
+  price: yup.string().trim().required("price is required"),
+  qty: yup.string().trim().required("qty is required"),
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
     description: yup.string().required("Kurdish description is required"),
@@ -34,11 +36,11 @@ export const useProductCreate = () => {
   const [statuses, setStatuses] = useState([{ id: 1, name: "done" }]);
   const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, setValue, control } =
+  const { register, handleSubmit, formState, setValue, control,reset } =
     useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
-  console.log(errors);
+
   useEffect(() => {
     _axios.get("/brand").then((res) => {
       setLoading(false);
@@ -53,7 +55,7 @@ export const useProductCreate = () => {
     _Product
       .post(data, setLoading)
       .then((res) => {
-        if (res.data.code === 200) navigate(-1);
+        if (res?.code === 200) navigate(-1);
         setLoading(true);
       })
       .finally(() => {
@@ -109,6 +111,24 @@ export const useProductCreate = () => {
       error: "status",
       helperText: "status",
     },
+    {
+      head: t("price"),
+      type: "number",
+      placeholder: "price",
+      name: "price",
+      register: "price",
+      error: "price",
+      helperText: "price",
+    },
+    {
+      head: t("qty"),
+      type: "number",
+      placeholder: "qty",
+      name: "qty",
+      register: "qty",
+      error: "qty",
+      helperText: "qty",
+    },
   ];
   const Discription = [
     {
@@ -139,15 +159,22 @@ export const useProductCreate = () => {
       helperText: "en.description",
     },
   ];
+
   const handleCancel = () => navigate(-1);
 
   const handleReset = () => {
     const form = document.querySelector("form");
     if (form) form.reset();
+    reset()
   };
 
   const hanldeCreate = (input) => {
-    mutate(input);
+    const withDesc = {
+      ...input,
+      description: input?.en?.description || ''
+    };
+    
+    mutate(withDesc);
     setLoading(true);
   };
 

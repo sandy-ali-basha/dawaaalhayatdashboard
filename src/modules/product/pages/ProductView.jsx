@@ -32,30 +32,44 @@ const ProductView = () => {
     },
     {}
   );
-  console.log(data);
   const columns = [
-    { head: t("name english"), value: data?.translations[0]?.name },
-    { head: t("name arabic"), value: data?.translations[1]?.name },
-    { head: t("name kurdish"), value: data?.translations[2]?.name },
-    { head: t("description"), value: data?.description },
-
-    { head: t("brand"), value: data?.brand.name },
-    { head: t("product type"), value: data?.product_type.name },
+    {
+      head: t("name english"),
+      value: data?.translations?.find((t) => t.locale === "en")?.name,
+    },
+    {
+      head: t("name arabic"),
+      value: data?.translations?.find((t) => t.locale === "ar")?.name,
+    },
+    {
+      head: t("name kurdish"),
+      value: data?.translations?.find((t) => t.locale === "kr")?.name,
+    },
+    { head: t("brand"), value: data?.brand?.name },
+    { head: t("product type"), value: data?.product_type?.name },
     { head: t("status"), value: data?.status },
     { head: t("sku"), value: data?.sku },
+    { head: t("price"), value: data?.price?.value },
+    { head: t("price currency code"), value: data?.price?.currency?.code },
+    { head: t("price currency name"), value: data?.price?.currency?.name },
+    {
+      head: t("price currency exchange_rate"),
+      value: data?.price?.currency?.exchange_rate,
+    },
+    { head: t("unit Qty"), value: data?.unitQty },
   ];
   const disc = [
     {
       head: t("description english"),
-      value: data?.translations[0]?.description,
+      value: data?.translations?.find((t) => t.locale === "en")?.description,
     },
     {
       head: t("description arabic"),
-      value: data?.translations[1]?.description,
+      value: data?.translations?.find((t) => t.locale === "ar")?.description,
     },
     {
       head: t("description kurdish"),
-      value: data?.translations[2]?.description,
+      value: data?.translations?.find((t) => t.locale === "kr")?.description,
     },
   ];
 
@@ -102,7 +116,6 @@ const ProductView = () => {
                 <Grid item md={6}>
                   <Box>
                     <h3>{t("Details")}</h3>
-
                     {columns?.map((item, index, id) => (
                       <Box key={id}>
                         <Typography

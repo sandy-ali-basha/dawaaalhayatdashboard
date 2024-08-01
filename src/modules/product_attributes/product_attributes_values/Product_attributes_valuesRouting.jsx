@@ -4,6 +4,7 @@ import Product_attributes_valuesComponent from "./Product_attributes_valuesCompo
 import Product_attributes_valuesIndex from "./pages/Product_attributes_valuesIndex";
 import Product_attributes_valuesUpdate from "./pages/Product_attributes_valuesUpdate";
 import Product_attributes_valuesCreate from "./pages/Product_attributes_valuesCreate";
+import NotFound from "components/NotFound";
 
 const Product_attributes_valuesRouting = () => {
   return (
@@ -19,7 +20,7 @@ const Product_attributes_valuesRouting = () => {
           element={<Product_attributes_valuesCreate />}
         />
       </Route>
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -1,5 +1,4 @@
-
-  import React, { useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -14,22 +13,23 @@ import { useTranslation } from "react-i18next";
 import { useDeleteTerms } from "hooks/terms/useDeleteTerms";
 import { useTerms } from "hooks/terms/useTerms";
 const DeleteDialog = ({ id, page, count }) => {
+  console.log(id);
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
   const deleteterms = useDeleteTerms({ page, count });
-  const handleClickOpen = (e) => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const handleClickOpen = (e) => setOpen(true);
+  const handleClose = () => setOpen(false);
   const { refetch } = useTerms();
   const DeleteTerms = () => {
     setLoading(true);
     deleteterms.mutate(id, {
       onSuccess: () => {
         setOpen(false);
-        refetch()
+        refetch();
       },
     });
-  }
+  };
   const { direction } = settingsStore();
   return (
     <React.Fragment>
@@ -62,7 +62,7 @@ const DeleteDialog = ({ id, page, count }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>{t('Disagree')}</Button>
+          <Button onClick={handleClose}>{t("Disagree")}</Button>
           {loading && <Loader />}
           <Button autoFocus sx={{}} variant="contained" onClick={DeleteTerms}>
             {t("Agree")}

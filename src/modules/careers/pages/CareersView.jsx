@@ -23,7 +23,11 @@ const CareersView = () => {
   const { data, isLoading } = useQuery(
     ["careers", `id-${params.id}`],
     async () => {
-      const res = await _axios.get(`/careers/${params.id}`);
+      const res = await _axios.get(`/careers/${params.id}`, {
+        headers: {
+          translations: "true",
+        },
+      });
       return res.data?.data;
     }
   );
@@ -34,8 +38,7 @@ const CareersView = () => {
     { head: t("Time Type"), value: data?.time_type },
     { head: t("Location"), value: data?.location },
     { head: t("Country"), value: data?.country },
-    { head: t("Description"), value: data?.description },
-    { head: t("About Us"), value: data?.about_us },
+
     { head: t("Category"), value: data?.category },
   ];
 
@@ -51,8 +54,9 @@ const CareersView = () => {
   return (
     <>
       {isLoading && <Loader />}
-      {!!data && (
-        <div>
+
+      {data && (
+        <Box sx={{ width: "70vw" }}>
           <Typography
             sx={{
               backgroundColor: "card.main",
@@ -60,7 +64,6 @@ const CareersView = () => {
               color: "primary.main",
               width: "40%",
               marginInline: "auto",
-              height: "100%",
               textTransform: "uppercase",
               padding: "10px 20px",
               textAlign: "center",
@@ -76,6 +79,7 @@ const CareersView = () => {
               color: "lightGray.main",
               columnGap: 10,
               marginTop: "4%",
+              width: "75vw",
               justifyContent: "center",
             }}
           >
@@ -84,156 +88,149 @@ const CareersView = () => {
                 display: "flex",
                 justifyContent: "center",
                 color: "text.main",
-                height: "100%",
                 flexWrap: "wrap",
                 columnGap: 2,
+                width: "75vw",
               }}
             >
               <Box
                 sx={{
-                  width: "70%",
                   backgroundColor: "card.main",
                   borderRadius: "5px",
-                  padding: "20px",
+                  padding: 2,
+                  width: "75vw",
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    rowGap: 2.1,
-                  }}
-                >
+                <Box sx={{ width: "100%" }}>
                   <h3>{t("Details")}</h3>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      width: "100%",
-                      flexWrap: "wrap",
-                    }}
-                  >
+                  <Box sx={{ border: 1, borderRadius: 3, p: 2 }}>
                     {columns.map((item, index) => (
                       <Box
                         key={index}
                         sx={{
                           display: "flex",
-                          pl: "10px",
-                          width: "100%",
-                          my: "5px",
+                          alignItems: "center",
+                          mt: 3,
+                          gap: 3,
                         }}
                       >
-                        <Typography
-                          sx={{
-                            fontWeight: "700",
-                            fontSize: "15px",
-                            marginInlineEnd: "15px",
-                          }}
-                        >
-                          {item.head}:
-                        </Typography>
-                        <Typography>
+                        <Typography variant="h5">{item.head}:</Typography>
+                        <Typography variant="body1">
                           {typeof item?.value === "object"
                             ? JSON.stringify(item?.value)
                             : item?.value ?? "null"}
                         </Typography>
                       </Box>
                     ))}
+                    <Typography
+                      dangerouslySetInnerHTML={{
+                        __html: data.about_us,
+                      }}
+                    ></Typography>
+                    <Typography
+                      dangerouslySetInnerHTML={{
+                        __html: data.description,
+                      }}
+                    ></Typography>
                   </Box>
                   <h3>{t("Translations")}</h3>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      width: "100%",
-                      flexWrap: "wrap",
-                    }}
-                  >
+                  <Box>
                     {data?.translations ? (
                       translations.map((translation, index) => (
                         <Box
                           key={index}
                           sx={{
-                            display: "flex",
-                            pl: "10px",
-                            width: "50%",
-                            my: "5px",
+                            border: "1px solid #ddd",
+                            borderRadius: 3,
+                            p: 2,
+                            mt: 2,
                           }}
                         >
                           <Typography
+                            variant="h5"
                             sx={{
-                              fontWeight: "700",
-                              fontSize: "15px",
-                              marginInlineEnd: "15px",
+                              mt: 3,
                             }}
                           >
-                            {t("Locale")}:
+                            {t("language")}:
                           </Typography>
-                          <Typography>{translation.locale}</Typography>
+                          <Typography variant="body1">
+                            {translation.locale}
+                          </Typography>
+
                           <Typography
+                            variant="h5"
                             sx={{
-                              fontWeight: "700",
-                              fontSize: "15px",
-                              marginInlineEnd: "15px",
+                              mt: 3,
                             }}
                           >
                             {t("Vacancy Name")}:
                           </Typography>
-                          <Typography>{translation.vacancy_name}</Typography>
+                          <Typography variant="body1">
+                            {translation.name}
+                          </Typography>
                           <Typography
+                            variant="h5"
                             sx={{
-                              fontWeight: "700",
-                              fontSize: "15px",
-                              marginInlineEnd: "15px",
+                              mt: 3,
                             }}
                           >
                             {t("Location")}:
                           </Typography>
-                          <Typography>{translation.location}</Typography>
+                          <Typography variant="body1">
+                            {translation.location}
+                          </Typography>
                           <Typography
+                            variant="h5"
                             sx={{
-                              fontWeight: "700",
-                              fontSize: "15px",
-                              marginInlineEnd: "15px",
+                              mt: 3,
                             }}
                           >
                             {t("Country")}:
                           </Typography>
-                          <Typography>{translation.country}</Typography>
+                          <Typography variant="body1">
+                            {translation.country}
+                          </Typography>
                           <Typography
+                            variant="h5"
                             sx={{
-                              fontWeight: "700",
-                              fontSize: "15px",
-                              marginInlineEnd: "15px",
+                              mt: 3,
                             }}
                           >
                             {t("Description")}:
                           </Typography>
                           <Typography
-                            dangerouslySetInnerHTML={translation.description}
+                            dangerouslySetInnerHTML={{
+                              __html: translation.description,
+                            }}
                           ></Typography>
                           <Typography
+                            variant="h5"
                             sx={{
-                              fontWeight: "700",
-                              fontSize: "15px",
-                              marginInlineEnd: "15px",
+                              mt: 3,
                             }}
                           >
                             {t("About Us")}:
                           </Typography>
                           <Typography
-                            dangerouslySetInnerHTML={translation.about_us}
+                            dangerouslySetInnerHTML={{
+                              __html: translation.about_us,
+                            }}
                           ></Typography>
                         </Box>
                       ))
                     ) : (
-                      <Typography>
-                        <CloseTwoTone /><span> No Translation Provided</span>                      </Typography>
+                      <Typography variant="body1">
+                        <CloseTwoTone />
+                        <span> No Translation Provided</span>{" "}
+                      </Typography>
                     )}
                   </Box>
                 </Box>
               </Box>
             </Box>
           </Box>
-        </div>
+        </Box>
       )}
       <div
         style={{

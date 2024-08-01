@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -15,9 +15,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _axios } from "interceptor/http-config";
-import {
-  TextFieldStyled,
-} from "components/styled/TextField";
+import { TextFieldStyled } from "components/styled/TextField";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { _Service } from "api/service/service";
@@ -28,6 +26,7 @@ import EditorInput from "components/shared/EditorInput";
 
 const TermsUpdate = () => {
   const { t } = useTranslation("index");
+
   let schema = yup.object().shape({
     kr: yup.object().shape({
       name: yup.string().required("Kurdish name is required"),
@@ -48,15 +47,6 @@ const TermsUpdate = () => {
     state.editedID,
     state.setEditedID,
   ]);
-  useEffect(() => {
-    _axios.get("/terms/" + editedID,{
-      headers:{
-        with_translations:true
-      }
-    }).then((res) => {
-      setData(res.data);
-    });
-  }, [editedID]);
 
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState, control, setValue } =
@@ -64,6 +54,46 @@ const TermsUpdate = () => {
   const { errors } = formState;
   const [open, setOpen] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    _axios
+      .get("/terms/" + editedID, {
+        headers: {
+          translations: true,
+        },
+      })
+      .then((res) => {
+        const fetchedData = res.data?.data;
+        setData(fetchedData);
+        if (fetchedData) {
+          setValue(
+            "kr.name",
+            fetchedData?.translations.find((t) => t.locale === "kr")?.name || ""
+          );
+          setValue(
+            "kr.text",
+            fetchedData?.translations.find((t) => t.locale === "kr")?.text || ""
+          );
+
+          setValue(
+            "ar.name",
+            fetchedData?.translations.find((t) => t.locale === "ar")?.name || ""
+          );
+          setValue(
+            "ar.text",
+            fetchedData?.translations.find((t) => t.locale === "ar")?.text || ""
+          );
+          setValue(
+            "en.name",
+            fetchedData?.translations.find((t) => t.locale === "en")?.name || ""
+          );
+          setValue(
+            "en.text",
+            fetchedData?.translations.find((t) => t.locale === "en")?.text || ""
+          );
+        }
+      });
+  }, [editedID, setValue]);
 
   const handleClose = () => {
     setOpen(false);
@@ -88,15 +118,17 @@ const TermsUpdate = () => {
       });
   }
 
-  const hanldeUpdate = (input) => {
+  const handleUpdate = (input) => {
     mutate(input);
     setLoading(true);
   };
 
+  console.log(errors);
+
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} maxWidth>
         <DialogTitle sx={{ color: "primary.main" }}>
           {t("Edit Row")}
         </DialogTitle>
@@ -111,17 +143,15 @@ const TermsUpdate = () => {
                   sx={{ width: "100%" }}
                   type={"text"}
                   placeholder="name"
-                  defaultValue=""
                   {...register(`ar.name`)}
                   error={!!errors.ar?.name}
                   helperText={errors.ar?.name?.message || ""}
-                  // initialValue={data?.}
                 />
               </Grid>
               <Grid item xs={12} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
                   <Typography variant="inputTitle" sx={{ color: "text.main" }}>
-                    {t("text arabic")}
+                    text arabic
                   </Typography>
                 </Box>
                 <EditorInput
@@ -130,6 +160,10 @@ const TermsUpdate = () => {
                   name={"ar.text"}
                   setValue={setValue}
                   errors={errors?.ar?.text?.message}
+                  initialValue={
+                    data?.translations.find((t) => t.locale === "ar")?.text ||
+                    ""
+                  }
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
@@ -140,7 +174,6 @@ const TermsUpdate = () => {
                   sx={{ width: "100%" }}
                   type={"text"}
                   placeholder="name"
-                  defaultValue=""
                   {...register(`kr.name`)}
                   error={!!errors.kr?.name}
                   helperText={errors.kr?.name?.message || ""}
@@ -149,7 +182,7 @@ const TermsUpdate = () => {
               <Grid item xs={12} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
                   <Typography variant="inputTitle" sx={{ color: "text.main" }}>
-                    {t("text_kr")}
+                    text kurdish
                   </Typography>
                 </Box>
                 <EditorInput
@@ -158,6 +191,10 @@ const TermsUpdate = () => {
                   name={"kr.text"}
                   setValue={setValue}
                   errors={errors?.kr?.text?.message}
+                  initialValue={
+                    data?.translations.find((t) => t.locale === "kr")?.text ||
+                    ""
+                  }
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
@@ -168,7 +205,6 @@ const TermsUpdate = () => {
                   sx={{ width: "100%" }}
                   type={"text"}
                   placeholder="name"
-                  defaultValue=""
                   {...register(`en.name`)}
                   error={!!errors.en?.name}
                   helperText={errors.en?.name?.message || ""}
@@ -186,6 +222,10 @@ const TermsUpdate = () => {
                   name={"en.text"}
                   setValue={setValue}
                   errors={!!errors?.en?.text}
+                  initialValue={
+                    data?.translations.find((t) => t.locale === "en")?.text ||
+                    ""
+                  }
                 />
               </Grid>
             </Grid>
@@ -200,7 +240,7 @@ const TermsUpdate = () => {
 
           <ButtonLoader
             name={t("Submit")}
-            onClick={() => handleSubmit(hanldeUpdate)()}
+            onClick={() => handleSubmit(handleUpdate)()}
             type="save"
             loading={loading}
             disableOnLoading

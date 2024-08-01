@@ -35,7 +35,7 @@ const CareerscategoryUpdate = ({ id }) => {
   ]);
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { register, handleSubmit, formState, setValue } = useForm(formOptions);
   const { errors } = formState;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,12 +44,29 @@ const CareerscategoryUpdate = ({ id }) => {
   useEffect(() => {
     _axios
       .get("/careers_categories/" + editedID, {
-        header: {
-          with_translations: true,
+        headers: {
+          translations: true,
         },
       })
       .then((res) => {
         setData(res.data?.data);
+        const fetchedData = res.data?.data;
+       
+        setData(fetchedData);
+        if (fetchedData.translations) {
+          setValue(
+            "kr.name",
+            fetchedData?.translations.find((t) => t.locale === "kr")?.name || ""
+          );
+          setValue(
+            "ar.name",
+            fetchedData?.translations.find((t) => t.locale === "ar")?.name || ""
+          );
+          setValue(
+            "en.name",
+            fetchedData?.translations.find((t) => t.locale === "en")?.name || ""
+          );
+        }
       });
   }, [id, editedID]);
 
@@ -67,7 +84,7 @@ const CareerscategoryUpdate = ({ id }) => {
         formData: data,
       })
       .then((res) => {
-        console.log(res)
+        console.log(res);
         setLoading(false);
         if (res?.code === 200) handleClose();
       });
@@ -96,7 +113,6 @@ const CareerscategoryUpdate = ({ id }) => {
                   sx={{ width: "100%" }}
                   type={"text"}
                   placeholder="name"
-                  defaultValue=""
                   {...register(`ar.name`)}
                   error={!!errors.ar?.name}
                   helperText={errors.ar?.name?.message || ""}

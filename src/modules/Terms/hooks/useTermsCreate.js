@@ -28,18 +28,18 @@ export const useTermsCreate = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, setValue, control } = useForm(formOptions);
+  const { register, handleSubmit, formState, setValue, control, reset } =
+    useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
   const [details, setDetails] = useState([]);
   const [language, setLanguage] = useState("en");
 
   async function createPost(data) {
-   
     _Terms
       .post(data, setLoading)
       .then((res) => {
-        if (res.success) navigate(-1);
+        if (res?.code === 200) navigate(-1);
         setLoading(true);
       })
       .finally(() => {
@@ -52,6 +52,7 @@ export const useTermsCreate = () => {
   const handleReset = () => {
     const form = document.querySelector("form");
     if (form) form.reset();
+    reset();
   };
 
   const hanldeCreate = (input) => {

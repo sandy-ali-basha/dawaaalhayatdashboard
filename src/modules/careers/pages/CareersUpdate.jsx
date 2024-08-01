@@ -62,7 +62,7 @@ const CareersUpdate = ({ id }) => {
   ]);
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState, control, setValue } =
-  useForm(formOptions);
+    useForm(formOptions);
   const { errors } = formState;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -78,6 +78,85 @@ const CareersUpdate = ({ id }) => {
       })
       .then((res) => {
         setData(res.data?.data);
+        const fetchedData = res.data?.data;
+        setData(fetchedData);
+        if (fetchedData) {
+          setValue(
+            "kr.vacancy_name",
+            fetchedData?.translations.find((t) => t.locale === "kr")
+              ?.vacancy_name || ""
+          );
+          setValue(
+            "ar.vacancy_name",
+            fetchedData?.translations.find((t) => t.locale === "ar")
+              ?.vacancy_name || ""
+          );
+          setValue(
+            "en.vacancy_name",
+            fetchedData?.translations.find((t) => t.locale === "en")
+              ?.vacancy_name || ""
+          );
+          setValue(
+            "kr.country",
+            fetchedData?.translations.find((t) => t.locale === "kr")?.country ||
+              ""
+          );
+          setValue(
+            "ar.country",
+            fetchedData?.translations.find((t) => t.locale === "ar")?.country ||
+              ""
+          );
+          setValue(
+            "en.country",
+            fetchedData?.translations.find((t) => t.locale === "en")?.country ||
+              ""
+          );
+          setValue(
+            "kr.description",
+            fetchedData?.translations.find((t) => t.locale === "kr")
+              ?.description || ""
+          );
+          setValue(
+            "ar.description",
+            fetchedData?.translations.find((t) => t.locale === "ar")
+              ?.description || ""
+          );
+          setValue(
+            "en.description",
+            fetchedData?.translations.find((t) => t.locale === "en")
+              ?.description || ""
+          );
+          setValue(
+            "kr.location",
+            fetchedData?.translations.find((t) => t.locale === "kr")
+              ?.location || ""
+          );
+          setValue(
+            "ar.location",
+            fetchedData?.translations.find((t) => t.locale === "ar")
+              ?.location || ""
+          );
+          setValue(
+            "en.location",
+            fetchedData?.translations.find((t) => t.locale === "en")
+              ?.location || ""
+          );
+          setValue(
+            "kr.about_us",
+            fetchedData?.translations.find((t) => t.locale === "kr")
+              ?.about_us || ""
+          );
+          setValue(
+            "ar.about_us",
+            fetchedData?.translations.find((t) => t.locale === "ar")
+              ?.about_us || ""
+          );
+          setValue(
+            "en.about_us",
+            fetchedData?.translations.find((t) => t.locale === "en")
+              ?.about_us || ""
+          );
+        }
       });
     _axios.get("/careers_categories").then((res) => {
       setCareersCategoriesData(res?.data?.data?.careers_categories);
@@ -246,7 +325,7 @@ const CareersUpdate = ({ id }) => {
                 <Box sx={{ margin: "0 0 8px 5px" }}>
                   <Typography variant="body2">Time</Typography>
                   <TextFieldStyled
-                  type='date'
+                    type="date"
                     sx={{ width: "100%" }}
                     defaultValue={data?.time_type}
                     {...register("time_type")}

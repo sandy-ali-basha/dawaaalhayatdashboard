@@ -41,7 +41,7 @@ setValue
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Product}")}
+        {t("Create Product")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
@@ -72,7 +72,7 @@ setValue
               <Grid item xs={6} sx={{ p: "10px" }}>
                 <FormControl fullWidth>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.main">{t("product type")}</Typography>
+                    <Typography color="text.main">{t("medical form")}</Typography>
                   </Box>
                   <SelectStyled
                     sx={{ color: "text.main", borderColor: "text.main" }}

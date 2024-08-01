@@ -70,6 +70,40 @@ const ProductUpdate = ({ id }) => {
       })
       .then((res) => {
         setData(res.data?.data);
+        const fetchedData = res.data?.data;
+        setData(fetchedData);
+        if (fetchedData.translations) {
+          setValue(
+            "kr.name",
+            fetchedData?.translations?.find((t) => t.locale === "kr")?.name ||
+              ""
+          );
+          setValue(
+            "kr.description",
+            fetchedData?.translations?.find((t) => t.locale === "kr")?.name ||
+              ""
+          );
+          setValue(
+            "ar.name",
+            fetchedData?.translations?.find((t) => t.locale === "ar")?.name ||
+              ""
+          );
+          setValue(
+            "ar.description",
+            fetchedData?.translations?.find((t) => t.locale === "ar")?.name ||
+              ""
+          );
+          setValue(
+            "en.name",
+            fetchedData?.translations?.find((t) => t.locale === "en")?.name ||
+              ""
+          );
+          setValue(
+            "en.description",
+            fetchedData?.translations?.find((t) => t.locale === "en")?.name ||
+              ""
+          );
+        }
       });
   }, [id, editedID]);
 
@@ -98,9 +132,9 @@ const ProductUpdate = ({ id }) => {
       placeholder: t("description"),
       register: `${lang.code}.description`,
       helperText: `${lang.code}.description`,
-      defaultValue:
-        data?.translations?.find((tr) => tr.language === lang.code)
-          ?.description || "",
+      initialValue:
+        data?.translations?.find((t) => t.locale === lang.code)?.description ||
+        "",
     },
   ]);
 
@@ -169,12 +203,11 @@ const ProductUpdate = ({ id }) => {
     mutate(input);
     setLoading(true);
   };
-  console.log(errors);
 
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={true} onClose={handleDialogClose}>
+      <Dialog open={true} onClose={handleDialogClose} fullWidth>
         <DialogTitle sx={{ color: "primary.main" }}>
           {t("Edit Row")}
         </DialogTitle>
@@ -188,6 +221,7 @@ const ProductUpdate = ({ id }) => {
                       <Typography color="text.main">{t("brand")}</Typography>
                     </Box>
                     <SelectStyled
+                      defaultValue={data?.brand?.id}
                       sx={{ color: "text.main", borderColor: "text.main" }}
                       {...register("brand_id")}
                     >
@@ -203,18 +237,19 @@ const ProductUpdate = ({ id }) => {
                   </FormControl>
                 </Grid>
               )}
-            
+
               {producttypes && (
                 <Grid item xs={6} sx={{ p: "10px" }}>
                   <FormControl fullWidth>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
                       <Typography color="text.main">
-                        {t("product type")}
+                        {t("medical form")}
                       </Typography>
                     </Box>
                     <SelectStyled
                       sx={{ color: "text.main", borderColor: "text.main" }}
                       {...register("product_type_id")}
+                      defaultValue={data?.product_type?.id}
                     >
                       {producttypes?.map((item) => (
                         <MenuItemStyled value={item.id} key={item.id}>
@@ -263,6 +298,7 @@ const ProductUpdate = ({ id }) => {
                       name={item.register}
                       setValue={setValue}
                       errors={error?.message || ""}
+                      initialValue={item.initialValue}
                     />
                   </Grid>
                 );

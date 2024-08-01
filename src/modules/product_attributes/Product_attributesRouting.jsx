@@ -5,6 +5,7 @@ import Product_attributesIndex from "./pages/Product_attributesIndex";
 import Product_attributesUpdate from "./pages/Product_attributesUpdate";
 import Product_attributesCreate from "./pages/Product_attributesCreate";
 import Product_attributes_valuesRouting from "./product_attributes_values/Product_attributes_valuesRouting";
+import NotFound from "components/NotFound";
 
 const Product_attributesRouting = () => {
   return (
@@ -19,7 +20,7 @@ const Product_attributesRouting = () => {
         />
       </Route>
 
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -6,6 +6,7 @@ import ProfileIndex from "./pages/ProfileIndex";
 import ProfileUpdate from "./pages/ChangePassword";
 import ProfileView from "./pages/ProfileView";
 import ProfileCreate from "./pages/ProfileCreate";
+import NotFound from "components/NotFound";
 
 const ProfileRouting = () => {
   return (
@@ -16,7 +17,7 @@ const ProfileRouting = () => {
         <Route path="/view/:id" element={<ProfileView />} />
         <Route path="/create" element={<ProfileCreate />} />
       </Route>
-      <Route path="*" element={<p>not found 404</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

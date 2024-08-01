@@ -23,6 +23,7 @@ import ChangeStatus from "../components/ChangeStatus";
 import { useBrand } from "hooks/brand/useBrand";
 import BrandUpdate from "./BrandUpdate";
 import DeleteDialog from "../components/Dialog";
+import { AddPhotoAlternate } from "@mui/icons-material";
 
 const BrandIndex = () => {
   const { t } = useTranslation("index");
@@ -81,11 +82,14 @@ const BrandIndex = () => {
               <DeleteDialog id={brand?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>
-          {/* <IconButton onClick={() => handleView(brand.id)}>
-            <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
-              <VisibilityTwoToneIcon color="primary" />
+          <IconButton>
+            <Tooltip
+              title={"Add Images"}
+              onClick={() => handleAddImages(product?.id)}
+            >
+              <AddPhotoAlternate sx={{ color: "text.main" }} />
             </Tooltip>
-          </IconButton> */}
+          </IconButton>
         </TableCell>
       </TableRow>
     ));
