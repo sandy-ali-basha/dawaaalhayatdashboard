@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Grid } from "@mui/material";
+import { Card, Container, Grid, Typography } from "@mui/material";
 import OrderStatusReport from "../components/OrderStatusReport";
 import ProductPerformanceReport from "../components/ProductPerformanceReport";
 import AbandonedCartReport from "../components/AbandonedCartReport";
@@ -93,6 +93,20 @@ const Dashboard = () => {
   return (
     <ApexChartWrapper>
       <Grid container spacing={3}>
+        <Grid item xs={4} sm={4} md={3}>
+          <Card
+            sx={{
+              background: "primary.lighter",
+              display: "flex",
+              boxShadow: 3,
+              borderRadius: 3,
+              p:2
+            }}
+          >
+            
+            <Typography>{orderStatusData?.totalOrders}</Typography>
+          </Card>
+        </Grid>
         <Grid item xs={12} sm={6} md={6}>
           <OrderStatusReport data={orderStatusData} colors={colors} />
         </Grid>

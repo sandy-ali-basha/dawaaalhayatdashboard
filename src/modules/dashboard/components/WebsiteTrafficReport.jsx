@@ -2,9 +2,10 @@ import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 import Chart from "react-apexcharts";
 
-const WebsiteTrafficReport = ({ data }) => {
+const WebsiteTrafficReport = ({ data ,colors}) => {
   const options = {
     chart: { type: "donut" },
+    colors:colors,
     labels: data.sources.map((source) => source.name),
   };
 

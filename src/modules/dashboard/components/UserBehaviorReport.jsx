@@ -2,10 +2,11 @@ import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 import Chart from "react-apexcharts";
 
-const UserBehaviorReport = ({ data }) => {
+const UserBehaviorReport = ({ data, colors }) => {
   const options = {
     chart: { type: "line" },
     xaxis: { categories: data.timeFrames },
+    colors: colors,
   };
 
   const series = [
@@ -15,13 +16,12 @@ const UserBehaviorReport = ({ data }) => {
   ];
 
   return (
-    <Card sx={{ boxShadow: 3, borderRadius: 3 ,p:1}}>
-
+    <Card sx={{ boxShadow: 3, borderRadius: 3, p: 1 }}>
       <CardContent>
         <Typography variant="h5" gutterBottom color={"text.main"}>
           User Behavior Report
         </Typography>
-        <Chart options={options} series={series} type="line" height="380" />
+        <Chart options={options} series={series} type="line"   />
       </CardContent>
     </Card>
   );

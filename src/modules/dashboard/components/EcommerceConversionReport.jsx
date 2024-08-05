@@ -2,9 +2,10 @@ import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 import Chart from "react-apexcharts";
 
-const EcommerceConversionReport = ({ data }) => {
+const EcommerceConversionReport = ({ data ,colors}) => {
   const options = {
     chart: { type: "bar" },
+    colors:colors,
     xaxis: {
       categories: [
         "Conversion Rate",
@@ -32,7 +33,7 @@ const EcommerceConversionReport = ({ data }) => {
         <Typography variant="h5" gutterBottom color={"text.main"}>
           Ecommerce Conversion Report
         </Typography>
-        <Chart options={options} series={series} type="bar" height="380" />
+        <Chart options={options} series={series} type="bar"   />
       </CardContent>
     </Card>
   );
