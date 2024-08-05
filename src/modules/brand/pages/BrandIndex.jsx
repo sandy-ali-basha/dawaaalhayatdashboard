@@ -11,7 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
@@ -24,6 +24,7 @@ import { useBrand } from "hooks/brand/useBrand";
 import BrandUpdate from "./BrandUpdate";
 import DeleteDialog from "../components/Dialog";
 import { AddPhotoAlternate } from "@mui/icons-material";
+import AddImage from "./AddImage";
 
 const BrandIndex = () => {
   const { t } = useTranslation("index");
@@ -40,7 +41,9 @@ const BrandIndex = () => {
   const columns = useMemo(() => {
     return [t(" name"), t("operations")];
   }, [t]);
+  const [id, setID] = useState();
 
+  const [open, setOpen] = useState(false);
   const handleView = useCallback(
     (id) => {
       navigate("view/" + id);
@@ -53,7 +56,13 @@ const BrandIndex = () => {
     },
     [setEditedID]
   );
-
+  const handleAddImages = useCallback(
+    (id) => {
+      setID(id);
+      setOpen(true);
+    },
+    [setEditedID]
+  );
   const rows = useMemo(() => {
     return data?.data?.brands?.map((brand, id) => (
       <TableRow sx={{ height: "65px" }} key={brand.id} hover>
@@ -85,7 +94,7 @@ const BrandIndex = () => {
           <IconButton>
             <Tooltip
               title={"Add Images"}
-              onClick={() => handleAddImages(product?.id)}
+              onClick={() => handleAddImages(brand?.id)}
             >
               <AddPhotoAlternate sx={{ color: "text.main" }} />
             </Tooltip>
@@ -101,7 +110,7 @@ const BrandIndex = () => {
     <>
       {isLoading && <Loader />}
       {editedID && <BrandUpdate id={editedID} />}
-
+      {id && <AddImage id={id} open={open} setOpen={setOpen} />}
       <Box
         sx={{
           width: { sl: "300px" },

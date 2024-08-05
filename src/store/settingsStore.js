@@ -27,14 +27,14 @@ function getLang() {
 }
 
 export const settingsStore = create((set) => ({
-  direction: getLang(),
+  // direction: getLang(),
   responsiveFontSizes: true,
   mode: getMode(),
 
-  setDirection: (dir) => {
-    set(() => ({ direction: dir }));
-    storeDirection(dir);
-  },
+  // setDirection: (dir) => {
+  //   set(() => ({ direction: dir }));
+  //   storeDirection(dir);
+  // },
   setResponsiveFontSizes: (resFont) =>
     set(() => ({ responsiveFontSizes: resFont })),
   setMode: (mode) => {

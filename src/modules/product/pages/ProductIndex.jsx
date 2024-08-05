@@ -97,6 +97,7 @@ const ProductIndex = () => {
           {product?.price?.unitQty ?? "Null"}
         </TableCell>
     
+    
  
         <TableCell
           align="center"

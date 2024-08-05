@@ -21,19 +21,21 @@ const SUPPORTED_FORMATS = [
   "image/png",
   "image/webp",
 ];
-const MAX_FILE_SIZE = 1000000;
+const MAX_FILE_SIZE = 10000000000;
 
 const AddImage = ({ id, open, setOpen }) => {
   const { t } = useTranslation("index");
-  const schema = yup.object().shape({
+  let schema = yup.object().shape({
     image: yup
       .mixed()
-      .required(t("image") + " " + t("is required"))
+      .test("File", t("image") + " " + t("is required"), (value) => {
+        return value;
+      })
       .test("fileSize", t("The file is too large"), (value) => {
-        return value && value.size <= MAX_FILE_SIZE;
+        return value && value[0]?.size <= MAX_FILE_SIZE;
       })
       .test("fileFormat", t("Unsupported Format"), (value) => {
-        return value && SUPPORTED_FORMATS.includes(value.type);
+        return value && SUPPORTED_FORMATS.includes(value[0]?.type);
       }),
   });
 
@@ -67,7 +69,7 @@ const AddImage = ({ id, open, setOpen }) => {
   const handleUpdate = (input) => {
     const formData = new FormData();
     if (image) {
-      formData.append("image", image);
+      formData.append("image[]", image);
     }
     mutate(formData);
     setLoading(true);

@@ -38,8 +38,8 @@ const colors = {
     main: "rgb(145, 158, 171)",
   },
   primary: {
-    light: '#7DDCD3',
-    dark: '#31B5A9',
+    light: '#DE8A68',
+    dark: '#974221',
     main: '#D36135',
     contrastText: '#fff'
   },
