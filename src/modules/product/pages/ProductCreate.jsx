@@ -18,6 +18,7 @@ import ButtonAction from "components/shared/ButtonAction";
 import { useProductCreate } from "../hooks/useProductCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
+import { AltRouteRounded } from "@mui/icons-material";
 const ProductCreate = () => {
   const {
     handleCancel,
@@ -34,7 +35,7 @@ const ProductCreate = () => {
     statuses,
     Discription,
     control,
-setValue
+    setValue,
   } = useProductCreate();
 
   return (
@@ -46,8 +47,8 @@ setValue
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
           <Grid container spacing={2}>
-            {brands && (
-              <Grid item xs={6} sx={{ p: "10px" }}>
+            <Grid item xs={6} sx={{ p: "10px" }}>
+              {brands ? (
                 <FormControl fullWidth>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
                     <Typography color="text.main">{t("brand")}</Typography>
@@ -66,13 +67,19 @@ setValue
                     {errors.brand_id?.message}
                   </FormHelperText>
                 </FormControl>
-              </Grid>
-            )}
-            {producttypes && (
-              <Grid item xs={6} sx={{ p: "10px" }}>
+              ) : (
+                <Typography variant="body2" color="text.main">
+                  pleas add Brands before adding new products
+                </Typography>
+              )}
+            </Grid>
+            <Grid item xs={6} sx={{ p: "10px" }}>
+              {producttypes ? (
                 <FormControl fullWidth>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.main">{t("medical form")}</Typography>
+                    <Typography color="text.main">
+                      {t("medical form")}
+                    </Typography>
                   </Box>
                   <SelectStyled
                     sx={{ color: "text.main", borderColor: "text.main" }}
@@ -88,14 +95,20 @@ setValue
                     {errors.product_type_id?.message}
                   </FormHelperText>
                 </FormControl>
-              </Grid>
-            )}
+              ) : (
+                <Typography variant="body2" color="text.main">
+                  pleas add one medical form at least before adding new products
+                </Typography>
+              )}
+            </Grid>
 
             {/* * //details */}
             {details.map((item, index) => (
               <Grid item key={index} xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography color="text.main" variant="inputTitle">{item.head}</Typography>
+                  <Typography color="text.main" variant="inputTitle">
+                    {item.head}
+                  </Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
@@ -111,7 +124,9 @@ setValue
             {Discription.map((item, index) => (
               <Grid item key={index} xs={12} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography color="text.main" variant="inputTitle">{item.head}</Typography>
+                  <Typography color="text.main" variant="inputTitle">
+                    {item.head}
+                  </Typography>
                 </Box>
                 <EditorInput
                   control={control}

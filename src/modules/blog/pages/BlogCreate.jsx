@@ -4,11 +4,9 @@ import { TextFieldStyled } from "components/styled/TextField";
 import React from "react";
 import Loader from "components/shared/Loader";
 import ButtonAction from "components/shared/ButtonAction";
-import { useHeroimageCreate } from "../hooks/useHeroimageCreate";
+import { useBlogCreate } from "../hooks/useBlogCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
-import Image from "components/shared/Image";
-const HeroimageCreate = () => {
-
+const BlogCreate = () => {
   const {
     handleCancel,
     hanldeCreate,
@@ -18,20 +16,38 @@ const HeroimageCreate = () => {
     loading,
     t,
     errors,
-    control,
-    setImage
-  } = useHeroimageCreate()
+    details,
+  } = useBlogCreate()
+
 
   return (
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Heroimage}")}
+        {t("Create Blog}")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
-          <Grid container spacing={2}>
-            <Image errors={errors?.image?.message} control={control} register={register} name={'image'} setImage={setImage} />
+          <Grid  container spacing={2}>
+            {/* * //details */}
+            {details.map((item, index) => (
+              <Grid item key={index} xs={6} sx={{ p: "10px" }}>
+                <Box sx={{ margin: "0 0 8px 5px" }}>
+                  <Typography  variant="body1" color="text.main">{item.head}</Typography>
+                </Box>
+                <TextFieldStyled
+                  sx={{ width: "100%" }}
+                  type={item.type}
+                  placeholder={item.placeholder}
+                  name={item.name}
+                  {...register(item.register)}
+                  error={errors[item.error]?.message}
+                  helperText={errors[item.helperText]?.message || ""}
+                />
+              </Grid>
+            ))}
+
+          
           </Grid>
         </Box>
 
@@ -63,17 +79,17 @@ const HeroimageCreate = () => {
             type="reset"
           />
           <ButtonLoader name={t("Submit")}
-            onClick={() => handleSubmit(hanldeCreate)()}
-            type="submit"
-            loading={loading}
-            disableOnLoading
-          >
-            {t("Submit")}
-          </ButtonLoader>
+          onClick={() => handleSubmit(hanldeCreate)()}
+          type="submit"
+          loading={loading}
+          disableOnLoading
+        >
+          {t("Submit")}
+        </ButtonLoader>
         </Box>
       </BoxStyled>
     </Box>
   );
 };
 
-export default HeroimageCreate;
+export default BlogCreate;

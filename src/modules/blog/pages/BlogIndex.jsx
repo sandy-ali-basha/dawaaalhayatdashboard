@@ -1,3 +1,4 @@
+
 import {
   Typography,
   Box,
@@ -8,23 +9,25 @@ import {
   Button,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+
 import { BoxStyled } from "components/styled/BoxStyled";
-import React, { useMemo, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
+import React, { useMemo,useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import { useProduct_attributes } from "hooks/product_attributes/useProduct_attributes";
-import Product_attributesUpdate from "./Product_attributesUpdate";
+import ChangeStatus from "../components/ChangeStatus";
+import { useBlog } from "hooks/blog/useBlog";
+import BlogUpdate from "./BlogUpdate";
 import DeleteDialog from "../components/Dialog";
-import { ViewAgendaRounded } from "@mui/icons-material";
 
-const Product_attributesIndex = () => {
+const BlogIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useProduct_attributes();
+  const { data, page, setPage, isLoading, count } = useBlog();
 
   const navigate = useNavigate();
   const [direction] = settingsStore((state) => [state.direction]);
@@ -36,89 +39,60 @@ const Product_attributesIndex = () => {
 
   const columns = useMemo(() => {
     return [
-      t("title arabic"),
-      t("title kurdish"),
-      t("title english"),
+      t("title"),
+      t("status"),
       t("operations"),
     ];
   }, [t]);
-
-  const handleView = useCallback(
-    (id) => {
-      navigate("view/" + id);
-    },
-    [navigate]
-  );
-  const handleEdit = useCallback(
-    (id) => {
-      setEditedID(id);
-    },
-    [setEditedID]
-  );
+  
+  const handleView = useCallback((id) => { navigate('view/' + id) }, [navigate])
+  const handleEdit = useCallback((id) => { setEditedID(id) }, [setEditedID])
+  
 
   const rows = useMemo(() => {
-    return data?.data?.product_attributes?.map((product_attributes, id) => (
-      <TableRow sx={{ height: "65px" }} key={product_attributes.id}>
-        {/* //todo add translation */}
-
-        <TableCell sx={{ minWidth: 50 }}>
-          {product_attributes?.translations[0]?.title ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {product_attributes?.translations[1]?.title ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {product_attributes?.translations[2]?.title ?? "Null"}
-        </TableCell>
-        {/* <TableCell sx={{ minWidth: 120 }} align="center">
+    return data?.blog?.map((blog, id) => (
+      <TableRow sx={{ height: "65px" }} key={blog.id} hover>
+        <TableCell sx={{ minWidth: 50 }}>{blog?.first_name ?? "Null"}</TableCell>
+        <TableCell sx={{ minWidth: 120 }} align="center">
           <ChangeStatus
-            id={product_attributes.id}
-            action={product_attributes.status === "active" && "change-status"}
+            id={blog.id}
+            action={blog.status === "active" && "change-status"}
           >
-            {product_attributes.status === "Active"
-              ? t("Active")
-              : t("Not Active")}
+            {blog.status === "Active" ? t("Active") : t("Not Active")}
           </ChangeStatus>
-        </TableCell> */}
+        </TableCell>
         <TableCell
           align="center"
           sx={{
             minWidth: 200,
           }}
         >
-          <IconButton onClick={() => handleEdit(product_attributes?.id)}>
+          <IconButton onClick={() => handleEdit(blog?.id)}>
             <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
               <ModeTwoToneIcon sx={{ color: "text.main" }} />
             </Tooltip>
           </IconButton>
           <IconButton>
             <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-              <DeleteDialog
-                id={product_attributes?.id}
-                count={count}
-                page={page}
-              />
+              <DeleteDialog id={blog?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>
-          <IconButton>
-            <Tooltip title={"show values"}>
-              <Link to={`values/${product_attributes?.id}`}>
-                {" "}
-                <ViewAgendaRounded sx={{ color: "text.main" }} />
-              </Link>
+          <IconButton onClick={() => handleView(blog.id)}>
+            <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
+              <VisibilityTwoToneIcon color="primary" />
             </Tooltip>
           </IconButton>
         </TableCell>
       </TableRow>
     ));
-  }, [data, count, direction, handleEdit, handleView, page, t]);
+  },[data, count, direction, handleEdit, handleView, page,t]);
 
-  const handleCreate = () => navigate("create");
+  const handleCreate = () => navigate("create")
 
   return (
     <>
       {isLoading && <Loader />}
-      {editedID && <Product_attributesUpdate id={editedID} />}
+      {editedID && <BlogUpdate id={editedID} />}
 
       <Box
         sx={{
@@ -136,7 +110,7 @@ const Product_attributesIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("product Categories")}
+            {t("blog")}
           </Typography>
 
           <Button
@@ -145,7 +119,7 @@ const Product_attributesIndex = () => {
             color="secondary"
             onClick={handleCreate}
           >
-            {t("New Categories")}
+            {t("New blog")}
           </Button>
         </Box>
 
@@ -163,4 +137,4 @@ const Product_attributesIndex = () => {
   );
 };
 
-export default Product_attributesIndex;
+export default BlogIndex;

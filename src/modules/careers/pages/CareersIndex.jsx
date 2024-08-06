@@ -124,11 +124,8 @@ const CareersIndex = () => {
 
           <Button
             startIcon={<AddIcon />}
-            sx={{
-              color: "primary.main",
-              backgroundColor: "origin.main",
-              "&:hover": { backgroundColor: "origin.main" },
-            }}
+            variant="contained"
+            color="secondary"
             onClick={handleCreate}
           >
             {t("New careers")}

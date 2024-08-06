@@ -1,37 +1,27 @@
 
-import { useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { _Heroimage } from "api/heroimage/heroimage";
+import { _Blog } from "api/blog/blog";
 
-const SUPPORTED_FORMATS = [
-  "image/jpg",
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-]
-const MAX_FILE_SIZE = 1000000;
+const schema = yup.object().shape({
+  kr: yup.object().shape({
+    name: yup.string().required("Kurdish name is required"),
+  }),
+  ar: yup.object().shape({
+    name: yup.string().required("Arabic name is required"),
+  }),
+  en: yup.object().shape({
+    name: yup.string().required("English name is required"),
+  }),
+});
 
-export const useHeroimageCreate = () => {
+export const useBlogCreate = () => {
   const { t } = useTranslation("index")
-  let schema = yup.object().shape({
-    image: yup
-      .mixed()
-      .test("File", t("image") + ' ' + t("is required"), (value) => {
-        return value;
-      })
-      .test("fileSize", t("The file is too large"), (value) => {
-        return value && value[0]?.size <= MAX_FILE_SIZE;
-      })
-      .test("fileFormat", t("Unsupported Format"), (value) => {
-        return value && SUPPORTED_FORMATS.includes(value[0]?.type);
-      }),
-  })
-
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const formOptions = { resolver: yupResolver(schema) };
@@ -39,10 +29,8 @@ export const useHeroimageCreate = () => {
   const { errors } = formState
   const { mutate } = useMutation((data) => createPost(data))
 
-  const [image, setImage] = useState()
-
   async function createPost(data) {
-    _Heroimage
+    _Blog
       .post(data, setLoading)
       .then(res => {
         if (res.success) navigate(-1)
@@ -55,15 +43,38 @@ export const useHeroimageCreate = () => {
 
   const handleCancel = () => navigate(-1)
 
+  const handleReset = () => {
+    const form = document.querySelector('form');
+    if (form) form.reset()
+  }
+
   const hanldeCreate = (input) => {
     const formData = new FormData()
-    formData.append('image', image);
+    const inputWithoutBirthday = { ...input };
+    delete inputWithoutBirthday.birthday;
+    for (const [key, value] of Object.entries(inputWithoutBirthday)) {
+      formData.append(key, value);
+    }
     mutate(formData);
     setLoading(true);
   }
 
+  const languages = [
+  { code: "ar", name: "Arabic" },
+    { code: "kr", name: "Kurdish" },
+    { code: "en", name: "English" },
+  ];
+
+  const details = languages.map((lang, index) => ({
+    head: t("name " + lang.name.toLowerCase()),
+    type: "text",
+    placeholder: t("name"),
+    register: lang.code + ".name",
+  }));
+
   return {
     handleCancel,
+    handleReset,
     hanldeCreate,
     register,
     handleSubmit,
@@ -71,8 +82,8 @@ export const useHeroimageCreate = () => {
     loading,
     t,
     errors,
+    details,
     control,
-    setImage
   };
 };
 

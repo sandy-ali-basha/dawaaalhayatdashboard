@@ -11,19 +11,19 @@ import Loader from "components/shared/Loader";
 import { Tooltip } from "@mui/material";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
-import { useDeleteHeroimage } from "hooks/heroimage/useDeleteHeroimage";
-import { useHeroimage } from "hooks/heroimage/useHeroimage";
+import { useDeleteBlog } from "hooks/blog/useDeleteBlog";
+import { useBlog } from "hooks/blog/useBlog";
 const DeleteDialog = ({ id, page, count }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const deleteheroimage = useDeleteHeroimage({ page, count });
+  const deleteblog = useDeleteBlog({ page, count });
   const handleClickOpen = (e) => setOpen(true)
   const handleClose = () => setOpen(false)
-  const { refetch } = useHeroimage();
-  const DeleteHeroimage = () => {
+  const { refetch } = useBlog();
+  const DeleteBlog = () => {
     setLoading(true);
-    deleteheroimage.mutate(id, {
+    deleteblog.mutate(id, {
       onSuccess: () => {
         setOpen(false);
         refetch()
@@ -64,7 +64,7 @@ const DeleteDialog = ({ id, page, count }) => {
         <DialogActions>
           <Button onClick={handleClose}>{t('Disagree')}</Button>
           {loading && <Loader />}
-          <Button autoFocus sx={{}} variant="contained" onClick={DeleteHeroimage}>
+          <Button autoFocus sx={{}} variant="contained" onClick={DeleteBlog}>
             {t("Agree")}
           </Button>
         </DialogActions>

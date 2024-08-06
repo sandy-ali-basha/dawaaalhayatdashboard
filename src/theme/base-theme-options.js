@@ -31,7 +31,6 @@ export const baseThemeOptions = {
       defaultProps: {
         disableElevation: true,
       },
-  
     },
   
   

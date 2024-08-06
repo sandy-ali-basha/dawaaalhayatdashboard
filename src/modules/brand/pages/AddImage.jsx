@@ -44,7 +44,7 @@ const AddImage = ({ id, open, setOpen }) => {
     useForm(formOptions);
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -54,7 +54,7 @@ const AddImage = ({ id, open, setOpen }) => {
 
   async function createPost(data) {
     _Brand
-      .update({
+      .image({
         editedID: id,
         formData: data,
       })
@@ -68,9 +68,8 @@ const AddImage = ({ id, open, setOpen }) => {
 
   const handleUpdate = (input) => {
     const formData = new FormData();
-    if (image) {
-      formData.append("image[]", image);
-    }
+    image.forEach((image) => formData.append("image", image));
+
     mutate(formData);
     setLoading(true);
   };

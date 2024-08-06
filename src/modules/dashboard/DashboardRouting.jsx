@@ -5,7 +5,6 @@ import DashboardIndex from "./pages/DashboardIndex";
 import AdminRouting from "modules/admin/AdminRouting";
 import ProfileRouting from "modules/profile/ProfileRouting";
 import ServiceRouting from "modules/Service/ServiceRouting";
-import HeroimageRouting from "modules/HeroImage/HeroimageRouting";
 import TermsRouting from "modules/Terms/TermsRouting";
 import TransactionRouting from "modules/transaction/TransactionRouting";
 import ReviewRouting from "modules/review/ReviewRouting";
@@ -27,7 +26,6 @@ const DashboardRouting = () => {
           <Route path="/admin/*" element={<AdminRouting />} />
           <Route path="/profile/*" element={<ProfileRouting />} />
           <Route path="/service/*" element={<ServiceRouting />} />
-          <Route path="/heroImage/*" element={<HeroimageRouting />} />
           <Route path="/policy/*" element={<PolicyRouting />} />
           <Route path="/transaction/*" element={<TransactionRouting />} />
           <Route path="/review/*" element={<ReviewRouting />} />
@@ -41,7 +39,7 @@ const DashboardRouting = () => {
           <Route path="/product/*" element={<ProductRouting />} />
           <Route path="/brands/*" element={<BrandRouting />} />
           <Route path="/product_type/*" element={<Product_typeRouting />} />
-      
+
           <Route
             path="/products/categories/*"
             element={<Product_attributesRouting />}
@@ -50,7 +48,7 @@ const DashboardRouting = () => {
         </Route>
       }
 
-      <Route path="*" element={<NotFound/>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

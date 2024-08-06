@@ -25,7 +25,6 @@ const SUPPORTED_FORMATS = [
 const MAX_FILE_SIZE = 1000000;
 
 const AddImages = ({ id, open, setOpen }) => {
-
   const { t } = useTranslation("index");
   const schema = yup.object().shape({
     images: yup
@@ -50,11 +49,9 @@ const AddImages = ({ id, open, setOpen }) => {
   });
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, control, setValue } =
-    useForm(formOptions);
+  const { register, handleSubmit, formState, control } = useForm(formOptions);
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState();
   const [images, setImages] = useState([]);
 
   const handleClose = () => {

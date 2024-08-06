@@ -50,7 +50,7 @@ const ProductIndex = () => {
     ];
   }, [t]);
   const handleCreate = () => navigate("create");
-
+ 
   const [open, setOpen] = useState(false);
   const [openAttr, setOpenAttr] = useState(false);
 
@@ -89,16 +89,11 @@ const ProductIndex = () => {
           {product?.brand?.name ?? "Null"}
         </TableCell>
         <TableCell sx={{ minWidth: 50 }}>{product?.sku ?? "Null"}</TableCell>
+        <TableCell sx={{ minWidth: 50 }}>{product?.price ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>
-          {product?.price?.value + " " + product?.price?.currency?.code ??
-            "Null"}
+          {product?.quantity ?? "Null"}
         </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {product?.price?.unitQty ?? "Null"}
-        </TableCell>
-    
-    
- 
+
         <TableCell
           align="center"
           sx={{
@@ -169,11 +164,8 @@ const ProductIndex = () => {
 
           <Button
             startIcon={<AddIcon />}
-            sx={{
-              color: "primary.main",
-              backgroundColor: "origin.main",
-              "&:hover": { backgroundColor: "origin.main" },
-            }}
+            variant="contained"
+            color="secondary"
             onClick={handleCreate}
           >
             {t("New product")}

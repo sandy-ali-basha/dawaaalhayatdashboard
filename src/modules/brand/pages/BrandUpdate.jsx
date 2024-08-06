@@ -1,115 +1,60 @@
-import { React, useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Box, Grid, Typography } from "@mui/material";
-import { colorStore } from "store/ColorsStore";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _axios } from "interceptor/http-config";
-import { TextFieldStyled } from "components/styled/TextField";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
-import { _Brand } from "api/brand/brand";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
-let schema = yup.object().shape({
-  kr: yup.object().shape({
-    name: yup.string().required("Kurdish name is required"),
-  }),
-  ar: yup.object().shape({
-    name: yup.string().required("Arabic name is required"),
-  }),
-  en: yup.object().shape({
-    name: yup.string().required("English name is required"),
-  }),
-});
+import Image from "components/shared/Image";
+import { _Brand } from "api/brand/brand";
 
-const BrandUpdate = ({ id }) => {
+const SUPPORTED_FORMATS = [
+  "image/jpg",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
+const MAX_FILE_SIZE = 10000000000;
+
+const AddImage = ({ id, open, setOpen }) => {
   const { t } = useTranslation("index");
-  const [editedID, setEditedID] = colorStore((state) => [
-    state.editedID,
-    state.setEditedID,
-  ]);
+
+  let schema = yup.object().shape({
+    image: yup
+      .mixed()
+      .required(t("image") + " " + t("is required"))
+      .test("fileSize", t("The file is too large"), (value) => {
+        return value && value[0]?.size <= MAX_FILE_SIZE;
+      })
+      .test("fileFormat", t("Unsupported Format"), (value) => {
+        return value && SUPPORTED_FORMATS.includes(value[0]?.type);
+      }),
+  });
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState ,setValue} = useForm(formOptions);
+  const { register, handleSubmit, formState, control, setValue } =
+    useForm(formOptions);
   const { errors } = formState;
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    _axios
-      .get("/brand/" + editedID, {
-        headers: {
-          translations: true,
-        },
-      })
-      .then((res) => {
-        setData(res.data?.data);
-        const fetchedData = res.data?.data;
-        setData(fetchedData);
-        if (fetchedData) {
-          setValue(
-            "kr.name",
-            fetchedData?.translations.find((t) => t.locale === "kr")?.name || ""
-          );
-          setValue(
-            "ar.name",
-            fetchedData?.translations.find((t) => t.locale === "ar")?.name || ""
-          );
-          setValue(
-            "en.name",
-            fetchedData?.translations.find((t) => t.locale === "en")?.name || ""
-          );
-        }
-      });
-  }, [id, editedID]);
-
-  const details = [
-    {
-      head: t("arabic name"),
-      type: "text",
-      placeholder: t("ar.name"),
-      name: "ar.name",
-      register: "ar.name",
-      error: "ar.name",
-      helperText: "ar.name",
-    },
-    {
-      head: t("english name"),
-      type: "text",
-      placeholder: t("en.name"),
-      name: "en.name",
-      register: "en.name",
-      error: "en.name",
-      helperText: "en.name",
-    },
-    {
-      head: t("kurdish name"),
-      type: "text",
-      placeholder: t("kr.name"),
-      name: "kr.name",
-      register: "kr.name",
-      error: "kr.name",
-      helperText: "kr.name",
-    },
-  ];
+  const [image, setImage] = useState(null);
 
   const handleClose = () => {
     setOpen(false);
-    setEditedID(null);
   };
 
   const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
     _Brand
-      .update({
-        editedID: editedID,
+      .image({
+        editedID: id,
         formData: data,
       })
       .catch((err) => {
@@ -117,61 +62,52 @@ const BrandUpdate = ({ id }) => {
       })
       .then(() => {
         setLoading(false);
-        // handleClose()
       });
   }
 
-  const hanldeUpdate = (input) => {
-    mutate(input);
+  const handleUpdate = (input) => {
+    const formData = new FormData();
+    if (image) {
+      formData.append("image", image);
+    }
+    mutate(formData);
     setLoading(true);
+  };
+
+  const handleDialogClose = (event, reason) => {
+    if (reason && reason === "backdropClick") {
+      return;
+    }
+    handleClose();
   };
 
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={true} onClose={handleClose}>
+      <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
         <DialogTitle sx={{ color: "primary.main" }}>
-          {t("Edit Row")}
+          {t("Add Image")}
         </DialogTitle>
-        {!!data && (
-          <>
-            <Grid container component="form" key={id}>
-              {details?.map((item, index) => (
-                <Grid key={index} item md={6} sx={{ p: "10px" }}>
-                  <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography
-                      sx={{ margin: "0 0 8px 8px" }}
-                      color="text.main"
-                      variant="body2"
-                    >
-                      {item.head}
-                    </Typography>
-                  </Box>
-                  <TextFieldStyled
-                    sx={{ width: "100%" }}
-                    type={item.type}
-                    placeholder={item.placeholder}
-                    defaultValue={item.defaultValue}
-                    name={item.name}
-                    {...register(item.register)}
-                    error={errors[item.error]?.message}
-                    helperText={errors[item.helperText]?.message || ""}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </>
-        )}
-
+        <>
+          <Grid container component="form" key={id} sx={{ m: 1 }}>
+            <Image
+              errors={errors?.image?.message}
+              control={control}
+              register={register}
+              name={"image"}
+              setImage={(file) => setImage(file[0])}
+              multiple={false}
+            />
+          </Grid>
+        </>
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}
-
           <ButtonLoader
             name={t("Submit")}
-            onClick={() => handleSubmit(hanldeUpdate)()}
+            onClick={() => handleSubmit(handleUpdate)()}
             type="save"
             loading={loading}
             disableOnLoading
@@ -184,4 +120,4 @@ const BrandUpdate = ({ id }) => {
   );
 };
 
-export default BrandUpdate;
+export default AddImage;

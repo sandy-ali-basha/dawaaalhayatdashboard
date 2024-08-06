@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Container, Grid, Typography } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 import OrderStatusReport from "../components/OrderStatusReport";
 import ProductPerformanceReport from "../components/ProductPerformanceReport";
 import AbandonedCartReport from "../components/AbandonedCartReport";
@@ -8,6 +8,7 @@ import UserBehaviorReport from "../components/UserBehaviorReport";
 import EcommerceConversionReport from "../components/EcommerceConversionReport";
 import MarketingCampaignReport from "../components/MarketingCampaignReport";
 import ApexChartWrapper from "components/styled/ApexChart";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
 
 import { useTheme } from "@mui/material/styles";
 
@@ -43,6 +44,34 @@ const Dashboard = () => {
         orderValue: 200,
         returnRate: 0,
       },
+      {
+        name: "Product 3",
+        unitsSold: 90,
+        conversionRate: 28,
+        orderValue: 80,
+        returnRate: 60,
+      },
+      {
+        name: "Product 3",
+        unitsSold: 123,
+        conversionRate: 22,
+        orderValue: 544,
+        returnRate: 50,
+      },
+      {
+        name: "Product 3",
+        unitsSold: 311,
+        conversionRate: 2,
+        orderValue: 100,
+        returnRate: 10,
+      },
+      {
+        name: "Product 3",
+        unitsSold: 605,
+        conversionRate: 2,
+        orderValue: 546,
+        returnRate: 400,
+      },
     ],
   };
 
@@ -67,8 +96,8 @@ const Dashboard = () => {
   const userBehaviorData = {
     timeFrames: ["January", "February", "March", "April", "May"],
     pageviews: [1000, 1500, 1300, 1600, 1700],
-    sessionDuration: [5, 6, 5.5, 6.5, 6.8],
-    bounceRate: [30, 25, 20, 22, 18],
+    sessionDuration: [54, 650, 5.88, 60.5, 6.8],
+    bounceRate: [730, 275, 2550, 822, 1878],
   };
 
   const ecommerceConversionData = {
@@ -86,51 +115,129 @@ const Dashboard = () => {
   };
   const colors = [
     theme.palette.primary.light,
-    theme.palette.warning.light,
+    theme.palette.secondary.light,
+    theme.palette.text.main,
     theme.palette.error.light,
-    theme.palette.info.light,
+    theme.palette.success.primary,
   ];
   return (
     <ApexChartWrapper>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={4} sm={4} md={3}>
           <Card
             sx={{
-              background: "primary.lighter",
               display: "flex",
               boxShadow: 3,
               borderRadius: 3,
-              p:2
+              p: 2,
+              height: "15vh",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              backgroundColor: "primary.light",
+              color: "white",
             }}
           >
-            
-            <Typography>{orderStatusData?.totalOrders}</Typography>
+            {" "}
+            <LocalMallIcon />
+            <Typography variant="h6">
+              totalOrders:
+              {orderStatusData?.totalOrders}
+            </Typography>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={6}>
-          <OrderStatusReport data={orderStatusData} colors={colors} />
+        <Grid item xs={4} sm={4} md={3}>
+          <Card
+            sx={{
+              display: "flex",
+              boxShadow: 3,
+              borderRadius: 3,
+              p: 2,
+              height: "15vh",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              backgroundColor: "success.lighter",
+              color: "white",
+            }}
+          >
+            {" "}
+            <LocalMallIcon />
+            <Typography variant="h6">
+              deliveredOrders:
+              {orderStatusData?.deliveredOrders}
+            </Typography>
+          </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={6}>
-          <ProductPerformanceReport
-            data={productPerformanceData}
-            colors={colors}
-          />
+        <Grid item xs={4} sm={4} md={3}>
+          <Card
+            sx={{
+              display: "flex",
+              boxShadow: 3,
+              borderRadius: 3,
+              p: 2,
+              height: "15vh",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              backgroundColor: "info.light",
+              color: "white",
+            }}
+          >
+            {" "}
+            <LocalMallIcon />
+            <Typography variant="h6">
+              pendingOrders:
+              {orderStatusData?.pendingOrders}
+            </Typography>
+          </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={8}>
-          <AbandonedCartReport data={abandonedCartData} colors={colors} />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <WebsiteTrafficReport data={websiteTrafficData} colors={colors} />
-        </Grid>
-        <Grid item xs={12} sm={6} md={8}>
-          <UserBehaviorReport data={userBehaviorData} colors={colors} />
+        <Grid item xs={4} sm={4} md={3}>
+          <Card
+            sx={{
+              display: "flex",
+              boxShadow: 3,
+              borderRadius: 3,
+              p: 2,
+              height: "15vh",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              backgroundColor: "error.light",
+              color: "white",
+            }}
+          >
+            {" "}
+            <LocalMallIcon />
+            <Typography variant="h6">
+              canceledOrders:
+              {orderStatusData?.canceledOrders}
+            </Typography>
+          </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={5}>
+          <WebsiteTrafficReport data={websiteTrafficData} colors={colors} />
+        </Grid>
+        <Grid item xs={12} sm={6} md={7}>
+          <UserBehaviorReport data={userBehaviorData} colors={colors} />
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={7}>
           <EcommerceConversionReport
             data={ecommerceConversionData}
             colors={colors}
           />
         </Grid>
+        <Grid item xs={12} sm={6} md={5}>
+          <AbandonedCartReport data={abandonedCartData} colors={colors} />
+        </Grid>
+        <Grid item xs={12} sm={6} md={12}>
+          <ProductPerformanceReport
+            data={productPerformanceData}
+            colors={colors}
+          />
+        </Grid>
+
         <Grid item xs={12} sm={6} md={7}>
           <MarketingCampaignReport
             data={marketingCampaignData}

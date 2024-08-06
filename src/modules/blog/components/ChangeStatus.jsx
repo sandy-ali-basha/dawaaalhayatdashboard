@@ -11,10 +11,10 @@ import {
   import React, { useState } from "react";
   import { useTranslation } from "react-i18next";
   import { useChangeStatus } from "../hooks/useChangeStatus";
-  import { useHeroimage } from "hooks/heroimage/useHeroimage";
+  import { useBlog } from "hooks/blog/useBlog";
   const ChangeStatus = ({ id, children, action }) => {
     const { t } = useTranslation("index")
-    const { refetch } = useHeroimage()
+    const { refetch } = useBlog()
     const changeStatus = useChangeStatus({ id: id, is_blocked: action });
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = React.useState(false);

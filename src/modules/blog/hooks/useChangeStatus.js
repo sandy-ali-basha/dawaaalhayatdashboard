@@ -3,23 +3,23 @@ import { useQueryClient, useMutation } from "react-query";
 export const useChangeStatus = ({ status, id }) => {
   const queryClient = useQueryClient();
   return useMutation(
-    () => _axios.get('/admin/heroimage/change-status/'+ id),
+    () => _axios.get('/blog/change-status/'+ id),
     {
       onMutate: async (id) => {
-        await queryClient.cancelQueries(["heroimage", true, 1, 10]);
+        await queryClient.cancelQueries(["blog", true, 1, 10]);
         const previousData = queryClient.getQueriesData([
-          "heroimage",
+          "blog",
           true,
           1,
           10,
         ]);
         queryClient.setQueryData(
-          ["heroimage", true, 1, 10],
+          ["blog", true, 1, 10],
           (oldQueryData) => {
-            const oldQueryDataCopy = oldQueryData?.heroimages?.filter(
+            const oldQueryDataCopy = oldQueryData?.blogs?.filter(
               (old) => +old.id !== +id
             )[0];
-            const queryUpdated = oldQueryData?.heroimages?.filter(
+            const queryUpdated = oldQueryData?.blogs?.filter(
               (old) => +old.id === +id
             )[0];
 
@@ -37,11 +37,11 @@ export const useChangeStatus = ({ status, id }) => {
         };
       },
       onSuccess: () => {
-        return queryClient.invalidateQueries(["heroimage", true, 1, 10]);
+        return queryClient.invalidateQueries(["blog", true, 1, 10]);
       },
       onError: (_error, _hero, context) => {
         queryClient.setQueryData(
-          ["heroimage", true, 1, 10],
+          ["blog", true, 1, 10],
           context.prevuiosQuery
         );
       },

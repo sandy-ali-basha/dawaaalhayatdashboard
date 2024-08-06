@@ -30,6 +30,8 @@ import EditorInput from "components/shared/EditorInput";
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
   product_type_id: yup.string().trim().required("product type is required"),
+  price: yup.number().required("price type is required"),
+  qty: yup.number().required("quantity type is required"),
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
     description: yup.string().required("Kurdish description is required"),
@@ -156,6 +158,22 @@ const ProductUpdate = ({ id }) => {
       register: "status",
       helperText: "status",
       defaultValue: data?.status,
+    },
+    {
+      head: t("price"),
+      type: "number",
+      placeholder: "price",
+      register: "price",
+      helperText: "price",
+      defaultValue: data?.price,
+    },
+    {
+      head: t("quantity"),
+      type: "number",
+      placeholder: "quantity",
+      register: "qty",
+      helperText: "qty",
+      defaultValue: data?.quantity,
     }
   );
 

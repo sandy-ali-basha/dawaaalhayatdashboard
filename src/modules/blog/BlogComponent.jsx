@@ -1,10 +1,10 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-const heroimageComponent = () => {
+const blogComponent = () => {
   return (
     <>
       <Outlet />
     </>
   );
 };
-export default heroimageComponent
+export default blogComponent

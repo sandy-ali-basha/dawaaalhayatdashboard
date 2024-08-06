@@ -16,11 +16,11 @@ const divider = "#ececec";
 
 const colors = {
   origin: {
-    main: "#FFBF69",
+    main: "#444545",
   },
   background: {
     main: "#ececec",
-    paper: "#FFF"
+    paper: "#FFF",
   },
   edit: {
     main: "#2f2b3d6b",
@@ -38,40 +38,43 @@ const colors = {
     main: "rgb(145, 158, 171)",
   },
   primary: {
-    light: '#DE8A68',
-    dark: '#974221',
-    main: '#D36135',
-    contrastText: '#fff'
+    lighter: "#FFBF69",
+    light: "#FFB347",
+    dark: "#F58F00",
+    main: "#ff9f1c",
+    contrastText: "#FFF8F0",
   },
   secondary: {
-    light: '#ACAFAF',
-    main: '#A1A5A5',
-    dark: '#8D9191',
-    contrastText: '#fff'
+    lighter: "#CBF3F0",
+    light: "#49D4C6",
+    main: "#2EC4B6",
+    dark: "#27A599",
+    contrastText: "#FFF8F0",
   },
   error: {
-    light: '#ED6F70',
-    main: '#EA5455',
-    dark: '#CE4A4B',
-    contrastText: '#fff'
+    light: "#ED6F70",
+    main: "#EA5455",
+    dark: "#CE4A4B",
+    contrastText: "#FFF8F0",
   },
   warning: {
-    light: '#FFAB5A',
-    main: '#FF9F43',
-    dark: '#E08C3B',
-    contrastText: '#fff'
+    light: "#FFAB5A",
+    main: "#FF9F43",
+    dark: "#E08C3B",
+    contrastText: "#FFF8F0",
   },
   info: {
-    light: '#1FD5EB',
-    main: '#00CFE8',
-    dark: '#00B6CC',
-    contrastText: '#fff'
+    light: "#1FD5EB",
+    main: "#00CFE8",
+    dark: "#00B6CC",
+    contrastText: "#FFF8F0",
   },
   success: {
-    light: '#42CE80',
-    main: '#28C76F',
-    dark: '#23AF62',
-    contrastText: '#fff'
+    lighter: "#50e390",
+    light: "#42CE80",
+    main: "#28C76F",
+    dark: "#23AF62",
+    contrastText: "#FFF8F0",
   },
   card: {
     main: "rgb(255,255,255)",
@@ -87,9 +90,9 @@ export const lightThemeOptions = {
             variant: "primary",
           },
           style: {
-            backgroundColor: colors.background.main,
-            color: colors.text.main,
-            boxShadow: "0px 4px 18px 0px rgba(47, 43, 61, 0.1)",
+            backgroundColor: colors.secondary.main,
+            color: colors.text.main ,
+            boxShadow: 3,
             "&:hover": {
               backgroundColor: colors.background.hover,
               boxShadow: "none",
@@ -110,7 +113,7 @@ export const lightThemeOptions = {
         },
       ],
     },
-  
+
     MuiTableHead: {
       styleOverrides: {
         root: {
@@ -214,7 +217,7 @@ export const lightThemeOptions = {
           textTransform: "capitalize",
           textAlign: "center",
           borderBottom: `1px solid ${divider}`,
-          borderRadius:"7px"
+          borderRadius: "7px",
         },
       },
     },
@@ -232,7 +235,7 @@ export const lightThemeOptions = {
         root: {
           ".MuiDialog-container .MuiPaper-root": {
             backgroundColor: colors.background.main,
-            borderRadius: 8, 
+            borderRadius: 8,
             zIndex: "1200",
           },
         },

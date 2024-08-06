@@ -1,9 +1,4 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import React from "react";
 
 const ButtonLoader = (props) => {
@@ -14,12 +9,10 @@ const ButtonLoader = (props) => {
       {...rest}
       disabled={disableOnLoading === true && loading}
       sx={{
-        width: 110,
-        backgroundColor: "origin.main",
-        "&:hover": {
-          backgroundColor: "origin.main",
-        },
+        width: 150,
       }}
+      variant="contained"
+      color={"secondary"}
     >
       {props.loading && (
         <Box

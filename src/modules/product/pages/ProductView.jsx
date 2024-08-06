@@ -49,14 +49,14 @@ const ProductView = () => {
     { head: t("product type"), value: data?.product_type?.name },
     { head: t("status"), value: data?.status },
     { head: t("sku"), value: data?.sku },
-    { head: t("price"), value: data?.price?.value },
-    { head: t("price currency code"), value: data?.price?.currency?.code },
-    { head: t("price currency name"), value: data?.price?.currency?.name },
-    {
-      head: t("price currency exchange_rate"),
-      value: data?.price?.currency?.exchange_rate,
-    },
-    { head: t("unit Qty"), value: data?.unitQty },
+    { head: t("price"), value: data?.price },
+    // { head: t("price currency code"), value: data?.price?.currency?.code },
+    // { head: t("price currency name"), value: data?.price },
+    // {
+    //   head: t("price currency exchange_rate"),
+    //   value: data?.price?.currency?.exchange_rate,
+    // },
+    { head: t("quantity"), value: data?.quantity },
   ];
   const disc = [
     {
