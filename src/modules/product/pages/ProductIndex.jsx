@@ -7,12 +7,9 @@ import {
   Tooltip,
   Button,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
@@ -22,10 +19,16 @@ import { useProduct } from "hooks/product/useProduct";
 import ProductUpdate from "./ProductUpdate";
 import DeleteDialog from "../components/Dialog";
 import AddImages from "./AddImages";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import ProductAttr from "./ProductAttr";
+import AddImagesSlider from "./AddImagesSlider";
+//* icons
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import LinkIcon from "@mui/icons-material/Link";
 import { ListAltRounded } from "@mui/icons-material";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import ViewCarouselRoundedIcon from "@mui/icons-material/ViewCarouselRounded";
+import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 const ProductIndex = () => {
   const { t } = useTranslation("index");
   const { data, page, setPage, isLoading, count } = useProduct();
@@ -53,6 +56,7 @@ const ProductIndex = () => {
 
   const [open, setOpen] = useState(false);
   const [openAttr, setOpenAttr] = useState(false);
+  const [openImagesSlider, setOpenImagesSlider] = useState(false);
 
   const handleView = useCallback(
     (id) => {
@@ -72,6 +76,13 @@ const ProductIndex = () => {
       setOpen(true);
     },
     [setEditedID]
+  );
+  const handleImagesSlider = useCallback(
+    (id) => {
+      setID(id);
+      setOpenImagesSlider(true);
+    },
+    [openImagesSlider]
   );
 
   const handleCat = useCallback(
@@ -126,6 +137,14 @@ const ProductIndex = () => {
           </IconButton>
           <IconButton>
             <Tooltip
+              title={"Add Images to slider"}
+              onClick={() => handleImagesSlider(product?.id)}
+            >
+              <ViewCarouselRoundedIcon sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
+          <IconButton>
+            <Tooltip
               title={"link to categories"}
               onClick={() => handleCat(product?.id)}
             >
@@ -150,6 +169,13 @@ const ProductIndex = () => {
       {isLoading && <Loader />}
       {editedID && <ProductUpdate id={editedID} />}
       {id && <AddImages id={id} open={open} setOpen={setOpen} />}
+      {id && (
+        <AddImagesSlider
+          id={id}
+          open={openImagesSlider}
+          setOpen={setOpenImagesSlider}
+        />
+      )}
       {id && <ProductAttr id={id} open={openAttr} setOpen={setOpenAttr} />}
 
       <Box
@@ -172,7 +198,7 @@ const ProductIndex = () => {
           </Typography>
 
           <Button
-            startIcon={<AddIcon />}
+            startIcon={<AddRoundedIcon />}
             variant="contained"
             color="secondary"
             onClick={handleCreate}

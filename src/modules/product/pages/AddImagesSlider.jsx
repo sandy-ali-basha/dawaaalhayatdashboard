@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Box, Grid, Typography } from "@mui/material";
+import { colorStore } from "store/ColorsStore";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _axios } from "interceptor/http-config";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
+import { _Product } from "api/product/product";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 import Image from "components/shared/Image";
-import { _Brand } from "api/brand/brand";
 
 const SUPPORTED_FORMATS = [
   "image/jpg",
@@ -21,29 +22,37 @@ const SUPPORTED_FORMATS = [
   "image/png",
   "image/webp",
 ];
-const MAX_FILE_SIZE = 10000000000;
+const MAX_FILE_SIZE = 1000000;
 
-const AddImage = ({ id, open, setOpen }) => {
+const AddImagesSlider = ({ id, open, setOpen }) => {
   const { t } = useTranslation("index");
-
-  let schema = yup.object().shape({
-    image: yup
+  const schema = yup.object().shape({
+    images: yup
       .mixed()
-      .required(t("image") + " " + t("is required"))
+      .test("File", t("image") + " " + t("is required"), (value) => {
+        return value && Array.isArray(value) && value.length > 0;
+      })
       .test("fileSize", t("The file is too large"), (value) => {
-        return value && value[0]?.size <= MAX_FILE_SIZE;
+        return (
+          value &&
+          Array.isArray(value) &&
+          value.every((file) => file.size <= MAX_FILE_SIZE)
+        );
       })
       .test("fileFormat", t("Unsupported Format"), (value) => {
-        return value && SUPPORTED_FORMATS.includes(value[0]?.type);
+        return (
+          value &&
+          Array.isArray(value) &&
+          value.every((file) => SUPPORTED_FORMATS.includes(file.type))
+        );
       }),
   });
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, control, setValue } =
-    useForm(formOptions);
+  const { register, handleSubmit, formState, control } = useForm(formOptions);
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -52,8 +61,8 @@ const AddImage = ({ id, open, setOpen }) => {
   const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
-    _Brand
-      .image({
+    _Product
+      .AddImagesSlider({
         editedID: id,
         formData: data,
       })
@@ -67,9 +76,7 @@ const AddImage = ({ id, open, setOpen }) => {
 
   const handleUpdate = (input) => {
     const formData = new FormData();
-    if (image) {
-      formData.append("image", image);
-    }
+    images.forEach((image) => formData.append("images", image));
     mutate(formData);
     setLoading(true);
   };
@@ -86,17 +93,17 @@ const AddImage = ({ id, open, setOpen }) => {
       {loading && <Loader />}
       <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
         <DialogTitle sx={{ color: "text.main" }}>
-          {t("Add Image")}
+          {t("Add Images")}
         </DialogTitle>
         <>
           <Grid container component="form" key={id} sx={{ m: 1 }}>
             <Image
-              errors={errors?.image?.message}
+              errors={errors?.images?.message}
               control={control}
               register={register}
-              name={"image"}
-              setImage={(file) => setImage(file[0])}
-              multiple={false}
+              name={"images"}
+              setImage={setImages}
+              multiple
             />
           </Grid>
         </>
@@ -120,4 +127,4 @@ const AddImage = ({ id, open, setOpen }) => {
   );
 };
 
-export default AddImage;
+export default AddImagesSlider;

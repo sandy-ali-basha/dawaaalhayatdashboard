@@ -285,7 +285,7 @@ const CareersUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>
+        <DialogTitle sx={{ color: "text.main" }}>
           {t("Edit Row")}
         </DialogTitle>
         {!!data && (
@@ -336,7 +336,7 @@ const CareersUpdate = ({ id }) => {
               </Grid>
               <Grid item xs={12} sx={{ p: "10px" }}>
                 {/* ku */}
-                <Typography variant="h6" sx={{ color: "primary.main" }}>
+                <Typography variant="h6" sx={{ color: "text.main" }}>
                   Kurdish
                 </Typography>
                 <Grid container>
@@ -388,7 +388,7 @@ const CareersUpdate = ({ id }) => {
                 </Grid>
               </Grid>
               <Grid item xs={12} sx={{ p: "10px" }}>
-                <Typography sx={{ color: "primary.main" }} variant="h6">
+                <Typography sx={{ color: "text.main" }} variant="h6">
                   Arabic
                 </Typography>
                 <Grid container>
@@ -440,7 +440,7 @@ const CareersUpdate = ({ id }) => {
                 </Grid>
               </Grid>
               <Grid item xs={12} sx={{ p: "10px" }}>
-                <Typography sx={{ color: "primary.main" }} variant="h6">
+                <Typography sx={{ color: "text.main" }} variant="h6">
                   English
                 </Typography>
                 <Grid container>
@@ -496,7 +496,7 @@ const CareersUpdate = ({ id }) => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

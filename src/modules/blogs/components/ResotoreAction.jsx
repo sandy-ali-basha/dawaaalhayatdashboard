@@ -57,14 +57,14 @@ const ResotoreAction = ({ id, children, action }) => {
       >
         <DialogTitle
           id="alert-dialog-title"
-          sx={{ color: "primary.main", textTransform: "capitalize" }}
+          sx={{ color: "text.main", textTransform: "capitalize" }}
         >
           {action ? t("Restore") : t("Restore")} {t("Item")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            sx={{ color: "primary.main" }}
+            sx={{ color: "text.main" }}
           >
             {t("Are you Sure you want to")}{" "}
             {action ? t("Restore") : t("Restore")} {t("Item")}?

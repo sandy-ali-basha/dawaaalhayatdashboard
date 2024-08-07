@@ -64,7 +64,7 @@ const BlogCreate = () => {
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },

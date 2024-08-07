@@ -30,7 +30,7 @@ const CareerscategoryCreate = () => {
           <Grid  container spacing={2}>
             {/* * //details */}
             <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   name arabic
                 </Typography>
                 <TextFieldStyled
@@ -44,7 +44,7 @@ const CareerscategoryCreate = () => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   Name Kurdish
                 </Typography>
                 <TextFieldStyled
@@ -58,7 +58,7 @@ const CareerscategoryCreate = () => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   Name English
                 </Typography>
                 <TextFieldStyled
@@ -87,7 +87,7 @@ const CareerscategoryCreate = () => {
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },

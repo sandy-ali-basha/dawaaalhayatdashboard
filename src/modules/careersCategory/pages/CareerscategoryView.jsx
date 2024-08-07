@@ -61,7 +61,7 @@ const CareerscategoryView = () => {
             sx={{
               backgroundColor: "card.main",
               borderRadius: "5px",
-              color: "primary.main",
+              color: "text.main",
               width: "40%",
               marginInline: "auto",
               height: "100%",

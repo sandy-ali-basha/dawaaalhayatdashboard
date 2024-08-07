@@ -226,7 +226,7 @@ const ProductUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleDialogClose} fullWidth>
-        <DialogTitle sx={{ color: "primary.main" }}>
+        <DialogTitle sx={{ color: "text.main" }}>
           {t("Edit Row")}
         </DialogTitle>
         {!!data && (
@@ -326,7 +326,7 @@ const ProductUpdate = ({ id }) => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

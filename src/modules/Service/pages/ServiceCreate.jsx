@@ -37,7 +37,7 @@ const ServiceCreate = () => {
             {details.map((item, index) => (
               <Grid key={index} xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle">{item.head}</Typography>
+                  <Typography variant="body1" color="text.secondary">{item.head}</Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
@@ -56,7 +56,7 @@ const ServiceCreate = () => {
             <Grid xs={6} sx={{ p: "10px" }}>
               <FormControl fullWidth>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle">{t('price type')}</Typography>
+                  <Typography variant="body1" color="text.secondary">{t('price type')}</Typography>
                 </Box>
                 <SelectStyled
                   sx={{ color: 'text.main', borderColor: "text.main" }}
@@ -86,7 +86,7 @@ const ServiceCreate = () => {
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },

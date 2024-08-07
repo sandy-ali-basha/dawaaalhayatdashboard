@@ -85,7 +85,7 @@ const AddImage = ({ id, open, setOpen }) => {
     <>
       {loading && <Loader />}
       <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>
+        <DialogTitle sx={{ color: "text.main" }}>
           {t("Add Image")}
         </DialogTitle>
         <>
@@ -101,7 +101,7 @@ const AddImage = ({ id, open, setOpen }) => {
           </Grid>
         </>
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

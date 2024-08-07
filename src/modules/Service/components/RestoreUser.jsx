@@ -49,14 +49,14 @@ const RestoreUser = ({ id, action, open, setOpen }) => {
       >
         <DialogTitle
           id="alert-dialog-title"
-          sx={{ color: "primary.main", textTransform: "capitalize" }}
+          sx={{ color: "text.main", textTransform: "capitalize" }}
         >
           {t("RESTORE")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            sx={{ color: "primary.main" }}
+            sx={{ color: "text.main" }}
           >
             {t("Are you Sure you want to")} {t("Restore")}?
           </DialogContentText>

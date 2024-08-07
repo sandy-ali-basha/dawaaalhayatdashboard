@@ -48,14 +48,14 @@ import {
         >
           <DialogTitle
             id="alert-dialog-title"
-            sx={{ color: "primary.main", textTransform: "capitalize" }}
+            sx={{ color: "text.main", textTransform: "capitalize" }}
           >
             {t('change item status')}
           </DialogTitle>
           <DialogContent>
             <DialogContentText
               id="alert-dialog-description"
-              sx={{ color: "primary.main" }}
+              sx={{ color: "text.main" }}
             >
               {t("Are you Sure you want to")}{" "}
               {t('change item status')}?

@@ -164,7 +164,7 @@ const ProductdetailsUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>
+        <DialogTitle sx={{ color: "text.main" }}>
           {t("Edit Row")}
         </DialogTitle>
         {!!data && (
@@ -195,7 +195,7 @@ const ProductdetailsUpdate = ({ id }) => {
               {Discription.map((item, index) => (
                 <Grid item key={index} xs={12} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.main" variant="inputTitle">
+                    <Typography color="text.main" variant="body1" color="text.secondary">
                       {item.head}
                     </Typography>
                   </Box>
@@ -214,7 +214,7 @@ const ProductdetailsUpdate = ({ id }) => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

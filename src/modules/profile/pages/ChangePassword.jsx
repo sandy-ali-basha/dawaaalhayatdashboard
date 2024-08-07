@@ -75,13 +75,13 @@ const ChangePassword = ({ open, setOpen }) => {
     <>
       {loading && <Loader />}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>{t("Edit Row")}</DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
 
         <Grid container component="form">
           {details?.map((item, index) => (
             <Grid key={index} item md={6} sx={{ p: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle" >{item.head}</Typography>
+                <Typography variant="body1" color="text.secondary" >{item.head}</Typography>
               </Box>
               <TextFieldStyled
                 sx={{ width: "100%" }}
@@ -98,7 +98,7 @@ const ChangePassword = ({ open, setOpen }) => {
         </Grid>
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
 

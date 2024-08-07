@@ -37,7 +37,7 @@ const PolicyCreate = () => {
             {details.map((item, index) => (
               <Grid item key={index} xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px", }}>
-                  <Typography variant="inputTitle" sx={{ color: 'text.main' }}>{item.head}</Typography>
+                  <Typography variant="body1" color="text.secondary" sx={{ color: 'text.main' }}>{item.head}</Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
@@ -52,13 +52,13 @@ const PolicyCreate = () => {
             ))}
             <Grid item xs={12} sx={{ p: "10px", }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle" sx={{ color: 'text.main' }}>{t('message_en')}</Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ color: 'text.main' }}>{t('message_en')}</Typography>
               </Box>
               <EditorInput control={control} register={register} name={'message_en'} setValue={setValue} errors={errors?.message_en?.message} />
             </Grid>
             <Grid item xs={12} sx={{ p: "10px", }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle" sx={{ color: 'text.main' }}>{t('message_de')}</Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ color: 'text.main' }}>{t('message_de')}</Typography>
               </Box>
               <EditorInput control={control} register={register} name={'message_de'} setValue={setValue} errors={errors?.message_de?.message} />
             </Grid>
@@ -78,7 +78,7 @@ const PolicyCreate = () => {
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },

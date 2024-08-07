@@ -50,7 +50,7 @@ const TermsCreate = () => {
       <BoxStyled sx={{ px: "24px" }}>
         <Grid container component="form">
           <Grid item md={12} sx={{ p: "10px" }}>
-            <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+            <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
               name arabic
             </Typography>
             <TextFieldStyled
@@ -65,7 +65,7 @@ const TermsCreate = () => {
           </Grid>
           <Grid item xs={12} sx={{ p: "10px" }}>
             <Box sx={{ margin: "0 0 8px 5px" }}>
-              <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+              <Typography variant="body1" color="text.secondary" sx={{ color: "text.main" }}>
                 {t("text arabic")}
               </Typography>
             </Box>
@@ -78,7 +78,7 @@ const TermsCreate = () => {
             />
           </Grid>
           <Grid item md={12} sx={{ p: "10px" }}>
-            <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+            <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
               Name Kurdish
             </Typography>
             <TextFieldStyled
@@ -93,7 +93,7 @@ const TermsCreate = () => {
           </Grid>
           <Grid item xs={12} sx={{ p: "10px" }}>
             <Box sx={{ margin: "0 0 8px 5px" }}>
-              <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+              <Typography variant="body1" color="text.secondary" sx={{ color: "text.main" }}>
                 {t("text kurdish")}
               </Typography>
             </Box>
@@ -106,7 +106,7 @@ const TermsCreate = () => {
             />
           </Grid>
           <Grid item md={12} sx={{ p: "10px" }}>
-            <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+            <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
               Name English
             </Typography>
             <TextFieldStyled
@@ -121,7 +121,7 @@ const TermsCreate = () => {
           </Grid>
           <Grid item xs={12} sx={{ p: "10px" }}>
             <Box sx={{ margin: "0 0 8px 5px" }}>
-              <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+              <Typography variant="body1" color="text.secondary" sx={{ color: "text.main" }}>
                 {t("text English")}
               </Typography>
             </Box>
@@ -147,7 +147,7 @@ const TermsCreate = () => {
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },

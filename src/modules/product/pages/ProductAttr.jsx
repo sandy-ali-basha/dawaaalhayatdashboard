@@ -96,7 +96,7 @@ const ProductAttr = ({ id, open, setOpen }) => {
     <>
       {loading && <Loader />}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>
+        <DialogTitle sx={{ color: "text.main" }}>
           {t("Edit Row")}
         </DialogTitle>
 
@@ -188,7 +188,7 @@ const ProductAttr = ({ id, open, setOpen }) => {
         </Grid>
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

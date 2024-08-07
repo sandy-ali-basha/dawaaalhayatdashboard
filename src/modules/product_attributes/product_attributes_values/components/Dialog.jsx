@@ -52,13 +52,13 @@ const DeleteDialog = ({ id, page, count }) => {
           },
         }}
       >
-        <DialogTitle id="alert-dialog-title" sx={{ color: "primary.main" }}>
+        <DialogTitle id="alert-dialog-title" sx={{ color: "text.main" }}>
           {t("Delete Item")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            sx={{ color: "primary.main" }}
+            sx={{ color: "text.main" }}
           >
             {t("Are you Sure you want to Delete it ?")}
           </DialogContentText>

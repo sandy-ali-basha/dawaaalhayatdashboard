@@ -112,7 +112,7 @@ const VerificationCodeForm = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Box sx={{ margin: "0 0 8px 5px" }}>
-              <Typography variant="inputTitle" htmlFor="code">
+              <Typography variant="body1" color="text.secondary" htmlFor="code">
                 {t("Code")}
               </Typography>
             </Box>

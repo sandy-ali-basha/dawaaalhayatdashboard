@@ -99,14 +99,14 @@ const CareerscategoryUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>
+        <DialogTitle sx={{ color: "text.main" }}>
           {t("Edit Row")}
         </DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   name arabic
                 </Typography>
                 <TextFieldStyled
@@ -119,7 +119,7 @@ const CareerscategoryUpdate = ({ id }) => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   Name Kurdish
                 </Typography>
                 <TextFieldStyled
@@ -133,7 +133,7 @@ const CareerscategoryUpdate = ({ id }) => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   Name English
                 </Typography>
                 <TextFieldStyled
@@ -151,7 +151,7 @@ const CareerscategoryUpdate = ({ id }) => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

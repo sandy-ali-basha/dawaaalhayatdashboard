@@ -89,7 +89,7 @@ const BlogUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>{t("Edit Row")}</DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
@@ -118,7 +118,7 @@ const BlogUpdate = ({ id }) => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

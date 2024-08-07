@@ -36,6 +36,7 @@ const ProductCreate = () => {
     Discription,
     control,
     setValue,
+    generalDetails,
   } = useProductCreate();
 
   return (
@@ -74,7 +75,7 @@ const ProductCreate = () => {
               )}
             </Grid>
             <Grid item xs={6} sx={{ p: "10px" }}>
-              {producttypes ? (
+              {producttypes?.length > 0 ? (
                 <FormControl fullWidth>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
                     <Typography color="text.main">
@@ -103,40 +104,67 @@ const ProductCreate = () => {
             </Grid>
 
             {/* * //details */}
-            {details.map((item, index) => (
-              <Grid item key={index} xs={6} sx={{ p: "10px" }}>
-                <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography color="text.main" variant="inputTitle">
-                    {item.head}
-                  </Typography>
-                </Box>
-                <TextFieldStyled
-                  sx={{ width: "100%" }}
-                  type={item.type}
-                  placeholder={item.placeholder}
-                  name={item.name}
-                  {...register(item.register)}
-                  error={errors[item.error]?.message}
-                  helperText={errors[item.helperText]?.message || ""}
-                />
-              </Grid>
-            ))}
-            {Discription.map((item, index) => (
-              <Grid item key={index} xs={12} sx={{ p: "10px" }}>
-                <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography color="text.main" variant="inputTitle">
-                    {item.head}
-                  </Typography>
-                </Box>
-                <EditorInput
-                  control={control}
-                  register={register}
-                  name={item.name}
-                  setValue={setValue}
-                  errors={errors[item.helperText]?.message || ""}
-                />
-              </Grid>
-            ))}
+            {details.map((item, index) => {
+              const error = errors?.[item.register.split(".")[0]]?.name;
+              return (
+                <Grid item key={index} xs={6} sx={{ p: "10px" }}>
+                  <Box sx={{ margin: "0 0 8px 5px" }}>
+                    <Typography color="text.main" variant="body1" color="text.secondary">
+                      {item.head}
+                    </Typography>
+                  </Box>
+                  <TextFieldStyled
+                    sx={{ width: "100%" }}
+                    type={item.type}
+                    placeholder={item.placeholder}
+                    name={item.name}
+                    {...register(item.register)}
+                    error={!!error}
+                    helperText={error?.message || ""}
+                  />
+                </Grid>
+              );
+            })}
+            {generalDetails.map((item, index) => {
+              return (
+                <Grid item key={index} xs={6} sx={{ p: "10px" }}>
+                  <Box sx={{ margin: "0 0 8px 5px" }}>
+                    <Typography color="text.main" variant="body1" color="text.secondary">
+                      {item.head}
+                    </Typography>
+                  </Box>
+                  <TextFieldStyled
+                    sx={{ width: "100%" }}
+                    type={item.type}
+                    placeholder={item.placeholder}
+                    name={item.name}
+                    {...register(item.register)}
+                    error={errors[item.error]?.message}
+                    helperText={errors[item.helperText]?.message || ""}
+                  />
+                </Grid>
+              );
+            })}
+            {Discription.map((item, index) => {
+              const error = errors?.[item.register.split(".")[0]]?.name;
+              console.log(error);
+              return (
+                <Grid item key={index} xs={12} sx={{ p: "10px" }}>
+                  <Box sx={{ margin: "0 0 8px 5px" }}>
+                    <Typography color="text.main" variant="body1" color="text.secondary">
+                      {item.head}
+                    </Typography>
+                  </Box>
+                  <EditorInput
+                    control={control}
+                    register={register}
+                    name={item.name}
+                    setValue={setValue}
+                    errors={error?.message}
+                  />
+                </Grid>
+              );
+            })}
           </Grid>
         </Box>
 
@@ -153,7 +181,7 @@ const ProductCreate = () => {
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },

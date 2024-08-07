@@ -117,14 +117,14 @@ import {
         >
           <DialogTitle
             id="alert-dialog-title"
-            sx={{ color: "primary.main", textTransform: "capitalize" }}
+            sx={{ color: "text.main", textTransform: "capitalize" }}
           >
             {t('change item status')}
           </DialogTitle>
           <DialogContent>
             <DialogContentText
               id="alert-dialog-description"
-              sx={{ color: "primary.main" }}
+              sx={{ color: "text.main" }}
             >
               {t("Are you Sure you want to")}{" "}
               {t('change item status')}?
@@ -200,13 +200,13 @@ const DeleteDialog = ({ id, page, count }) => {
           },
         }}
       >
-        <DialogTitle id="alert-dialog-title" sx={{ color: "primary.main" }}>
+        <DialogTitle id="alert-dialog-title" sx={{ color: "text.main" }}>
           {t("Delete Item")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            sx={{ color: "primary.main" }}
+            sx={{ color: "text.main" }}
           >
             {t("Are you Sure you want to Delete it ?")}
           </DialogContentText>
@@ -432,7 +432,7 @@ const ${ComponentName}Create = () => {
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },
@@ -695,7 +695,7 @@ const ${ComponentName}Update = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>{t("Edit Row")}</DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
@@ -724,7 +724,7 @@ const ${ComponentName}Update = ({ id }) => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

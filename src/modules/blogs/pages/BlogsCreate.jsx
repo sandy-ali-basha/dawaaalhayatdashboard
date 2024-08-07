@@ -46,7 +46,7 @@ const BlogsCreate = () => {
             {details.map((item, index) => (
               <Grid key={index} item xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle">{item.head}</Typography>
+                  <Typography variant="body1" color="text.secondary">{item.head}</Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
@@ -72,7 +72,7 @@ const BlogsCreate = () => {
           >
             <Box sx={{ flex: "0.5" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle">
+                <Typography variant="body1" color="text.secondary">
                   {t("Content Arabic")}
                 </Typography>
               </Box>
@@ -104,7 +104,7 @@ const BlogsCreate = () => {
             </Box>
             <Box sx={{ flex: "0.5" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle">
+                <Typography variant="body1" color="text.secondary">
                   {t("Content English")}
                 </Typography>
               </Box>
@@ -138,7 +138,7 @@ const BlogsCreate = () => {
           <Grid sx={{ mt: "10px" }} container spacing={2}>
             <Grid item xs={6} sx={{ p: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle">{t("Images")}</Typography>
+                <Typography variant="body1" color="text.secondary">{t("Images")}</Typography>
               </Box>
 
               <Controller
@@ -187,7 +187,7 @@ const BlogsCreate = () => {
 
             <Grid item xs={6} sx={{ p: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle">{t("Cover")}</Typography>
+                <Typography variant="body1" color="text.secondary">{t("Cover")}</Typography>
               </Box>
 
               {!watch("files") ||

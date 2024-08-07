@@ -54,7 +54,7 @@ setValue
             {Discription.map((item, index) => (
               <Grid item key={index} xs={12} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography color="text.main" variant="inputTitle">
+                  <Typography color="text.main" variant="body1" color="text.secondary">
                     {item.head}
                   </Typography>
                 </Box>
@@ -83,7 +83,7 @@ setValue
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },

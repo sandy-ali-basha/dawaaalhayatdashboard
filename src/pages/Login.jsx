@@ -92,7 +92,7 @@ const Login = () => {
           >
             <Box sx={{ width: "100%", mt: "20px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle" sx={{ color: "white" }}>
+                <Typography variant="body1" color="text.secondary" sx={{ color: "white" }}>
                   {t("Email")}
                 </Typography>
               </Box>
@@ -112,7 +112,7 @@ const Login = () => {
             </Box>
             <Box sx={{ width: "100%", mt: "20px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography sx={{ color: "white" }} variant="inputTitle">
+                <Typography sx={{ color: "white" }} variant="body1" color="text.secondary">
                   {t("Password")}
                 </Typography>
               </Box>
@@ -187,7 +187,7 @@ const Login = () => {
               }}
             >
               <NavLink to="/reset-password">
-                <Typography variant="inputTitle">
+                <Typography variant="body1" color="text.secondary">
                   {t("Reset Password")}
                 </Typography>
               </NavLink>
@@ -200,7 +200,7 @@ const Login = () => {
               justifyContent: "space-around",
             }}
           >
-            <Typography variant="inputTitle">{t("Forgret assword")}</Typography>
+            <Typography variant="body1" color="text.secondary">{t("Forgret assword")}</Typography>
           </Box> */}
         </BoxStyled>
       </Box>

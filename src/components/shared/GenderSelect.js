@@ -8,7 +8,7 @@ const GenderSelect = ({ register, errors }) => {
     return (
         <FormControl fullWidth>
             <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle">{t('gender')}</Typography>
+                <Typography variant="body1" color="text.secondary">{t('gender')}</Typography>
             </Box>
             <SelectStyled
                 sx={{ color: 'text.main', borderColor: "text.main" }}

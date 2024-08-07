@@ -66,7 +66,7 @@ const BlogsUpdate = ({ id }) => {
               sx={{ display: "flex", gap: 1, flexDirection: "column" }}
             >
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle">{t("Cover")}</Typography>
+                <Typography variant="body1" color="text.secondary">{t("Cover")}</Typography>
               </Box>
               <TextFieldStyled
                 sx={{ width: "100%" }}
@@ -86,7 +86,7 @@ const BlogsUpdate = ({ id }) => {
             </DialogContent>
             <DialogContent>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="inputTitle">{t("Images")}</Typography>
+                <Typography variant="body1" color="text.secondary">{t("Images")}</Typography>
               </Box>
 
               <Controller

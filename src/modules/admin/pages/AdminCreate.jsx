@@ -40,7 +40,7 @@ const AdminCreate = () => {
             {details.map((item, index) => (
               <Grid key={index} item xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle">{item.head}</Typography>
+                  <Typography variant="body1" color="text.secondary">{item.head}</Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}

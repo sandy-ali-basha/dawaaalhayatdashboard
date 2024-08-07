@@ -136,7 +136,7 @@ const PasswordEditForm = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Box sx={{ margin: "0 0 8px 5px" }}>
-              <Typography variant="inputTitle" htmlFor="password">
+              <Typography variant="body1" color="text.secondary" htmlFor="password">
                 {t("New Password")}
               </Typography>
             </Box>
@@ -155,7 +155,7 @@ const PasswordEditForm = () => {
               </span>
             )}
             <Box sx={{ margin: "20px 0 8px 5px" }}>
-              <Typography variant="inputTitle" htmlFor="confirm-password">
+              <Typography variant="body1" color="text.secondary" htmlFor="confirm-password">
                 {t("Confirm Password")}
               </Typography>
             </Box>

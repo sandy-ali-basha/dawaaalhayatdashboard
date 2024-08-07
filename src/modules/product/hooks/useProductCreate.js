@@ -14,6 +14,7 @@ let schema = yup.object().shape({
   status: yup.string().trim().required("status type is required"),
   price: yup.string().trim().required("price is required"),
   qty: yup.string().trim().required("qty is required"),
+  sku: yup.string().trim().required("sku is required"),
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
     description: yup.string().required("Kurdish description is required"),
@@ -36,7 +37,7 @@ export const useProductCreate = () => {
   const [statuses, setStatuses] = useState([{ id: 1, name: "done" }]);
   const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, setValue, control,reset } =
+  const { register, handleSubmit, formState, setValue, control, reset } =
     useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
@@ -62,6 +63,7 @@ export const useProductCreate = () => {
         setLoading(false);
       });
   }
+  console.log(errors);
   const details = [
     {
       head: t("arabic name"),
@@ -92,7 +94,8 @@ export const useProductCreate = () => {
       error: "kr.name",
       helperText: "kr.name",
     },
-
+  ];
+  const generalDetails = [
     {
       head: t("sku"),
       type: "text",
@@ -165,15 +168,15 @@ export const useProductCreate = () => {
   const handleReset = () => {
     const form = document.querySelector("form");
     if (form) form.reset();
-    reset()
+    reset();
   };
 
   const hanldeCreate = (input) => {
     const withDesc = {
       ...input,
-      description: input?.en?.description || ''
+      description: input?.en?.description || "",
     };
-    
+
     mutate(withDesc);
     setLoading(true);
   };
@@ -189,6 +192,7 @@ export const useProductCreate = () => {
     t,
     errors,
     details,
+    generalDetails,
     control,
     brands,
     statuses,

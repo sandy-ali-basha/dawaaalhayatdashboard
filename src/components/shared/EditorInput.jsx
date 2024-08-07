@@ -20,7 +20,7 @@ const EditorInput = ({
   initialValue,
 }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  
+
   useEffect(() => {
     if (initialValue) {
       const blocksFromHTML = convertFromHTML(initialValue);
@@ -45,7 +45,7 @@ const EditorInput = ({
         sx={{
           color: "text.main",
           border: "1px solid",
-          borderColor: "primary.main",
+          borderColor: errors ? "error.main" : "text.main",
           padding: "10px",
           borderRadius: "5px",
           margin: "10px",

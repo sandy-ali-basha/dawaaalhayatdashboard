@@ -108,7 +108,7 @@ const ResetPassword = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Box sx={{ margin: "0 0 8px 5px" }}>
-              <Typography variant="inputTitle">{t("Email")}</Typography>
+              <Typography variant="body1" color="text.secondary">{t("Email")}</Typography>
             </Box>
             <TextFieldStyled
               type="email"

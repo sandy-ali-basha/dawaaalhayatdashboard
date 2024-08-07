@@ -37,7 +37,7 @@ const Image = ({
   return (
     <>
       <Box sx={{ margin: "0 0 8px 5px" }}>
-        <Typography variant="inputTitle">{t(name)}</Typography>
+        <Typography variant="body1" color="text.secondary">{t(name)}</Typography>
       </Box>
       <Button
         component="label"

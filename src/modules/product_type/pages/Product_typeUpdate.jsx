@@ -97,7 +97,7 @@ const Product_typeUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>
+        <DialogTitle sx={{ color: "text.main" }}>
           {t("Edit medical form")}
         </DialogTitle>
         {!!data && (
@@ -113,7 +113,7 @@ const Product_typeUpdate = ({ id }) => {
                 return (
                   <Grid key={index} item md={6} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography variant="inputTitle">{item.head}</Typography>
+                      <Typography variant="body1" color="text.secondary">{item.head}</Typography>
                     </Box>
                     <TextFieldStyled
                       sx={{ width: "100%" }}
@@ -133,7 +133,7 @@ const Product_typeUpdate = ({ id }) => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

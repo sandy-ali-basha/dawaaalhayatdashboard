@@ -129,14 +129,14 @@ const TermsUpdate = () => {
     <>
       {loading && <Loader />}
       <Dialog open={open} onClose={handleClose} maxWidth>
-        <DialogTitle sx={{ color: "primary.main" }}>
+        <DialogTitle sx={{ color: "text.main" }}>
           {t("Edit Row")}
         </DialogTitle>
         {!!data && (
           <>
             <Grid container component="form">
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   name arabic
                 </Typography>
                 <TextFieldStyled
@@ -150,7 +150,7 @@ const TermsUpdate = () => {
               </Grid>
               <Grid item xs={12} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+                  <Typography variant="body1" color="text.secondary" sx={{ color: "text.main" }}>
                     text arabic
                   </Typography>
                 </Box>
@@ -167,7 +167,7 @@ const TermsUpdate = () => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   Name Kurdish
                 </Typography>
                 <TextFieldStyled
@@ -181,7 +181,7 @@ const TermsUpdate = () => {
               </Grid>
               <Grid item xs={12} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+                  <Typography variant="body1" color="text.secondary" sx={{ color: "text.main" }}>
                     text kurdish
                   </Typography>
                 </Box>
@@ -198,7 +198,7 @@ const TermsUpdate = () => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">
+                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">
                   Name English
                 </Typography>
                 <TextFieldStyled
@@ -212,7 +212,7 @@ const TermsUpdate = () => {
               </Grid>
               <Grid item xs={12} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="inputTitle" sx={{ color: "text.main" }}>
+                  <Typography variant="body1" color="text.secondary" sx={{ color: "text.main" }}>
                     {t("text English")}
                   </Typography>
                 </Box>
@@ -233,7 +233,7 @@ const TermsUpdate = () => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}

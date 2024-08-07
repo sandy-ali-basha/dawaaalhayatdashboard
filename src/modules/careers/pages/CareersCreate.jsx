@@ -97,7 +97,7 @@ const CareersCreate = () => {
 
           <Grid item xs={12} sx={{ p: "10px" }}>
             {/* ku */}
-            <Typography variant="h6" sx={{ color: "primary.main" }}>
+            <Typography variant="h6" sx={{ color: "text.main" }}>
               Kurdish
             </Typography>
             <Grid container>
@@ -147,7 +147,7 @@ const CareersCreate = () => {
             </Grid>
           </Grid>
           <Grid item xs={12} sx={{ p: "10px" }}>
-            <Typography sx={{ color: "primary.main" }} variant="h6">
+            <Typography sx={{ color: "text.main" }} variant="h6">
               Arabic
             </Typography>
             <Grid container>
@@ -197,7 +197,7 @@ const CareersCreate = () => {
             </Grid>
           </Grid>
           <Grid item xs={12} sx={{ p: "10px" }}>
-            <Typography sx={{ color: "primary.main" }} variant="h6">
+            <Typography sx={{ color: "text.main" }} variant="h6">
               English
             </Typography>
             <Grid container>
@@ -261,7 +261,7 @@ const CareersCreate = () => {
             sx={{
               width: "120px",
               borderColor: "origin.main",
-              color: "primary.main",
+              color: "text.main",
               "&:hover": {
                 borderColor: "origin.main",
               },

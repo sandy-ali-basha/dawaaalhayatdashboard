@@ -106,13 +106,13 @@ const ServiceUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle sx={{ color: "primary.main" }}>{t("Edit Row")}</DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
               {details?.map((item, index) => (
                 <Grid key={index} item md={6} sx={{ p: "10px" }}>
-                  <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">{item.head}</Typography>
+                  <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">{item.head}</Typography>
                   <TextFieldStyled
                     sx={{ width: "100%" }}
                     type={item.type}
@@ -127,7 +127,7 @@ const ServiceUpdate = ({ id }) => {
               ))}
               <Grid xs={12} sx={{ p: "10px" }}>
                 <FormControl fullWidth>
-                  <Typography sx={{ margin: "0 0 8px 8px" }} variant="inputTitle">{t("price_type")}</Typography>
+                  <Typography sx={{ margin: "0 0 8px 8px" }} variant="body1" color="text.secondary">{t("price_type")}</Typography>
                   <SelectStyled
                     {...register('price_type')}
                     error={errors.price_type?.message}
@@ -148,7 +148,7 @@ const ServiceUpdate = ({ id }) => {
         )}
 
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "primary.main" }}>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}
