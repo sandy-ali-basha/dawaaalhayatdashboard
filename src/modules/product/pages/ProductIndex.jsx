@@ -25,7 +25,7 @@ import AddImages from "./AddImages";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import ProductAttr from "./ProductAttr";
 import LinkIcon from "@mui/icons-material/Link";
-
+import { ListAltRounded } from "@mui/icons-material";
 const ProductIndex = () => {
   const { t } = useTranslation("index");
   const { data, page, setPage, isLoading, count } = useProduct();
@@ -50,7 +50,7 @@ const ProductIndex = () => {
     ];
   }, [t]);
   const handleCreate = () => navigate("create");
- 
+
   const [open, setOpen] = useState(false);
   const [openAttr, setOpenAttr] = useState(false);
 
@@ -73,6 +73,7 @@ const ProductIndex = () => {
     },
     [setEditedID]
   );
+
   const handleCat = useCallback(
     (id) => {
       setID(id);
@@ -129,6 +130,14 @@ const ProductIndex = () => {
               onClick={() => handleCat(product?.id)}
             >
               <LinkIcon sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
+          <IconButton>
+            <Tooltip
+              title={"details"}
+              onClick={() => navigate("details/" + product?.id)}
+            >
+              <ListAltRounded sx={{ color: "text.main" }} />
             </Tooltip>
           </IconButton>
         </TableCell>

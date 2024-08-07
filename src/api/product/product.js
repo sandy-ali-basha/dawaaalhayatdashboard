@@ -16,4 +16,6 @@ export const _Product = {
     _axios.post(Link + "/image/" + editedID, formData).then((res) => res?.data),
   attribute: ({ editedID, formData }) =>
     _axios.post("/attribute/" + editedID, formData).then((res) => res?.data),
+  addDetails: ({ editedID, formData }) =>
+    _axios.post("/accordion/" + editedID, formData).then((res) => res?.data),
 };

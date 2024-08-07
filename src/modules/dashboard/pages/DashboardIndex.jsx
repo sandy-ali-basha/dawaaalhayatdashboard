@@ -217,6 +217,11 @@ const Dashboard = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={5}>
           <WebsiteTrafficReport data={websiteTrafficData} colors={colors} />
+          <AbandonedCartReport
+            sx={{ mt: 2 }}
+            data={abandonedCartData}
+            colors={colors}
+          />
         </Grid>
         <Grid item xs={12} sm={6} md={7}>
           <UserBehaviorReport data={userBehaviorData} colors={colors} />
@@ -228,9 +233,7 @@ const Dashboard = () => {
             colors={colors}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={5}>
-          <AbandonedCartReport data={abandonedCartData} colors={colors} />
-        </Grid>
+
         <Grid item xs={12} sm={6} md={12}>
           <ProductPerformanceReport
             data={productPerformanceData}
