@@ -66,10 +66,11 @@ const AddImages = ({ id, open, setOpen }) => {
         editedID: id,
         formData: data,
       })
-      .catch((err) => {
-        setLoading(false);
-      })
-      .then(() => {
+      .then((res) => {
+        console.log(res.code)
+        if (res.code === 200) {
+          handleDialogClose();
+        }
         setLoading(false);
       });
   }

@@ -66,10 +66,11 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
         editedID: id,
         formData: data,
       })
-      .catch((err) => {
-        setLoading(false);
-      })
-      .then(() => {
+      .then((res) => {
+        console.log(res.code)
+        if (res.code === 200) {
+          handleDialogClose();
+        }
         setLoading(false);
       });
   }
@@ -92,9 +93,7 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
     <>
       {loading && <Loader />}
       <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
-        <DialogTitle sx={{ color: "text.main" }}>
-          {t("Add Images")}
-        </DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Add Images")}</DialogTitle>
         <>
           <Grid container component="form" key={id} sx={{ m: 1 }}>
             <Image

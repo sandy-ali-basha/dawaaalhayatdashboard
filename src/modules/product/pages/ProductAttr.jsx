@@ -96,9 +96,7 @@ const ProductAttr = ({ id, open, setOpen }) => {
     <>
       {loading && <Loader />}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle sx={{ color: "text.main" }}>
-          {t("Edit Row")}
-        </DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
 
         <Grid container component="form" key={id}>
           <Grid item xs={12} sx={{ p: "10px" }}>
@@ -183,7 +181,8 @@ const ProductAttr = ({ id, open, setOpen }) => {
             </Grid>
           )}
           <Typography>
-            كل اتربيوت مختارة تفوم بتحديث قيم هذه الاتربيوت او اضافتها
+            Each selected attribute updates or adds the values of these
+            attributes.
           </Typography>
         </Grid>
 

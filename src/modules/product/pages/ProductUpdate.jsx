@@ -211,9 +211,12 @@ const ProductUpdate = ({ id }) => {
       .catch((err) => {
         setLoading(false);
       })
-      .then(() => {
+      .then((res) => {
+        console.log(res.code);
+        if (res.code === 200) {
+          handleDialogClose();
+        }
         setLoading(false);
-        // handleClose()
       });
   }
 
@@ -226,9 +229,7 @@ const ProductUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleDialogClose} fullWidth>
-        <DialogTitle sx={{ color: "text.main" }}>
-          {t("Edit Row")}
-        </DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
