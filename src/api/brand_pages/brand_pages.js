@@ -10,6 +10,7 @@ export const _Brand_pages = {
     _axios.post(Link + "/slides", data).then((res) => res?.data),
 
   delete: (id) => _axios.delete(Link + "/" + id).then((res) => res.data),
+  deleteSlide: (id) => _axios.delete(Link + "/slides/" + id).then((res) => res.data),
 
   update: ({ editedID, formData }) =>
     _axios.post(Link + "/" + editedID, formData).then((res) => res?.data),
