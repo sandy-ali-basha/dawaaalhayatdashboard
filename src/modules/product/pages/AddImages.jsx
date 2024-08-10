@@ -67,7 +67,7 @@ const AddImages = ({ id, open, setOpen }) => {
         formData: data,
       })
       .then((res) => {
-        console.log(res.code)
+        console.log(res.code);
         if (res.code === 200) {
           handleDialogClose();
         }
@@ -77,7 +77,9 @@ const AddImages = ({ id, open, setOpen }) => {
 
   const handleUpdate = (input) => {
     const formData = new FormData();
-    images.forEach((image) => formData.append("images", image));
+    images.forEach((image, idx) =>
+      formData.append("images[" + idx + "]", image)
+    );
     mutate(formData);
     setLoading(true);
   };
@@ -93,9 +95,7 @@ const AddImages = ({ id, open, setOpen }) => {
     <>
       {loading && <Loader />}
       <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
-        <DialogTitle sx={{ color: "text.main" }}>
-          {t("Add Images")}
-        </DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Add Images")}</DialogTitle>
         <>
           <Grid container component="form" key={id} sx={{ m: 1 }}>
             <Image

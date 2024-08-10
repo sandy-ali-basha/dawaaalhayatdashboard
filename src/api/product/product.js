@@ -14,6 +14,8 @@ export const _Product = {
 
   AddImages: ({ editedID, formData }) =>
     _axios.post(Link + "/image/" + editedID, formData).then((res) => res?.data),
+  AddImagesSlider: ({ editedID, formData }) =>
+    _axios.post(Link + "/slider/" + editedID, formData).then((res) => res?.data),
   attribute: ({ editedID, formData }) =>
     _axios.post("/attribute/" + editedID, formData).then((res) => res?.data),
   addDetails: ({ editedID, formData }) =>

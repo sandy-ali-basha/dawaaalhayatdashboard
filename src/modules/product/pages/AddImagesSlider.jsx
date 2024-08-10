@@ -56,6 +56,7 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
 
   const handleClose = () => {
     setOpen(false);
+    setLoading(false);
   };
 
   const { mutate } = useMutation((data) => createPost(data));
@@ -67,7 +68,6 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
         formData: data,
       })
       .then((res) => {
-        console.log(res.code)
         if (res.code === 200) {
           handleDialogClose();
         }
@@ -77,7 +77,10 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
 
   const handleUpdate = (input) => {
     const formData = new FormData();
-    images.forEach((image) => formData.append("images", image));
+    images.forEach((image, idx) =>
+      formData.append("images[" + idx + "]", image)
+    );
+
     mutate(formData);
     setLoading(true);
   };
@@ -92,7 +95,7 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
   return (
     <>
       {loading && <Loader />}
-      <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
+      <Dialog open={open} onClose={handleDialogClose}>
         <DialogTitle sx={{ color: "text.main" }}>{t("Add Images")}</DialogTitle>
         <>
           <Grid container component="form" key={id} sx={{ m: 1 }}>

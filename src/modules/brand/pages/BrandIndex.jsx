@@ -23,8 +23,16 @@ import ChangeStatus from "../components/ChangeStatus";
 import { useBrand } from "hooks/brand/useBrand";
 import BrandUpdate from "./BrandUpdate";
 import DeleteDialog from "../components/Dialog";
-import { AddPhotoAlternate } from "@mui/icons-material";
+import {
+  AddPhotoAlternate,
+  NoteAddRounded,
+  PagesRounded,
+  ViewCarousel,
+  WebAssetRounded,
+  WebRounded,
+} from "@mui/icons-material";
 import AddImage from "./AddImage";
+import DeletePageDialog from "../brand_pages/components/Dialog";
 
 const BrandIndex = () => {
   const { t } = useTranslation("index");
@@ -39,7 +47,7 @@ const BrandIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t(" name"), t("operations")];
+    return [t(" name"), t("operations"), "page"];
   }, [t]);
   const [id, setID] = useState();
 
@@ -91,12 +99,35 @@ const BrandIndex = () => {
               <DeleteDialog id={brand?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>
+
           <IconButton>
             <Tooltip
               title={"Add Images"}
               onClick={() => handleAddImages(brand?.id)}
             >
               <AddPhotoAlternate sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
+        </TableCell>
+        <TableCell>
+          <IconButton onClick={() => navigate(`page/${brand?.id}`)}>
+            <Tooltip title={"Page"}>
+              <WebRounded sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
+          <IconButton onClick={() => navigate(`page/${brand?.id}/addslider`)}>
+            <Tooltip title={"add slider"}>
+              <ViewCarousel sx={{ color: "warning.main" }} />
+            </Tooltip>
+          </IconButton>
+          <IconButton onClick={() => navigate(`page/${brand?.id}/create`)}>
+            <Tooltip title={"add Page"}>
+              <NoteAddRounded sx={{ color: "info.main" }} />
+            </Tooltip>
+          </IconButton>
+          <IconButton>
+            <Tooltip title={direction === "ltr" ? "Delete page" : " حذف"}>
+              <DeletePageDialog id={brand?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>
         </TableCell>
@@ -132,8 +163,6 @@ const BrandIndex = () => {
 
           <Button
             startIcon={<AddIcon />}
-            
-            
             variant="contained"
             color="secondary"
             onClick={handleCreate}
