@@ -126,7 +126,7 @@ const BrandIndex = () => {
             </Tooltip>
           </IconButton>
           <IconButton>
-            <Tooltip title={direction === "ltr" ? "Delete page" : " حذف"}>
+            <Tooltip title={"Delete page"}>
               <DeletePageDialog id={brand?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>

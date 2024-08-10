@@ -39,7 +39,7 @@ export const useProduct_attributesCreate = () => {
     _Product_attributes
       .post(data, setLoading)
       .then((res) => {
-        if (res.success) {
+        if (res.code === 200) {
           handleReset();
           queryClient.invalidateQueries(["product_attributes"]);
         }

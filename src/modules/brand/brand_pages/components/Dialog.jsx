@@ -32,7 +32,7 @@ const DeletePageDialog = ({ id, page, count }) => {
   const { direction } = settingsStore();
   return (
     <React.Fragment>
-      <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
+      <Tooltip title={"Delete page"}>
         <DeleteTwoToneIcon
           sx={{ color: "error.main" }}
           onClick={handleClickOpen}
@@ -50,7 +50,7 @@ const DeletePageDialog = ({ id, page, count }) => {
         }}
       >
         <DialogTitle id="alert-dialog-title" sx={{ color: "text.main" }}>
-          {t("Delete Item")}
+          {t("Delete page")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText

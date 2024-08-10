@@ -33,7 +33,7 @@ export const useBlogCreate = () => {
     _Blog
       .post(data, setLoading)
       .then(res => {
-        if (res.success) navigate(-1)
+        if (res.code === 200) navigate(-1)
         setLoading(true)
       })
       .finally(() => {

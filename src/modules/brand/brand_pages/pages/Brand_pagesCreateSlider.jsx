@@ -26,7 +26,7 @@ const Brand_pagesCreateSlider = () => {
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Brand slider}")}
+        {t("Create Brand slider")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
