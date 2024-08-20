@@ -82,8 +82,8 @@ const ProductUpdate = ({ id }) => {
           );
           setValue(
             "kr.description",
-            fetchedData?.translations?.find((t) => t.locale === "kr")?.name ||
-              ""
+            fetchedData?.translations?.find((t) => t.locale === "kr")
+              ?.description || ""
           );
           setValue(
             "ar.name",
@@ -92,8 +92,8 @@ const ProductUpdate = ({ id }) => {
           );
           setValue(
             "ar.description",
-            fetchedData?.translations?.find((t) => t.locale === "ar")?.name ||
-              ""
+            fetchedData?.translations?.find((t) => t.locale === "ar")
+              ?.description || ""
           );
           setValue(
             "en.name",
@@ -102,8 +102,8 @@ const ProductUpdate = ({ id }) => {
           );
           setValue(
             "en.description",
-            fetchedData?.translations?.find((t) => t.locale === "en")?.name ||
-              ""
+            fetchedData?.translations?.find((t) => t.locale === "en")
+              ?.description || ""
           );
         }
       });

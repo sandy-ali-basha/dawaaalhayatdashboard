@@ -31,7 +31,7 @@ let schema = yup.object().shape({
 
 export const useProductCreate = () => {
   const { t } = useTranslation("index");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [brands, setBrand] = useState(null);
   const [producttypes, setproducttypes] = useState(null);
   const [statuses, setStatuses] = useState([{ id: 1, name: "done" }]);

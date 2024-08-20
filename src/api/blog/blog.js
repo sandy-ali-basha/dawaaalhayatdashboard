@@ -11,4 +11,5 @@ export const _Blog = {
     delete: (id) => _axios.delete(Link+'/' + id).then((res) => res.data),
 
     update: ({ editedID, formData }) => _axios.post( Link +'/' + editedID, formData).then((res) => res?.data),
+    AddImage: ({ editedID, formData }) => _axios.post( Link +'/image/' + editedID, formData).then((res) => res?.data),
 };

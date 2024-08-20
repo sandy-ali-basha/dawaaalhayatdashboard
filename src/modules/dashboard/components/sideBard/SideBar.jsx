@@ -6,13 +6,22 @@ import { useTranslation } from "react-i18next";
 import SideBarHeader from "./SideBarHeader";
 import SideBarLink from "./SideBarLink";
 import AdminPanelSettingsTwoToneIcon from "@mui/icons-material/AdminPanelSettingsTwoTone";
-import SellRoundedIcon from '@mui/icons-material/SellRounded';
-import CategoryIcon from '@mui/icons-material/Category';
+import SellRoundedIcon from "@mui/icons-material/SellRounded";
+import CategoryIcon from "@mui/icons-material/Category";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import GavelIcon from "@mui/icons-material/Gavel";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
+import {
+  AdminPanelSettingsRounded,
+  AssignmentReturnedTwoTone,
+  BookmarkRounded,
+  CategoryRounded,
+  GavelRounded,
+  SpaceDashboardRounded,
+  WorkRounded,
+} from "@mui/icons-material";
 const SideBar = ({ open, setOpen }) => {
   const { t } = useTranslation("sidebar");
   const [hovered, setHovered] = useState(false);
@@ -36,21 +45,21 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("Dashboard"),
       link: "/dashboard",
-      icon: <SpaceDashboardIcon />,
+      icon: <SpaceDashboardRounded />,
     },
     {
       name: t("Admin"),
       link: "/dashboard/admin",
-      icon: <AdminPanelSettingsTwoToneIcon />,
+      icon: <AdminPanelSettingsRounded />,
     },
     {
       name: t("terms"),
       link: "/dashboard/terms",
-      icon: <GavelIcon />,
+      icon: <GavelRounded />,
     },
     {
       name: t("Careers"),
-      icon: <WorkOutlineIcon />,
+      icon: <WorkRounded />,
       subOptions: [
         { name: t("Careers"), link: "/dashboard/careers" },
         { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
@@ -58,7 +67,7 @@ const SideBar = ({ open, setOpen }) => {
     },
     {
       name: t("Products"),
-      icon: <CategoryIcon />,
+      icon: <CategoryRounded />,
       subOptions: [
         { name: t("Products"), link: "/dashboard/product" },
         { name: t("Categories"), link: "/dashboard/products/categories" },
@@ -70,8 +79,13 @@ const SideBar = ({ open, setOpen }) => {
       link: "/dashboard/brands",
       icon: <SellRoundedIcon />,
     },
+    {
+      name: t("blog"),
+      link: "/dashboard/blog",
+      icon: <BookmarkRounded color={"secondary.main"} />,
+    },
   ];
- 
+
   return (
     <Drawer
       variant="permanent"

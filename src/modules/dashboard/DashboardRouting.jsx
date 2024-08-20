@@ -8,7 +8,6 @@ import ServiceRouting from "modules/Service/ServiceRouting";
 import TermsRouting from "modules/Terms/TermsRouting";
 import TransactionRouting from "modules/transaction/TransactionRouting";
 import ReviewRouting from "modules/review/ReviewRouting";
-import PolicyRouting from "modules/policy/PolicyRouting";
 import CareersRouting from "modules/careers/CareersRouting";
 import CareerscategoryRouting from "modules/careersCategory/CareerscategoryRouting";
 import ProductRouting from "modules/product/ProductRouting";
@@ -16,6 +15,7 @@ import BrandRouting from "modules/brand/BrandRouting";
 import Product_typeRouting from "modules/product_type/Product_typeRouting";
 import Product_attributesRouting from "modules/product_attributes/Product_attributesRouting";
 import NotFound from "components/NotFound";
+import BlogRouting from "modules/blog/BlogRouting";
 
 const DashboardRouting = () => {
   return (
@@ -26,9 +26,9 @@ const DashboardRouting = () => {
           <Route path="/admin/*" element={<AdminRouting />} />
           <Route path="/profile/*" element={<ProfileRouting />} />
           <Route path="/service/*" element={<ServiceRouting />} />
-          <Route path="/policy/*" element={<PolicyRouting />} />
           <Route path="/transaction/*" element={<TransactionRouting />} />
           <Route path="/review/*" element={<ReviewRouting />} />
+          <Route path="/blog/*" element={<BlogRouting />} />
 
           <Route path="/terms/*" element={<TermsRouting />} />
           <Route path="/careers/*" element={<CareersRouting />} />

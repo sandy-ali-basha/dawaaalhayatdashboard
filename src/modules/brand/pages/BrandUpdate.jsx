@@ -115,9 +115,12 @@ const BrandUpdate = ({ id }) => {
       .catch((err) => {
         setLoading(false);
       })
-      .then(() => {
+      .then((res) => {
+       
+        if (res.code === 200) {
+          handleClose();
+        }
         setLoading(false);
-        // handleClose()
       });
   }
 

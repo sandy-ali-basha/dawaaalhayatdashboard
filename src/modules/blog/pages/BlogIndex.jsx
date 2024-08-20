@@ -11,7 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
@@ -23,11 +23,14 @@ import ChangeStatus from "../components/ChangeStatus";
 import { useBlog } from "hooks/blog/useBlog";
 import BlogUpdate from "./BlogUpdate";
 import DeleteDialog from "../components/Dialog";
-import { DetailsOutlined } from "@mui/icons-material";
+import { AddPhotoAlternate, DetailsOutlined } from "@mui/icons-material";
+import AddImage from "../components/AddImage";
 
 const BlogIndex = () => {
   const { t } = useTranslation("index");
   const { data, page, setPage, isLoading, count } = useBlog();
+  const [open, setOpen] = useState(false);
+  const [id, setID] = useState();
 
   const navigate = useNavigate();
   const [direction] = settingsStore((state) => [state.direction]);
@@ -38,7 +41,7 @@ const BlogIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t("title"), t("status"), t("operations")];
+    return [t("title"), t("operations")];
   }, [t]);
 
   const handleView = useCallback(
@@ -53,21 +56,18 @@ const BlogIndex = () => {
     },
     [setEditedID]
   );
-
+  const handleAddImages = useCallback(
+    (id) => {
+      setID(id);
+      setOpen(true);
+    },
+    [setEditedID]
+  );
   const rows = useMemo(() => {
-    return data?.blog?.map((blog, id) => (
+    return data?.data?.posts?.map((blog, id) => (
       <TableRow sx={{ height: "65px" }} key={blog.id} hover>
-        <TableCell sx={{ minWidth: 50 }}>
-          {blog?.first_name ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus
-            id={blog.id}
-            action={blog.status === "active" && "change-status"}
-          >
-            {blog.status === "Active" ? t("Active") : t("Not Active")}
-          </ChangeStatus>
-        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>{blog?.title ?? "Null"}</TableCell>
+
         <TableCell
           align="center"
           sx={{
@@ -84,12 +84,19 @@ const BlogIndex = () => {
               <DeleteDialog id={blog?.id} count={count} page={page} />
             </Tooltip>
           </IconButton>
+          <IconButton>
+            <Tooltip
+              title={"Add Images"}
+              onClick={() => handleAddImages(blog?.id)}
+            >
+              <AddPhotoAlternate sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
           <IconButton onClick={() => handleView(blog.id)}>
             <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
               <VisibilityTwoToneIcon color="primary" />
             </Tooltip>
           </IconButton>
-     
         </TableCell>
       </TableRow>
     ));
@@ -101,7 +108,7 @@ const BlogIndex = () => {
     <>
       {isLoading && <Loader />}
       {editedID && <BlogUpdate id={editedID} />}
-
+      {id && <AddImage id={id} open={open} setOpen={setOpen} />}
       <Box
         sx={{
           width: { sl: "300px" },

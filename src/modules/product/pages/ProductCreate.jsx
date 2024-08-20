@@ -109,7 +109,7 @@ const ProductCreate = () => {
               return (
                 <Grid item key={index} xs={6} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.main" variant="body1" color="text.secondary">
+                    <Typography color="text.main" variant="body1">
                       {item.head}
                     </Typography>
                   </Box>
@@ -129,7 +129,7 @@ const ProductCreate = () => {
               return (
                 <Grid item key={index} xs={6} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.main" variant="body1" color="text.secondary">
+                    <Typography color="text.main" variant="body1" >
                       {item.head}
                     </Typography>
                   </Box>
@@ -151,7 +151,7 @@ const ProductCreate = () => {
               return (
                 <Grid item key={index} xs={12} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.main" variant="body1" color="text.secondary">
+                    <Typography color="text.main" variant="body1">
                       {item.head}
                     </Typography>
                   </Box>

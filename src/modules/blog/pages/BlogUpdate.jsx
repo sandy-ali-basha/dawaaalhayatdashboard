@@ -1,4 +1,3 @@
-
 import { React, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -16,15 +15,20 @@ import { useMutation } from "react-query";
 import { _Blog } from "api/blog/blog";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
+import EditorInput from "components/shared/EditorInput";
+
 const schema = yup.object().shape({
   kr: yup.object().shape({
-    name: yup.string().required("Kurdish name is required"),
+    title: yup.string().required("Kurdish title is required"),
+    text: yup.string().required("Kurdish text is required"),
   }),
   ar: yup.object().shape({
-    name: yup.string().required("Arabic name is required"),
+    title: yup.string().required("Arabic title is required"),
+    text: yup.string().required("Arabic text is required"),
   }),
   en: yup.object().shape({
-    name: yup.string().required("English name is required"),
+    title: yup.string().required("English title is required"),
+    text: yup.string().required("English text is required"),
   }),
 });
 
@@ -36,54 +40,101 @@ const BlogUpdate = ({ id }) => {
   ]);
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { register, handleSubmit, formState, control, setValue } =
+    useForm(formOptions);
   const { errors } = formState;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
 
   useEffect(() => {
-    _axios.get('/blog/'+ editedID).then((res) => {
-      // setData(res.data?.blog);
+    _axios
+      .get("/blog/" + editedID, {
+        headers: {
+          translations: "yes",
+        },
+      })
+      .then((res) => {
+        // setData(res.data?.blog);
         setData(res.data?.data);
-    });
-  }, [id,editedID]);
+        const fetchedData = res.data?.data;
+        setData(fetchedData);
+        if (fetchedData.translations) {
+          setValue(
+            "kr.title",
+            fetchedData?.translations?.find((t) => t.locale === "kr")?.title ||
+              ""
+          );
+          setValue(
+            "ar.title",
+            fetchedData?.translations?.find((t) => t.locale === "ar")?.title ||
+              ""
+          );
+          setValue(
+            "en.title",
+            fetchedData?.translations?.find((t) => t.locale === "en")?.title ||
+              ""
+          );
+          setValue(
+            "kr.text",
+            fetchedData?.translations?.find((t) => t.locale === "kr")?.text ||
+              ""
+          );
+          setValue(
+            "ar.text",
+            fetchedData?.translations?.find((t) => t.locale === "ar")?.text ||
+              ""
+          );
+          setValue(
+            "en.text",
+            fetchedData?.translations?.find((t) => t.locale === "en")?.text ||
+              ""
+          );
+        }
+      });
+  }, [id, editedID]);
   const languages = [
-  { code: "ar", name: "Arabic" },
+    { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
     { code: "en", name: "English" },
   ];
-
   const details = languages.map((lang, index) => ({
-    head: t("name"+ lang.name.toLowerCase()),
+    head: t("title " + lang.name.toLowerCase()),
     type: "text",
-    placeholder: t("name"),
-    register: lang.code+".name",
-    defaultValue: data?.translations[index]?.name,
+    placeholder: t("title"),
+    register: lang.code + ".title",
+  }));
+  const text = languages.map((lang, index) => ({
+    head: t("text " + lang.name.toLowerCase()),
+    placeholder: t("text"),
+    register: lang.code + ".text",
+    lang: lang.code,
   }));
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
   };
 
-  const { mutate } = useMutation((data) => createPost(data))
+  const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
-    _Blog.update({
-      editedID: editedID,
-      formData: data,
-    }).catch(err => {
-      setLoading(false)
-    }).then(() => {
-      setLoading(false)
-      // handleClose()
-    })
+    _Blog
+      .update({
+        editedID: editedID,
+        formData: data,
+      })
+      .then((res) => {
+        if (res.code === 200) {
+          handleClose();
+        }
+        setLoading(false);
+      });
   }
 
   const hanldeUpdate = (input) => {
     mutate(input);
     setLoading(true);
-  }
+  };
 
   return (
     <>
@@ -94,11 +145,13 @@ const BlogUpdate = ({ id }) => {
           <>
             <Grid container component="form" key={id}>
               {details?.map((item, index) => {
-                const error = errors?.[item.register.split(".")[0]]?.name;
+                const error = errors?.[item.register.split(".")[0]]?.title;
                 return (
                   <Grid key={index} item md={6} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography  variant="body1" color="text.main">{item.head}</Typography>
+                      <Typography variant="body1" color="text.main">
+                        {item.head}
+                      </Typography>
                     </Box>
                     <TextFieldStyled
                       sx={{ width: "100%" }}
@@ -116,14 +169,39 @@ const BlogUpdate = ({ id }) => {
             </Grid>
           </>
         )}
+        {!!data &&
+          text.map((item, index) => {
+            const error = errors?.[item.register.split(".")[0]]?.text;
 
+            return (
+              <Grid item key={index} xs={12} sx={{ p: "10px" }}>
+                <Box sx={{ margin: "0 0 8px 5px" }}>
+                  <Typography variant="body1" color="text.main">
+                    {item.head}
+                  </Typography>
+                </Box>
+
+                <EditorInput
+                  control={control}
+                  register={register}
+                  name={item.register}
+                  setValue={setValue}
+                  errors={error?.message}
+                  initialValue={
+                    data.translations?.find((t) => t.locale === "en")?.text
+                  }
+                />
+              </Grid>
+            );
+          })}
         <DialogActions>
           <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
           {loading && <Loader />}
 
-          <ButtonLoader name={t("Submit")}
+          <ButtonLoader
+            name={t("Submit")}
             onClick={() => handleSubmit(hanldeUpdate)()}
             type="save"
             loading={loading}
@@ -131,7 +209,6 @@ const BlogUpdate = ({ id }) => {
           >
             {t("Submit")}
           </ButtonLoader>
-
         </DialogActions>
       </Dialog>
     </>
@@ -139,4 +216,3 @@ const BlogUpdate = ({ id }) => {
 };
 
 export default BlogUpdate;
-
