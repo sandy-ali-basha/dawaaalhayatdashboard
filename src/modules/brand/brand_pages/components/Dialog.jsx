@@ -12,6 +12,7 @@ import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { useDeleteBrand_pages } from "hooks/brand_pages/useDeleteBrand_pages";
 import { useBrand_pages } from "hooks/brand_pages/useBrand_pages";
+
 const DeletePageDialog = ({ id, page, count }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);

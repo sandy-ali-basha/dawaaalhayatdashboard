@@ -27,7 +27,7 @@ let schema = yup.object().shape({
   values: yup.array().min(1, "Values type is required"),
 });
 
-const ProductAttr = ({ id, open, setOpen }) => {
+const ProductAttr = ({ id, open, setOpen, attr }) => {
   const { t } = useTranslation("index");
 
   const formOptions = { resolver: yupResolver(schema) };
@@ -61,7 +61,7 @@ const ProductAttr = ({ id, open, setOpen }) => {
       setSelectedValue("");
       setProductAttributesValues([]);
     }
-  }, [open, reset]);
+  }, [open, reset, attr]);
 
   const handleClose = () => {
     setOpen(false);
@@ -82,7 +82,8 @@ const ProductAttr = ({ id, open, setOpen }) => {
       .catch((err) => {
         setLoading(false);
       })
-      .then(() => {
+      .then((res) => {
+        if (res?.code === 200) setOpen(false);
         setLoading(false);
       });
   }
@@ -100,6 +101,14 @@ const ProductAttr = ({ id, open, setOpen }) => {
 
         <Grid container component="form" key={id}>
           <Grid item xs={12} sx={{ p: "10px" }}>
+            <Typography variant="body1">Current Attributes</Typography>
+            {attr?.map((val, idx) => (
+              <Chip sx={{ m: 1 }} label={val?.value} key={idx} />
+            ))}
+            <Typography variant="body1" sx={{ color: "info.main", my: 2 }}>
+              Each selected attribute updates or adds the values of these
+              attributes.
+            </Typography>
             <FormControl fullWidth>
               <Box sx={{ margin: "0 0 8px 5px" }}>
                 <Typography color="text.main">Product Attribute</Typography>
@@ -180,10 +189,6 @@ const ProductAttr = ({ id, open, setOpen }) => {
               </FormControl>
             </Grid>
           )}
-          <Typography>
-            Each selected attribute updates or adds the values of these
-            attributes.
-          </Typography>
         </Grid>
 
         <DialogActions>

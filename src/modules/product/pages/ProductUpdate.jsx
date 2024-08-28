@@ -58,7 +58,7 @@ const ProductUpdate = ({ id }) => {
     useForm(formOptions);
   const { errors } = formState;
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState();
   const [brands, setBrand] = useState(data?.brand_id);
   const [producttypes, setproducttypes] = useState();
@@ -179,12 +179,12 @@ const ProductUpdate = ({ id }) => {
 
   useEffect(() => {
     _axios.get("/brand").then((res) => {
-      setLoading(false);
       setBrand(res?.data?.data?.brands);
+      setLoading(false);
     });
     _axios.get("/product_type").then((res) => {
-      setLoading(false);
       setproducttypes(res?.data?.data?.producttypes);
+      setLoading(false);
     });
   }, []);
 
@@ -228,8 +228,9 @@ const ProductUpdate = ({ id }) => {
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={true} onClose={handleDialogClose} fullWidth>
+      <Dialog open={true} onClose={handleDialogClose} maxWidth>
         <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
+        {loading && <Grid container>loading . . .</Grid>}
         {!!data && (
           <>
             <Grid container component="form" key={id}>
@@ -330,7 +331,6 @@ const ProductUpdate = ({ id }) => {
           <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
-          {loading && <Loader />}
 
           <ButtonLoader
             name={t("Submit")}

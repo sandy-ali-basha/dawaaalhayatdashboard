@@ -10,6 +10,7 @@ import draftToHtml from "draftjs-to-html";
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
+import htmlToDraft from "html-to-draftjs";
 
 const EditorInput = ({
   control,
@@ -23,15 +24,18 @@ const EditorInput = ({
 
   useEffect(() => {
     if (initialValue) {
-      const blocksFromHTML = convertFromHTML(initialValue);
-      const contentState = ContentState.createFromBlockArray(
-        blocksFromHTML.contentBlocks,
-        blocksFromHTML.entityMap
-      );
-      setEditorState(EditorState.createWithContent(contentState));
+      const contentBlock = htmlToDraft(initialValue);
+      if (contentBlock) {
+        const contentState = ContentState.createFromBlockArray(
+          contentBlock.contentBlocks,
+          contentBlock.entityMap
+        );
+        const editorState = EditorState.createWithContent(contentState);
+        setEditorState(editorState);
+      }
     }
   }, [initialValue]);
-
+  
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
     const currentContent = editorState.getCurrentContent();

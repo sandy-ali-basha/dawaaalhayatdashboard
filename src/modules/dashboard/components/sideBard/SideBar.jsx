@@ -5,14 +5,9 @@ import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import SideBarHeader from "./SideBarHeader";
 import SideBarLink from "./SideBarLink";
-import AdminPanelSettingsTwoToneIcon from "@mui/icons-material/AdminPanelSettingsTwoTone";
 import SellRoundedIcon from "@mui/icons-material/SellRounded";
-import CategoryIcon from "@mui/icons-material/Category";
-import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
-import GavelIcon from "@mui/icons-material/Gavel";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import {
   AdminPanelSettingsRounded,
   AssignmentReturnedTwoTone,

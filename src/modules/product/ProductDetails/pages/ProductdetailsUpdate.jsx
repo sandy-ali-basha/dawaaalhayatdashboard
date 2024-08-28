@@ -44,7 +44,7 @@ const ProductdetailsUpdate = ({ id }) => {
     useForm(formOptions);
   const { errors } = formState;
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState();
 
   useEffect(() => {
@@ -81,6 +81,7 @@ const ProductdetailsUpdate = ({ id }) => {
           fetchedData?.translations.find((t) => t.locale === "en")
             ?.description || ""
         );
+        setLoading(false);
       }
     });
   }, [id, editedID]);
@@ -152,21 +153,18 @@ const ProductdetailsUpdate = ({ id }) => {
         // handleClose()
       });
   }
-  console.log(errors);
   const params = useParams();
   const hanldeUpdate = (input) => {
+    setLoading(true);
     const InputWithProductId = { ...input, product_id: params?.id };
     mutate(InputWithProductId);
-    setLoading(true);
   };
-
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "text.main" }}>
-          {t("Edit Row")}
-        </DialogTitle>
+      <Dialog open={true} onClose={handleClose} maxWidth>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
+        {loading && <Grid container>loading . . .</Grid>}
         {!!data && (
           <>
             <Grid container component="form" key={id}>
@@ -195,9 +193,9 @@ const ProductdetailsUpdate = ({ id }) => {
               {Discription.map((item, index) => (
                 <Grid item key={index} xs={12} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.main" variant="body1" color="text.secondary">
+                    <Typography variant="body1" color="text.secondary">
                       {item.head}
-                    </Typography>
+                    </Typography >
                   </Box>
                   <EditorInput
                     control={control}

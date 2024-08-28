@@ -51,10 +51,12 @@ const Product_attributesUpdate = ({ id }) => {
       .then((res) => {
         // setData(res.data?.product_attributes);
         setData(res.data?.data);
+        if (res?.code === 200) setOpen(false);
       });
   }, [id, editedID]);
+  
   const languages = [
-  { code: "ar", name: "Arabic" },
+    { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
     { code: "en", name: "English" },
   ];
@@ -97,9 +99,7 @@ const Product_attributesUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "text.main" }}>
-          {t("Edit Row")}
-        </DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
@@ -108,7 +108,9 @@ const Product_attributesUpdate = ({ id }) => {
                 return (
                   <Grid key={index} item md={6} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography  variant="body1" color="text.main">{item.head}</Typography>
+                      <Typography variant="body1" color="text.main">
+                        {item.head}
+                      </Typography>
                     </Box>
                     <TextFieldStyled
                       sx={{ width: "100%" }}

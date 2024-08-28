@@ -2,7 +2,7 @@ import { useTheme } from "@mui/material";
 import React from "react";
 
 import logoDark from "assets/images/logodark.png";
-import logoLight from "assets/images/logolight.svg";
+import logoLight from "assets/images/logolight.png";
 
 import { useTranslation } from "react-i18next";
 
@@ -24,7 +24,7 @@ const RenderLogo = () => {
           height: "100%",
           margin: "10px",
           backgroundPosition: "center",
-          backgroundSize: "containe",
+          backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
         }}
       ></div>
@@ -38,7 +38,7 @@ const RenderLogo = () => {
           height: "100%",
           margin: "10px",
           backgroundPosition: "center",
-          backgroundSize: "containe",
+          backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
         }}
       ></div>
@@ -52,7 +52,7 @@ const RenderLogo = () => {
           height: "100%",
           margin: "10px",
           backgroundPosition: "center",
-          backgroundSize: "containe",
+          backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
         }}
       ></div>
@@ -66,7 +66,7 @@ const RenderLogo = () => {
           height: "100%",
           margin: "10px",
           backgroundPosition: "center",
-          backgroundSize: "containe",
+          backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
         }}
       ></div>

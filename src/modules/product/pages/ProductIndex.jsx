@@ -57,6 +57,7 @@ const ProductIndex = () => {
   const [open, setOpen] = useState(false);
   const [openAttr, setOpenAttr] = useState(false);
   const [openImagesSlider, setOpenImagesSlider] = useState(false);
+  const [product_attr, setProduct_attr] = useState();
 
   const handleView = useCallback(
     (id) => {
@@ -86,9 +87,10 @@ const ProductIndex = () => {
   );
 
   const handleCat = useCallback(
-    (id) => {
+    (id,attr) => {
       setID(id);
       setOpenAttr(true);
+      setProduct_attr(attr)
     },
     [setEditedID]
   );
@@ -146,7 +148,7 @@ const ProductIndex = () => {
           <IconButton>
             <Tooltip
               title={"link to categories"}
-              onClick={() => handleCat(product?.id)}
+              onClick={() => handleCat(product?.id,product?.attributes)}
             >
               <LinkIcon sx={{ color: "text.main" }} />
             </Tooltip>
@@ -160,6 +162,7 @@ const ProductIndex = () => {
             </Tooltip>
           </IconButton>
         </TableCell>
+      
       </TableRow>
     ));
   }, [data, count, direction, handleEdit, handleView, page, t]);
@@ -176,8 +179,8 @@ const ProductIndex = () => {
           setOpen={setOpenImagesSlider}
         />
       )}
-      {id && <ProductAttr id={id} open={openAttr} setOpen={setOpenAttr} />}
-
+      
+      {id && <ProductAttr id={id} open={openAttr} setOpen={setOpenAttr} attr={product_attr}/>}
       <Box
         sx={{
           width: { sl: "300px" },

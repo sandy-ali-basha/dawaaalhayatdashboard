@@ -3,7 +3,7 @@ import { DrawerHeader } from "../styled/DrawerHeader";
 import IconButton from "@mui/material/IconButton";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import Vector from "assets/images/logolightSmall.svg";
+import Vector from "assets/images/logolightSmall.png";
 
 import { useTheme } from "@mui/material";
 import { Box } from "@mui/material";

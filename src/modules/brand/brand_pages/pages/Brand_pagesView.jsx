@@ -71,16 +71,7 @@ const Brand_pagesView = () => {
                 mb: 2,
               }}
             >
-              <IconButton onClick={() => handleEdit(data?.id)}>
-                <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                  <EditRounded sx={{ color: "text.main" }} />
-                </Tooltip>
-              </IconButton>
-              <IconButton>
-                <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-                  <DeleteDialog id={data?.id} />
-                </Tooltip>
-              </IconButton>
+          
             </Box>
             <Typography
               sx={{

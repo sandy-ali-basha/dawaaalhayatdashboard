@@ -123,127 +123,118 @@ const Dashboard = () => {
   return (
     <ApexChartWrapper>
       <Grid container spacing={2}>
-        <Grid item xs={4} sm={4} md={3}>
-          <Card
-            sx={{
-              display: "flex",
-              boxShadow: 3,
-              borderRadius: 3,
-              p: 2,
-              height: "15vh",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 1,
-              backgroundColor: "primary.light",
-              color: "white",
-            }}
-          >
-            {" "}
-            <LocalMallIcon />
-            <Typography variant="h6">
-              totalOrders:
-              {orderStatusData?.totalOrders}
-            </Typography>
-          </Card>
+        {/* Order Status Cards */}
+        <Grid container spacing={2} item xs={12}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: 3,
+                borderRadius: 3,
+                p: 2,
+                height: "100%",
+                backgroundColor: "primary.light",
+                color: "white",
+              }}
+            >
+              <LocalMallIcon sx={{ fontSize: 40 }} />
+              <Typography variant="h6" sx={{ ml: 1 }}>
+                Total Orders: {orderStatusData?.totalOrders}
+              </Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: 3,
+                borderRadius: 3,
+                p: 2,
+                height: "100%",
+                backgroundColor: "success.lighter",
+                color: "white",
+              }}
+            >
+              <LocalMallIcon sx={{ fontSize: 40 }} />
+              <Typography variant="h6" sx={{ ml: 1 }}>
+                Delivered Orders: {orderStatusData?.deliveredOrders}
+              </Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: 3,
+                borderRadius: 3,
+                p: 2,
+                height: "100%",
+                backgroundColor: "info.light",
+                color: "white",
+              }}
+            >
+              <LocalMallIcon sx={{ fontSize: 40 }} />
+              <Typography variant="h6" sx={{ ml: 1 }}>
+                Pending Orders: {orderStatusData?.pendingOrders}
+              </Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: 3,
+                borderRadius: 3,
+                p: 2,
+                height: "100%",
+                backgroundColor: "error.light",
+                color: "white",
+              }}
+            >
+              <LocalMallIcon sx={{ fontSize: 40 }} />
+              <Typography variant="h6" sx={{ ml: 1 }}>
+                Canceled Orders: {orderStatusData?.canceledOrders}
+              </Typography>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid item xs={4} sm={4} md={3}>
-          <Card
-            sx={{
-              display: "flex",
-              boxShadow: 3,
-              borderRadius: 3,
-              p: 2,
-              height: "15vh",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 1,
-              backgroundColor: "success.lighter",
-              color: "white",
-            }}
-          >
-            {" "}
-            <LocalMallIcon />
-            <Typography variant="h6">
-              deliveredOrders:
-              {orderStatusData?.deliveredOrders}
-            </Typography>
-          </Card>
-        </Grid>
-        <Grid item xs={4} sm={4} md={3}>
-          <Card
-            sx={{
-              display: "flex",
-              boxShadow: 3,
-              borderRadius: 3,
-              p: 2,
-              height: "15vh",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 1,
-              backgroundColor: "info.light",
-              color: "white",
-            }}
-          >
-            {" "}
-            <LocalMallIcon />
-            <Typography variant="h6">
-              pendingOrders:
-              {orderStatusData?.pendingOrders}
-            </Typography>
-          </Card>
-        </Grid>
-        <Grid item xs={4} sm={4} md={3}>
-          <Card
-            sx={{
-              display: "flex",
-              boxShadow: 3,
-              borderRadius: 3,
-              p: 2,
-              height: "15vh",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 1,
-              backgroundColor: "error.light",
-              color: "white",
-            }}
-          >
-            {" "}
-            <LocalMallIcon />
-            <Typography variant="h6">
-              canceledOrders:
-              {orderStatusData?.canceledOrders}
-            </Typography>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={5}>
+
+        {/* Report Charts */}
+        <Grid item xs={12} sm={6} md={6}>
           <WebsiteTrafficReport data={websiteTrafficData} colors={colors} />
-          <AbandonedCartReport
-            sx={{ mt: 2 }}
-            data={abandonedCartData}
-            colors={colors}
-          />
         </Grid>
-        <Grid item xs={12} sm={6} md={7}>
+
+        <Grid item xs={12} sm={6} md={6}>
+          <AbandonedCartReport data={abandonedCartData} colors={colors} />
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={6}>
           <UserBehaviorReport data={userBehaviorData} colors={colors} />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={7}>
+        <Grid item xs={12} sm={6} md={6}>
           <EcommerceConversionReport
             data={ecommerceConversionData}
             colors={colors}
           />
         </Grid>
-
-        <Grid item xs={12} sm={6} md={12}>
-          <ProductPerformanceReport
-            data={productPerformanceData}
+        <Grid item xs={12} sm={6} md={6}>
+          <MarketingCampaignReport
+            data={marketingCampaignData}
             colors={colors}
           />
         </Grid>
-
-        <Grid item xs={12} sm={6} md={7}>
-          <MarketingCampaignReport
-            data={marketingCampaignData}
+        <Grid item xs={12}>
+          <ProductPerformanceReport
+            data={productPerformanceData}
             colors={colors}
           />
         </Grid>
