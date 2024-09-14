@@ -1,3 +1,4 @@
+
 import {
   Typography,
   Box,
@@ -11,105 +12,87 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-// import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
-// import { settingsStore } from "store/settingsStore";
+import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
+import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
 import ChangeStatus from "../components/ChangeStatus";
-import { useOrders } from "hooks/orders/useOrders";
-import OrdersUpdate from "./OrdersUpdate";
-import { orderStore } from "../store/orderStore";
+import { useSettings } from "hooks/settings/useSettings";
+import SettingsUpdate from "./SettingsUpdate";
+import DeleteDialog from "../components/Dialog";
 
-const OrdersIndex = () => {
+const SettingsIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useOrders();
-  const [setItem] = orderStore((state) => [state.setItem]);
+  const { data, page, setPage, isLoading, count } = useSettings();
 
   const navigate = useNavigate();
-  // const [direction] = settingsStore((state) => [state.direction]);
+  const [direction] = settingsStore((state) => [state.direction]);
 
-  const [editedID] = colorStore((state) => [
+  const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
-    // state.setEditedID,
+    state.setEditedID,
   ]);
 
   const columns = useMemo(() => {
     return [
-      t("reference"),
-      t("total"),
+      t("first name"),
       t("status"),
-      t("payment"),
-      t("qty"),
       t("operations"),
     ];
   }, [t]);
+  
+  const handleView = useCallback((id) => { navigate('view/' + id) }, [navigate])
+  const handleEdit = useCallback((id) => { setEditedID(id) }, [setEditedID])
+  
 
-  const handleView = useCallback(
-    (item) => {
-      setItem(item);
-      navigate("view");
-    },
-    [navigate, setItem]
-  );
-  // const handleEdit = useCallback(
-  //   (id) => {
-  //     setEditedID(id);
-  //   },
-  //   [setEditedID]
-  // );
   const rows = useMemo(() => {
-    return data?.data?.orders?.map((orders, id) => (
-      <TableRow sx={{ height: "65px" }} key={orders.id} hover>
-        <TableCell sx={{ minWidth: 50 }}>
-          {orders?.reference ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {orders?.sub_total ?? "Null"}
-        </TableCell>
+    return data?.settings?.map((settings, id) => (
+      <TableRow sx={{ height: "65px" }} key={settings.id} hover>
+        <TableCell sx={{ minWidth: 50 }}>{settings?.first_name ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 120 }} align="center">
           <ChangeStatus
-            id={orders.id}
-            action={orders.status === "active" && "change-status"}
+            id={settings.id}
+            action={settings.status === "active" && "change-status"}
           >
-            {orders?.status ?? "Null"}
+            {settings.status === "Active" ? t("Active") : t("Not Active")}
           </ChangeStatus>
         </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {orders?.lines?.length ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>{orders?.payment ?? "Null"}</TableCell>
         <TableCell
           align="center"
           sx={{
             minWidth: 200,
           }}
         >
-          {/* <IconButton onClick={() => handleEdit(orders?.id)}>
+          <IconButton onClick={() => handleEdit(settings?.id)}>
             <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
               <ModeTwoToneIcon sx={{ color: "text.main" }} />
             </Tooltip>
-          </IconButton> */}
-
-          <IconButton onClick={() => handleView(orders)}>
-            <Tooltip title={"details"}>
+          </IconButton>
+          <IconButton>
+            <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
+              <DeleteDialog id={settings?.id} count={count} page={page} />
+            </Tooltip>
+          </IconButton>
+          <IconButton onClick={() => handleView(settings.id)}>
+            <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
               <VisibilityTwoToneIcon color="primary" />
             </Tooltip>
           </IconButton>
         </TableCell>
       </TableRow>
     ));
-  }, [data, handleView, t]);
+  },[data, count, direction, handleEdit, handleView, page,t]);
 
-  const handleCreate = () => navigate("create");
+  const handleCreate = () => navigate("create")
 
   return (
     <>
       {isLoading && <Loader />}
-      {editedID && <OrdersUpdate id={editedID} />}
+      {editedID && <SettingsUpdate id={editedID} />}
 
       <Box
         sx={{
@@ -127,7 +110,7 @@ const OrdersIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("orders")}
+            {t("settings")}
           </Typography>
 
           <Button
@@ -136,7 +119,7 @@ const OrdersIndex = () => {
             color="secondary"
             onClick={handleCreate}
           >
-            {t("New orders")}
+            {t("New settings")}
           </Button>
         </Box>
 
@@ -154,4 +137,4 @@ const OrdersIndex = () => {
   );
 };
 
-export default OrdersIndex;
+export default SettingsIndex;
