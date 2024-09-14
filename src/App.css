@@ -1,11 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&family=Poppins:wght@400;700&display=swap');
 body a {
   text-decoration: none;
 }
 
+.ql-editor {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
 body {
   height: 100vh;
   font-family: "Arial";
   color: white;
+}
+.ql-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+.ql-table td, .ql-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
 .webgl {
@@ -93,4 +107,3 @@ section {
   z-index: -1;
   width: 100vw;
 }
-

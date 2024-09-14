@@ -16,6 +16,8 @@ import Product_typeRouting from "modules/product_type/Product_typeRouting";
 import Product_attributesRouting from "modules/product_attributes/Product_attributesRouting";
 import NotFound from "components/NotFound";
 import BlogRouting from "modules/blog/BlogRouting";
+import OrdersRouting from "modules/orders/OrdersRouting";
+import DiscountsRouting from "modules/discounts/DiscountsRouting";
 
 const DashboardRouting = () => {
   return (
@@ -38,6 +40,8 @@ const DashboardRouting = () => {
           />
           <Route path="/product/*" element={<ProductRouting />} />
           <Route path="/brands/*" element={<BrandRouting />} />
+          <Route path="/orders/*" element={<OrdersRouting />} />
+          <Route path="/discounts/*" element={<DiscountsRouting />} />
           <Route path="/product_type/*" element={<Product_typeRouting />} />
 
           <Route

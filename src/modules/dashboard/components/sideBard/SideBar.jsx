@@ -13,7 +13,11 @@ import {
   AssignmentReturnedTwoTone,
   BookmarkRounded,
   CategoryRounded,
+  Discount,
+  DiscountRounded,
   GavelRounded,
+  ShoppingCart,
+  ShoppingCartCheckout,
   SpaceDashboardRounded,
   WorkRounded,
 } from "@mui/icons-material";
@@ -73,6 +77,16 @@ const SideBar = ({ open, setOpen }) => {
       name: t("brands"),
       link: "/dashboard/brands",
       icon: <SellRoundedIcon />,
+    },
+    {
+      name: t("orders"),
+      link: "/dashboard/orders",
+      icon: <ShoppingCartCheckout />,
+    },
+    {
+      name: t("discounts"),
+      link: "/dashboard/discounts",
+      icon: <DiscountRounded />,
     },
     {
       name: t("blog"),

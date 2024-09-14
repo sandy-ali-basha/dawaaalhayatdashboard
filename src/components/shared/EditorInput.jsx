@@ -1,16 +1,16 @@
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import {
-  EditorState,
-  convertToRaw,
-  ContentState,
-  convertFromHTML,
-} from "draft-js";
-import draftToHtml from "draftjs-to-html";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import QuillBetterTable from "quill-better-table";
+import "quill-better-table/dist/quill-better-table.css";
 import { Box, Typography } from "@mui/material";
-import { Controller } from "react-hook-form";
-import htmlToDraft from "html-to-draftjs";
+
+Quill.register(
+  {
+    "modules/better-table": QuillBetterTable,
+  },
+  true
+);
 
 const EditorInput = ({
   control,
@@ -20,27 +20,74 @@ const EditorInput = ({
   errors,
   initialValue,
 }) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorValue, setEditorValue] = useState(initialValue || "");
 
-  useEffect(() => {
-    if (initialValue) {
-      const contentBlock = htmlToDraft(initialValue);
-      if (contentBlock) {
-        const contentState = ContentState.createFromBlockArray(
-          contentBlock.contentBlocks,
-          contentBlock.entityMap
-        );
-        const editorState = EditorState.createWithContent(contentState);
-        setEditorState(editorState);
-      }
-    }
-  }, [initialValue]);
-  
-  const onEditorStateChange = (editorState) => {
-    setEditorState(editorState);
-    const currentContent = editorState.getCurrentContent();
-    const rawContent = convertToRaw(currentContent);
-    setValue(name, draftToHtml(rawContent));
+  const modules = {
+    toolbar: [
+      [{ font: [] }, { size: [] }],
+      [{ header: "1" }, { header: "2" }, { align: [] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [] }, { background: [] }],
+      [{ script: "sub" }, { script: "super" }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["blockquote", "code-block"],
+      ["link", "image", "video"],
+      ["table"], // Add table button
+      ["clean"], // remove formatting button
+    ],
+    table: true,
+    "better-table": {
+      operationMenu: {
+        items: {
+          unmergeCells: {
+            text: "Unmerge cells",
+          },
+        },
+        color: {
+          colors: [
+            "#fff",
+            "red",
+            "blue",
+            "green",
+            "yellow",
+            "orange",
+            "purple",
+          ],
+        },
+      },
+    },
+    keyboard: {
+      bindings: QuillBetterTable.keyboardBindings,
+    },
+  };
+
+  const formats = [
+    "font",
+    "size",
+    "header",
+    "align",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "color",
+    "background",
+    "script",
+    "sub",
+    "super",
+    "list",
+    "bullet",
+    "blockquote",
+    "code-block",
+    "link",
+    "image",
+    "video",
+    "table", // Add table to formats
+  ];
+
+  const handleEditorChange = (content, delta, source, editor) => {
+    setEditorValue(content);
+    setValue(name, content);
   };
 
   return (
@@ -56,16 +103,12 @@ const EditorInput = ({
           width: "100%",
         }}
       >
-        <Controller
-          control={control}
-          name={name}
-          {...register(name)}
-          render={({ field }) => (
-            <Editor
-              editorState={editorState}
-              onEditorStateChange={onEditorStateChange}
-            />
-          )}
+        <ReactQuill
+          value={editorValue}
+          onChange={handleEditorChange}
+          modules={modules}
+          formats={formats}
+          theme="snow"
         />
       </Box>
       <Typography sx={{ color: "error.main" }}>{errors}</Typography>

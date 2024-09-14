@@ -1,9 +1,9 @@
 
 import { _axios } from "../../interceptor/http-config";
 
-const Link = "/order"
+const Link = "/discounts"
 
-export const _Orders = {
+export const _Discounts = {
     index: () => _axios.get(Link).then((res) => res.data),
 
     post: (data) => _axios.post(Link, data).then((res) => res?.data),

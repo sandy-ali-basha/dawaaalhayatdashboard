@@ -13,7 +13,7 @@ const OrdersRouting = () => {
       <Route element={<OrdersComponent />}>
         <Route path="/" element={<OrdersIndex />} />
         <Route path="/update/:id" element={<OrdersUpdate />} />
-        <Route path="/view/:id" element={<OrdersView />} />
+        <Route path="/view" element={<OrdersView />} />
         <Route path="/create" element={<OrdersCreate />} />
       </Route>
       <Route path="*" element={<p>not found 404</p>} />

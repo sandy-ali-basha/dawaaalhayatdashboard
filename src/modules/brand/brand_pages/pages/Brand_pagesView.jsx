@@ -44,10 +44,7 @@ const Brand_pagesView = () => {
     {}
   );
 
-  const columns = [
-    { head: t("name"), value: data?.name },
-    { head: t("text"), value: data?.text },
-  ];
+  const columns = [{ head: t("name"), value: data?.name }];
 
   return (
     <>
@@ -71,7 +68,12 @@ const Brand_pagesView = () => {
                 mb: 2,
               }}
             >
-          
+              {" "}
+              <IconButton onClick={() => handleEdit(data?.id)}>
+                <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                  <EditRounded sx={{ color: "text.main" }} />
+                </Tooltip>
+              </IconButton>
             </Box>
             <Typography
               sx={{
@@ -154,6 +156,31 @@ const Brand_pagesView = () => {
                     </Box>
                   ))}
                 </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    pl: "10px",
+                    width: "50%",
+                    my: "5px",
+                  }}
+                >
+                  <Typography
+                    variant="p"
+                    sx={{
+                      fontWeight: "700",
+                      fontSize: "15px",
+                      marginInlineEnd: "15px",
+                    }}
+                  >
+                    text:
+                  </Typography>
+                  <Typography
+                    variant="p"
+                    dangerouslySetInnerHTML={{
+                      __html: data?.text,
+                    }}
+                  ></Typography>
+                </Box>
 
                 <h3>{t("Details")}</h3>
                 <Box>
@@ -164,7 +191,7 @@ const Brand_pagesView = () => {
                         my: 2,
                         boxShadow: 2,
                         borderRadius: 3,
-                        p:1
+                        p: 1,
                       }}
                     >
                       <IconButton
