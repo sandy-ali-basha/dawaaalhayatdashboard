@@ -1,10 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&family=Poppins:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&family=Poppins:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Georgia&family=Courier+New&display=swap");
+
 body a {
   text-decoration: none;
 }
 
 .ql-editor {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
 }
 body {
   height: 100vh;
@@ -17,7 +19,8 @@ body {
   margin-bottom: 1em;
 }
 
-.ql-table td, .ql-table th {
+.ql-table td,
+.ql-table th {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -106,4 +109,23 @@ section {
   left: 0px;
   z-index: -1;
   width: 100vw;
+}
+/* Define CSS classes for your custom fonts */
+.ql-font-Roboto {
+  font-family: 'Roboto', sans-serif;
+}
+.ql-font-Times-New-Roman {
+  font-family: 'Times New Roman', serif;
+}
+.ql-font-Courier-New {
+  font-family: 'Courier New', monospace;
+}
+.ql-font-Georgia {
+  font-family: 'Georgia', serif;
+}
+.ql-font-Tahoma {
+  font-family: 'Tahoma', sans-serif;
+}
+.ql-font-Verdana {
+  font-family: 'Verdana', sans-serif;
 }
