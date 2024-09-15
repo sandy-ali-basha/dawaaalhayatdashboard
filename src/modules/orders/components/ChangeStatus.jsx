@@ -31,7 +31,7 @@ const ChangeStatus = ({ id, children }) => {
 
   async function createPost(data) {
     _Orders
-      .update({
+      .updateStatus({
         editedID: id,
         formData: data,
       })
@@ -53,10 +53,23 @@ const ChangeStatus = ({ id, children }) => {
     setLoading(true);
     mutate(inputData);
   };
-
+console.log(children)
   return (
     <>
-      <Button onClick={handleClickOpen}>{children}</Button>
+      <Button
+        variant="outlined"
+        color={
+          children === "awaiting-payment"
+            ? "info"
+            : children === "payment-offline"
+            ? "primary"
+            : "success" 
+        }
+        onClick={handleClickOpen}
+      >
+        {children}
+      </Button>
+
       <Dialog
         open={open}
         onClose={handleClose}

@@ -73,7 +73,7 @@ const OrdersIndex = () => {
         <TableCell sx={{ minWidth: 120 }} align="center">
           <ChangeStatus
             id={orders.id}
-            action={orders.status === "active" && "change-status"}
+            
           >
             {orders?.status ?? "Null"}
           </ChangeStatus>

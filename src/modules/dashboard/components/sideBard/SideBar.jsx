@@ -16,6 +16,8 @@ import {
   Discount,
   DiscountRounded,
   GavelRounded,
+  Money,
+  PointOfSaleOutlined,
   ShoppingCart,
   ShoppingCartCheckout,
   SpaceDashboardRounded,
@@ -77,6 +79,11 @@ const SideBar = ({ open, setOpen }) => {
       name: t("brands"),
       link: "/dashboard/brands",
       icon: <SellRoundedIcon />,
+    },
+    {
+      name: t("point price"),
+      link: "/dashboard/settings",
+      icon: <Money />,
     },
     {
       name: t("orders"),

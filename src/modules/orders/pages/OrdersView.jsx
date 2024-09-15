@@ -64,8 +64,16 @@ const OrdersView = () => {
 
         {/* Order Status Chips */}
         <Box display="flex" gap={2}>
-          <Chip label={status} color="warning" />
-          <Chip label={readyToPickup} color="success" />
+          <Chip
+            label={item?.status}
+            color={
+              item?.status === "awaiting-payment"
+                ? "info"
+                : item?.status === "payment-offline"
+                ? "primary"
+                : "success"
+            }
+          />
         </Box>
       </Box>
 

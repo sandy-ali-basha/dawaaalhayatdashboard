@@ -48,7 +48,6 @@ const SettingsIndex = () => {
   const handleView = useCallback((id) => { navigate('view/' + id) }, [navigate])
   const handleEdit = useCallback((id) => { setEditedID(id) }, [setEditedID])
   
-
   const rows = useMemo(() => {
     return data?.settings?.map((settings, id) => (
       <TableRow sx={{ height: "65px" }} key={settings.id} hover>
