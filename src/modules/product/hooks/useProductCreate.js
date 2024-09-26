@@ -1,12 +1,12 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _Product } from "api/product/product";
 import { _axios } from "interceptor/http-config";
+import { _cities } from "api/cities/cities";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
@@ -14,6 +14,7 @@ let schema = yup.object().shape({
   status: yup.string().trim().required("status type is required"),
   price: yup.string().trim().required("price is required"),
   qty: yup.string().trim().required("qty is required"),
+
   sku: yup.string().trim().required("sku is required"),
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
@@ -30,17 +31,17 @@ let schema = yup.object().shape({
 });
 
 export const useProductCreate = () => {
+  const [cities, setCiteies] = useState([]);
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [brands, setBrand] = useState(null);
+  const [selectedCities, setSelectedCities] = useState([]);
   const [producttypes, setproducttypes] = useState(null);
-  const [statuses, setStatuses] = useState([{ id: 1, name: "done" }]);
   const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState, setValue, control, reset } =
     useForm(formOptions);
   const { errors } = formState;
-  const { mutate } = useMutation((data) => createPost(data));
 
   useEffect(() => {
     _axios.get("/brand").then((res) => {
@@ -52,18 +53,6 @@ export const useProductCreate = () => {
       setproducttypes(res?.data?.data?.producttypes);
     });
   }, []);
-  async function createPost(data) {
-    _Product
-      .post(data, setLoading)
-      .then((res) => {
-        if (res?.code === 200) navigate(-1);
-        setLoading(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
-  console.log(errors);
   const details = [
     {
       head: t("arabic name"),
@@ -170,16 +159,37 @@ export const useProductCreate = () => {
     if (form) form.reset();
     reset();
   };
-
   const hanldeCreate = (input) => {
-    const withDesc = {
-      ...input,
-      description: input?.en?.description || "",
-    };
+    const requests = selectedCities?.map((city_id) => {
+      const productData = {
+        ...input,
+        city_id, // Current city_id for each request
+        description: input?.en?.description || "",
+      };
 
-    mutate(withDesc);
-    setLoading(true);
+      return _Product.post(productData, setLoading);
+    });
+
+    Promise.all(requests)
+      .then((responses) => {
+        navigate(-1); // Navigate or display success message
+      })
+      .catch((error) => {
+        console.error("Error creating products for multiple cities", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
+
+  useMemo(() => {
+    _cities.index().then((response) => {
+      console.log("response", response);
+      if (response.code === 200) {
+        setCiteies(response.data);
+      }
+    });
+  }, []);
 
   return {
     handleCancel,
@@ -195,8 +205,10 @@ export const useProductCreate = () => {
     generalDetails,
     control,
     brands,
-    statuses,
     producttypes,
     Discription,
+    cities,
+    selectedCities,
+    setSelectedCities,
   };
 };

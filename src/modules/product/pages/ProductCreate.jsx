@@ -5,6 +5,10 @@ import {
   Grid,
   FormControl,
   FormHelperText,
+  MenuItem,
+  ListItemText,
+  Checkbox,
+  Select,
 } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import {
@@ -18,7 +22,6 @@ import ButtonAction from "components/shared/ButtonAction";
 import { useProductCreate } from "../hooks/useProductCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
-import { AltRouteRounded } from "@mui/icons-material";
 const ProductCreate = () => {
   const {
     handleCancel,
@@ -32,13 +35,14 @@ const ProductCreate = () => {
     details,
     brands,
     producttypes,
-    statuses,
+    selectedCities,
+    setSelectedCities,
     Discription,
     control,
     setValue,
+    cities,
     generalDetails,
   } = useProductCreate();
-
   return (
     <Box>
       {loading && <Loader />}
@@ -71,6 +75,50 @@ const ProductCreate = () => {
               ) : (
                 <Typography variant="body2" color="text.main">
                   pleas add Brands before adding new products
+                </Typography>
+              )}
+            </Grid>
+
+            <Grid item xs={6} sx={{ p: "10px" }}>
+              {cities ? (
+                <FormControl fullWidth>
+                  <Box sx={{ margin: "0 0 8px 5px" }}>
+                    <Typography color="text.main">{t("cities")}</Typography>
+                  </Box>
+
+                  <Select
+                    labelId="city-label"
+                    id="city"
+                    multiple
+                    value={selectedCities} // Ensure this is an array
+                    onChange={(e) => setSelectedCities(e.target.value)}
+                    renderValue={(selected) =>
+                      selected
+                        .map(
+                          (cityId) =>
+                            cities?.state?.find((city) => city.id === cityId)
+                              ?.name
+                        )
+                        .join(", ")
+                    }
+                  >
+                    {cities?.state?.map((city) => (
+                      <MenuItem key={city.id} value={city.id}>
+                        <Checkbox
+                          checked={selectedCities.indexOf(city.id) > -1}
+                        />
+                        <ListItemText primary={city.name} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  <FormHelperText error>
+                    {errors.city_id?.message}
+                  </FormHelperText>
+                </FormControl>
+              ) : (
+                <Typography variant="body2" color="text.main">
+                  pleas add cities
                 </Typography>
               )}
             </Grid>
@@ -129,7 +177,7 @@ const ProductCreate = () => {
               return (
                 <Grid item key={index} xs={6} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>
-                    <Typography color="text.main" variant="body1" >
+                    <Typography color="text.main" variant="body1">
                       {item.head}
                     </Typography>
                   </Box>

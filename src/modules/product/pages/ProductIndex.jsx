@@ -49,6 +49,7 @@ const ProductIndex = () => {
       t("sku"),
       t("price"),
       t("Qty"),
+      t("city"),
       t("operations"),
     ];
   }, [t]);
@@ -71,29 +72,20 @@ const ProductIndex = () => {
     },
     [setEditedID]
   );
-  const handleAddImages = useCallback(
-    (id) => {
-      setID(id);
-      setOpen(true);
-    },
-    [setEditedID]
-  );
-  const handleImagesSlider = useCallback(
-    (id) => {
-      setID(id);
-      setOpenImagesSlider(true);
-    },
-    [openImagesSlider]
-  );
+  const handleAddImages = useCallback((id) => {
+    setID(id);
+    setOpen(true);
+  }, []);
+  const handleImagesSlider = useCallback((id) => {
+    setID(id);
+    setOpenImagesSlider(true);
+  }, []);
 
-  const handleCat = useCallback(
-    (id,attr) => {
-      setID(id);
-      setOpenAttr(true);
-      setProduct_attr(attr)
-    },
-    [setEditedID]
-  );
+  const handleCat = useCallback((id, attr) => {
+    setID(id);
+    setOpenAttr(true);
+    setProduct_attr(attr);
+  }, []);
 
   const rows = useMemo(() => {
     return data?.data?.products?.map((product, id) => (
@@ -106,6 +98,9 @@ const ProductIndex = () => {
         <TableCell sx={{ minWidth: 50 }}>{product?.price ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {product?.quantity ?? "Null"}
+        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          {product?.cities?.state[0]?.name ?? "Null"}
         </TableCell>
 
         <TableCell
@@ -148,7 +143,7 @@ const ProductIndex = () => {
           <IconButton>
             <Tooltip
               title={"link to categories"}
-              onClick={() => handleCat(product?.id,product?.attributes)}
+              onClick={() => handleCat(product?.id, product?.attributes)}
             >
               <LinkIcon sx={{ color: "text.main" }} />
             </Tooltip>
@@ -162,10 +157,21 @@ const ProductIndex = () => {
             </Tooltip>
           </IconButton>
         </TableCell>
-      
       </TableRow>
     ));
-  }, [data, count, direction, handleEdit, handleView, page, t]);
+  }, [
+    data,
+    count,
+    direction,
+    handleEdit,
+    handleView,
+    page,
+
+    handleAddImages,
+    handleCat,
+    handleImagesSlider,
+    navigate,
+  ]);
 
   return (
     <>
@@ -179,8 +185,15 @@ const ProductIndex = () => {
           setOpen={setOpenImagesSlider}
         />
       )}
-      
-      {id && <ProductAttr id={id} open={openAttr} setOpen={setOpenAttr} attr={product_attr}/>}
+
+      {id && (
+        <ProductAttr
+          id={id}
+          open={openAttr}
+          setOpen={setOpenAttr}
+          attr={product_attr}
+        />
+      )}
       <Box
         sx={{
           width: { sl: "300px" },

@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useMemo } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -26,12 +26,15 @@ import { _Product } from "api/product/product";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
+import { _cities } from "api/cities/cities";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
   product_type_id: yup.string().trim().required("product type is required"),
   price: yup.number().required("price type is required"),
   qty: yup.number().required("quantity type is required"),
+  city_id: yup.string().trim().required("city is required"),
+
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
     description: yup.string().required("Kurdish description is required"),
@@ -52,7 +55,6 @@ const ProductUpdate = ({ id }) => {
     state.editedID,
     state.setEditedID,
   ]);
-  const [statuses, setStatuses] = useState([{ id: 1, name: "done" }]);
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState, control, setValue } =
     useForm(formOptions);
@@ -62,6 +64,7 @@ const ProductUpdate = ({ id }) => {
   const [data, setData] = useState();
   const [brands, setBrand] = useState(data?.brand_id);
   const [producttypes, setproducttypes] = useState();
+  const [cities, setCiteies] = useState([]);
 
   useEffect(() => {
     _axios
@@ -107,7 +110,7 @@ const ProductUpdate = ({ id }) => {
           );
         }
       });
-  }, [id, editedID]);
+  }, [id, editedID, setValue]);
 
   const languages = [
     { code: "ar", name: "Arabic" },
@@ -176,7 +179,14 @@ const ProductUpdate = ({ id }) => {
       defaultValue: data?.quantity,
     }
   );
-
+  useMemo(() => {
+    _cities.index().then((response) => {
+      console.log("response", response);
+      if (response.code === 200) {
+        setCiteies(response.data);
+      }
+    });
+  }, []);
   useEffect(() => {
     _axios.get("/brand").then((res) => {
       setBrand(res?.data?.data?.brands);
@@ -257,7 +267,33 @@ const ProductUpdate = ({ id }) => {
                   </FormControl>
                 </Grid>
               )}
-
+              <Grid item xs={6} sx={{ p: "10px" }}>
+                {cities ? (
+                  <FormControl fullWidth>
+                    <Box sx={{ margin: "0 0 8px 5px" }}>
+                      <Typography color="text.main">{t("cities")}</Typography>
+                    </Box>
+                    <SelectStyled
+                      sx={{ color: "text.main", borderColor: "text.main" }}
+                      {...register("city_id")}
+                      defaultValue={data?.cities?.state[0]?.id}
+                    >
+                      {cities?.state?.map((item) => (
+                        <MenuItemStyled value={item.id} key={item.id}>
+                          <Box style={{ color: "text.main" }}>{item.name}</Box>
+                        </MenuItemStyled>
+                      ))}
+                    </SelectStyled>
+                    <FormHelperText error>
+                      {errors.city_id?.message}
+                    </FormHelperText>
+                  </FormControl>
+                ) : (
+                  <Typography variant="body2" color="text.main">
+                    pleas add cities
+                  </Typography>
+                )}
+              </Grid>
               {producttypes && (
                 <Grid item xs={6} sx={{ p: "10px" }}>
                   <FormControl fullWidth>
