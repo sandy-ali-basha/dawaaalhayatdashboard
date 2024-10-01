@@ -90,7 +90,7 @@ const SettingsIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("settings")}
+            {t("point price")}
           </Typography>
 
           <Button
