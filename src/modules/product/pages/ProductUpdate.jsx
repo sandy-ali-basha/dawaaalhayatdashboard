@@ -5,9 +5,12 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import {
   Box,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   Grid,
+  Switch,
   Typography,
 } from "@mui/material";
 import { colorStore } from "store/ColorsStore";
@@ -34,7 +37,10 @@ let schema = yup.object().shape({
   price: yup.number().required("price type is required"),
   qty: yup.number().required("quantity type is required"),
   city_id: yup.string().trim().required("city is required"),
-
+  purchasable: yup
+    .string()
+    .required("Purchasable is required")
+    .oneOf(["always", "false"]),
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
     description: yup.string().required("Kurdish description is required"),
@@ -55,16 +61,23 @@ const ProductUpdate = ({ id }) => {
     state.editedID,
     state.setEditedID,
   ]);
-  const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, control, setValue } =
-    useForm(formOptions);
-  const { errors } = formState;
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState();
   const [brands, setBrand] = useState(data?.brand_id);
   const [producttypes, setproducttypes] = useState();
   const [cities, setCiteies] = useState([]);
+  const [checked, setChecked] = useState();
+  const formOptions = {
+    resolver: yupResolver(schema),
+    defaultValues: {
+      purchasable: data?.purchasable === "always" ? "always" : "false",
+    },
+  };
+  const { register, handleSubmit, formState, control, setValue } =
+    useForm(formOptions);
+  const { errors } = formState;
 
   useEffect(() => {
     _axios
@@ -77,6 +90,7 @@ const ProductUpdate = ({ id }) => {
         setData(res.data?.data);
         const fetchedData = res.data?.data;
         setData(fetchedData);
+        setChecked(res.data?.data?.purchasable === "always" ? true : false);
         if (fetchedData.translations) {
           setValue(
             "kr.name",
@@ -187,6 +201,7 @@ const ProductUpdate = ({ id }) => {
       defaultValue: data?.points,
     }
   );
+
   useMemo(() => {
     _cities.index().then((response) => {
       console.log("response", response);
@@ -242,16 +257,21 @@ const ProductUpdate = ({ id }) => {
     mutate(input);
     setLoading(true);
   };
+  const handleChange = (event) => {
+    const isChecked = event.target.checked;
+    setChecked(isChecked); // Update the local state
+    setValue("purchasable", isChecked ? "always" : "false"); // Update form value with react-hook-form
+  };
 
   return (
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleDialogClose} maxWidth>
         <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
-        {loading && <Grid container>loading . . .</Grid>}
+
         {!!data && (
           <>
-            <Grid container component="form" key={id}>
+            <Grid container component="form">
               {brands && (
                 <Grid item xs={6} sx={{ p: "10px" }}>
                   <FormControl fullWidth>
@@ -347,6 +367,16 @@ const ProductUpdate = ({ id }) => {
                   </Grid>
                 );
               })}
+              <Grid item xs={6} sx={{ p: "10px", color: "text.main" }}>
+                <FormControl error={Boolean(errors.purchasable)}>
+                  <FormControlLabel
+                    control={
+                      <Switch checked={checked} onChange={handleChange} />
+                    }
+                    label="Purchasable"
+                  />
+                </FormControl>
+              </Grid>
               {TextEditorDetails?.map((item, index) => {
                 const error = errors?.[item.register.split(".")[0]]?.name;
                 return (

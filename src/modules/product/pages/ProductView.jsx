@@ -50,6 +50,10 @@ const ProductView = () => {
     { head: t("status"), value: data?.status },
     { head: t("sku"), value: data?.sku },
     { head: t("price"), value: data?.price },
+    {
+      head: t("purchasable"),
+      value: data?.purchasable === "always" ? "yes" : "no",
+    },
     // { head: t("price currency code"), value: data?.price?.currency?.code },
     // { head: t("price currency name"), value: data?.price },
     // {
@@ -147,7 +151,8 @@ const ProductView = () => {
                         objectFit: "contain",
                       }}
                       key={idx}
-                      sec={item}
+                      src={item}
+                      alt=""
                     />
                   ))}
                 </Grid>

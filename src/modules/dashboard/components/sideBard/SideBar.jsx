@@ -10,15 +10,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import {
   AdminPanelSettingsRounded,
-  AssignmentReturnedTwoTone,
   BookmarkRounded,
   CategoryRounded,
-  Discount,
   DiscountRounded,
   GavelRounded,
   Money,
-  PointOfSaleOutlined,
-  ShoppingCart,
   ShoppingCartCheckout,
   SpaceDashboardRounded,
   WorkRounded,
@@ -54,6 +50,36 @@ const SideBar = ({ open, setOpen }) => {
       icon: <AdminPanelSettingsRounded />,
     },
     {
+      name: t("Products"),
+      icon: <CategoryRounded />,
+      subOptions: [
+        { name: t("Products"), link: "/dashboard/product" },
+        { name: t("Categories"), link: "/dashboard/products/categories" },
+        { name: t("Medical form"), link: "/dashboard/product_type" },
+      ],
+    },
+    {
+      name: t("orders"),
+      link: "/dashboard/orders",
+      icon: <ShoppingCartCheckout />,
+    },
+
+    {
+      name: t("brands"),
+      link: "/dashboard/brands",
+      icon: <SellRoundedIcon />,
+    },
+    {
+      name: t("discounts"),
+      link: "/dashboard/discounts",
+      icon: <DiscountRounded />,
+    },
+    {
+      name: t("point price"),
+      link: "/dashboard/settings",
+      icon: <Money />,
+    },
+    {
       name: t("terms"),
       link: "/dashboard/terms",
       icon: <GavelRounded />,
@@ -66,35 +92,7 @@ const SideBar = ({ open, setOpen }) => {
         { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
       ],
     },
-    {
-      name: t("Products"),
-      icon: <CategoryRounded />,
-      subOptions: [
-        { name: t("Products"), link: "/dashboard/product" },
-        { name: t("Categories"), link: "/dashboard/products/categories" },
-        { name: t("Medical form"), link: "/dashboard/product_type" },
-      ],
-    },
-    {
-      name: t("brands"),
-      link: "/dashboard/brands",
-      icon: <SellRoundedIcon />,
-    },
-    {
-      name: t("point price"),
-      link: "/dashboard/settings",
-      icon: <Money />,
-    },
-    {
-      name: t("orders"),
-      link: "/dashboard/orders",
-      icon: <ShoppingCartCheckout />,
-    },
-    {
-      name: t("discounts"),
-      link: "/dashboard/discounts",
-      icon: <DiscountRounded />,
-    },
+
     {
       name: t("blog"),
       link: "/dashboard/blog",
