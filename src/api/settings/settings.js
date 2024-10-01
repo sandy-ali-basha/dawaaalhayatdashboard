@@ -10,5 +10,5 @@ export const _Settings = {
 
     delete: (id) => _axios.delete(Link+'/' + id).then((res) => res.data),
 
-    update: ({ editedID, formData }) => _axios.post( Link +'/' + editedID, formData).then((res) => res?.data),
+    update: ({  formData }) => _axios.post( Link , formData).then((res) => res?.data),
 };

@@ -18,7 +18,6 @@ import { _axios } from "interceptor/http-config";
 import { TextFieldStyled } from "components/styled/TextField";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
-import { _Service } from "api/service/service";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 import { _Terms } from "api/terms/terms";

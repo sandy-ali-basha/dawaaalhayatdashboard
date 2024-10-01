@@ -9,15 +9,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _Settings } from "api/settings/settings";
 
 const schema = yup.object().shape({
-  kr: yup.object().shape({
-    name: yup.string().required("Kurdish name is required"),
-  }),
-  ar: yup.object().shape({
-    name: yup.string().required("Arabic name is required"),
-  }),
-  en: yup.object().shape({
-    name: yup.string().required("English name is required"),
-  }),
+  name: yup.string().required("required"),
+  
 });
 
 export const useSettingsCreate = () => {

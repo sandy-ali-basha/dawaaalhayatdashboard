@@ -5,7 +5,7 @@ const Link = "/product_attributes";
 export const _Product_attributes = {
   index: () =>
     _axios
-      .get(Link, {
+      .get(Link+"?all=true", {
         headers: {
           with_translations: "yes",
         },

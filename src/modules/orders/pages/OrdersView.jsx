@@ -30,10 +30,6 @@ const OrdersView = () => {
     navigate(-1);
   };
 
-  // Sample order status for demo
-  const status = "Pending"; // You can dynamically change this based on your item data
-  const readyToPickup = "Ready to Pickup"; // Example additional status
-
   const columns = useMemo(() => {
     return [t("Product"), t("Price"), t("Quantity"), t("Total")];
   }, [t]);
@@ -123,32 +119,50 @@ const OrdersView = () => {
           </BoxStyled>
         </Grid>
         <Grid item xs={12} md={4}>
-          <BoxStyled sx={{ p: 2, color: "text.main" }}>
+          <Box sx={{ p: 2, color: "text.main" }}>
             <Typography variant="body1">{t("Shipping Address")}</Typography>
             <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-              {item?.address?.find((addr) => addr.type === "shipping")
-                ?.line_one ?? "N/A"}
+              {
+                item?.address?.find((addr) => addr.type === "shipping")
+                  ?.line_one
+              }
+              , {item?.address?.find((addr) => addr.type === "shipping")?.city},{" "}
+              {item?.address?.find((addr) => addr.type === "shipping")?.state},{" "}
+              {
+                item?.address?.find((addr) => addr.type === "shipping")
+                  ?.postcode
+              }
             </Typography>
             <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
               {t("Contact Email")}:{" "}
               {item?.address?.find((addr) => addr.type === "shipping")
                 ?.contact_email ?? "N/A"}
             </Typography>
-          </BoxStyled>
+            <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
+              {t("Contact Phone")}:{" "}
+              {item?.address?.find((addr) => addr.type === "shipping")
+                ?.contact_phone ?? "N/A"}
+            </Typography>
+          </Box>
         </Grid>
         <Grid item xs={12} md={4}>
-          <BoxStyled sx={{ p: 2, color: "text.main" }}>
+          <Box sx={{ p: 2, color: "text.main" }}>
             <Typography variant="body1">{t("Billing Address")}</Typography>
             <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
               {item?.address?.find((addr) => addr.type === "billing")
                 ?.line_one ?? "N/A"}
             </Typography>
             <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
+              {t("Contact Email")}:{" "}
+              {item?.address?.find((addr) => addr.type === "billing")
+                ?.contact_email ?? "N/A"}
+            </Typography>
+            <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
               {t("Contact Phone")}:{" "}
               {item?.address?.find((addr) => addr.type === "billing")
                 ?.contact_phone ?? "N/A"}
             </Typography>
-          </BoxStyled>
+          </Box>
         </Grid>
       </Grid>
 

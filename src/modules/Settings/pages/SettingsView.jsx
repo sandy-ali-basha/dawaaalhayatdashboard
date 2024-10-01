@@ -31,7 +31,8 @@ const SettingsView = () => {
   )
 
 const columns = [
-  { head: t("first name"), value: data?.first_name },
+  { head: t("name"), value: data?.name },
+  { head: t("value"), value: data?.value },
 ];
 
 return (

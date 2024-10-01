@@ -12,8 +12,8 @@ let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
   product_type_id: yup.string().trim().required("medical form is required"),
   status: yup.string().trim().required("status type is required"),
-  price: yup.string().trim().required("price is required"),
-  qty: yup.string().trim().required("qty is required"),
+  price: yup.number().required("price is required"),
+  qty: yup.number().required("qty is required"),
 
   sku: yup.string().trim().required("sku is required"),
   kr: yup.object().shape({
@@ -120,6 +120,15 @@ export const useProductCreate = () => {
       register: "qty",
       error: "qty",
       helperText: "qty",
+    },
+    {
+      head: t("points"),
+      type: "number",
+      placeholder: "points",
+      name: "points",
+      register: "points",
+      error: "points",
+      helperText: "points",
     },
   ];
   const Discription = [

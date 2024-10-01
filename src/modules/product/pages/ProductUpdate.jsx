@@ -168,7 +168,7 @@ const ProductUpdate = ({ id }) => {
       placeholder: "price",
       register: "price",
       helperText: "price",
-      defaultValue: data?.price,
+      defaultValue: Number(data?.price),
     },
     {
       head: t("quantity"),
@@ -177,6 +177,14 @@ const ProductUpdate = ({ id }) => {
       register: "qty",
       helperText: "qty",
       defaultValue: data?.quantity,
+    },
+    {
+      head: t("points"),
+      type: "number",
+      placeholder: "points",
+      register: "points",
+      helperText: "points",
+      defaultValue: data?.points,
     }
   );
   useMemo(() => {
