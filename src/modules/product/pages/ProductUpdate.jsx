@@ -367,7 +367,7 @@ const ProductUpdate = ({ id }) => {
                   </Grid>
                 );
               })}
-              <Grid item xs={6} sx={{ p: "10px", color: "text.main" }}>
+              <Grid item xs={6} sx={{ p: "10px", color: "text.main", pt: 5 }}>
                 <FormControl error={Boolean(errors.purchasable)}>
                   <FormControlLabel
                     control={
