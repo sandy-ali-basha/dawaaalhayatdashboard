@@ -6,6 +6,8 @@ import {
   IconButton,
   Tooltip,
   Button,
+  TextField,
+  MenuItem,
 } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import React, { useMemo, useCallback, useState } from "react";
@@ -29,18 +31,22 @@ import { ListAltRounded } from "@mui/icons-material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import ViewCarouselRoundedIcon from "@mui/icons-material/ViewCarouselRounded";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
+
 const ProductIndex = () => {
   const { t } = useTranslation("index");
   const { data, page, setPage, isLoading, count } = useProduct();
-
   const navigate = useNavigate();
   const [direction] = settingsStore((state) => [state.direction]);
   const [id, setID] = useState();
-
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
     state.setEditedID,
   ]);
+
+  // States for sorting and filtering
+
+  const [cityFilter, setCityFilter] = useState("");
+  const [brandFilter, setBrandFilter] = useState("");
 
   const columns = useMemo(() => {
     return [
@@ -87,9 +93,30 @@ const ProductIndex = () => {
     setProduct_attr(attr);
   }, []);
 
+  // Sort and filter logic
+  const filteredData = useMemo(() => {
+    let filtered = data?.data?.products || [];
+
+    if (cityFilter) {
+      filtered = filtered.filter((product) =>
+        product.cities?.state[0]?.name
+          ?.toLowerCase()
+          .includes(cityFilter.toLowerCase())
+      );
+    }
+
+    if (brandFilter) {
+      filtered = filtered.filter((product) =>
+        product.brand?.name?.toLowerCase().includes(brandFilter.toLowerCase())
+      );
+    }
+
+    return filtered;
+  }, [data, cityFilter, brandFilter]);
+
   const rows = useMemo(() => {
-    return data?.data?.products?.map((product, id) => (
-      <TableRow sx={{ height: "65px" }} key={product.id} hover>
+    return filteredData?.map((product, id) => (
+      <TableRow sx={{ height: "65px" }} key={product.id}>
         <TableCell sx={{ minWidth: 50 }}>{product?.name ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {product?.brand?.name ?? "Null"}
@@ -102,13 +129,7 @@ const ProductIndex = () => {
         <TableCell sx={{ minWidth: 50 }}>
           {product?.cities?.state[0]?.name ?? "Null"}
         </TableCell>
-
-        <TableCell
-          align="center"
-          sx={{
-            minWidth: 200,
-          }}
-        >
+        <TableCell align="center" sx={{ minWidth: 200 }}>
           <IconButton onClick={() => handleEdit(product?.id)}>
             <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
               <ModeTwoToneIcon sx={{ color: "text.main" }} />
@@ -160,22 +181,22 @@ const ProductIndex = () => {
       </TableRow>
     ));
   }, [
-    data,
+    filteredData,
     count,
     direction,
     handleEdit,
     handleView,
     page,
-
     handleAddImages,
     handleCat,
     handleImagesSlider,
     navigate,
   ]);
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <>
-      {isLoading && <Loader />}
       {editedID && <ProductUpdate id={editedID} />}
       {id && <AddImages id={id} open={open} setOpen={setOpen} />}
       {id && (
@@ -185,7 +206,6 @@ const ProductIndex = () => {
           setOpen={setOpenImagesSlider}
         />
       )}
-
       {id && (
         <ProductAttr
           id={id}
@@ -194,6 +214,7 @@ const ProductIndex = () => {
           attr={product_attr}
         />
       )}
+
       <Box
         sx={{
           width: { sl: "300px" },
@@ -212,7 +233,6 @@ const ProductIndex = () => {
           <Typography sx={{ color: "text.main" }} variant="h5">
             {t("product")}
           </Typography>
-
           <Button
             startIcon={<AddRoundedIcon />}
             variant="contained"
@@ -223,13 +243,27 @@ const ProductIndex = () => {
           </Button>
         </Box>
 
-        <BoxStyled sx={{ px: "10px" }}>
+        <Box sx={{ mb: "20px" }}>
+          <TextField
+            label={t("City filter")}
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+            sx={{ mr: 2 }}
+          />
+          <TextField
+            label={t("Brand filter")}
+            value={brandFilter}
+            onChange={(e) => setBrandFilter(e.target.value)}
+          />
+        </Box>
+        <BoxStyled>
           <Table
             columns={columns}
+            // count={count}
             rows={rows}
-            page={page}
-            setPage={setPage}
-            count={Math.ceil(data?.pagination?.total / count)}
+            // page={page}
+            // setPage={setPage}
+            sx={{ border: "1px solid", borderColor: "secondary.main" }}
           />
         </BoxStyled>
       </Box>
