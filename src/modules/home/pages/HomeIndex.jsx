@@ -19,6 +19,11 @@ import TextSectionOneUpdate from "../components/TextSectionUpdate"; // Import Te
 import TextSectionTwoUpdate from "../components/TextSectionTowUpdate"; // Import Text Section Two Update
 import VideoUpdate from "../components/VedioUpdate"; // Import Video Update Module
 import { _Home } from "api/home/home";
+import { useNavigate } from "react-router-dom";
+import { ViewCarousel } from "@mui/icons-material";
+import { _axios } from "interceptor/http-config";
+import { useQuery } from "react-query";
+import SlidesView from "./SlidesView";
 
 const HomeIndex = () => {
   const { data, isLoading } = useHome();
@@ -199,11 +204,18 @@ const HomeIndex = () => {
         return null;
     }
   };
-
+  const navigate = useNavigate();
   return (
     <>
+      {/* //todo make sure slides is working */}
       {isLoading && <Loader />}
       {renderUpdateModal()}
+      <IconButton onClick={() => navigate(`addslider`)}>
+        <Tooltip title={"add slider"}>
+          <ViewCarousel sx={{ color: "warning.main" }} />
+        </Tooltip>
+      </IconButton>
+      <SlidesView />
       {data && (
         <Box p={2} sx={{ color: "text.primary" }}>
           <Grid container spacing={3}>

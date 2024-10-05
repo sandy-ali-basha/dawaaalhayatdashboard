@@ -5,8 +5,6 @@ import { TextFieldStyled } from "components/styled/TextField";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FormHelperText, Grid, Typography } from "@mui/material";
-import { BoxStyled } from "components/styled/BoxStyled";
-import { useTheme } from "@emotion/react";
 import { CloseRounded, PlusOneRounded } from "@mui/icons-material";
 import Image from "./Image";
 
@@ -19,18 +17,10 @@ export default function InputRepeater({
 }) {
   const [inputs, setInputs] = useState([
     {
-      ar: {
-        title: "",
-        text: "",
-      },
-      kr: {
-        title: "",
-        text: "",
-      },
-      en: {
-        title: "",
-        text: "",
-      },
+      ar: { title: "", text: "" },
+      kr: { title: "", text: "" },
+      en: { title: "", text: "" },
+      CustomLink: "", // New link field
       image: [], // Assuming this will hold an array of images
     },
   ]);
@@ -45,18 +35,10 @@ export default function InputRepeater({
     setInputs([
       ...inputs,
       {
-        ar: {
-          title: "",
-          text: "",
-        },
-        kr: {
-          title: "",
-          text: "",
-        },
-        en: {
-          title: "",
-          text: "",
-        },
+        ar: { title: "", text: "" },
+        kr: { title: "", text: "" },
+        en: { title: "", text: "" },
+        CustomLink: "", // New link field
         image: [],
       },
     ]);
@@ -68,22 +50,50 @@ export default function InputRepeater({
     setInputs(newInputs);
   };
 
+  const handleInputChange = (event, index, lang, field) => {
+    const newInputs = [...inputs];
+    newInputs[index][lang][field] = event.target.value;
+    setInputs(newInputs);
+  };
+
+  const handleLinkChange = (event, index) => {
+    const newInputs = [...inputs];
+    newInputs[index].CustomLink = event.target.value;
+    setInputs(newInputs);
+  };
+
   const languages = [
     { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
     { code: "en", name: "English" },
   ];
 
-  const handleInputChange = (event, index, lang, field) => {
-    const newInputs = [...inputs];
-    newInputs[index][lang][field] = event.target.value;
-    setInputs(newInputs);
-  };
   return (
     <>
-      <Typography variant="h5" sx={{ color: "text.primary", m: 1 }}>
-        {t("Slides")}
-      </Typography>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography variant="h5" sx={{ color: "text.primary", m: 1 }}>
+          {t("Slides")}
+        </Typography>
+        <Button
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            m: 4,
+          }}
+          onClick={handleAddInput}
+        >
+          <PlusOneRounded />
+          <span>{t("Add Slide")}</span>
+        </Button>
+      </Box>
       {inputs?.map((input, index) => (
         <Box
           sx={{
@@ -117,15 +127,11 @@ export default function InputRepeater({
                         sx={{ width: "100%" }}
                         type="text"
                         placeholder={t("title")}
-                        value={input[lang.code]?.title || ""}
-                        onChange={(event) =>
-                          handleInputChange(event, index, lang.code, "title")
-                        }
                         error={!!errors?.slides?.[index]?.[lang.code]?.title}
                         helperText={
                           errors?.slides?.[index]?.[lang.code]?.title?.message
                         }
-                        {...field}
+                        {...field} // Spread the field to handle value and onChange automatically
                       />
                     )}
                   />
@@ -145,15 +151,11 @@ export default function InputRepeater({
                         sx={{ width: "100%" }}
                         type="text"
                         placeholder={t("text")}
-                        value={input[lang.code]?.text || ""}
-                        onChange={(event) =>
-                          handleInputChange(event, index, lang.code, "text")
-                        }
                         error={!!errors?.slides?.[index]?.[lang.code]?.text}
                         helperText={
                           errors?.slides?.[index]?.[lang.code]?.text?.message
                         }
-                        {...field}
+                        {...field} // Spread the field to handle value and onChange automatically
                       />
                     )}
                   />
@@ -161,6 +163,30 @@ export default function InputRepeater({
               </React.Fragment>
             ))}
 
+            {/* Add link field */}
+            <Grid item xs={12} sx={{ p: "10px", mt: "10px" }}>
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  {t("Link")}
+                </Typography>
+              </Box>
+              <Controller
+                control={control}
+                name={`slides[${index}][customLink]`}
+                render={({ field }) => (
+                  <TextFieldStyled
+                    sx={{ width: "100%" }}
+                    type="text"
+                    placeholder={t("link")}
+                    error={!!errors?.slides?.[index]?.customLink}
+                    helperText={errors?.slides?.[index]?.customLink?.message}
+                    {...field}
+                  />
+                )}
+              />
+            </Grid>
+
+            {/* Image upload section */}
             <Grid item xs={12} sx={{ p: "10px", mt: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
                 <Typography variant="body1" sx={{ color: "text.primary" }}>
@@ -176,19 +202,6 @@ export default function InputRepeater({
           </Grid>
         </Box>
       ))}
-
-      <Button
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          m: 4,
-        }}
-        onClick={handleAddInput}
-      >
-        <PlusOneRounded />
-        <span>{t("Add Slide")} </span>
-      </Button>
     </>
   );
 }
