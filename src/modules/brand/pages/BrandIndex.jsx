@@ -133,7 +133,7 @@ const BrandIndex = () => {
         </TableCell>
       </TableRow>
     ));
-  }, [data, count, direction, handleEdit, handleView, page, t]);
+  }, [data, count, direction, handleEdit, page,handleAddImages,navigate,]);
 
   const handleCreate = () => navigate("create");
 

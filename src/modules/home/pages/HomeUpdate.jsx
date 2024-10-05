@@ -1,30 +1,28 @@
-import { React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Box, Grid, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _axios } from "interceptor/http-config";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
+import EditorInput from "components/shared/EditorInput"; // Assuming this is the correct import for text editor
 import { useMutation } from "react-query";
 import { _Home } from "api/home/home";
-import EditorInput from "components/shared/EditorInput";
 
 const HomeUpdate = ({ open, setOpen }) => {
-  const formOptions = { resolver: yupResolver(yup.object({})) }; // No required fields
-  const { register, handleSubmit, control, setValue, formState } = useForm(formOptions);
+  const { register, handleSubmit, control, setValue, formState } = useForm({ resolver: yupResolver({}) });
   const { errors } = formState;
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
 
   useEffect(() => {
-    _axios.get("/home").then((res) => {
-      setData(res.data?.data);
+    _axios.get("/home/settings").then((res) => {
+      setData(res.data?.data); // Fetching home data
     });
   }, []);
 
@@ -32,23 +30,24 @@ const HomeUpdate = ({ open, setOpen }) => {
     setOpen(false);
   };
 
-  const { mutate } = useMutation((data) => createPost(data));
+  const { mutate } = useMutation((formData) => updateHomeData(formData));
 
-  async function createPost(data) {
-    _Home
-      .update({ formData: data })
+  const updateHomeData = async (formData) => {
+    setLoading(true);
+    _Home.update({ formData })
       .catch(() => setLoading(false))
       .then(() => {
         setLoading(false);
-        // handleClose();
+        setOpen(false); // Close the modal after successful update
       });
-  }
+  };
 
-  const hanldeUpdate = (input) => {
+  const handleUpdate = (input) => {
     mutate(input);
     setLoading(true);
   };
 
+  // Mapping form sections dynamically, including both text and language-specific fields
   const sections = [
     {
       key: 'home.page.stats',
@@ -67,6 +66,9 @@ const HomeUpdate = ({ open, setOpen }) => {
         { lang: 'ar', name: 'title', placeholder: 'Arabic CTA Title' },
         { lang: 'en', name: 'title', placeholder: 'English CTA Title' },
         { lang: 'kr', name: 'title', placeholder: 'Kurdish CTA Title' },
+        { lang: 'ar', name: 'subtitle', placeholder: 'Arabic CTA Subtitle' },
+        { lang: 'en', name: 'subtitle', placeholder: 'English CTA Subtitle' },
+        { lang: 'kr', name: 'subtitle', placeholder: 'Kurdish CTA Subtitle' },
       ],
     },
     {
@@ -77,7 +79,22 @@ const HomeUpdate = ({ open, setOpen }) => {
         { lang: 'kr', name: 'text', placeholder: 'Kurdish Text Section One' },
       ],
     },
-    // Add other sections as needed
+    {
+      key: 'home.page.textSectionTwo',
+      fields: [
+        { lang: 'ar', name: 'text', placeholder: 'Arabic Text Section Two' },
+        { lang: 'en', name: 'text', placeholder: 'English Text Section Two' },
+        { lang: 'kr', name: 'text', placeholder: 'Kurdish Text Section Two' },
+      ],
+    },
+    {
+      key: 'home.page.videoText',
+      fields: [
+        { lang: 'ar', name: 'value', placeholder: 'Arabic Video Text' },
+        { lang: 'en', name: 'value', placeholder: 'English Video Text' },
+        { lang: 'kr', name: 'value', placeholder: 'Kurdish Video Text' },
+      ],
+    },
   ];
 
   return (
@@ -85,13 +102,14 @@ const HomeUpdate = ({ open, setOpen }) => {
       {loading && <Loader />}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Home Data</DialogTitle>
-        {data && (
+        {data ? (
           <Grid container component="form">
             {sections.map((section, sectionIndex) =>
               section.fields.map((item, index) => {
-                const initialValue = data?.[section.key]?.value?.[item.lang]?.[item.name];
+                const sectionValue = data?.[section.key]?.value;
+                const initialValue = sectionValue?.[item.lang]?.[item.name] || ""; // Ensure value exists
                 const error = errors?.[item.name];
-                
+
                 return (
                   <Grid key={sectionIndex + "-" + index} item md={6} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
@@ -109,13 +127,32 @@ const HomeUpdate = ({ open, setOpen }) => {
                 );
               })
             )}
+
+            {/* Link field handling for CTA */}
+            {data?.['home.page.cta']?.value?.link && (
+              <Grid item xs={12} sx={{ p: "10px" }}>
+                <Box sx={{ margin: "0 0 8px 5px" }}>
+                  <Typography variant="body1">CTA Link</Typography>
+                </Box>
+                <EditorInput
+                  control={control}
+                  register={register}
+                  name="home.page.cta.value.link"
+                  setValue={setValue}
+                  errors={errors?.['home.page.cta']?.value?.link || ""}
+                  initialValue={data['home.page.cta'].value.link}
+                />
+              </Grid>
+            )}
           </Grid>
+        ) : (
+          <Typography>Loading data...</Typography>
         )}
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <ButtonLoader
             name="Submit"
-            onClick={() => handleSubmit(hanldeUpdate)()}
+            onClick={() => handleSubmit(handleUpdate)()}
             type="save"
             loading={loading}
             disableOnLoading

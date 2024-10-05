@@ -14,6 +14,7 @@ import {
   CategoryRounded,
   DiscountRounded,
   GavelRounded,
+  HomeRounded,
   Money,
   ShoppingCartCheckout,
   SpaceDashboardRounded,
@@ -97,6 +98,11 @@ const SideBar = ({ open, setOpen }) => {
       name: t("blog"),
       link: "/dashboard/blog",
       icon: <BookmarkRounded color={"secondary.main"} />,
+    },
+    {
+      name: t("Home"),
+      link: "/dashboard/home",
+      icon: <HomeRounded color={"secondary.main"} />,
     },
   ];
 

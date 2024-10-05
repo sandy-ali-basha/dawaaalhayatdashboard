@@ -130,6 +130,15 @@ export const useProductCreate = () => {
       error: "points",
       helperText: "points",
     },
+    {
+      head: t("compare price"),
+      type: "number",
+      placeholder: "compare_price",
+      name: "compare_price",
+      register: "compare_price",
+      error: "compare_price",
+      helperText: "compare_price",
+    },
   ];
   const Discription = [
     {

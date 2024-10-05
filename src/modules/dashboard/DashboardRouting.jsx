@@ -19,6 +19,7 @@ import BlogRouting from "modules/blog/BlogRouting";
 import OrdersRouting from "modules/orders/OrdersRouting";
 import DiscountsRouting from "modules/discounts/DiscountsRouting";
 import SettingsRouting from "modules/Settings/SettingsRouting";
+import HomeRouting from "modules/home/HomeRouting";
 
 const DashboardRouting = () => {
   return (
@@ -48,6 +49,10 @@ const DashboardRouting = () => {
           <Route
             path="/products/categories/*"
             element={<Product_attributesRouting />}
+          />
+          <Route
+            path="/home/*"
+            element={<HomeRouting />}
           />
           <Route
             path="/settings/*"
