@@ -1,39 +1,24 @@
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import ButtonAction from "components/shared/ButtonAction";
-import { _axios } from "interceptor/http-config";
 import React from "react";
-import { useTranslation } from "react-i18next";
-import { useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
 import { settingsStore } from "store/settingsStore";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import DeleteSlide from "../components/DeleteSlide";
+import Loader from "components/shared/Loader";
+import { useHomeSlides } from "hooks/home/useHomeSlides";
+
 const SlidesView = () => {
-  const { t } = useTranslation("index");
   const [direction] = settingsStore((state) => [state.direction]);
-  const navigate = useNavigate();
-
-  const handleBack = (e) => {
-    e.preventDefault();
-    navigate(-1);
-  };
-
-  const { data: slides, isLoading: slidesLoading } = useQuery(
-    ["slidesHome"],
-    async () => {
-      return await _axios.get("/home/slides").then((res) => res.data?.data);
-    },
-    {}
-  );
+  const { data: slides, isLoading } = useHomeSlides();
 
   return (
     <>
+      {isLoading && <Loader />}
       {slides && (
         <Box>
-          {slides?.map((item, idx) => (
+          {slides?.home_slides?.map((item, idx) => (
             <Box
               sx={{
                 position: "relative",
+                background: "white",
                 my: 2,
                 boxShadow: 2,
                 borderRadius: 3,
@@ -47,7 +32,7 @@ const SlidesView = () => {
               </IconButton>
               <img
                 key={idx}
-                src={item.image_path}
+                src={item?.image || "null"}
                 style={{
                   width: "90%",
                   margin: "auto",
@@ -57,64 +42,101 @@ const SlidesView = () => {
                 alt=""
               />
               <Box display="flex">
-                <Typography variant="body1" sx={{ mx: 2, fontWeight: "bold" }}>
+                <Typography
+                  variant="body1"
+                  sx={{ mx: 2, fontWeight: "bold", color: "text.primary" }}
+                >
+                  {" "}
+                  title:
+                </Typography>{" "}
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  {item?.title || "null"}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ mx: 2, fontWeight: "bold", color: "text.primary" }}
+                >
                   {" "}
                   arabic title:
                 </Typography>{" "}
-                <Typography variant="body1">
-                  {item?.translations?.find((t) => t.locale === "ar")?.title}
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  {item?.translations?.find((t) => t.locale === "ar")?.text ||
+                    "null"}
                 </Typography>
-                <Typography variant="body1" sx={{ mx: 2, fontWeight: "bold" }}>
+                <Typography
+                  variant="body1"
+                  sx={{ mx: 2, fontWeight: "bold", color: "text.primary" }}
+                >
                   english title:
                 </Typography>{" "}
-                <Typography variant="body1">
-                  {item?.translations?.find((t) => t.locale === "en")?.title}
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  {item?.translations?.find((t) => t.locale === "en")?.text ||
+                    "null"}
                 </Typography>
-                <Typography variant="body1" sx={{ mx: 2, fontWeight: "bold" }}>
+                <Typography
+                  variant="body1"
+                  sx={{ mx: 2, fontWeight: "bold", color: "text.primary" }}
+                >
                   kurdish title:
                 </Typography>{" "}
-                <Typography variant="body1">
-                  {item?.translations?.find((t) => t.locale === "kr")?.title}
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  {item?.translations?.find((t) => t.locale === "kr")?.text ||
+                    "null"}
                 </Typography>
               </Box>
               <Box sx={{ mx: 2 }}>
-                <Typography variant="body1">
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                    arabic Description:
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", color: "text.primary" }}
+                  >
+                    text:
                   </Typography>{" "}
-                  {item?.translations?.find((t) => t.locale === "ar")?.text}
+                  {item?.text || "null"}
                 </Typography>
-                <Typography variant="body1">
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                    english Description:
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", color: "text.primary" }}
+                  >
+                    arabic text:
                   </Typography>{" "}
-                  {item?.translations?.find((t) => t.locale === "en")?.text}
+                  {item?.translations?.find((t) => t.locale === "ar")?.text ||
+                    "null"}
+                </Typography>
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", color: "text.primary" }}
+                  >
+                    english text:
+                  </Typography>{" "}
+                  {item?.translations?.find((t) => t.locale === "en")?.text ||
+                    "null"}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", color: "text.primary" }}
+                  >
                     kurdish Description:
                   </Typography>{" "}
-                  {item?.translations?.find((t) => t.locale === "kr")?.text}
+                  {item?.translations?.find((t) => t.locale === "kr")?.text ||
+                    "null"}
+                </Typography>
+                <Typography variant="body1" sx={{ color: "text.primary" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", color: "text.primary" }}
+                  >
+                    Link: {item?.link || "null"}
+                  </Typography>
                 </Typography>
               </Box>
             </Box>
           ))}
         </Box>
       )}
-
-      <div
-        style={{
-          minWidth: "200px",
-          float: direction === "ltr" ? "right" : "left",
-          marginTop: "20px",
-        }}
-      >
-        <ButtonAction
-          name={t("Back")}
-          onClick={handleBack}
-          endIcon={direction === "ltr" ? <ArrowForward /> : <ArrowBack />}
-        />
-      </div>
     </>
   );
 };

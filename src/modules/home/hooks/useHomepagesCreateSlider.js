@@ -53,7 +53,7 @@ export const useHomepagesCreateSlider = () => {
     useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
-console.log(errors)
+
   async function createPost(data) {
     _Home
       .slides(data, setLoading)
@@ -96,7 +96,7 @@ console.log(errors)
       formData.append(`slides[${slideIndex}][link]`, slide.customLink);
       // Handle the image file
       if (slide.image && slide.image[0]) {
-        formData.append(`slides[${slideIndex}][image]`, slide.image[0]);
+        formData.append(`slides[${slideIndex}][image_file]`, slide.image[0]);
       }
     });
 

@@ -5,7 +5,6 @@ import "react-quill/dist/quill.snow.css";
 import * as mammoth from "mammoth";
 import { FileOpenRounded } from "@mui/icons-material";
 import { Controller } from "react-hook-form";
-import { useSnackbar } from "notistack";
 
 const EditorInput = ({
   control,

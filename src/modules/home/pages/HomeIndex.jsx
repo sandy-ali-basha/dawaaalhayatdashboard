@@ -21,8 +21,6 @@ import VideoUpdate from "../components/VedioUpdate"; // Import Video Update Modu
 import { _Home } from "api/home/home";
 import { useNavigate } from "react-router-dom";
 import { ViewCarousel } from "@mui/icons-material";
-import { _axios } from "interceptor/http-config";
-import { useQuery } from "react-query";
 import SlidesView from "./SlidesView";
 
 const HomeIndex = () => {
@@ -52,7 +50,6 @@ const HomeIndex = () => {
   async function handleUpdate(data) {
     // Create a new FormData object
     const formDataNew = new FormData();
-    console.log("data", data);
 
     // Append video and text data to FormData
     if (data.video) {
@@ -213,124 +210,153 @@ const HomeIndex = () => {
       <IconButton onClick={() => navigate(`addslider`)}>
         <Tooltip title={"add slider"}>
           <ViewCarousel sx={{ color: "warning.main" }} />
+           + Add Slides
         </Tooltip>
       </IconButton>
+
       <SlidesView />
       {data && (
         <Box p={2} sx={{ color: "text.primary" }}>
           <Grid container spacing={3}>
             {/* Stats Section */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5">Stats (Arabic)</Typography>
-                  <Typography variant="body1">
-                    {stats.value.ar.title1} - {stats.value.ar.subtitle1}
-                  </Typography>
-                  <Typography variant="body1">
-                    {stats.value.ar.title2} - {stats.value.ar.subtitle2}
-                  </Typography>
-                  <Typography variant="h5">Stats (English)</Typography>
-                  <Typography variant="body1">
-                    {stats.value.en.title1} - {stats.value.en.subtitle1}
-                  </Typography>
-                  <Typography variant="body1">
-                    {stats.value.en.title2} - {stats.value.en.subtitle2}
-                  </Typography>
-                  <Typography variant="h5">Stats (Kurdish)</Typography>
-                  <Typography variant="body1">
-                    {stats.value.kr.title1} - {stats.value.kr.subtitle1}
-                  </Typography>
-                  <Typography variant="body1">
-                    {stats.value.kr.title2} - {stats.value.kr.subtitle2}
-                  </Typography>
-                  <IconButton onClick={() => handleEditClick(stats)}>
-                    <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                      <ModeTwoToneIcon sx={{ color: "text.main" }} />
-                    </Tooltip>
-                  </IconButton>
-                </CardContent>
-              </Card>
-            </Grid>
+            {stats?.value && (
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h5">Stats (Arabic)</Typography>
+                    <Typography variant="body1">
+                      {stats?.value?.ar?.title1 || "NON"} -{" "}
+                      {stats?.value?.ar?.subtitle1 || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      {stats?.value?.ar?.title2 || "NON"} -{" "}
+                      {stats?.value?.ar?.subtitle2 || "NON"}
+                    </Typography>
+                    <Typography variant="h5">Stats (English)</Typography>
+                    <Typography variant="body1">
+                      {stats?.value?.en?.title1 || "NON"} -{" "}
+                      {stats?.value?.en?.subtitle1 || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      {stats?.value?.en?.title2 || "NON"} -{" "}
+                      {stats?.value?.en?.subtitle2 || "NON"}
+                    </Typography>
+                    <Typography variant="h5">Stats (Kurdish)</Typography>
+                    <Typography variant="body1">
+                      {stats.value.kr.title1 || "NON"} -{" "}
+                      {stats?.value.kr.subtitle1 || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      {stats.value.kr.title2 || "NON"} -{" "}
+                      {stats.value.kr.subtitle2 || "NON"}
+                    </Typography>
+                    <IconButton onClick={() => handleEditClick(stats)}>
+                      <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                        <ModeTwoToneIcon sx={{ color: "text.main" }} />
+                      </Tooltip>
+                    </IconButton>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
 
             {/* CTA Section */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5">Call to Action (CTA)</Typography>
-                  <Typography variant="body1">
-                    Arabic: {cta.value.title.ar} - {cta.value.subtitle.ar}
-                  </Typography>
-                  <Typography variant="body1">
-                    English: {cta.value.title.en} - {cta.value.subtitle.en}
-                  </Typography>
-                  <Typography variant="body1">
-                    Kurdish: {cta.value.title.kr} - {cta.value.subtitle.kr}
-                  </Typography>
-                  <Link href={cta.value.link} target="_blank" rel="noopener">
-                    CTA Link
-                  </Link>
-                  <IconButton onClick={() => handleEditClick(cta)}>
-                    <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                      <ModeTwoToneIcon sx={{ color: "text.main" }} />
-                    </Tooltip>
-                  </IconButton>
-                </CardContent>
-              </Card>
-            </Grid>
-
+            {cta?.value && (
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h5">Call to Action (CTA)</Typography>
+                    <Typography variant="body1">
+                      Arabic: {cta.value.title.ar || "NON"} -{" "}
+                      {cta.value.subtitle.ar || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      English: {cta.value.title.en || "NON"} -{" "}
+                      {cta.value.subtitle.en || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      Kurdish: {cta.value.title.kr || "NON"} -{" "}
+                      {cta.value.subtitle.kr || "NON"}
+                    </Typography>
+                    <Link
+                      href={cta.value.link || "NON"}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      CTA Link
+                    </Link>
+                    <IconButton onClick={() => handleEditClick(cta)}>
+                      <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                        <ModeTwoToneIcon sx={{ color: "text.main" }} />
+                      </Tooltip>
+                    </IconButton>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
             {/* Text Section One */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5">Text Section One</Typography>
-                  <Typography variant="body1">
-                    Arabic: {textSectionOne.value.text.ar}
-                  </Typography>
-                  <Typography variant="body1">
-                    English: {textSectionOne.value.text.en}
-                  </Typography>
-                  <Typography variant="body1">
-                    Kurdish: {textSectionOne.value.text.kr}
-                  </Typography>
-                  <IconButton onClick={() => handleEditClick(textSectionOne)}>
-                    <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                      <ModeTwoToneIcon sx={{ color: "text.main" }} />
-                    </Tooltip>
-                  </IconButton>
-                </CardContent>
-              </Card>
-            </Grid>
+            {textSectionOne?.value && (
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h5">Text Section One</Typography>
+                    <Typography variant="body1">
+                      Arabic: {textSectionOne.value.text.ar || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      English: {textSectionOne.value.text.en || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      Kurdish: {textSectionOne.value.text.kr || "NON"}
+                    </Typography>
+                    <Box mt={2}>
+                      <img
+                        src={textSectionOne.image || "NON"}
+                        alt="Text Section Two"
+                        width="100%"
+                      />
+                    </Box>
+                    <IconButton onClick={() => handleEditClick(textSectionOne)}>
+                      <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                        <ModeTwoToneIcon sx={{ color: "text.main" }} />
+                      </Tooltip>
+                    </IconButton>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
 
             {/* Text Section Two */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5">Text Section Two</Typography>
-                  <Typography variant="body1">
-                    Arabic: {textSectionTwo.value.text.ar}
-                  </Typography>
-                  <Typography variant="body1">
-                    English: {textSectionTwo.value.text.en}
-                  </Typography>
-                  <Typography variant="body1">
-                    Kurdish: {textSectionTwo.value.text.kr}
-                  </Typography>
-                  <Box mt={2}>
-                    <img
-                      src={textSectionTwo.image}
-                      alt="Text Section Two"
-                      width="100%"
-                    />
-                  </Box>
-                  <IconButton onClick={() => handleEditClick(textSectionTwo)}>
-                    <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                      <ModeTwoToneIcon sx={{ color: "text.main" }} />
-                    </Tooltip>
-                  </IconButton>
-                </CardContent>
-              </Card>
-            </Grid>
+            {textSectionTwo?.value && (
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h5">Text Section Two</Typography>
+                    <Typography variant="body1">
+                      Arabic: {textSectionTwo.value.text.ar || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      English: {textSectionTwo.value.text.en || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      Kurdish: {textSectionTwo.value.text.kr || "NON"}
+                    </Typography>
+                    <Box mt={2}>
+                      <img
+                        src={textSectionTwo.image || "NON"}
+                        alt="Text Section Two"
+                        width="100%"
+                      />
+                    </Box>
+                    <IconButton onClick={() => handleEditClick(textSectionTwo)}>
+                      <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                        <ModeTwoToneIcon sx={{ color: "text.main" }} />
+                      </Tooltip>
+                    </IconButton>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
 
             {/* Video Section */}
             <Grid item xs={12}>
@@ -338,7 +364,7 @@ const HomeIndex = () => {
                 <CardContent>
                   <Typography variant="h5">Video Section</Typography>
                   <video width="100%" controls>
-                    <source src={video.video} type="video/mp4" />
+                    <source src={video?.video || ""} type="video/mp4" />
                   </video>
                   <IconButton onClick={() => handleEditClick(video)}>
                     <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
@@ -350,27 +376,29 @@ const HomeIndex = () => {
             </Grid>
 
             {/* Video Text Section */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5">Video Text</Typography>
-                  <Typography variant="body1">
-                    Arabic: {videoText.value.ar}
-                  </Typography>
-                  <Typography variant="body1">
-                    English: {videoText.value.en}
-                  </Typography>
-                  <Typography variant="body1">
-                    Kurdish: {videoText.value.kr}
-                  </Typography>
-                  <IconButton onClick={() => handleEditClick(videoText)}>
-                    <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                      <ModeTwoToneIcon sx={{ color: "text.main" }} />
-                    </Tooltip>
-                  </IconButton>
-                </CardContent>
-              </Card>
-            </Grid>
+            {videoText?.value && (
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h5">Video Text</Typography>
+                    <Typography variant="body1">
+                      Arabic: {videoText.value.ar || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      English: {videoText.value.en || "NON"}
+                    </Typography>
+                    <Typography variant="body1">
+                      Kurdish: {videoText.value.kr || "NON"}
+                    </Typography>
+                    <IconButton onClick={() => handleEditClick(videoText)}>
+                      <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                        <ModeTwoToneIcon sx={{ color: "text.main" }} />
+                      </Tooltip>
+                    </IconButton>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
           </Grid>
         </Box>
       )}

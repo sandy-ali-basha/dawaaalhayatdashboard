@@ -3,9 +3,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import HomeComponent from "./HomeComponent";
 import HomeIndex from "./pages/HomeIndex";
-import HomeUpdate from "./pages/HomeUpdate";
-import HomeView from "./pages/HomeView";
-import HomeCreate from "./pages/HomeCreate";
 import HomeCreateSlider from "./pages/HomeCreateSlider";
 
 const HomeRouting = () => {
@@ -13,10 +10,7 @@ const HomeRouting = () => {
     <Routes>
       <Route element={<HomeComponent />}>
         <Route path="/" element={<HomeIndex />} />
-        <Route path="/update/:id" element={<HomeUpdate />} />
-        <Route path="/view/:id" element={<HomeView />} />
         <Route path="/addSlider" element={<HomeCreateSlider />} />
-        <Route path="/create" element={<HomeCreate />} />
       </Route>
       <Route path="*" element={<p>not found 404</p>} />
     </Routes>

@@ -8,21 +8,21 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Loader from "components/shared/Loader";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useDeleteSlide } from "hooks/brand_pages/useDeleteSlide";
 import { useBrand_pages } from "hooks/brand_pages/useBrand_pages";
 import { FolderDeleteRounded } from "@mui/icons-material";
+import { useDeleteSlide } from "hooks/home/useDeleteSlide";
 
 const DeleteSlide = ({ id, page, count }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const deletebrand_slide = useDeleteSlide({ page, count });
+  const delete_slide = useDeleteSlide({ page, count });
   const handleClickOpen = (e) => setOpen(true);
   const handleClose = () => setOpen(false);
   const { refetch } = useBrand_pages();
-  const DeleteBrand_slide = () => {
+  const Delete_slide = () => {
     setLoading(true);
-    deletebrand_slide.mutate(id, {
+    delete_slide.mutate(id, {
       onSuccess: () => {
         setOpen(false);
         refetch();
@@ -67,7 +67,7 @@ const DeleteSlide = ({ id, page, count }) => {
             autoFocus
             sx={{}}
             variant="contained"
-            onClick={DeleteBrand_slide}
+            onClick={Delete_slide}
           >
             {t("Agree")}
           </Button>
