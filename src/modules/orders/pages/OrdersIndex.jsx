@@ -41,10 +41,11 @@ const OrdersIndex = () => {
     return [
       t("reference"),
       t("total"),
+      t("sub total"),
+      t("shipping total"),
+      t("created at"),
       t("status"),
-      t("payment"),
-      t("qty"),
-      t("operations"),
+      t("options"),
     ];
   }, [t]);
 
@@ -55,37 +56,31 @@ const OrdersIndex = () => {
     },
     [navigate, setItem]
   );
-  // const handleEdit = useCallback(
-  //   (id) => {
-  //     setEditedID(id);
-  //   },
-  //   [setEditedID]
-  // );
+
   const rows = useMemo(() => {
     return data?.data?.orders?.map((orders, id) => (
       <TableRow sx={{ height: "65px" }} key={orders.id} hover>
         <TableCell sx={{ minWidth: 50 }}>
           {orders?.reference ?? "Null"}
         </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>{orders?.total ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {orders?.sub_total ?? "Null"}
         </TableCell>
-        <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus
-            id={orders.id}
-            
-          >
-            {orders?.status ?? "Null"}
-          </ChangeStatus>
+        <TableCell sx={{ minWidth: 50 }}>
+          {orders?.shipping_total ?? "Null"}
         </TableCell>
         <TableCell sx={{ minWidth: 50 }}>
-          {orders?.lines?.length ?? "Null"}
+          {orders?.created_at ?? "Null"}
         </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>{orders?.payment ?? "Null"}</TableCell>
+        <TableCell sx={{ minWidth: 120 }} align="center">
+          <ChangeStatus id={orders.id}>{orders?.status ?? "Null"}</ChangeStatus>
+        </TableCell>
+
         <TableCell
           align="center"
           sx={{
-            minWidth: 200,
+            minWidth: 50,
           }}
         >
           {/* <IconButton onClick={() => handleEdit(orders?.id)}>
@@ -102,7 +97,7 @@ const OrdersIndex = () => {
         </TableCell>
       </TableRow>
     ));
-  }, [data, handleView, t]);
+  }, [data, handleView]);
 
   const handleCreate = () => navigate("create");
 

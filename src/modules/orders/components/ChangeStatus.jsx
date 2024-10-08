@@ -53,7 +53,7 @@ const ChangeStatus = ({ id, children }) => {
     setLoading(true);
     mutate(inputData);
   };
-console.log(children)
+  console.log(children);
   return (
     <>
       <Button
@@ -63,7 +63,7 @@ console.log(children)
             ? "info"
             : children === "payment-offline"
             ? "primary"
-            : "success" 
+            : "success"
         }
         onClick={handleClickOpen}
       >
@@ -104,15 +104,13 @@ console.log(children)
               onChange={(e) => setStatus(e.target.value)}
               label={t("Select Status")}
             >
-              <MenuItem value="awaiting-payment">
-                {t("Awaiting Payment")}
+              <MenuItem value="order_requested">order requested</MenuItem>
+              <MenuItem value="order_processing">order processing</MenuItem>
+              <MenuItem value="order_processed">order processed</MenuItem>
+              <MenuItem value="order_under_delivery">
+                order under delivery
               </MenuItem>
-              <MenuItem value="payment-offline">
-                {t("Payment Offline")}
-              </MenuItem>
-              <MenuItem value="payment-received">
-                {t("Payment Received")}
-              </MenuItem>
+              <MenuItem value="order_delivered">order delivered</MenuItem>
               <MenuItem value="dispatched">{t("Dispatched")}</MenuItem>
             </Select>
           </FormControl>

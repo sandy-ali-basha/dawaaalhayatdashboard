@@ -13,8 +13,9 @@ import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { _Brand_pages } from "api/brand_pages/brand_pages";
+import EditorInput from "components/shared/EditorInput";
 
 const Brand_pagesUpdate = ({ id }) => {
   const { t } = useTranslation("index");
@@ -25,21 +26,22 @@ const Brand_pagesUpdate = ({ id }) => {
 
   const schema = yup.object().shape({
     en: yup.object().shape({
-      title: yup.string().required("English title is required"),
+      name: yup.string().required("English name is required"),
       text: yup.string().required("English text is required"),
     }),
     ar: yup.object().shape({
-      title: yup.string().required("Arabic title is required"),
+      name: yup.string().required("Arabic name is required"),
       text: yup.string().required("Arabic text is required"),
     }),
     kr: yup.object().shape({
-      title: yup.string().required("Kurdish title is required"),
+      name: yup.string().required("Kurdish name is required"),
       text: yup.string().required("Kurdish text is required"),
     }),
   });
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { register, handleSubmit, formState, control, setValue } =
+    useForm(formOptions);
   const { errors } = formState;
 
   const [open, setOpen] = useState(false);
@@ -48,10 +50,16 @@ const Brand_pagesUpdate = ({ id }) => {
   const params = useParams();
 
   useEffect(() => {
-    _axios.get("/brand_pages/" + params?.id).then((res) => {
-      setData(res.data?.data);
-    });
-  }, [id, editedID]);
+    _axios
+      .get("/brand_pages/" + params?.id, {
+        headers: {
+          translations: "yes",
+        },
+      })
+      .then((res) => {
+        setData(res.data?.data);
+      });
+  }, [id, editedID, params]);
 
   const handleClose = () => {
     setOpen(false);
@@ -59,18 +67,25 @@ const Brand_pagesUpdate = ({ id }) => {
   };
 
   const { mutate } = useMutation((data) => createPost(data));
-
+  const queryClient = useQueryClient();
   async function createPost(data) {
     _Brand_pages
       .update({
-        editedID: { editedID, brand_id: params?.id },
-        formData: data,
+        editedID: editedID,
+        formData: {
+          brand_id: params?.id,
+          ...data,
+        },
       })
       .catch((err) => {
         setLoading(false);
       })
-      .then(() => {
+      .then((res) => {
         setLoading(false);
+        if (res?.code === 200) {
+          handleClose();
+        }
+        queryClient.invalidateQueries(["brand_pages"]);
       });
   }
 
@@ -85,20 +100,29 @@ const Brand_pagesUpdate = ({ id }) => {
     { code: "en", name: "English" },
   ];
 
-  const details = languages.map((lang, index) => ({
-    head: t("title " + lang.name.toLowerCase()),
-    type: "text",
-    placeholder: t("title"),
-    register: lang.code + ".title",
-    defaultValue: data?.translations[index]?.title,
-  },{
-    head: t("text " + lang.name.toLowerCase()),
-    type: "text",
-    placeholder: t("text"),
-    register: lang.code + ".text",
-    defaultValue: data?.translations[index]?.text,
-  }));
-  
+  const details = languages
+    .map((lang, index) => [
+      {
+        head: t("name " + lang.name.toLowerCase()),
+        type: "text",
+        placeholder: t("name"),
+        register: `${lang.code}.name`,
+        defaultValue: data?.translations[index]?.name,
+      },
+    ])
+    .flat();
+  const ddetails = languages
+    .map((lang, index) => [
+      {
+        head: t("text " + lang.name.toLowerCase()),
+        type: "text",
+        placeholder: t("text"),
+        register: `${lang.code}.text`,
+        defaultValue: data?.translations[index]?.text,
+      },
+    ])
+    .flat();
+
   return (
     <>
       {loading && <Loader />}
@@ -107,8 +131,11 @@ const Brand_pagesUpdate = ({ id }) => {
         {!!data && (
           <>
             <Grid container component="form" key={id}>
-              {details?.map((item, index) => {
-                const error = errors?.[item.register.split(".")[0]]?.name;
+              {details.map((item, index) => {
+                const error =
+                  errors?.[item.register.split(".")[0]]?.[
+                    item.register.split(".")[1]
+                  ];
                 return (
                   <Grid key={index} item md={6} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
@@ -125,6 +152,29 @@ const Brand_pagesUpdate = ({ id }) => {
                       {...register(item.register)}
                       error={!!error}
                       helperText={error?.message || ""}
+                    />
+                  </Grid>
+                );
+              })}
+              {ddetails.map((item, index) => {
+                const error =
+                  errors?.[item.register.split(".")[0]]?.[
+                    item.register.split(".")[1]
+                  ];
+                return (
+                  <Grid key={index} item md={6} sx={{ p: "10px" }}>
+                    <Box sx={{ margin: "0 0 8px 5px" }}>
+                      <Typography variant="body1" color="text.main">
+                        {item.head}
+                      </Typography>
+                    </Box>
+                    <EditorInput
+                      control={control}
+                      register={register}
+                      name={item.register}
+                      setValue={setValue}
+                      errors={error?.message || ""}
+                      initialValue={item.defaultValue} // Pass initial value
                     />
                   </Grid>
                 );

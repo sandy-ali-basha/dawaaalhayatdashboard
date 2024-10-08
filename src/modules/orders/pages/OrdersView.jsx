@@ -7,11 +7,9 @@ import {
   TableRow,
   Typography,
   Grid,
-  Paper,
   Chip,
-  Button,
 } from "@mui/material";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { ArrowForward } from "@mui/icons-material";
 import ButtonAction from "components/shared/ButtonAction";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -31,7 +29,13 @@ const OrdersView = () => {
   };
 
   const columns = useMemo(() => {
-    return [t("Product"), t("Price"), t("Quantity"), t("Total")];
+    return [
+      t("Product"),
+      t("Price"),
+      t("Quantity"),
+      t("Total"),
+      t("sub Total"),
+    ];
   }, [t]);
 
   const rows = useMemo(() => {
@@ -39,8 +43,9 @@ const OrdersView = () => {
       <TableRow key={order.id}>
         <TableCell>{order.description}</TableCell> {/* Product */}
         <TableCell>{order.unit_price.value}</TableCell> {/* Price */}
-        <TableCell>{order.unit_quantity}</TableCell> {/* Quantity */}
+        <TableCell>{order.quantity}</TableCell> {/* Quantity */}
         <TableCell>{order.total.value}</TableCell> {/* Total */}
+        <TableCell>{order.sub_total.value}</TableCell> {/* Total */}
       </TableRow>
     ));
   }, [item]);
@@ -74,7 +79,7 @@ const OrdersView = () => {
       </Box>
 
       <Typography color="textSecondary" variant="body1">
-        {t("Order Date")}: {item?.order_date ?? "N/A"}{" "}
+        {t("Order Date")}: {item?.created_at ?? "N/A"}{" "}
         {/* Example order date */}
       </Typography>
 
@@ -98,7 +103,23 @@ const OrdersView = () => {
           </BoxStyled>
         </Grid>
 
-        {/* Shipping and Billing Info */}
+        <Grid item xs={12} md={4}>
+          <BoxStyled sx={{ p: 2, color: "text.main" }}>
+            <Typography variant="h6" gutterBottom>
+              CUSTOMER
+            </Typography>
+            <Typography>
+              {t("NAME")}: {item?.customer[0]?.first_name ?? "N/A"}{" "}
+              {item?.customer[0]?.last_name ?? " N/A"}
+            </Typography>
+            <Typography>
+              {t("age")}: {item?.customer[0]?.age ?? "N/A"}
+            </Typography>
+            <Typography>
+              {t("gender")}: {item?.customer[0]?.gender ?? "N/A"}
+            </Typography>
+          </BoxStyled>
+        </Grid>
         <Grid item xs={12} md={4}>
           <BoxStyled sx={{ p: 2, color: "text.main" }}>
             <Typography variant="h6" gutterBottom>
@@ -111,10 +132,17 @@ const OrdersView = () => {
               {t("Subtotal")}: {item?.sub_total ?? "N/A"}
             </Typography>
             <Typography>
+              {t("Total")}: {item?.total ?? "N/A"}
+            </Typography>
+            <Typography>
               {t("Tax")}: {item?.tax_total ?? "N/A"}
             </Typography>
             <Typography>
-              {t("Total")}: {item?.total ?? "N/A"}
+              {t("points added")}: {item?.points_added ?? "N/A"}
+            </Typography>
+            <Typography>
+              {t("sub total after points")}:{" "}
+              {item?.sub_total_after_points ?? "N/A"}
             </Typography>
           </BoxStyled>
         </Grid>
@@ -143,6 +171,16 @@ const OrdersView = () => {
               {item?.address?.find((addr) => addr.type === "shipping")
                 ?.contact_phone ?? "N/A"}
             </Typography>
+            <Typography>
+              {t("city shipping price")}:{" "}
+              {item?.address?.find((addr) => addr.type === "shipping")
+                ?.city_shipping_price ?? ""}
+            </Typography>
+            <Typography>
+              {t("delivery instructions")}:{" "}
+              {item?.address?.find((addr) => addr.type === "shipping")
+                ?.delivery_instructions ?? ""}
+            </Typography>
           </Box>
         </Grid>
         <Grid item xs={12} md={4}>
@@ -161,6 +199,16 @@ const OrdersView = () => {
               {t("Contact Phone")}:{" "}
               {item?.address?.find((addr) => addr.type === "billing")
                 ?.contact_phone ?? "N/A"}
+            </Typography>
+            <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
+              {t("city shipping price")}:{" "}
+              {item?.address?.find((addr) => addr.type === "billing")
+                ?.city_shipping_price ?? "N/A"}
+            </Typography>
+            <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
+              {t("delivery instructions")}:{" "}
+              {item?.address?.find((addr) => addr.type === "billing")
+                ?.delivery_instructions ?? "N/A"}
             </Typography>
           </Box>
         </Grid>

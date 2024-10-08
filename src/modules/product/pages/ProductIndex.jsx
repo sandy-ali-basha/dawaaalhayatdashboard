@@ -31,6 +31,7 @@ import { ListAltRounded } from "@mui/icons-material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import ViewCarouselRoundedIcon from "@mui/icons-material/ViewCarouselRounded";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
+import ChangeStatus from "../components/ChangeStatus";
 
 const ProductIndex = () => {
   const { t } = useTranslation("index");
@@ -56,6 +57,7 @@ const ProductIndex = () => {
       t("price"),
       t("Qty"),
       t("city"),
+      t("status"),
       t("operations"),
     ];
   }, [t]);
@@ -128,6 +130,14 @@ const ProductIndex = () => {
         </TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {product?.cities?.state[0]?.name ?? "Null"}
+        </TableCell>
+        <TableCell sx={{ minWidth: 120 }} align="center">
+          <ChangeStatus
+            id={product.id}
+            action={product.status === "active" && "change-status"}
+          >
+            {product.status === "Active" ? t("Active") : t("Not Active")}
+          </ChangeStatus>
         </TableCell>
         <TableCell align="center" sx={{ minWidth: 200 }}>
           <IconButton onClick={() => handleEdit(product?.id)}>

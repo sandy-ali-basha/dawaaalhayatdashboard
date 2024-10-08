@@ -22,6 +22,7 @@ import { _Home } from "api/home/home";
 import { useNavigate } from "react-router-dom";
 import { ViewCarousel } from "@mui/icons-material";
 import SlidesView from "./SlidesView";
+import { useQueryClient } from "react-query";
 
 const HomeIndex = () => {
   const { data, isLoading } = useHome();
@@ -42,7 +43,7 @@ const HomeIndex = () => {
     setEditSection(section);
     setOpen(true);
   };
-
+  const queryClient = useQueryClient();
   const handleClose = () => {
     setOpen(false);
     setEditSection(null);
@@ -141,9 +142,8 @@ const HomeIndex = () => {
         formData: formDataNew,
       })
       .then((res) => {
-        console.log(res);
-
         if (res?.code === 200) handleClose();
+        queryClient.invalidateQueries();
       });
   }
 
@@ -209,8 +209,7 @@ const HomeIndex = () => {
       {renderUpdateModal()}
       <IconButton onClick={() => navigate(`addslider`)}>
         <Tooltip title={"add slider"}>
-          <ViewCarousel sx={{ color: "warning.main" }} />
-           + Add Slides
+          <ViewCarousel sx={{ color: "warning.main" }} />+ Add Slides
         </Tooltip>
       </IconButton>
 
@@ -300,15 +299,33 @@ const HomeIndex = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h5">Text Section One</Typography>
-                    <Typography variant="body1">
-                      Arabic: {textSectionOne.value.text.ar || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      English: {textSectionOne.value.text.en || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      Kurdish: {textSectionOne.value.text.kr || "NON"}
-                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: `  Arabic: ${
+                          textSectionOne.value.text.ar || "NON"
+                        }`,
+                      }}
+                    ></Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: ` English: ${
+                          textSectionOne.value.text.en || "NON"
+                        }`,
+                      }}
+                    ></Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: ` Kurdish: ${
+                          textSectionOne.value.text.kr || "NON"
+                        }`,
+                      }}
+                    ></Typography>
                     <Box mt={2}>
                       <img
                         src={textSectionOne.image || "NON"}
@@ -332,15 +349,33 @@ const HomeIndex = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h5">Text Section Two</Typography>
-                    <Typography variant="body1">
-                      Arabic: {textSectionTwo.value.text.ar || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      English: {textSectionTwo.value.text.en || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      Kurdish: {textSectionTwo.value.text.kr || "NON"}
-                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: ` Arabic: ${
+                          textSectionTwo.value.text.ar || "NON"
+                        }`,
+                      }}
+                    ></Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: `English: ${
+                          textSectionTwo.value.text.en || "NON"
+                        }`,
+                      }}
+                    ></Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: `Kurdish: ${
+                          textSectionTwo.value.text.kr || "NON"
+                        }`,
+                      }}
+                    ></Typography>
                     <Box mt={2}>
                       <img
                         src={textSectionTwo.image || "NON"}
@@ -381,15 +416,27 @@ const HomeIndex = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h5">Video Text</Typography>
-                    <Typography variant="body1">
-                      Arabic: {videoText.value.ar || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      English: {videoText.value.en || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      Kurdish: {videoText.value.kr || "NON"}
-                    </Typography>
+                    <Typography
+                      variant="body1 "
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: `   Arabic: {videoText.value.ar || "NON"}`,
+                      }}
+                    ></Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: `  English: {videoText.value.en || "NON"}`,
+                      }}
+                    ></Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ borderBottom: "1px solid black" }}
+                      dangerouslySetInnerHTML={{
+                        __html: `Kurdish: {videoText.value.kr || "NON"}`,
+                      }}
+                    ></Typography>
                     <IconButton onClick={() => handleEditClick(videoText)}>
                       <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
                         <ModeTwoToneIcon sx={{ color: "text.main" }} />

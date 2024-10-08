@@ -20,6 +20,7 @@ import OrdersRouting from "modules/orders/OrdersRouting";
 import DiscountsRouting from "modules/discounts/DiscountsRouting";
 import SettingsRouting from "modules/Settings/SettingsRouting";
 import HomeRouting from "modules/home/HomeRouting";
+import CitiesRouting from "modules/cities/CitiesRouting";
 
 const DashboardRouting = () => {
   return (
@@ -45,19 +46,14 @@ const DashboardRouting = () => {
           <Route path="/orders/*" element={<OrdersRouting />} />
           <Route path="/discounts/*" element={<DiscountsRouting />} />
           <Route path="/product_type/*" element={<Product_typeRouting />} />
+          <Route path="/cities/*" element={<CitiesRouting />} />
 
           <Route
             path="/products/categories/*"
             element={<Product_attributesRouting />}
           />
-          <Route
-            path="/home/*"
-            element={<HomeRouting />}
-          />
-          <Route
-            path="/settings/*"
-            element={<SettingsRouting />}
-          />
+          <Route path="/home/*" element={<HomeRouting />} />
+          <Route path="/settings/*" element={<SettingsRouting />} />
           {/* <Route path="/product_options/*" element={<Product_optionsRouting />} /> */}
         </Route>
       }

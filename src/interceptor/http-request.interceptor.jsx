@@ -11,7 +11,6 @@ export const HttpRequestInterceptor = () => {
           ? `Bearer ${access_token}`
           : "";
         request.headers.Accept = "application/json";
-        // request.headers("Access-Control-Allow-Origin", "*");
 
         request.headers.locale =  ["en", "ar", "kr"].includes(
           localStorage.getItem("i18nextLng")

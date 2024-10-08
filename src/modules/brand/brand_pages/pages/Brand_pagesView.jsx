@@ -9,10 +9,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { settingsStore } from "store/settingsStore";
 import { ArrowBack, ArrowForward, EditRounded } from "@mui/icons-material";
 import { colorStore } from "store/ColorsStore";
-import DeleteDialog from "../components/Dialog";
 import Brand_pagesUpdate from "./Brand_pagesUpdate";
 import DeleteSlide from "../components/DeleteSlide";
-import { BoxStyled } from "components/styled/BoxStyled";
 const Brand_pagesView = () => {
   const { t } = useTranslation("index");
   const [direction] = settingsStore((state) => [state.direction]);
@@ -210,6 +208,7 @@ const Brand_pagesView = () => {
                           height: "20vh",
                           objectFit: "contain",
                         }}
+                        alt=""
                       />
                       <Box display="flex">
                         <Typography

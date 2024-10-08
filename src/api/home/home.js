@@ -11,7 +11,7 @@ export const _Home = {
   delete: (id) => _axios.delete(Link + "/" + id).then((res) => res.data),
 
   update: ({ editedID, formData }) =>
-    _axios.post(Link, formData).then((res) => res?.data),
+    _axios.post(Link + "/settings", formData).then((res) => res?.data),
 
   slides: (data) =>
     _axios.post(Link + "/slides/add", data).then((res) => res?.data),

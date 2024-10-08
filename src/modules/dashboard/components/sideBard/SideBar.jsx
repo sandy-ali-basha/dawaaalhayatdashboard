@@ -12,10 +12,12 @@ import {
   AdminPanelSettingsRounded,
   BookmarkRounded,
   CategoryRounded,
+  CountertopsRounded,
   DiscountRounded,
   GavelRounded,
   HomeRounded,
   Money,
+  Public,
   ShoppingCartCheckout,
   SpaceDashboardRounded,
   WorkRounded,
@@ -63,6 +65,11 @@ const SideBar = ({ open, setOpen }) => {
       name: t("orders"),
       link: "/dashboard/orders",
       icon: <ShoppingCartCheckout />,
+    },
+    {
+      name: t("cities"),
+      link: "/dashboard/cities",
+      icon: <Public />,
     },
 
     {
