@@ -211,7 +211,7 @@ const ProductCreate = () => {
             })}
             {Discription.map((item, index) => {
               const error = errors?.[item.register.split(".")[0]]?.name;
-              console.log(error);
+
               return (
                 <Grid item key={index} xs={12} sx={{ p: "10px" }}>
                   <Box sx={{ margin: "0 0 8px 5px" }}>

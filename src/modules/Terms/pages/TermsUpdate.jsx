@@ -5,8 +5,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import {
   Box,
-  FormControl,
-  FormHelperText,
   Grid,
   Typography,
 } from "@mui/material";
@@ -121,9 +119,6 @@ const TermsUpdate = () => {
     mutate(input);
     setLoading(true);
   };
-
-  console.log(errors);
-
   return (
     <>
       {loading && <Loader />}

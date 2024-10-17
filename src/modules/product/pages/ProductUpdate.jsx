@@ -206,7 +206,7 @@ const ProductUpdate = ({ id }) => {
 
   useMemo(() => {
     _cities.index().then((response) => {
-      console.log("response", response);
+
       if (response.code === 200) {
         setCiteies(response.data);
       }

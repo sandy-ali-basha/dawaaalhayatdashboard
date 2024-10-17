@@ -13,7 +13,6 @@ import { useTranslation } from "react-i18next";
 import { useDeleteTerms } from "hooks/terms/useDeleteTerms";
 import { useTerms } from "hooks/terms/useTerms";
 const DeleteDialog = ({ id, page, count }) => {
-  console.log(id);
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);

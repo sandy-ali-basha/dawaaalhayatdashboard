@@ -67,7 +67,6 @@ const AddImages = ({ id, open, setOpen }) => {
         formData: data,
       })
       .then((res) => {
-        console.log(res.code);
         if (res.code === 200) {
           handleDialogClose();
         }

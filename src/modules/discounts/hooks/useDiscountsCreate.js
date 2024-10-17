@@ -44,10 +44,6 @@ export const useDiscountsCreate = () => {
       },
     };
 
-    // Clean up undefined values before sending
-    const cleanRequestData = JSON.parse(JSON.stringify(requestData));
-
-    console.log(cleanRequestData);
     _Discounts
       .post(requestData, setLoading)
       .then((res) => {

@@ -1,13 +1,11 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import DashboardComponent from "./DashboardComponent";
 import DashboardIndex from "./pages/DashboardIndex";
 import AdminRouting from "modules/admin/AdminRouting";
-import ProfileRouting from "modules/profile/ProfileRouting";
 import ServiceRouting from "modules/Service/ServiceRouting";
 import TermsRouting from "modules/Terms/TermsRouting";
-import TransactionRouting from "modules/transaction/TransactionRouting";
-import ReviewRouting from "modules/review/ReviewRouting";
 import CareersRouting from "modules/careers/CareersRouting";
 import CareerscategoryRouting from "modules/careersCategory/CareerscategoryRouting";
 import ProductRouting from "modules/product/ProductRouting";
@@ -29,10 +27,7 @@ const DashboardRouting = () => {
         <Route element={<DashboardComponent />}>
           <Route path="/" element={<DashboardIndex />} />
           <Route path="/admin/*" element={<AdminRouting />} />
-          <Route path="/profile/*" element={<ProfileRouting />} />
           <Route path="/service/*" element={<ServiceRouting />} />
-          <Route path="/transaction/*" element={<TransactionRouting />} />
-          <Route path="/review/*" element={<ReviewRouting />} />
           <Route path="/blog/*" element={<BlogRouting />} />
 
           <Route path="/terms/*" element={<TermsRouting />} />
@@ -45,11 +40,13 @@ const DashboardRouting = () => {
           <Route path="/brands/*" element={<BrandRouting />} />
           <Route path="/orders/*" element={<OrdersRouting />} />
           <Route path="/discounts/*" element={<DiscountsRouting />} />
+          {/* // eslint-disable-next-line react/jsx-pascal-case */}
           <Route path="/product_type/*" element={<Product_typeRouting />} />
           <Route path="/cities/*" element={<CitiesRouting />} />
 
           <Route
             path="/products/categories/*"
+            // eslint-disable-next-line react/jsx-pascal-case
             element={<Product_attributesRouting />}
           />
           <Route path="/home/*" element={<HomeRouting />} />

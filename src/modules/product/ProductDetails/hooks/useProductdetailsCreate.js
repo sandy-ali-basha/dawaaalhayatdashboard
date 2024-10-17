@@ -36,7 +36,6 @@ export const useProductdetailsCreate = () => {
     _Productdetails
       .post(data, setLoading)
       .then((res) => {
-        console.log(res);
         if (res?.code === 200) navigate(-1);
         setLoading(true);
       })

@@ -67,12 +67,9 @@ export const useAdminUpdate = () => {
   };
 
   const queryClient = useQueryClient();
-  console.log("editedID", editedID);
   const mutation = useMutation(
     (input) => {
       const data = { id: editedID, ...input }; // Spread 'input' into 'data'
-      console.log(data); // To verify the data structure
-  
       return _Admin
         .update({
           editedID, // Send ID separately if needed by the backend

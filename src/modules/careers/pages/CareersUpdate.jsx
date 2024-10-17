@@ -160,7 +160,7 @@ const CareersUpdate = ({ id }) => {
       });
     _axios.get("/careers_categories").then((res) => {
       setCareersCategoriesData(res?.data?.data?.careers_categories);
-      console.log("careersCategoriesData", res?.data?.data?.careers_categories);
+     
     });
   }, [id, editedID, setValue]);
 

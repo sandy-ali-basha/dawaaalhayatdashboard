@@ -41,7 +41,6 @@ const SideBar = ({ open, setOpen }) => {
     }));
   };
   const role = localStorage.getItem("role");
-  console.log("role", role);
 
   const links = [
     {

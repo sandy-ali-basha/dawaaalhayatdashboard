@@ -97,7 +97,7 @@ export const useAdminCreate = () => {
     mutate(input);
     setLoading(true);
   };
-  console.log(Err);
+
   return {
     hanldeCreate,
     register,

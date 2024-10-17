@@ -84,7 +84,6 @@ const CareerscategoryUpdate = ({ id }) => {
         formData: data,
       })
       .then((res) => {
-        console.log(res);
         setLoading(false);
         if (res?.code === 200) handleClose();
       });

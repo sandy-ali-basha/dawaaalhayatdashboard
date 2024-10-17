@@ -52,7 +52,6 @@ const SettingsUpdate = ({ value,open,setOpen }) => {
         setLoading(false);
       })
       .then((res) => {
-        console.log(res);
         if (res?.code === 200) {
           handleClose();
         }
