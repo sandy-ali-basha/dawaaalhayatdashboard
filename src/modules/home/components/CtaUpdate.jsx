@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 
 const CtaUpdate = ({ open, onClose, initialData, handleSave }) => {
   const [cta, setCta] = useState(initialData);
-
   // Update the cta state when initialData changes
   useEffect(() => {
     if (initialData) {
@@ -23,12 +22,21 @@ const CtaUpdate = ({ open, onClose, initialData, handleSave }) => {
       cta: {
         ...prevCta.value,
         [field]: {
-          ...prevCta.value[field],
+          ...prevCta?.value?.[field], // Ensure field exists before accessing lang
           [lang]: e.target.value,
         },
       },
     }));
   };
+  // onChange={(name, value) => {
+  //   setData((prev) => ({
+  //     ...prev,
+  //     textSectionOne: {
+  //       ...prev.textSectionOne,
+  //       [lang]: value, // Update the specific language content
+  //     },
+  //   }));
+  // }}
 
   const saveChanges = () => {
     handleSave(cta); // Pass the updated cta object to the save handler
@@ -44,14 +52,14 @@ const CtaUpdate = ({ open, onClose, initialData, handleSave }) => {
             <TextField
               sx={{ my: 1 }}
               label={`Title (${lang})`}
-              defaultValue={cta?.value?.title[lang] || ""} // Use value instead of defaultValue
+              defaultValue={cta?.value?.title?.[lang] || ""} // Use value instead of defaultValue, safely access title
               onChange={(e) => handleChange(e, lang, "title")}
               fullWidth
             />
             <TextField
               sx={{ my: 1 }}
               label={`Subtitle (${lang})`}
-              defaultValue={cta?.value?.subtitle[lang] || ""} // Use value instead of defaultValue
+              defaultValue={cta?.value?.subtitle?.[lang] || ""} // Use value instead of defaultValue, safely access subtitle
               onChange={(e) => handleChange(e, lang, "subtitle")}
               fullWidth
             />
@@ -62,7 +70,7 @@ const CtaUpdate = ({ open, onClose, initialData, handleSave }) => {
           label="Link"
           defaultValue={cta?.value?.link || ""} // Use value instead of defaultValue
           onChange={(e) =>
-            setCta({ ...cta, value: { ...cta.value, link: e.target.value } })
+            setCta({ ...cta, cta: { ...cta.value, link: e.target.value } })
           }
           fullWidth
         />

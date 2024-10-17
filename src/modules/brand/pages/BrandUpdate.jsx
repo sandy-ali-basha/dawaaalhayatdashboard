@@ -67,7 +67,7 @@ const BrandUpdate = ({ id }) => {
           );
         }
       });
-  }, [id, editedID]);
+  }, [id, editedID,setValue]);
 
   const details = [
     {

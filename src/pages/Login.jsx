@@ -2,7 +2,7 @@ import { Box, Typography, Grid, Button } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -42,8 +42,8 @@ const Login = () => {
         if (response.data.code === 200) {
           navigate("/dashboard");
           setLoading(true);
+          localStorage.setItem("role", response?.data?.data?.roles[0]?.name);
         }
-        console.log("Login successful:", response);
       })
       .finally(() => setLoading(false));
   };
@@ -92,7 +92,11 @@ const Login = () => {
           >
             <Box sx={{ width: "100%", mt: "20px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="body1" color="text.secondary" sx={{ color: "white" }}>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ color: "white" }}
+                >
                   {t("Email")}
                 </Typography>
               </Box>
@@ -112,7 +116,11 @@ const Login = () => {
             </Box>
             <Box sx={{ width: "100%", mt: "20px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography sx={{ color: "white" }} variant="body1" color="text.secondary">
+                <Typography
+                  sx={{ color: "white" }}
+                  variant="body1"
+                  color="text.secondary"
+                >
                   {t("Password")}
                 </Typography>
               </Box>

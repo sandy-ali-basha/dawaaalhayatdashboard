@@ -162,7 +162,7 @@ const Brand_pagesUpdate = ({ id }) => {
                     item.register.split(".")[1]
                   ];
                 return (
-                  <Grid key={index} item md={6} sx={{ p: "10px" }}>
+                  <Grid key={index} item md={12} sx={{ p: "10px" }}>
                     <Box sx={{ margin: "0 0 8px 5px" }}>
                       <Typography variant="body1" color="text.main">
                         {item.head}

@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { _Terms } from "api/terms/terms";
-import { _axios } from "interceptor/http-config";
 import { _Brand_pages } from "api/brand_pages/brand_pages";
 
 let schema = yup.object().shape({

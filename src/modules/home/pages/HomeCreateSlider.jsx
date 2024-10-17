@@ -2,7 +2,6 @@ import { Typography, Box, Button, Grid } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import React from "react";
 import Loader from "components/shared/Loader";
-import ButtonAction from "components/shared/ButtonAction";
 import { useHomepagesCreateSlider } from "../hooks/useHomepagesCreateSlider";
 import ButtonLoader from "components/shared/ButtonLoader";
 import InputRepeater from "modules/brand/brand_pages/components/InputRepeater";
@@ -13,7 +12,6 @@ const HomeCreateSlider = () => {
     hanldeCreate,
     register,
     handleSubmit,
-    handleReset,
     loading,
     t,
     errors,
@@ -62,7 +60,6 @@ const HomeCreateSlider = () => {
           >
             {t("Cancel")}
           </Button>
-          <ButtonAction name={t("Reset")} onClick={handleReset} type="reset" />
           <ButtonLoader
             name={t("Submit")}
             onClick={() => handleSubmit(hanldeCreate)()}

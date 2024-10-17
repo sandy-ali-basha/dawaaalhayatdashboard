@@ -8,6 +8,7 @@ export const _Product_attributes = {
       .get(Link+"?all=true", {
         headers: {
           with_translations: "yes",
+          
         },
       })
       .then((res) => res.data),

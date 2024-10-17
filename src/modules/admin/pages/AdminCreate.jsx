@@ -4,6 +4,11 @@ import {
   Typography,
   Box,
   Grid,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
+  Alert,
 } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
@@ -25,6 +30,7 @@ const AdminCreate = () => {
     details,
     showPassword,
     handleTogglePasswordVisibility,
+    Err,
   } = useAdminCreate();
 
   return (
@@ -40,7 +46,9 @@ const AdminCreate = () => {
             {details.map((item, index) => (
               <Grid key={index} item xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="body1" color="text.secondary">{item.head}</Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {item.head}
+                  </Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
@@ -74,6 +82,25 @@ const AdminCreate = () => {
                 />
               </Grid>
             ))}
+            <Grid xs={6} sx={{ p: "10px" }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="role"
+                  {...register("role")}
+                  error={errors?.role?.message}
+                  helperText={errors?.role?.message}
+                >
+                  <MenuItem value={"ecommerce_admin"}>
+                    E-commerce admin
+                  </MenuItem>
+                  <MenuItem value={"super_admin"}>super admin</MenuItem>
+                  <MenuItem value={"website_admin"}>website admin</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
           </Grid>
         </Box>
         <Box
@@ -85,13 +112,16 @@ const AdminCreate = () => {
           }}
         >
           <ButtonCancle />
-          <ButtonReset />
+
           <ButtonAction
             name={t("Submit")}
             onClick={() => handleSubmit(hanldeCreate)()}
             type="submit"
           />
+        
         </Box>
+        {Err?.email &&
+            Err?.email?.map((item) => <Alert severity="error">{item}</Alert>)}
       </BoxStyled>
     </Box>
   );

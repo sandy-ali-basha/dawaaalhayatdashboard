@@ -10,7 +10,6 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
@@ -19,20 +18,16 @@ import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import ChangeStatus from "../components/ChangeStatus";
 import { useBrand } from "hooks/brand/useBrand";
 import BrandUpdate from "./BrandUpdate";
 import DeleteDialog from "../components/Dialog";
 import {
   AddPhotoAlternate,
   NoteAddRounded,
-  PagesRounded,
   ViewCarousel,
-  WebAssetRounded,
   WebRounded,
 } from "@mui/icons-material";
 import AddImage from "./AddImage";
-import DeletePageDialog from "../brand_pages/components/Dialog";
 
 const BrandIndex = () => {
   const { t } = useTranslation("index");
@@ -47,42 +42,28 @@ const BrandIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t(" name"), t("operations"), "page"];
+    return [ t("name"), t("operations"), "page"];
   }, [t]);
   const [id, setID] = useState();
 
   const [open, setOpen] = useState(false);
-  const handleView = useCallback(
-    (id) => {
-      navigate("view/" + id);
-    },
-    [navigate]
-  );
+
   const handleEdit = useCallback(
     (id) => {
       setEditedID(id);
     },
     [setEditedID]
   );
-  const handleAddImages = useCallback(
-    (id) => {
-      setID(id);
-      setOpen(true);
-    },
-    [setEditedID]
-  );
+  const handleAddImages = useCallback((id) => {
+    setID(id);
+    setOpen(true);
+  }, []);
   const rows = useMemo(() => {
     return data?.data?.brands?.map((brand, id) => (
       <TableRow sx={{ height: "65px" }} key={brand.id} hover>
+     
         <TableCell sx={{ minWidth: 50 }}>{brand?.name ?? "Null"}</TableCell>
-        {/* <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus
-            id={brand.id}
-            action={brand.status === "active" && "change-status"}
-          >
-            {brand.status === "Active" ? t("Active") : t("Not Active")}
-          </ChangeStatus>
-        </TableCell> */}
+
         <TableCell
           align="center"
           sx={{
@@ -125,15 +106,15 @@ const BrandIndex = () => {
               <NoteAddRounded sx={{ color: "info.main" }} />
             </Tooltip>
           </IconButton>
-          <IconButton>
+          {/* <IconButton>
             <Tooltip title={"Delete page"}>
               <DeletePageDialog id={brand?.id} count={count} page={page} />
             </Tooltip>
-          </IconButton>
+          </IconButton> */}
         </TableCell>
       </TableRow>
     ));
-  }, [data, count, direction, handleEdit, page,handleAddImages,navigate,]);
+  }, [data, count, direction, handleEdit, page, handleAddImages, navigate]);
 
   const handleCreate = () => navigate("create");
 

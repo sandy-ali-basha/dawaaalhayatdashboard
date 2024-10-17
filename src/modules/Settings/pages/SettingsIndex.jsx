@@ -10,7 +10,6 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
@@ -18,7 +17,6 @@ import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
-import { colorStore } from "store/ColorsStore";
 import { useSettings } from "hooks/settings/useSettings";
 import SettingsUpdate from "./SettingsUpdate";
 
@@ -33,10 +31,11 @@ const SettingsIndex = () => {
   const columns = useMemo(() => {
     return [t("name"), t("value"), t("operations")];
   }, [t]);
-
+  const [open, setOpen] = useState(true);
   const handleEdit = useCallback(
     (value) => {
       setEditedValue(value);
+      setOpen(true);
     },
     [setEditedValue]
   );
@@ -57,7 +56,9 @@ const SettingsIndex = () => {
             minWidth: 200,
           }}
         >
-          <IconButton onClick={() => handleEdit(data?.data?.point_price?.value)}>
+          <IconButton
+            onClick={() => handleEdit(data?.data?.point_price?.value)}
+          >
             <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
               <ModeTwoToneIcon sx={{ color: "text.main" }} />
             </Tooltip>
@@ -72,7 +73,9 @@ const SettingsIndex = () => {
   return (
     <>
       {isLoading && <Loader />}
-      {editedValue && <SettingsUpdate value={editedValue} />}
+      {editedValue && (
+        <SettingsUpdate open={open} setOpen={setOpen} value={editedValue} />
+      )}
 
       <Box
         sx={{

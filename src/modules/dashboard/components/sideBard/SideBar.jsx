@@ -40,6 +40,8 @@ const SideBar = ({ open, setOpen }) => {
       [sectionName]: !prevState[sectionName],
     }));
   };
+  const role = localStorage.getItem("role");
+  console.log("role", role);
 
   const links = [
     {
@@ -112,6 +114,80 @@ const SideBar = ({ open, setOpen }) => {
       icon: <HomeRounded color={"secondary.main"} />,
     },
   ];
+  const website_admin = [
+    {
+      name: t("brands"),
+      link: "/dashboard/brands",
+      icon: <SellRoundedIcon />,
+    },
+    {
+      name: t("terms"),
+      link: "/dashboard/terms",
+      icon: <GavelRounded />,
+    },
+    {
+      name: t("Careers"),
+      icon: <WorkRounded />,
+      subOptions: [
+        { name: t("Careers"), link: "/dashboard/careers" },
+        { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
+      ],
+    },
+    {
+      name: t("blog"),
+      link: "/dashboard/blog",
+      icon: <BookmarkRounded color={"secondary.main"} />,
+    },
+    {
+      name: t("Home"),
+      link: "/dashboard/home",
+      icon: <HomeRounded color={"secondary.main"} />,
+    },
+  ];
+  const ecommerce_admin = [
+    {
+      name: t("Products"),
+      icon: <CategoryRounded />,
+      subOptions: [
+        { name: t("Products"), link: "/dashboard/product" },
+        { name: t("Categories"), link: "/dashboard/products/categories" },
+        { name: t("Medical form"), link: "/dashboard/product_type" },
+      ],
+    },
+    {
+      name: t("orders"),
+      link: "/dashboard/orders",
+      icon: <ShoppingCartCheckout />,
+    },
+
+    {
+      name: t("point price"),
+      link: "/dashboard/settings",
+      icon: <Money />,
+    },
+    {
+      name: t("cities"),
+      link: "/dashboard/cities",
+      icon: <Public />,
+    },
+
+    {
+      name: t("brands"),
+      link: "/dashboard/brands",
+      icon: <SellRoundedIcon />,
+    },
+    {
+      name: t("discounts"),
+      link: "/dashboard/discounts",
+      icon: <DiscountRounded />,
+    },
+  ];
+  const returnLinks = () => {
+    if (role === "super_admin") return links;
+    if (role === "website_admin") return website_admin;
+    if (role === "ecommerce_admin") return ecommerce_admin;
+    else return [];
+  };
 
   return (
     <Drawer
@@ -142,7 +218,7 @@ const SideBar = ({ open, setOpen }) => {
           marginTop: "20px",
         }}
       >
-        {links.map((link, index) => (
+        {returnLinks().map((link, index) => (
           <React.Fragment key={index}>
             {link.subOptions ? (
               <>

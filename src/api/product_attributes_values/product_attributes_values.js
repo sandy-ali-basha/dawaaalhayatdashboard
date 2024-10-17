@@ -4,7 +4,7 @@ const Link = "/product_attributes_values/attribute";
 export const _Product_attributes_values = {
   index: ({ id }) =>
     _axios
-      .get(`${"product_attributes_values/attribute"}/${id}`)
+      .get(`${"product_attributes_values/attribute"}/${id}?all=true`)
       .then((res) => res.data),
 
   post: (data) =>

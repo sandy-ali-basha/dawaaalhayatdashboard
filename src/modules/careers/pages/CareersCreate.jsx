@@ -48,7 +48,9 @@ const CareersCreate = () => {
             <Grid item md={6} sx={{ p: "10px" }}>
               <FormControl fullWidth>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography color="text.main">{t("category")}</Typography>
+                  <Typography sx={{ color: "text.main" }}>
+                    {t("category")}
+                  </Typography>
                 </Box>
                 <SelectStyled
                   sx={{ color: "text.main", borderColor: "text.main" }}
@@ -68,7 +70,9 @@ const CareersCreate = () => {
             </Grid>
             <Grid item md={6} sx={{ p: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography color="text.main">requisition number</Typography>
+                <Typography sx={{ color: "text.main" }}>
+                  requisition number
+                </Typography>
               </Box>
               <TextFieldStyled
                 sx={{ width: "100%" }}
@@ -82,7 +86,9 @@ const CareersCreate = () => {
             </Grid>
             <Grid item md={6} sx={{ p: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="body2" color="text.main">Time</Typography>
+                <Typography variant="body2" sx={{ color: "text.main" }}>
+                  Time
+                </Typography>
                 <TextFieldStyled
                   type="date"
                   sx={{ width: "100%" }}
@@ -104,8 +110,7 @@ const CareersCreate = () => {
               {detailsKR.map((item, index) => (
                 <Grid key={index} item md={6} sx={{ p: "10px" }}>
                   <Typography
-                    sx={{ margin: "0 0 8px 8px" }}
-                    color="text.main"
+                    sx={{ margin: "0 0 8px 8px", color: "text.main" }}
                   >
                     {item.head}
                   </Typography>
@@ -121,7 +126,10 @@ const CareersCreate = () => {
                 </Grid>
               ))}
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
+                <Typography
+                  sx={{ margin: "0 0 8px 8px", color: "text.primary" }}
+                  variant="body2"
+                >
                   description
                 </Typography>
                 <EditorInput
@@ -133,7 +141,10 @@ const CareersCreate = () => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
+                <Typography
+                  sx={{ margin: "0 0 8px 8px", color: "text.primary" }}
+                  variant="body2"
+                >
                   about us
                 </Typography>
                 <EditorInput
@@ -154,8 +165,7 @@ const CareersCreate = () => {
               {detailsAR.map((item, index) => (
                 <Grid key={index} item md={6} sx={{ p: "10px" }}>
                   <Typography
-                    sx={{ margin: "0 0 8px 8px" }}
-                    color="text.main"
+                    sx={{ margin: "0 0 8px 8px", color: "text.main" }}
                   >
                     {item.head}
                   </Typography>
@@ -171,7 +181,10 @@ const CareersCreate = () => {
                 </Grid>
               ))}
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
+                <Typography
+                  sx={{ margin: "0 0 8px 8px", color: "text.main" }}
+                  variant="body2"
+                >
                   description
                 </Typography>
                 <EditorInput
@@ -183,7 +196,10 @@ const CareersCreate = () => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
+                <Typography
+                  sx={{ margin: "0 0 8px 8px", color: "text.main" }}
+                  variant="body2"
+                >
                   about us
                 </Typography>
                 <EditorInput
@@ -204,8 +220,7 @@ const CareersCreate = () => {
               {detailsEN.map((item, index) => (
                 <Grid key={index} item md={6} sx={{ p: "10px" }}>
                   <Typography
-                    sx={{ margin: "0 0 8px 8px" }}
-                    color="text.main"
+                    sx={{ margin: "0 0 8px 8px", color: "text.main" }}
                   >
                     {item.head}
                   </Typography>
@@ -221,7 +236,7 @@ const CareersCreate = () => {
                 </Grid>
               ))}
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
+                <Typography sx={{ margin: "0 0 8px 8px" , color: "text.main"}} variant="body2">
                   description
                 </Typography>
                 <EditorInput
@@ -233,7 +248,10 @@ const CareersCreate = () => {
                 />
               </Grid>
               <Grid item md={12} sx={{ p: "10px" }}>
-                <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
+                <Typography
+                  sx={{ margin: "0 0 8px 8px", color: "text.main" }}
+                  variant="body2"
+                >
                   about us
                 </Typography>
                 <EditorInput

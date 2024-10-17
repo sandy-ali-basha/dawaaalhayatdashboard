@@ -40,14 +40,16 @@ const ProductAttr = ({ id, open, setOpen, attr }) => {
   const [selectedValue, setSelectedValue] = useState([]);
 
   const getValues = (value) => {
-    _axios.get(`/product_attributes_values/attribute/${value}`).then((res) => {
-      setLoading(false);
-      setProductAttributesValues(res?.data?.data?.product_attributes_values);
-    });
+    _axios
+      .get(`/product_attributes_values/attribute/${value}?all=true`)
+      .then((res) => {
+        setLoading(false);
+        setProductAttributesValues(res?.data?.data?.product_attributes_values);
+      });
   };
 
   useEffect(() => {
-    _axios.get("/product_attributes").then((res) => {
+    _axios.get("/product_attributes?all=true").then((res) => {
       setProductAttributes(res.data?.data?.product_attributes);
     });
   }, []);

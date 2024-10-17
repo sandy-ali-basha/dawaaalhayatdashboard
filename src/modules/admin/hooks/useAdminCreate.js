@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { _Admin } from "api/admin/admin";
 let schema = yup.object().shape({
+  role: yup.string().required("role is required"),
   name: yup.string().required("Name is required"),
   email: yup
     .string()
@@ -32,6 +33,7 @@ export const useAdminCreate = () => {
   const { t } = useTranslation("index");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [Err, setErr] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -79,24 +81,23 @@ export const useAdminCreate = () => {
       helperText: "password_confirmation",
     },
   ];
+
   async function createPost(data) {
     await axios;
-    _Admin
-      .post(data, setLoading, navigate)
-      .then(setLoading(true))
-      .finally(() => setLoading(false));
+    _Admin.post(data, setLoading).then((res) => {
+      setLoading(true);
+
+      setLoading(false);
+      if (res?.data?.code === 200) navigate(-1);
+      else setErr(res?.data?.error?.errors);
+    });
   }
 
   const hanldeCreate = (input) => {
-    const formData = new FormData();
-    formData.append("name", input.name);
-    formData.append("email", input.email);
-    formData.append("password", input.password);
-    formData.append("password_confirmation", input.password_confirmation);
-    mutate(formData);
+    mutate(input);
     setLoading(true);
   };
-
+  console.log(Err);
   return {
     hanldeCreate,
     register,
@@ -108,5 +109,6 @@ export const useAdminCreate = () => {
     details,
     showPassword,
     handleTogglePasswordVisibility,
+    Err,
   };
 };

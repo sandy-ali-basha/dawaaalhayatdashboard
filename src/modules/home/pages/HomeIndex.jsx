@@ -13,7 +13,7 @@ import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
 import Loader from "components/shared/Loader";
 import { useHome } from "hooks/home/useHome";
-import StatsUpdate from "../components/StatesUpdate"; // Import Stats Update Module
+import StatsUpdate from "../components/StatesUpdate"; // Import Status Update Module
 import CtaUpdate from "../components/CtaUpdate"; // Import CTA Update Module
 import TextSectionOneUpdate from "../components/TextSectionUpdate"; // Import Text Section One Update
 import TextSectionTwoUpdate from "../components/TextSectionTowUpdate"; // Import Text Section Two Update
@@ -27,13 +27,13 @@ import { useQueryClient } from "react-query";
 const HomeIndex = () => {
   const { data, isLoading } = useHome();
   const {
-    "home.page.stats": stats,
+    "home.page.status": status,
     "home.page.cta": cta,
     "home.page.textSectionOne": textSectionOne,
     "home.page.textSectionTwo": textSectionTwo,
     "home.page.video": video,
     "home.page.videoText": videoText,
-  } = data || {};
+  } = data ?? {};
 
   const [direction] = settingsStore((state) => [state.direction]);
   const [open, setOpen] = useState(false);
@@ -43,16 +43,15 @@ const HomeIndex = () => {
     setEditSection(section);
     setOpen(true);
   };
+  
   const queryClient = useQueryClient();
   const handleClose = () => {
     setOpen(false);
     setEditSection(null);
   };
-  async function handleUpdate(data) {
-    // Create a new FormData object
-    const formDataNew = new FormData();
 
-    // Append video and text data to FormData
+  async function handleUpdate(data) {
+    const formDataNew = new FormData();
     if (data.video) {
       formDataNew.append("video[vfile]", data.video); // Append video file
     }
@@ -60,64 +59,83 @@ const HomeIndex = () => {
       formDataNew.append(
         "textSectionTwo[image_file]",
         data.textSectionTwoImage?.image
-      ); // Append video file
+      );
     }
     if (data?.textSectionOneImage?.image) {
       formDataNew.append(
         "textSectionOne[image_file]",
         data.textSectionOneImage?.image
-      ); // Append video file
+      );
     }
 
+    // Append videoText data
     for (const lang of ["ar", "en", "kr"]) {
       if (data.videoText && data.videoText[lang]) {
         formDataNew.append(`videoText[${lang}]`, data.videoText[lang]);
       }
     }
 
+    // Append CTA data
     for (const lang of ["ar", "en", "kr"]) {
       if (data?.cta && data?.cta?.subtitle[lang]) {
         formDataNew.append(`cta[subtitle][${lang}]`, data?.cta?.subtitle[lang]);
       }
-    }
-    for (const lang of ["ar", "en", "kr"]) {
       if (data?.cta && data?.cta?.title[lang]) {
         formDataNew.append(`cta[title][${lang}]`, data?.cta?.title[lang]);
       }
     }
-    for (const lang of ["ar", "en", "kr"]) {
-      if (data?.status && data?.status[lang]?.subtitle1) {
-        formDataNew.append(
-          `status[${lang}][subtitle1]`,
-          data?.status[lang]?.subtitle1
-        );
+
+    // Append status data (titles and subtitles)
+    if (data?.name === "home.page.status") {
+      for (const lang of ["ar", "en", "kr"]) {
+        if (data?.value && data?.value[lang]?.subtitle1) {
+          formDataNew.append(
+            `status[${lang}][subtitle1]`,
+            data?.value[lang]?.subtitle1
+          );
+        }
+        if (data?.value && data?.value[lang]?.title1) {
+          formDataNew.append(
+            `status[${lang}][title1]`,
+            data?.value[lang]?.title1
+          );
+        }
+        if (data?.value && data?.value[lang]?.subtitle2) {
+          formDataNew.append(
+            `status[${lang}][subtitle2]`,
+            data?.value[lang]?.subtitle2
+          );
+        }
+        if (data?.value && data?.value[lang]?.title2) {
+          formDataNew.append(
+            `status[${lang}][title2]`,
+            data?.value[lang]?.title2
+          );
+        }
       }
-    }
-    for (const lang of ["ar", "en", "kr"]) {
-      if (data?.status && data?.status[lang]?.title1) {
-        formDataNew.append(
-          `status[${lang}][title1]`,
-          data?.status[lang]?.title1
-        );
-      }
-    }
-    for (const lang of ["ar", "en", "kr"]) {
-      if (data?.status && data?.status[lang]?.subtitle2) {
-        formDataNew.append(
-          `status[${lang}][subtitle2]`,
-          data?.status[lang]?.subtitle2
-        );
-      }
-    }
-    for (const lang of ["ar", "en", "kr"]) {
-      if (data?.status && data?.status[lang]?.title2) {
-        formDataNew.append(
-          `status[${lang}][title2]`,
-          data?.status[lang]?.title2
-        );
+
+      // Append info data (number and text)
+      if (data?.value?.info) {
+        data.value.info.forEach((infoItem, index) => {
+          if (infoItem.number) {
+            formDataNew.append(
+              `status[info][${index}][number]`,
+              infoItem.number
+            );
+          }
+          for (const lang of ["ar", "en", "kr"]) {
+            if (infoItem[lang]?.text) {
+              formDataNew.append(
+                `status[info][${index}][${lang}][text]`,
+                infoItem[lang].text
+              );
+            }
+          }
+        });
       }
     }
 
+    // Append textSectionTwo data
     for (const lang of ["ar", "en", "kr"]) {
       if (data.textSectionTwo && data.textSectionTwo[lang]) {
         formDataNew.append(
@@ -127,6 +145,7 @@ const HomeIndex = () => {
       }
     }
 
+    // Append textSectionOne data
     for (const lang of ["ar", "en", "kr"]) {
       if (data.textSectionOne && data.textSectionOne[lang]) {
         formDataNew.append(
@@ -136,26 +155,44 @@ const HomeIndex = () => {
       }
     }
 
-    // Call your update method with the FormData
+    // Append status info data (numbers and localized text)
+    if (data?.status?.info) {
+      data.status.info.forEach((infoItem, index) => {
+        // Append the number
+        if (infoItem?.number) {
+          formDataNew.append(`status[info][${index}][number]`, infoItem.number);
+        }
+
+        // Append the localized text for each language
+        for (const lang of ["ar", "en", "kr"]) {
+          if (infoItem?.[lang]?.text) {
+            formDataNew.append(
+              `status[info][${index}][${lang}][text]`,
+              infoItem[lang].text
+            );
+          }
+        }
+      });
+    }
     _Home
       .update({
         formData: formDataNew,
       })
       .then((res) => {
         if (res?.code === 200) handleClose();
-        queryClient.invalidateQueries();
+        queryClient.invalidateQueries("home");
       });
   }
 
   // Render the correct modal based on the section being edited
   const renderUpdateModal = () => {
     switch (editSection) {
-      case stats:
+      case status:
         return (
           <StatsUpdate
             open={open}
             onClose={handleClose}
-            initialData={stats}
+            initialData={status}
             handleSave={handleUpdate}
           />
         );
@@ -204,7 +241,6 @@ const HomeIndex = () => {
   const navigate = useNavigate();
   return (
     <>
-      {/* //todo make sure slides is working */}
       {isLoading && <Loader />}
       {renderUpdateModal()}
       <IconButton onClick={() => navigate(`addslider`)}>
@@ -217,46 +253,117 @@ const HomeIndex = () => {
       {data && (
         <Box p={2} sx={{ color: "text.primary" }}>
           <Grid container spacing={3}>
-            {/* Stats Section */}
-            {stats?.value && (
-              <Grid item xs={12}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h5">Stats (Arabic)</Typography>
-                    <Typography variant="body1">
-                      {stats?.value?.ar?.title1 || "NON"} -{" "}
-                      {stats?.value?.ar?.subtitle1 || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      {stats?.value?.ar?.title2 || "NON"} -{" "}
-                      {stats?.value?.ar?.subtitle2 || "NON"}
-                    </Typography>
-                    <Typography variant="h5">Stats (English)</Typography>
-                    <Typography variant="body1">
-                      {stats?.value?.en?.title1 || "NON"} -{" "}
-                      {stats?.value?.en?.subtitle1 || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      {stats?.value?.en?.title2 || "NON"} -{" "}
-                      {stats?.value?.en?.subtitle2 || "NON"}
-                    </Typography>
-                    <Typography variant="h5">Stats (Kurdish)</Typography>
-                    <Typography variant="body1">
-                      {stats.value.kr.title1 || "NON"} -{" "}
-                      {stats?.value.kr.subtitle1 || "NON"}
-                    </Typography>
-                    <Typography variant="body1">
-                      {stats.value.kr.title2 || "NON"} -{" "}
-                      {stats.value.kr.subtitle2 || "NON"}
-                    </Typography>
-                    <IconButton onClick={() => handleEditClick(stats)}>
-                      <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                        <ModeTwoToneIcon sx={{ color: "text.main" }} />
-                      </Tooltip>
-                    </IconButton>
-                  </CardContent>
-                </Card>
-              </Grid>
+            {/* Status Section */}
+            {status?.value && (
+              <>
+                <Grid item xs={12}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h5">Status (Arabic)</Typography>
+                      <Typography variant="body1">
+                        {status?.value?.ar?.title1 ?? "NON"}{" "}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="initial"
+                        dangerouslySetInnerHTML={{
+                          __html: `${status?.value?.ar?.subtitle1 ?? "NON"}`,
+                        }}
+                      ></Typography>
+
+                      <Typography variant="body1">
+                        {status?.value?.ar?.title2 ?? "NON"}{" "}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="initial"
+                        dangerouslySetInnerHTML={{
+                          __html: `${status?.value?.ar?.subtitle2 ?? "NON"} `,
+                        }}
+                      ></Typography>
+                      <hr />
+                      <Typography variant="h5">Status (English)</Typography>
+                      <Typography variant="body1">
+                        {status?.value?.en?.title1 ?? "NON"}{" "}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="initial"
+                        dangerouslySetInnerHTML={{
+                          __html: `${status?.value?.en?.subtitle1 ?? "NON"}`,
+                        }}
+                      ></Typography>
+                      <Typography variant="body1">
+                        {status?.value?.en?.title2 ?? "NON"} -{" "}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="initial"
+                        dangerouslySetInnerHTML={{
+                          __html: `${status?.value?.en?.subtitle2 ?? "NON"}`,
+                        }}
+                      ></Typography>
+                      <hr />
+                      <Typography variant="h5">Status (Kurdish)</Typography>
+                      <Typography variant="body1">
+                        {status.value.kr?.title1 ?? "NON"} -{" "}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="initial"
+                        dangerouslySetInnerHTML={{
+                          __html: `${status?.value?.kr?.subtitle1 ?? "NON"}`,
+                        }}
+                      ></Typography>
+
+                      <Typography variant="body1">
+                        {status.value.kr.title2 ?? "NON"} -{" "}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="initial"
+                        dangerouslySetInnerHTML={{
+                          __html: `${status?.value?.kr?.subtitle2 ?? "NON"}`,
+                        }}
+                      ></Typography>
+                      <Grid container spacing={3}>
+                        {[0, 1, 2].map((index) => (
+                          <Grid md="4" item>
+                            arabic:{" "}
+                            {/* {status?.value?.info[index]?.ar?.text ?? "NON"} */}
+                            {Array.isArray(status?.value?.info) &&
+                            status?.value?.info[index]?.ar?.text
+                              ? status?.value?.info[index]?.ar?.text
+                              : "NON"}
+                            <br /> english: {/* Check for English text */}
+                            {Array.isArray(status?.value?.info) &&
+                            status?.value?.info[index]?.en?.text
+                              ? status.value.info[index].en.text
+                              : "NON"}
+                            <br />
+                            kurdish: {/* Check for Kurdish text */}
+                            {Array.isArray(status?.value?.info) &&
+                            status?.value?.info[index]?.kr?.text
+                              ? status.value.info[index].kr.text
+                              : "NON"}
+                            <br />
+                            number: {/* Check for number */}
+                            {Array.isArray(status?.value?.info) &&
+                            status?.value?.info[index]?.number
+                              ? status.value.info[index].number
+                              : "NON"}{" "}
+                          </Grid>
+                        ))}
+                      </Grid>
+                      <IconButton onClick={() => handleEditClick(status)}>
+                        <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                          <ModeTwoToneIcon sx={{ color: "text.main" }} />
+                        </Tooltip>
+                      </IconButton>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </>
             )}
 
             {/* CTA Section */}
@@ -265,25 +372,33 @@ const HomeIndex = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h5">Call to Action (CTA)</Typography>
+
+                    {/* Check if title and subtitle exist before accessing their properties */}
                     <Typography variant="body1">
-                      Arabic: {cta.value.title.ar || "NON"} -{" "}
-                      {cta.value.subtitle.ar || "NON"}
+                      Arabic:{" "}
+                      {cta.value?.title?.ar ? cta.value.title.ar : "NON"} -{" "}
+                      {cta.value?.subtitle?.ar ? cta.value.subtitle.ar : "NON"}
                     </Typography>
                     <Typography variant="body1">
-                      English: {cta.value.title.en || "NON"} -{" "}
-                      {cta.value.subtitle.en || "NON"}
+                      English:{" "}
+                      {cta.value?.title?.en ? cta.value.title.en : "NON"} -{" "}
+                      {cta.value?.subtitle?.en ? cta.value.subtitle.en : "NON"}
                     </Typography>
                     <Typography variant="body1">
-                      Kurdish: {cta.value.title.kr || "NON"} -{" "}
-                      {cta.value.subtitle.kr || "NON"}
+                      Kurdish:{" "}
+                      {cta.value?.title?.kr ? cta.value.title.kr : "NON"} -{" "}
+                      {cta.value?.subtitle?.kr ? cta.value.subtitle.kr : "NON"}
                     </Typography>
+
+                    {/* Check if link exists */}
                     <Link
-                      href={cta.value.link || "NON"}
+                      href={cta.value?.link ? cta.value.link : "NON"}
                       target="_blank"
                       rel="noopener"
                     >
                       CTA Link
                     </Link>
+
                     <IconButton onClick={() => handleEditClick(cta)}>
                       <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
                         <ModeTwoToneIcon sx={{ color: "text.main" }} />
@@ -293,8 +408,9 @@ const HomeIndex = () => {
                 </Card>
               </Grid>
             )}
+
             {/* Text Section One */}
-            {textSectionOne?.value && (
+            {/* {textSectionOne?.value && (
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
@@ -304,7 +420,7 @@ const HomeIndex = () => {
                       sx={{ borderBottom: "1px solid black" }}
                       dangerouslySetInnerHTML={{
                         __html: `  Arabic: ${
-                          textSectionOne.value.text.ar || "NON"
+                          textSectionOne.value.text.ar ?? "NON"
                         }`,
                       }}
                     ></Typography>
@@ -313,7 +429,7 @@ const HomeIndex = () => {
                       sx={{ borderBottom: "1px solid black" }}
                       dangerouslySetInnerHTML={{
                         __html: ` English: ${
-                          textSectionOne.value.text.en || "NON"
+                          textSectionOne.value.text.en ?? "NON"
                         }`,
                       }}
                     ></Typography>
@@ -322,13 +438,13 @@ const HomeIndex = () => {
                       sx={{ borderBottom: "1px solid black" }}
                       dangerouslySetInnerHTML={{
                         __html: ` Kurdish: ${
-                          textSectionOne.value.text.kr || "NON"
+                          textSectionOne.value.text.kr ?? "NON"
                         }`,
                       }}
                     ></Typography>
                     <Box mt={2}>
                       <img
-                        src={textSectionOne.image || "NON"}
+                        src={textSectionOne?.image}
                         alt="Text Section Two"
                         width="100%"
                       />
@@ -341,10 +457,10 @@ const HomeIndex = () => {
                   </CardContent>
                 </Card>
               </Grid>
-            )}
+            )} */}
 
             {/* Text Section Two */}
-            {textSectionTwo?.value && (
+            {/* {textSectionTwo?.value && (
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
@@ -354,7 +470,7 @@ const HomeIndex = () => {
                       sx={{ borderBottom: "1px solid black" }}
                       dangerouslySetInnerHTML={{
                         __html: ` Arabic: ${
-                          textSectionTwo.value.text.ar || "NON"
+                          textSectionTwo.value.text.ar ?? "NON"
                         }`,
                       }}
                     ></Typography>
@@ -363,7 +479,7 @@ const HomeIndex = () => {
                       sx={{ borderBottom: "1px solid black" }}
                       dangerouslySetInnerHTML={{
                         __html: `English: ${
-                          textSectionTwo.value.text.en || "NON"
+                          textSectionTwo.value.text.en ?? "NON"
                         }`,
                       }}
                     ></Typography>
@@ -372,13 +488,13 @@ const HomeIndex = () => {
                       sx={{ borderBottom: "1px solid black" }}
                       dangerouslySetInnerHTML={{
                         __html: `Kurdish: ${
-                          textSectionTwo.value.text.kr || "NON"
+                          textSectionTwo.value.text.kr ?? "NON"
                         }`,
                       }}
                     ></Typography>
                     <Box mt={2}>
                       <img
-                        src={textSectionTwo.image || "NON"}
+                        src={textSectionTwo.image ?? "NON"}
                         alt="Text Section Two"
                         width="100%"
                       />
@@ -391,16 +507,42 @@ const HomeIndex = () => {
                   </CardContent>
                 </Card>
               </Grid>
-            )}
+            )} */}
 
             {/* Video Section */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Card>
                 <CardContent>
                   <Typography variant="h5">Video Section</Typography>
                   <video width="100%" controls>
-                    <source src={video?.video || ""} type="video/mp4" />
+                    <source src={video?.video ?? ""} type="video/mp4" />
                   </video>
+                  {videoText?.value && (
+                    <>
+                      <Typography variant="h5">Video Text</Typography>
+                      <Typography
+                        variant="body1 "
+                        sx={{ borderBottom: "1px solid black" }}
+                        dangerouslySetInnerHTML={{
+                          __html: `   Arabic: ${videoText?.value?.ar ?? "NON"}`,
+                        }}
+                      ></Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ borderBottom: "1px solid black" }}
+                        dangerouslySetInnerHTML={{
+                          __html: `  English: ${videoText?.value?.en ?? "NON"}`,
+                        }}
+                      ></Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ borderBottom: "1px solid black" }}
+                        dangerouslySetInnerHTML={{
+                          __html: `Kurdish: ${videoText?.value?.kr ?? "NON"}`,
+                        }}
+                      ></Typography>
+                    </>
+                  )}
                   <IconButton onClick={() => handleEditClick(video)}>
                     <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
                       <ModeTwoToneIcon sx={{ color: "text.main" }} />
@@ -408,44 +550,9 @@ const HomeIndex = () => {
                   </IconButton>
                 </CardContent>
               </Card>
-            </Grid>
+            </Grid> */}
 
             {/* Video Text Section */}
-            {videoText?.value && (
-              <Grid item xs={12}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h5">Video Text</Typography>
-                    <Typography
-                      variant="body1 "
-                      sx={{ borderBottom: "1px solid black" }}
-                      dangerouslySetInnerHTML={{
-                        __html: `   Arabic: {videoText.value.ar || "NON"}`,
-                      }}
-                    ></Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{ borderBottom: "1px solid black" }}
-                      dangerouslySetInnerHTML={{
-                        __html: `  English: {videoText.value.en || "NON"}`,
-                      }}
-                    ></Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{ borderBottom: "1px solid black" }}
-                      dangerouslySetInnerHTML={{
-                        __html: `Kurdish: {videoText.value.kr || "NON"}`,
-                      }}
-                    ></Typography>
-                    <IconButton onClick={() => handleEditClick(videoText)}>
-                      <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                        <ModeTwoToneIcon sx={{ color: "text.main" }} />
-                      </Tooltip>
-                    </IconButton>
-                  </CardContent>
-                </Card>
-              </Grid>
-            )}
           </Grid>
         </Box>
       )}

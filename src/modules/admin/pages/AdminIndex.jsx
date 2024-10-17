@@ -19,11 +19,10 @@ import DeleteDialog from "../components/Dialog";
 import { useAdmin } from "hooks/admin/useAdmin";
 import { categoryStore } from "store/categoryStore";
 import { settingsStore } from "store/settingsStore";
-import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import { useDebounce } from "hooks/useDebounce";
 import { TextFieldStyled } from "components/styled/TextField";
+import { ModeRounded } from "@mui/icons-material";
 
 const AdminIndex = () => {
   const { t } = useTranslation("index");
@@ -38,7 +37,7 @@ const AdminIndex = () => {
     setQuery(e.target.value);
   }, 1000);
   const columns = useMemo(() => {
-    return [t("Name"), t("Email"), t("Operations")];
+    return [t("Name"), t("Email"), t("role"), t("Operations")];
   }, [t]);
 
   const handleView = useCallback(
@@ -58,12 +57,17 @@ const AdminIndex = () => {
     navigate("create");
   };
   const rows = useMemo(() => {
-    return data?.admins?.map((admin, id) => (
+    return data?.data?.map((admin, id) => (
       <TableRow sx={{ height: "65px" }} key={admin.id} hover={true}>
         <TableCell sx={{ minWidth: 200 }}>{admin?.name ?? "Null"}</TableCell>
 
         <TableCell sx={{ minWidth: 200 }} align="center">
           {admin?.email ?? "Null"}
+        </TableCell>
+        <TableCell sx={{ minWidth: 200 }} align="center">
+          {admin?.roles?.map((item, index) => (
+            <div key={index}>{item?.name}</div>
+          )) ?? "Null"}
         </TableCell>
 
         <TableCell
@@ -83,10 +87,15 @@ const AdminIndex = () => {
               </Box>
             </Tooltip>
           </IconButton>
+          <IconButton onClick={() => handleEdit(admin?.id)}>
+            <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+              <ModeRounded sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
         </TableCell>
       </TableRow>
     ));
-  }, [data, count, direction, page])
+  }, [data?.data, direction, count, page, handleEdit]);
 
   return (
     <>
@@ -126,18 +135,6 @@ const AdminIndex = () => {
         </Box>
 
         <BoxStyled sx={{ px: "10px" }}>
-          <Box
-            sx={{
-              mb: "15px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <TextFieldStyled
-              placeholder={t("Search")}
-              onChange={handleSearch}
-            />
-          </Box>
           <Table
             columns={columns}
             rows={rows}

@@ -3,8 +3,22 @@ import { _axios } from "../../interceptor/http-config";
 const Link = "/home";
 
 export const _Home = {
-  index: () => _axios.get(Link + "/settings").then((res) => res.data?.data),
-  getSlides: () => _axios.get(Link + "/slides").then((res) => res.data?.data),
+  index: () =>
+    _axios
+      .get(Link + "/settings", {
+        headers: {
+          translations: "true",
+        },
+      })
+      .then((res) => res.data?.data),
+  getSlides: () =>
+    _axios
+      .get(Link + "/slides", {
+        headers: {
+          translations: "true",
+        },
+      })
+      .then((res) => res.data?.data),
 
   post: (data) => _axios.post(Link, data).then((res) => res?.data),
 

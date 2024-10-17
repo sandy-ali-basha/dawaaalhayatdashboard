@@ -12,7 +12,8 @@ const SUPPORTED_FORMATS = [
   "image/png",
   "image/webp",
 ];
-const MAX_FILE_SIZE = 10000000000;
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
+
 const schema = yup.object().shape({
   slides: yup.array().of(
     yup.object().shape({
@@ -28,7 +29,7 @@ const schema = yup.object().shape({
         title: yup.string().required("Kurdish title is required"),
         text: yup.string().required("Kurdish text is required"),
       }),
-      customLink: yup.string().required("Link is required"),
+
       image: yup
         .mixed()
         .test("File", "image" + " " + "is required", (value) => {
@@ -92,8 +93,8 @@ export const useHomepagesCreateSlider = () => {
           );
         }
       }
-
-      formData.append(`slides[${slideIndex}][link]`, slide.customLink);
+      if (slide.customLink)
+        formData.append(`slides[${slideIndex}][link]`, slide.customLink);
       // Handle the image file
       if (slide.image && slide.image[0]) {
         formData.append(`slides[${slideIndex}][image_file]`, slide.image[0]);

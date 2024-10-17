@@ -168,14 +168,7 @@ const ProductUpdate = ({ id }) => {
       helperText: "sku",
       defaultValue: data?.sku,
     },
-    {
-      head: t("status"),
-      type: "text",
-      placeholder: "status",
-      register: "status",
-      helperText: "status",
-      defaultValue: data?.status,
-    },
+
     {
       head: t("price"),
       type: "number",
@@ -199,6 +192,15 @@ const ProductUpdate = ({ id }) => {
       register: "points",
       helperText: "points",
       defaultValue: data?.points,
+    },
+    {
+      head: t("price before sale"),
+      type: "number",
+      placeholder: "compare_price",
+      name: "compare_price",
+      register: "compare_price",
+      error: "compare_price",
+      helperText: "compare_price",
     }
   );
 

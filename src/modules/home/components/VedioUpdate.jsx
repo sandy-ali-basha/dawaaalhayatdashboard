@@ -14,23 +14,25 @@ const VideoUpdate = ({
   initialTextData,
   handleSave,
 }) => {
-  const [newData, setNewData] = useState({}); // Initialize text translations
-
+  const [newData, setNewData] = useState({
+    videoText: initialTextData?.value || {}, // Initialize with the provided initial text data
+    video:  null, // Initialize with the provided initial video data
+  });
+console.log("newData",newData)
   // Function to save changes and close the dialog
   const saveChanges = () => {
-    if (newData) {
-      handleSave(newData); // Pass updated data to the save handler
-    }
+    handleSave(newData); // Pass updated data to the save handler
     onClose(); // Close the dialog
   };
 
   // Handle change for text translations
   const handleTextChange = (e, lang) => {
     const updatedText = e.target.value;
-    setNewData((prevText) => ({
-      ...prevText,
+    setNewData((prevData) => ({
+      ...prevData,
       videoText: {
-        [lang]: updatedText,
+        ...prevData.videoText, // Preserve existing text for other languages
+        [lang]: updatedText,   // Update the specific language text
       },
     }));
   };
@@ -40,10 +42,9 @@ const VideoUpdate = ({
     const file = e.target.files[0]; // Get the first file from the input
 
     if (file) {
-      const videoUrl = URL.createObjectURL(file); // Create a URL for the video file
-      setNewData((prevVideo) => ({
-        ...prevVideo,
-        video: videoUrl, // Store the video URL
+      setNewData((prevData) => ({
+        ...prevData,
+        video: file, // Store the new video file
       }));
     }
   };
@@ -56,7 +57,7 @@ const VideoUpdate = ({
         <TextField
           sx={{ my: 2 }}
           label="Video File"
-          type={"file"}
+          type="file"
           onChange={handleVideoChange}
           fullWidth
         />
@@ -67,7 +68,7 @@ const VideoUpdate = ({
             sx={{ my: 2 }}
             key={lang}
             label={`Text (${lang})`}
-            defaultValue={initialTextData?.value[lang] || ""} // Correctly access text for each language
+            defaultValue={initialTextData?.value[lang] || ""} // Set initial value for each language
             onChange={(e) => handleTextChange(e, lang)}
             fullWidth
           />

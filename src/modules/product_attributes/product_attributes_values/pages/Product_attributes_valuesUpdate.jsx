@@ -43,7 +43,7 @@ const Product_attributes_valuesUpdate = ({ id }) => {
 
   useEffect(() => {
     _axios
-      .get("/product_attributes_values/" + editedID, {
+      .get("/product_attributes_values/" + editedID + "?all=true", {
         headers: {
           translations: "true",
         },

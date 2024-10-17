@@ -1,32 +1,48 @@
-import { React, useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { _axios } from "interceptor/http-config";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
-import { useMutation } from "react-query";
-import { _Home } from "api/home/home";
-import EditorInput from "components/shared/EditorInput";
+import Image from "components/shared/Image";
+import { _Brand } from "api/brand/brand";
 
-const HomeUpdate = ({ open, setOpen }) => {
-  const formOptions = { resolver: yupResolver(yup.object({})) }; // No required fields
-  const { register, handleSubmit, control, setValue, formState } = useForm(formOptions);
+const SUPPORTED_FORMATS = [
+  "image/jpg",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
+const MAX_FILE_SIZE = 10000000000;
+
+const AddImage = ({ id, open, setOpen }) => {
+  const { t } = useTranslation("index");
+  let schema = yup.object().shape({
+    image: yup
+      .mixed()
+      .test("File", t("image") + " " + t("is required"), (value) => {
+        return value;
+      })
+      .test("fileSize", t("The file is too large"), (value) => {
+        return value && value[0]?.size <= MAX_FILE_SIZE;
+      })
+      .test("fileFormat", t("Unsupported Format"), (value) => {
+        return value && SUPPORTED_FORMATS.includes(value[0]?.type);
+      }),
+  });
+
+  const formOptions = { resolver: yupResolver(schema) };
+  const { register, handleSubmit, formState, control } = useForm(formOptions);
   const { errors } = formState;
-
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    _axios.get("/home").then((res) => {
-      setData(res.data?.data);
-    });
-  }, []);
+  const [image, setImage] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -35,92 +51,62 @@ const HomeUpdate = ({ open, setOpen }) => {
   const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
-    _Home
-      .update({ formData: data })
-      .catch(() => setLoading(false))
-      .then(() => {
+    _Brand
+      .image({
+        editedID: id,
+        formData: data,
+      })
+      .then((res) => {
+        if (res?.code === 200) handleClose();
         setLoading(false);
-        // handleClose();
       });
   }
 
-  const hanldeUpdate = (input) => {
-    mutate(input);
+  const handleUpdate = (input) => {
+    const formData = new FormData();
+    image.forEach((image) => formData.append("image", image));
+
+    mutate(formData);
     setLoading(true);
   };
 
-  const sections = [
-    {
-      key: 'home.page.stats',
-      fields: [
-        { lang: 'ar', name: 'title1', placeholder: 'Arabic Title 1' },
-        { lang: 'en', name: 'title1', placeholder: 'English Title 1' },
-        { lang: 'kr', name: 'title1', placeholder: 'Kurdish Title 1' },
-        { lang: 'ar', name: 'subtitle1', placeholder: 'Arabic Subtitle 1' },
-        { lang: 'en', name: 'subtitle1', placeholder: 'English Subtitle 1' },
-        { lang: 'kr', name: 'subtitle1', placeholder: 'Kurdish Subtitle 1' },
-      ],
-    },
-    {
-      key: 'home.page.cta',
-      fields: [
-        { lang: 'ar', name: 'title', placeholder: 'Arabic CTA Title' },
-        { lang: 'en', name: 'title', placeholder: 'English CTA Title' },
-        { lang: 'kr', name: 'title', placeholder: 'Kurdish CTA Title' },
-      ],
-    },
-    {
-      key: 'home.page.textSectionOne',
-      fields: [
-        { lang: 'ar', name: 'text', placeholder: 'Arabic Text Section One' },
-        { lang: 'en', name: 'text', placeholder: 'English Text Section One' },
-        { lang: 'kr', name: 'text', placeholder: 'Kurdish Text Section One' },
-      ],
-    },
-    // Add other sections as needed
-  ];
+  const handleDialogClose = (event, reason) => {
+    if (reason && reason === "backdropClick") {
+      return;
+    }
+    handleClose();
+  };
 
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Edit Home Data</DialogTitle>
-        {data && (
-          <Grid container component="form">
-            {sections.map((section, sectionIndex) =>
-              section.fields.map((item, index) => {
-                const initialValue = data?.[section.key]?.value?.[item.lang]?.[item.name];
-                const error = errors?.[item.name];
-                
-                return (
-                  <Grid key={sectionIndex + "-" + index} item md={6} sx={{ p: "10px" }}>
-                    <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography variant="body1">{item.placeholder}</Typography>
-                    </Box>
-                    <EditorInput
-                      control={control}
-                      register={register}
-                      name={`${section.key}.${item.lang}.${item.name}`}
-                      setValue={setValue}
-                      errors={error?.message || ""}
-                      initialValue={initialValue}
-                    />
-                  </Grid>
-                );
-              })
-            )}
+      <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Add Image")}</DialogTitle>
+        <>
+          <Grid container component="form" key={id} sx={{ m: 1 }}>
+            <Image
+              errors={errors?.image?.message}
+              control={control}
+              register={register}
+              name={"image"}
+              setImage={(file) => setImage(file)}
+              multiple={false}
+            />
           </Grid>
-        )}
+        </>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose} sx={{ color: "text.main" }}>
+            {t("Cancel")}
+          </Button>
+          {loading && <Loader />}
           <ButtonLoader
-            name="Submit"
-            onClick={() => handleSubmit(hanldeUpdate)()}
+            name={t("Submit")}
+            onClick={() => handleSubmit(handleUpdate)()}
             type="save"
             loading={loading}
             disableOnLoading
           >
-            Submit
+            {t("Submit")}
           </ButtonLoader>
         </DialogActions>
       </Dialog>
@@ -128,4 +114,4 @@ const HomeUpdate = ({ open, setOpen }) => {
   );
 };
 
-export default HomeUpdate;
+export default AddImage;

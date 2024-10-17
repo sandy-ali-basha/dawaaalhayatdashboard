@@ -111,7 +111,6 @@ const ProductCreate = () => {
                       </MenuItem>
                     ))}
                   </Select>
-
                   <FormHelperText error>
                     {errors.city_id?.message}
                   </FormHelperText>
@@ -121,6 +120,23 @@ const ProductCreate = () => {
                   pleas add cities
                 </Typography>
               )}
+
+              <FormControl fullWidth>
+                <Box sx={{ margin: "0 0 8px 5px" }}>
+                  <Typography color="text.main">{t("status")}</Typography>
+                </Box>
+
+                <Select
+                  name="status"
+                  {...register("status")}
+                  error={!!errors?.status}
+                  id="status"
+                >
+                  <MenuItem value="active">active</MenuItem>
+                  <MenuItem value="inactive">not active</MenuItem>
+                </Select>
+                <FormHelperText error>{errors?.status?.message}</FormHelperText>
+              </FormControl>
             </Grid>
             <Grid item xs={6} sx={{ p: "10px" }}>
               {producttypes?.length > 0 ? (

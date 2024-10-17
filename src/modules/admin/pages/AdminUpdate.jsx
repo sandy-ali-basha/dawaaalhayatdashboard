@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Typography } from "@mui/material";
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { TextFieldStyled } from "components/styled/TextField";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
@@ -55,6 +55,26 @@ const AdminUpdate = ({ id }) => {
                 </DialogContent>
               </Box>
             ))}
+            <Grid xs={6} sx={{ p: "10px" }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="role"
+                  {...register("role")}
+                  error={errors?.role?.message}
+                  helperText={errors?.role?.message}
+                  defaultValue={data?.role}
+                >
+                  <MenuItem value={"ecommerce_admin"}>
+                    E-commerce admin
+                  </MenuItem>
+                  <MenuItem value={"super_admin"}>super admin</MenuItem>
+                  <MenuItem value={"website_admin"}>website admin</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
           </Box>
         )}
         <DialogActions sx={{ display: "flex", gap: "10px" }}>

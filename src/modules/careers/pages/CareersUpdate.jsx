@@ -162,7 +162,7 @@ const CareersUpdate = ({ id }) => {
       setCareersCategoriesData(res?.data?.data?.careers_categories);
       console.log("careersCategoriesData", res?.data?.data?.careers_categories);
     });
-  }, [id, editedID]);
+  }, [id, editedID, setValue]);
 
   const handleClose = () => {
     setOpen(false);

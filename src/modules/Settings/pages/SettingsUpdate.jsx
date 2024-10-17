@@ -1,14 +1,12 @@
-import { React, useEffect, useState } from "react";
+import { React, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Box, Grid, Typography } from "@mui/material";
-import { colorStore } from "store/ColorsStore";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { _axios } from "interceptor/http-config";
 import { TextFieldStyled } from "components/styled/TextField";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "react-query";
@@ -19,13 +17,13 @@ const schema = yup.object().shape({
   value: yup.string().required("value  is required"),
 });
 
-const SettingsUpdate = ({ value }) => {
+const SettingsUpdate = ({ value,open,setOpen }) => {
   const { t } = useTranslation("index");
 
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors } = formState;
-  const [open, setOpen] = useState(true);
+
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -54,7 +52,7 @@ const SettingsUpdate = ({ value }) => {
         setLoading(false);
       })
       .then((res) => {
-        console.log(res)
+        console.log(res);
         if (res?.code === 200) {
           handleClose();
         }

@@ -6,11 +6,9 @@ import {
   IconButton,
   Tooltip,
   Button,
-  Checkbox,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
@@ -19,16 +17,14 @@ import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import { useService } from "hooks/service/useService";
 import DeleteDialog from "../components/Dialog";
-import { Close, Delete, RestoreFromTrashOutlined } from "@mui/icons-material";
+import { RestoreFromTrashOutlined } from "@mui/icons-material";
 import TermsUpdate from "./TermsUpdate";
 import { useTerms } from "hooks/terms/useTerms";
 
 const TermsIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count, query, setQuery } = useTerms();
-  console.log(data);
+  const { data, page, setPage, isLoading, count, query } = useTerms();
   const [restore, setRestore] = useState(false);
   const [restoreId, setRestoreId] = useState(null);
 
@@ -44,12 +40,6 @@ const TermsIndex = () => {
     return [t("name"), t("Text"), t("Edit")];
   }, [t]);
 
-  const handleView = useCallback(
-    (id) => {
-      navigate("view/" + id);
-    },
-    [navigate]
-  );
   const handleEdit = useCallback(
     (id) => {
       setEditedID(id);
@@ -99,25 +89,15 @@ const TermsIndex = () => {
             </IconButton>
           )}
 
-          <IconButton onClick={() => handleView(term.id)}>
+          {/* <IconButton onClick={() => handleView(term.id)}>
             <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
               <VisibilityTwoToneIcon color="primary" />
             </Tooltip>
-          </IconButton>
+          </IconButton> */}
         </TableCell>
       </TableRow>
     ));
-  }, [
-    data,
-    count,
-    direction,
-    handleEdit,
-    handleView,
-    page,
-    navigate,
-    query,
-    handleRestore,
-  ]);
+  }, [data, count, direction, handleEdit, page, query, handleRestore]);
 
   const handleCreate = () => navigate("create");
 

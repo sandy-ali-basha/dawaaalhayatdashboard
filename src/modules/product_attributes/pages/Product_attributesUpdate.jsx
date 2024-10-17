@@ -43,7 +43,7 @@ const Product_attributesUpdate = ({ id }) => {
 
   useEffect(() => {
     _axios
-      .get("/product_attributes/" + editedID, {
+      .get("/product_attributes/" + editedID + "?all=true", {
         headers: {
           translations: "true",
         },
@@ -54,7 +54,7 @@ const Product_attributesUpdate = ({ id }) => {
         if (res?.code === 200) setOpen(false);
       });
   }, [id, editedID]);
-  
+
   const languages = [
     { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },

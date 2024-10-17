@@ -11,7 +11,7 @@ import { _cities } from "api/cities/cities";
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
   product_type_id: yup.string().trim().required("medical form is required"),
-  status: yup.string().trim().required("status type is required"),
+  status: yup.string().trim().required("status is required"),
   price: yup.number().required("price is required"),
   qty: yup.number().required("qty is required"),
 
@@ -95,15 +95,6 @@ export const useProductCreate = () => {
       helperText: "sku",
     },
     {
-      head: t("status"),
-      type: "text",
-      placeholder: "status",
-      name: "status",
-      register: "status",
-      error: "status",
-      helperText: "status",
-    },
-    {
       head: t("price"),
       type: "number",
       placeholder: "price",
@@ -131,7 +122,7 @@ export const useProductCreate = () => {
       helperText: "points",
     },
     {
-      head: t("compare price"),
+      head: t("price before sale"),
       type: "number",
       placeholder: "compare_price",
       name: "compare_price",

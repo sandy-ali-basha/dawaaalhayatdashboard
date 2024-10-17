@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import { TextFieldStyled } from "components/styled/TextField";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { FormHelperText, Grid, Typography } from "@mui/material";
+import {  Grid, Typography } from "@mui/material";
 import { CloseRounded, PlusOneRounded } from "@mui/icons-material";
 import Image from "./Image";
 

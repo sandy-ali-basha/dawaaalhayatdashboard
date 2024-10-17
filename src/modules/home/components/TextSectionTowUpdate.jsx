@@ -33,16 +33,6 @@ const TextSectionTwoUpdate = ({ open, onClose, initialData, handleSave }) => {
     }
   }, [initialData, open]);
 
-  const handleChange = (e, lang) => {
-    setData((prev) => ({
-      ...prev,
-      textSectionTwo: {
-        ...prev.textSectionTwo,
-        [lang]: e.target.value, // Update the specific language field
-      },
-    }));
-  };
-
   const handleImageChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
     setData((prev) => ({

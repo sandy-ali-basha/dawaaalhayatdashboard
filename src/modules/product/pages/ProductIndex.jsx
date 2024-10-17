@@ -136,7 +136,7 @@ const ProductIndex = () => {
             id={product.id}
             action={product.status === "active" && "change-status"}
           >
-            {product.status === "Active" ? t("Active") : t("Not Active")}
+            {product.status}
           </ChangeStatus>
         </TableCell>
         <TableCell align="center" sx={{ minWidth: 200 }}>

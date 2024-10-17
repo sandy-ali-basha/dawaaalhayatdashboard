@@ -34,8 +34,8 @@ export const useAdminUpdate = () => {
     ["admin", `id-${editedID}`],
     async () => {
       return await _axios
-        .get(`/admin/admins/${editedID}`)
-        .then((res) => res.data?.admin);
+        .get(`/admin/${editedID}`)
+        .then((res) => res.data?.data);
     },
     {}
   );
@@ -67,26 +67,30 @@ export const useAdminUpdate = () => {
   };
 
   const queryClient = useQueryClient();
+  console.log("editedID", editedID);
   const mutation = useMutation(
     (input) => {
-      const formData = new FormData();
-      formData.append("name", input.name);
-      formData.append("email", input.email);
-      formData.append("_method", "put");
-
-      return _Admin.update({
-        editedID,
-        formData,
-        setOpen,
-        setLoading,
-      });
+      const data = { id: editedID, ...input }; // Spread 'input' into 'data'
+      console.log(data); // To verify the data structure
+  
+      return _Admin
+        .update({
+          editedID, // Send ID separately if needed by the backend
+          data, // Correctly passing 'data' to update function
+        })
+        .then((res) => {
+          if (res?.code === 200) {
+            handleClose(); // Close the modal or handle the UI
+          }
+          setLoading(false);
+        });
     },
     {
       onMutate: async () => {
         await queryClient.prefetchQuery(["admin"]);
-
+  
         const previousData = queryClient.getQueryData(["admin"]);
-
+  
         queryClient.setQueryData(["admin", editedID], (oldData) => ({
           ...oldData,
         }));
@@ -113,7 +117,7 @@ export const useAdminUpdate = () => {
         if (!error) {
           setOpen(false);
         }
-
+  
         queryClient.invalidateQueries(["admin"]);
       },
       onSuccess: () => {
@@ -122,6 +126,7 @@ export const useAdminUpdate = () => {
       },
     }
   );
+  
 
   const handleSubmit1 = async (input) => {
     setLoading(true);

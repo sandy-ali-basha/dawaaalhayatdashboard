@@ -23,6 +23,7 @@ import ChangeStatus from "../components/ChangeStatus";
 import { useOrders } from "hooks/orders/useOrders";
 import OrdersUpdate from "./OrdersUpdate";
 import { orderStore } from "../store/orderStore";
+import { Print } from "@mui/icons-material";
 
 const OrdersIndex = () => {
   const { t } = useTranslation("index");
@@ -94,6 +95,11 @@ const OrdersIndex = () => {
               <VisibilityTwoToneIcon color="primary" />
             </Tooltip>
           </IconButton>
+          <IconButton
+            href={`https://test.dawaaalhayat.com/api/order/${orders.id}/pdf`}
+          >
+            <Print color="secondary" />
+          </IconButton>
         </TableCell>
       </TableRow>
     ));
@@ -124,15 +130,6 @@ const OrdersIndex = () => {
           <Typography sx={{ color: "text.main" }} variant="h5">
             {t("orders")}
           </Typography>
-
-          <Button
-            startIcon={<AddIcon />}
-            variant="contained"
-            color="secondary"
-            onClick={handleCreate}
-          >
-            {t("New orders")}
-          </Button>
         </Box>
 
         <BoxStyled sx={{ px: "10px" }}>

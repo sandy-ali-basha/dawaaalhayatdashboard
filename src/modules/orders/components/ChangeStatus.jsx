@@ -111,7 +111,7 @@ const ChangeStatus = ({ id, children }) => {
                 order under delivery
               </MenuItem>
               <MenuItem value="order_delivered">order delivered</MenuItem>
-              <MenuItem value="dispatched">{t("Dispatched")}</MenuItem>
+              <MenuItem value="order_canceled">cancel order</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>

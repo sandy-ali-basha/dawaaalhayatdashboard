@@ -2,7 +2,7 @@ import { _axios } from "interceptor/http-config";
 
 export const _AuthApi = {
   login: (data) => {
-    return _axios.post("/login", data).then((res) => {
+    return _axios.post("/admin/login", data).then((res) => {
       _AuthApi.storeToken(res?.data?.data?.token);
       return res;
     });
@@ -21,15 +21,15 @@ export const _AuthApi = {
 
   resetPass: (data) => {
     return _axios
-      .post("/resetPassword", data)
+      .post("/admin/resetPassword", data)
       .then((res) => console.log("done"));
   },
   verifyCode: (data) => {
-    return _axios.post("/checkCode", data).then((res) => console.log("done"));
+    return _axios.post("/admin/checkCode", data).then((res) => console.log("done"));
   },
   passEdit: (data) => {
     return _axios
-      .post("/editPassword", data)
+      .post("/admin/editPassword", data)
       .then((res) => console.log("done"));
   },
 };

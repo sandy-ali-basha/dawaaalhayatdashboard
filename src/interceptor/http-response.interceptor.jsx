@@ -22,7 +22,7 @@ export const HttpResponseInterceptor = (navigate, enqueueSnackbar) => {
     if (code !== undefined) {
       switch (code) {
         case 200:
-          showSnackbar(enqueueSnackbar, "success", "success");
+          console.log("success");
           break;
 
         case 422:

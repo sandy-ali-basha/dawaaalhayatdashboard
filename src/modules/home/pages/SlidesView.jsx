@@ -4,6 +4,7 @@ import { settingsStore } from "store/settingsStore";
 import DeleteSlide from "../components/DeleteSlide";
 import Loader from "components/shared/Loader";
 import { useHomeSlides } from "hooks/home/useHomeSlides";
+import { BoxStyled } from "components/styled/BoxStyled";
 
 const SlidesView = () => {
   const [direction] = settingsStore((state) => [state.direction]);
@@ -15,13 +16,10 @@ const SlidesView = () => {
       {slides && (
         <Box>
           {slides?.home_slides?.map((item, idx) => (
-            <Box
+            <BoxStyled
               sx={{
                 position: "relative",
-                background: "white",
                 my: 2,
-                boxShadow: 2,
-                borderRadius: 3,
                 p: 1,
               }}
             >
@@ -32,7 +30,7 @@ const SlidesView = () => {
               </IconButton>
               <img
                 key={idx}
-                src={item?.image || "null"}
+                src={item?.image ?? "null"}
                 style={{
                   width: "90%",
                   margin: "auto",
@@ -41,7 +39,7 @@ const SlidesView = () => {
                 }}
                 alt=""
               />
-              <Box display="flex">
+              <Box>
                 <Typography
                   variant="body1"
                   sx={{ mx: 2, fontWeight: "bold", color: "text.primary" }}
@@ -50,7 +48,7 @@ const SlidesView = () => {
                   title:
                 </Typography>{" "}
                 <Typography variant="body1" sx={{ color: "text.primary" }}>
-                  {item?.title || "null"}
+                  {item?.title ?? "null"}
                 </Typography>
                 <Typography
                   variant="body1"
@@ -60,7 +58,7 @@ const SlidesView = () => {
                   arabic title:
                 </Typography>{" "}
                 <Typography variant="body1" sx={{ color: "text.primary" }}>
-                  {item?.translations?.find((t) => t.locale === "ar")?.text ||
+                  {item?.translations?.find((t) => t.locale === "ar")?.text ??
                     "null"}
                 </Typography>
                 <Typography
@@ -70,7 +68,7 @@ const SlidesView = () => {
                   english title:
                 </Typography>{" "}
                 <Typography variant="body1" sx={{ color: "text.primary" }}>
-                  {item?.translations?.find((t) => t.locale === "en")?.text ||
+                  {item?.translations?.find((t) => t.locale === "en")?.text ??
                     "null"}
                 </Typography>
                 <Typography
@@ -80,7 +78,7 @@ const SlidesView = () => {
                   kurdish title:
                 </Typography>{" "}
                 <Typography variant="body1" sx={{ color: "text.primary" }}>
-                  {item?.translations?.find((t) => t.locale === "kr")?.text ||
+                  {item?.translations?.find((t) => t.locale === "kr")?.text ??
                     "null"}
                 </Typography>
               </Box>
@@ -92,7 +90,7 @@ const SlidesView = () => {
                   >
                     text:
                   </Typography>{" "}
-                  {item?.text || "null"}
+                  {item?.text ?? "null"}
                 </Typography>
                 <Typography variant="body1" sx={{ color: "text.primary" }}>
                   <Typography
@@ -101,7 +99,7 @@ const SlidesView = () => {
                   >
                     arabic text:
                   </Typography>{" "}
-                  {item?.translations?.find((t) => t.locale === "ar")?.text ||
+                  {item?.translations?.find((t) => t.locale === "ar")?.text ??
                     "null"}
                 </Typography>
                 <Typography variant="body1" sx={{ color: "text.primary" }}>
@@ -111,7 +109,7 @@ const SlidesView = () => {
                   >
                     english text:
                   </Typography>{" "}
-                  {item?.translations?.find((t) => t.locale === "en")?.text ||
+                  {item?.translations?.find((t) => t.locale === "en")?.text ??
                     "null"}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
@@ -121,7 +119,7 @@ const SlidesView = () => {
                   >
                     kurdish Description:
                   </Typography>{" "}
-                  {item?.translations?.find((t) => t.locale === "kr")?.text ||
+                  {item?.translations?.find((t) => t.locale === "kr")?.text ??
                     "null"}
                 </Typography>
                 <Typography variant="body1" sx={{ color: "text.primary" }}>
@@ -129,11 +127,11 @@ const SlidesView = () => {
                     variant="body1"
                     sx={{ fontWeight: "bold", color: "text.primary" }}
                   >
-                    Link: {item?.link || "null"}
+                    Link: {item?.link ?? "null"}
                   </Typography>
                 </Typography>
               </Box>
-            </Box>
+            </BoxStyled>
           ))}
         </Box>
       )}
