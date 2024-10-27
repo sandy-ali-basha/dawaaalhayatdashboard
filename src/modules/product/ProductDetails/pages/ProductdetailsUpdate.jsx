@@ -84,12 +84,14 @@ const ProductdetailsUpdate = ({ id }) => {
         setLoading(false);
       }
     });
-  }, [id, editedID]);
+  }, [id, editedID, setValue]);
+
   const languages = [
     { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
     { code: "en", name: "English" },
   ];
+
   const Discription = [
     {
       head: t("arabic description"),
@@ -125,13 +127,16 @@ const ProductdetailsUpdate = ({ id }) => {
         ?.description,
     },
   ];
+
   const details = languages.map((lang, index) => ({
     head: t("title " + lang.name.toLowerCase()),
     type: "text",
     placeholder: t("title"),
     register: lang.code + ".title",
-    defaultValue: data?.translations.find((t) => t.locale == lang?.code)?.title,
+    defaultValue: data?.translations.find((t) => t.locale === lang?.code)
+      ?.title,
   }));
+
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
@@ -145,12 +150,9 @@ const ProductdetailsUpdate = ({ id }) => {
         editedID: editedID,
         formData: data,
       })
-      .catch((err) => {
+      .then((res) => {
         setLoading(false);
-      })
-      .then(() => {
-        setLoading(false);
-        // handleClose()
+        if (res?.code === 200) handleClose();
       });
   }
   const params = useParams();
@@ -195,7 +197,7 @@ const ProductdetailsUpdate = ({ id }) => {
                   <Box sx={{ margin: "0 0 8px 5px" }}>
                     <Typography variant="body1" color="text.secondary">
                       {item.head}
-                    </Typography >
+                    </Typography>
                   </Box>
                   <EditorInput
                     control={control}

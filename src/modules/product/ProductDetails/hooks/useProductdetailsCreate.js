@@ -110,8 +110,6 @@ export const useProductdetailsCreate = () => {
     errors,
     details,
     control,
-    Discription,
-    control,
-    setValue,
+    Discription
   };
 };

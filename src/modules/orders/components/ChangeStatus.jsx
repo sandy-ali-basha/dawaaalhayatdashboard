@@ -53,22 +53,10 @@ const ChangeStatus = ({ id, children }) => {
     setLoading(true);
     mutate(inputData);
   };
-  console.log(children);
+
   return (
     <>
-      <Button
-        variant="outlined"
-        color={
-          children === "awaiting-payment"
-            ? "info"
-            : children === "payment-offline"
-            ? "primary"
-            : "success"
-        }
-        onClick={handleClickOpen}
-      >
-        {children}
-      </Button>
+      <Button onClick={handleClickOpen}>{children}</Button>
 
       <Dialog
         open={open}

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { _Brand_pages } from "api/brand_pages/brand_pages";
@@ -17,7 +16,10 @@ export const useBrand_pages = (id) => {
           page,
           count,
         })
-        .then((res) => res)
+        .then((res) => res),
+    {
+      enabled: !!id, // Only run query if `id` is truthy (not null or undefined)
+    }
   );
 
   return {

@@ -20,8 +20,21 @@ const VideoUpdate = ({
   });
 console.log("newData",newData)
   // Function to save changes and close the dialog
+
   const saveChanges = () => {
-    handleSave(newData); // Pass updated data to the save handler
+    const formDataNew = new FormData()
+    if (newData.video) {
+      formDataNew.append("video[vfile]", newData.video); // Append video file
+    } else formDataNew.append("video[vfile]", " ");
+
+     // Append videoText data
+    for (const lang of ["ar", "en", "kr"]) {
+      if (newData.videoText && newData.videoText[lang]) {
+        formDataNew.append(`videoText[${lang}]`, newData.videoText[lang]);
+      } else formDataNew.append(`videoText[${lang}]`, "");
+    }
+
+    handleSave(formDataNew); // Pass updated data to the save handler
     onClose(); // Close the dialog
   };
 

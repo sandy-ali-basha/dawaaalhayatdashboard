@@ -44,9 +44,25 @@ const TextSectionTwoUpdate = ({ open, onClose, initialData, handleSave }) => {
   };
 
   const saveChanges = () => {
-    if (data) handleSave(data); // Call the save function with the updated data
-
-    onClose(); // Close the dialog
+    const formDataNew = new FormData();
+    if (data) {
+      if (data?.textSectionTwoImage?.image)
+        formDataNew.append(
+          "textSectionTwo[image_file]",
+          data.textSectionTwoImage?.image
+        );
+      else formDataNew.append("textSectionTwo[image_file]", " ");
+      for (const lang of ["ar", "en", "kr"]) {
+        if (data.textSectionTwo && data.textSectionTwo[lang]) {
+          formDataNew.append(
+            `textSectionTwo[text][${lang}]`,
+            data.textSectionTwo[lang]
+          );
+        } else formDataNew.append(`textSectionTwo[text][${lang}]`, " ");
+      }
+    }
+    if (data) handleSave(formDataNew); // Call the save function with the updated data
+    onClose();
   };
 
   return (

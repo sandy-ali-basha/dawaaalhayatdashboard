@@ -59,7 +59,6 @@ const StatsUpdate = ({ open, onClose, initialData, handleSave }) => {
     });
   };
   
-
   // Save changes
   const saveChanges = () => {
     // Ensure the correct structure before sending data
@@ -73,6 +72,7 @@ const StatsUpdate = ({ open, onClose, initialData, handleSave }) => {
     handleSave(updatedStatus); // Send the updated status to the parent component
   };
 
+  
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Edit Status</DialogTitle>

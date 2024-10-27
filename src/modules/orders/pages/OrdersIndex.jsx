@@ -5,16 +5,12 @@ import {
   TableCell,
   IconButton,
   Tooltip,
-  Button,
+  Chip,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import React, { useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-// import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
-// import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
@@ -23,7 +19,15 @@ import ChangeStatus from "../components/ChangeStatus";
 import { useOrders } from "hooks/orders/useOrders";
 import OrdersUpdate from "./OrdersUpdate";
 import { orderStore } from "../store/orderStore";
-import { Print } from "@mui/icons-material";
+import {
+  Cancel,
+  CheckCircle,
+  Done,
+  LocalShipping,
+  Pending,
+  Print,
+  Sync,
+} from "@mui/icons-material";
 
 const OrdersIndex = () => {
   const { t } = useTranslation("index");
@@ -58,54 +62,93 @@ const OrdersIndex = () => {
     [navigate, setItem]
   );
 
+  const getStatusDetails = (status) => {
+    switch (status) {
+      case "order_requested":
+        return { label: "Requested", color: "info", icon: <Pending /> };
+      case "order_processing":
+        return { label: "Processing", color: "primary", icon: <Sync /> };
+      case "order_processed":
+        return { label: "Processed", color: "warning", icon: <CheckCircle /> };
+      case "order_under_delivery":
+        return {
+          label: "Under Delivery",
+          color: "secondary",
+          icon: <LocalShipping />,
+        };
+      case "order_delivered":
+        return { label: "Delivered", color: "success", icon: <Done /> };
+      case "order_canceled":
+        return { label: "Canceled", color: "error", icon: <Cancel /> };
+      default:
+        return { label: "Unknown", color: "default", icon: null };
+    }
+  };
+
   const rows = useMemo(() => {
-    return data?.data?.orders?.map((orders, id) => (
-      <TableRow sx={{ height: "65px" }} key={orders.id} hover>
-        <TableCell sx={{ minWidth: 50 }}>
-          {orders?.reference ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>{orders?.total ?? "Null"}</TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {orders?.sub_total ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {orders?.shipping_total ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>
-          {orders?.created_at ?? "Null"}
-        </TableCell>
-        <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus id={orders.id}>{orders?.status ?? "Null"}</ChangeStatus>
-        </TableCell>
-
-        <TableCell
-          align="center"
+    return data?.data?.orders?.map((orders, id) => {
+      const { label, color, icon } = getStatusDetails(orders?.status);
+      return (
+        <TableRow
           sx={{
-            minWidth: 50,
+            background:
+              orders?.status === "order_requested" ? "#ffb3474f" : "inherit",
           }}
+          key={orders.id}
         >
-          {/* <IconButton onClick={() => handleEdit(orders?.id)}>
-            <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-              <ModeTwoToneIcon sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton> */}
+          <TableCell sx={{ minWidth: 150 }}>
+            {orders?.reference ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>{orders?.total ?? "Null"}</TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {orders?.sub_total ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {orders?.shipping_total ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {orders?.created_at ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 100 }} align="center">
+            <ChangeStatus id={orders.id}>
+              <Tooltip title={label}>
+                <Chip
+                  label={label}
+                  icon={icon}
+                  color={color}
+                  variant="outlined"
+                  sx={{
+                    minWidth: 120,
+                    fontWeight: "bold",
+                    fontSize: "0.875rem",
+                    justifyContent: "start",
+                  }}
+                />
+              </Tooltip>
+            </ChangeStatus>
+          </TableCell>
 
-          <IconButton onClick={() => handleView(orders)}>
-            <Tooltip title={"details"}>
-              <VisibilityTwoToneIcon color="primary" />
-            </Tooltip>
-          </IconButton>
-          <IconButton
-            href={`https://test.dawaaalhayat.com/api/order/${orders.id}/pdf`}
+          <TableCell
+            align="center"
+            sx={{
+              minWidth: 50,
+            }}
           >
-            <Print color="secondary" />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    ));
-  }, [data, handleView]);
-
-  const handleCreate = () => navigate("create");
+            <IconButton onClick={() => handleView(orders)}>
+              <Tooltip title={"details"}>
+                <VisibilityTwoToneIcon color="primary" />
+              </Tooltip>
+            </IconButton>
+            <IconButton
+              href={`https://test.dawaaalhayat.com/api/order/${orders.id}/pdf`}
+            >
+              <Print color="secondary" />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      );
+    });
+  }, [data?.data?.orders, handleView]);
 
   return (
     <>

@@ -11,7 +11,6 @@ import AddIcon from "@mui/icons-material/Add";
 import { BoxStyled } from "components/styled/BoxStyled";
 import React, { useMemo, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
@@ -38,7 +37,7 @@ const ProductdetailsIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [t("title"), t("description"), t("operations")];
+    return [t("title"), t("operations")];
   }, [t]);
 
   const handleEdit = useCallback(
@@ -54,15 +53,6 @@ const ProductdetailsIndex = () => {
         <TableCell sx={{ minWidth: 50 }}>
           {productdetails?.title ?? "Null"}
         </TableCell>
-        <TableCell
-          sx={{ minWidth: 100 }}
-          dangerouslySetInnerHTML={{
-            __html: productdetails?.description
-              ? productdetails.description.slice(0, 20) +
-                (productdetails.description.length > 20 ? "..." : "")
-              : "Null",
-          }}
-        ></TableCell>
 
         <TableCell
           align="center"
@@ -83,7 +73,7 @@ const ProductdetailsIndex = () => {
         </TableCell>
       </TableRow>
     ));
-  }, [data, count, direction, handleEdit, page, t]);
+  }, [data, count, direction, handleEdit, page]);
 
   const handleCreate = () => navigate("create");
 

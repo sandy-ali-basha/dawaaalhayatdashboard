@@ -1,19 +1,13 @@
 import { useState, useEffect } from "react";
 import { Box, Button, Tooltip, Typography } from "@mui/material";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import * as mammoth from "mammoth";
 import { FileOpenRounded } from "@mui/icons-material";
 import { Controller } from "react-hook-form";
+import DOMPurify from "dompurify"; // For sanitizing the HTML content
 
-const EditorInput = ({
-  control,
-  register,
-  name,
-  setValue,
-  errors,
-  initialValue,
-}) => {
+const EditorInput = ({ control, register, name, setValue, errors, initialValue }) => {
   const [editorContent, setEditorContent] = useState(initialValue || "");
 
   useEffect(() => {
@@ -22,32 +16,36 @@ const EditorInput = ({
       setValue(name, initialValue); // Initialize with default value
     }
   }, [initialValue, setValue, name]);
+  
+  // Function to clean up empty <p><br></p> and other unnecessary tags
+  const cleanEditorContent = (content) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = content;
+
+    // Remove all <p><br></p> or empty <p> tags
+    tempDiv.querySelectorAll("p").forEach((p) => {
+      if (p.innerHTML.trim() === "" || p.innerHTML.trim() === "<br>") {
+        p.remove();
+      }
+    });
+
+    return DOMPurify.sanitize(tempDiv.innerHTML);
+  };
 
   // Function to handle Word import using mammoth.js
   const handleWordImport = (event) => {
-    // Get the file from the input
     const file = event.target.files[0];
 
-    // Check if a file was selected
     if (!file) {
       console.warn("No file selected or file reading canceled.");
       return;
     }
 
-    // Check if the file is a Blob (i.e., a valid file object)
-    if (!(file instanceof Blob)) {
-      console.error("Selected file is not of type 'Blob'.");
-      return;
-    }
-
-    // Initialize FileReader
     const reader = new FileReader();
 
-    // Define the onload event for the FileReader
     reader.onload = (e) => {
       const arrayBuffer = e.target.result;
 
-      // Convert the ArrayBuffer to HTML using mammoth.js
       mammoth
         .convertToHtml({ arrayBuffer })
         .then((result) => {
@@ -61,13 +59,10 @@ const EditorInput = ({
         });
     };
 
-    // Define the onerror event for the FileReader
     reader.onerror = (error) => {
       console.error("Error reading file: ", error);
-      
     };
 
-    // Read the file as an ArrayBuffer
     reader.readAsArrayBuffer(file);
   };
 
@@ -104,8 +99,14 @@ const EditorInput = ({
             <ReactQuill
               value={editorContent}
               onChange={(content) => {
-                setEditorContent(content);
-                setValue(name, content); // Update the form field with the content
+                const cleanedContent = cleanEditorContent(content);
+                setEditorContent(cleanedContent);
+                setValue(name, cleanedContent); // Update the form field with cleaned content
+              }}
+              onBlur={() => {
+                const cleanedContent = cleanEditorContent(editorContent);
+                setEditorContent(cleanedContent);
+                setValue(name, cleanedContent);
               }}
               theme="snow"
               modules={{

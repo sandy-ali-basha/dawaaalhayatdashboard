@@ -95,15 +95,6 @@ const SettingsIndex = () => {
           <Typography sx={{ color: "text.main" }} variant="h5">
             {t("point price")}
           </Typography>
-
-          <Button
-            startIcon={<AddIcon />}
-            variant="contained"
-            color="secondary"
-            onClick={handleCreate}
-          >
-            {t("New settings")}
-          </Button>
         </Box>
 
         <BoxStyled sx={{ px: "10px" }}>

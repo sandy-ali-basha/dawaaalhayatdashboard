@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { _Productdetails } from "api/productdetails/productdetails";
@@ -9,16 +8,17 @@ export const useProductdetails = (id) => {
   const [query, setQuery] = useState("");
 
   const { data, isLoading, refetch } = useQuery(
-    ["productdetails", page, count, query,id],
+    ["productdetails", page, count, query, id],
     () =>
-      _Productdetails
-        .index({
-          query,
-          page,
-          count,
-          id
-        })
-        .then((res) => res)
+      _Productdetails.index({
+        query,
+        page,
+        count,
+        id,
+      }).then((res) => res),
+    {
+      enabled: !!id, // Only run query if `id` is truthy (not null or undefined)
+    }
   );
 
   return {

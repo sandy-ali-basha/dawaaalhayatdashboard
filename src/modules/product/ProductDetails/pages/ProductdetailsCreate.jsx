@@ -3,7 +3,6 @@ import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
 import React from "react";
 import Loader from "components/shared/Loader";
-import ButtonAction from "components/shared/ButtonAction";
 import { useProductdetailsCreate } from "../hooks/useProductdetailsCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
@@ -13,14 +12,13 @@ const ProductdetailsCreate = () => {
     hanldeCreate,
     register,
     handleSubmit,
-    handleReset,
     loading,
     t,
     errors,
     details,
     Discription,
     control,
-setValue
+    setValue,
   } = useProductdetailsCreate();
 
   return (
@@ -54,7 +52,7 @@ setValue
             {Discription.map((item, index) => (
               <Grid item key={index} xs={12} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography color="text.main" variant="body1" color="text.secondary">
+                  <Typography color="text.main" variant="body1">
                     {item.head}
                   </Typography>
                 </Box>
@@ -92,7 +90,7 @@ setValue
           >
             {t("Cancel")}
           </Button>
-          
+
           <ButtonLoader
             name={t("Submit")}
             onClick={() => handleSubmit(hanldeCreate)()}

@@ -54,12 +54,7 @@ const ProductView = () => {
       head: t("purchasable"),
       value: data?.purchasable === "always" ? "yes" : "no",
     },
-    // { head: t("price currency code"), value: data?.price?.currency?.code },
-    // { head: t("price currency name"), value: data?.price },
-    // {
-    //   head: t("price currency exchange_rate"),
-    //   value: data?.price?.currency?.exchange_rate,
-    // },
+
     { head: t("quantity"), value: data?.quantity },
   ];
   const disc = [
@@ -151,7 +146,7 @@ const ProductView = () => {
                         objectFit: "contain",
                       }}
                       key={idx}
-                      src={item}
+                      src={item?.image_path}
                       alt=""
                     />
                   ))}

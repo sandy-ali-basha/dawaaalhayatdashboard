@@ -133,7 +133,7 @@ const ProductCreate = () => {
                   id="status"
                 >
                   <MenuItem value="active">active</MenuItem>
-                  <MenuItem value="inactive">not active</MenuItem>
+                  <MenuItem value="inActive">not active</MenuItem>
                 </Select>
                 <FormHelperText error>{errors?.status?.message}</FormHelperText>
               </FormControl>

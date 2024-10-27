@@ -28,18 +28,22 @@ const CtaUpdate = ({ open, onClose, initialData, handleSave }) => {
       },
     }));
   };
-  // onChange={(name, value) => {
-  //   setData((prev) => ({
-  //     ...prev,
-  //     textSectionOne: {
-  //       ...prev.textSectionOne,
-  //       [lang]: value, // Update the specific language content
-  //     },
-  //   }));
-  // }}
 
   const saveChanges = () => {
-    handleSave(cta); // Pass the updated cta object to the save handler
+    const formDataNew = new FormData();
+
+    // Append CTA data
+    for (const lang of ["ar", "en", "kr"]) {
+      if (cta?.cta && cta?.cta?.subtitle[lang]) {
+        formDataNew.append(`cta[subtitle][${lang}]`, cta?.cta?.subtitle[lang]);
+      } else formDataNew.append(`cta[subtitle][${lang}]`, " ");
+      if (cta?.cta && cta?.cta?.title[lang]) {
+        formDataNew.append(`cta[title][${lang}]`, cta?.cta?.title[lang]);
+      } else formDataNew.append(`cta[title][${lang}]`, " ");
+    }
+   
+    handleSave(formDataNew); // Pass the updated cta object to the save handler
+    console.log(formDataNew);
     onClose();
   };
 

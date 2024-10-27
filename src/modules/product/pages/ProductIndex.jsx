@@ -3,16 +3,12 @@ import {
   Box,
   TableRow,
   TableCell,
-  IconButton,
-  Tooltip,
   Button,
   TextField,
-  MenuItem,
 } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
@@ -25,19 +21,13 @@ import ProductAttr from "./ProductAttr";
 import AddImagesSlider from "./AddImagesSlider";
 //* icons
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
-import LinkIcon from "@mui/icons-material/Link";
-import { ListAltRounded } from "@mui/icons-material";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import ViewCarouselRoundedIcon from "@mui/icons-material/ViewCarouselRounded";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import ChangeStatus from "../components/ChangeStatus";
+import ProductMenu from "../components/productMenu";
 
 const ProductIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useProduct();
+  const { data, isLoading } = useProduct();
   const navigate = useNavigate();
-  const [direction] = settingsStore((state) => [state.direction]);
   const [id, setID] = useState();
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
@@ -55,14 +45,16 @@ const ProductIndex = () => {
       t("brand"),
       t("sku"),
       t("price"),
+      t("price before sale"),
       t("Qty"),
       t("city"),
       t("status"),
-      t("operations"),
+      t("option"),
     ];
   }, [t]);
   const handleCreate = () => navigate("create");
 
+  const [OpenDelete, setOpenDelete] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAttr, setOpenAttr] = useState(false);
   const [openImagesSlider, setOpenImagesSlider] = useState(false);
@@ -83,6 +75,10 @@ const ProductIndex = () => {
   const handleAddImages = useCallback((id) => {
     setID(id);
     setOpen(true);
+  }, []);
+  const handleDelete = useCallback((id) => {
+    setID(id);
+    setOpenDelete(true);
   }, []);
   const handleImagesSlider = useCallback((id) => {
     setID(id);
@@ -119,19 +115,34 @@ const ProductIndex = () => {
   const rows = useMemo(() => {
     return filteredData?.map((product, id) => (
       <TableRow sx={{ height: "65px" }} key={product.id}>
-        <TableCell sx={{ minWidth: 50 }}>{product?.name ?? "Null"}</TableCell>
+        <TableCell sx={{ minWidth: 250 }}>{product?.name ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {product?.brand?.name ?? "Null"}
         </TableCell>
-        <TableCell sx={{ minWidth: 50 }}>{product?.sku ?? "Null"}</TableCell>
+        <TableCell sx={{ minWidth: 150 }}>{product?.sku ?? "Null"}</TableCell>
         <TableCell sx={{ minWidth: 50 }}>{product?.price ?? "Null"}</TableCell>
+        <TableCell sx={{ minWidth: 100 }}>
+          {product?.compare_price > 0 ? (
+            <Box
+              sx={{
+                border: `1px solid`,
+                color: "success.main",
+                borderRadius: 3,
+              }}
+            >
+              {product?.compare_price}
+            </Box>
+          ) : (
+            "no sale"
+          )}
+        </TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {product?.quantity ?? "Null"}
         </TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {product?.cities?.state[0]?.name ?? "Null"}
         </TableCell>
-        <TableCell sx={{ minWidth: 120 }} align="center">
+        <TableCell sx={{ minWidth: 50 }} align="center">
           <ChangeStatus
             id={product.id}
             action={product.status === "active" && "change-status"}
@@ -139,67 +150,30 @@ const ProductIndex = () => {
             {product.status}
           </ChangeStatus>
         </TableCell>
-        <TableCell align="center" sx={{ minWidth: 200 }}>
-          <IconButton onClick={() => handleEdit(product?.id)}>
-            <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-              <ModeTwoToneIcon sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
-          <IconButton>
-            <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-              <DeleteDialog id={product?.id} count={count} page={page} />
-            </Tooltip>
-          </IconButton>
-          <IconButton onClick={() => handleView(product.id)}>
-            <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
-              <VisibilityTwoToneIcon color="primary" />
-            </Tooltip>
-          </IconButton>
-          <IconButton>
-            <Tooltip
-              title={"Add Images"}
-              onClick={() => handleAddImages(product?.id)}
-            >
-              <AddPhotoAlternateIcon sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
-          <IconButton>
-            <Tooltip
-              title={"Add Images to slider"}
-              onClick={() => handleImagesSlider(product?.id)}
-            >
-              <ViewCarouselRoundedIcon sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
-          <IconButton>
-            <Tooltip
-              title={"link to categories"}
-              onClick={() => handleCat(product?.id, product?.attributes)}
-            >
-              <LinkIcon sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
-          <IconButton>
-            <Tooltip
-              title={"details"}
-              onClick={() => navigate("details/" + product?.id)}
-            >
-              <ListAltRounded sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
+        <TableCell align="center" sx={{ minWidth: 50 }}>
+          <ProductMenu
+            product={product}
+            count={product.length}
+            page={1}
+            handleEdit={handleEdit}
+            handleView={handleView}
+            handleAddImages={handleAddImages}
+            handleImagesSlider={handleImagesSlider}
+            handleDelete={handleDelete}
+            handleCat={handleCat}
+            navigate={navigate}
+          />
         </TableCell>
       </TableRow>
     ));
   }, [
     filteredData,
-    count,
-    direction,
     handleEdit,
     handleView,
-    page,
     handleAddImages,
-    handleCat,
     handleImagesSlider,
+    handleDelete,
+    handleCat,
     navigate,
   ]);
 
@@ -216,6 +190,7 @@ const ProductIndex = () => {
           setOpen={setOpenImagesSlider}
         />
       )}
+      {id && <DeleteDialog id={id} open={OpenDelete} setOpen={setOpenDelete} />}
       {id && (
         <ProductAttr
           id={id}
@@ -269,10 +244,7 @@ const ProductIndex = () => {
         <BoxStyled>
           <Table
             columns={columns}
-            // count={count}
             rows={rows}
-            // page={page}
-            // setPage={setPage}
             sx={{ border: "1px solid", borderColor: "secondary.main" }}
           />
         </BoxStyled>

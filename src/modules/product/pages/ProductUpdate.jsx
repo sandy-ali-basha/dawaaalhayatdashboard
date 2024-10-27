@@ -53,6 +53,7 @@ let schema = yup.object().shape({
     name: yup.string().required("English name name is required"),
     description: yup.string().required("English description is required"),
   }),
+  points: yup.number().notRequired(),
 });
 
 const ProductUpdate = ({ id }) => {
@@ -201,12 +202,12 @@ const ProductUpdate = ({ id }) => {
       register: "compare_price",
       error: "compare_price",
       helperText: "compare_price",
+      defaultValue: data?.compare_price ? data?.compare_price : "",
     }
   );
 
   useMemo(() => {
     _cities.index().then((response) => {
-
       if (response.code === 200) {
         setCiteies(response.data);
       }

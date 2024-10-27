@@ -61,6 +61,7 @@ const OrdersUpdate = ({ id }) => {
     register: lang.code+".name",
     defaultValue: data?.translations[index]?.name,
   }));
+  
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);

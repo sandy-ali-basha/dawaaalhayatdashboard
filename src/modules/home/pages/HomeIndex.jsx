@@ -43,47 +43,25 @@ const HomeIndex = () => {
     setEditSection(section);
     setOpen(true);
   };
-  
+
   const queryClient = useQueryClient();
   const handleClose = () => {
     setOpen(false);
     setEditSection(null);
   };
 
-  async function handleUpdate(data) {
+  async function handleUpdate(formDataNew) {
+    _Home
+      .update({
+        formData: formDataNew,
+      })
+      .then((res) => {
+        if (res?.code === 200) handleClose();
+        queryClient.invalidateQueries("home");
+      });
+  }
+  async function handleUpdateStatus(data) {
     const formDataNew = new FormData();
-    if (data.video) {
-      formDataNew.append("video[vfile]", data.video); // Append video file
-    }
-    if (data?.textSectionTwoImage?.image) {
-      formDataNew.append(
-        "textSectionTwo[image_file]",
-        data.textSectionTwoImage?.image
-      );
-    }
-    if (data?.textSectionOneImage?.image) {
-      formDataNew.append(
-        "textSectionOne[image_file]",
-        data.textSectionOneImage?.image
-      );
-    }
-
-    // Append videoText data
-    for (const lang of ["ar", "en", "kr"]) {
-      if (data.videoText && data.videoText[lang]) {
-        formDataNew.append(`videoText[${lang}]`, data.videoText[lang]);
-      }
-    }
-
-    // Append CTA data
-    for (const lang of ["ar", "en", "kr"]) {
-      if (data?.cta && data?.cta?.subtitle[lang]) {
-        formDataNew.append(`cta[subtitle][${lang}]`, data?.cta?.subtitle[lang]);
-      }
-      if (data?.cta && data?.cta?.title[lang]) {
-        formDataNew.append(`cta[title][${lang}]`, data?.cta?.title[lang]);
-      }
-    }
 
     // Append status data (titles and subtitles)
     if (data?.name === "home.page.status") {
@@ -93,25 +71,28 @@ const HomeIndex = () => {
             `status[${lang}][subtitle1]`,
             data?.value[lang]?.subtitle1
           );
-        }
+        } else formDataNew.append(`status[${lang}][subtitle1]`, " ");
+
         if (data?.value && data?.value[lang]?.title1) {
           formDataNew.append(
             `status[${lang}][title1]`,
             data?.value[lang]?.title1
           );
-        }
+        } else formDataNew.append(`status[${lang}][title1]`, " ");
+
         if (data?.value && data?.value[lang]?.subtitle2) {
           formDataNew.append(
             `status[${lang}][subtitle2]`,
             data?.value[lang]?.subtitle2
           );
-        }
+        } else formDataNew.append(`status[${lang}][subtitle2]`, " ");
+
         if (data?.value && data?.value[lang]?.title2) {
           formDataNew.append(
             `status[${lang}][title2]`,
             data?.value[lang]?.title2
           );
-        }
+        } else formDataNew.append(`status[${lang}][title2]`, " ");
       }
 
       // Append info data (number and text)
@@ -122,36 +103,17 @@ const HomeIndex = () => {
               `status[info][${index}][number]`,
               infoItem.number
             );
-          }
+          } else formDataNew.append(`status[info][${index}][number]`, " ");
           for (const lang of ["ar", "en", "kr"]) {
             if (infoItem[lang]?.text) {
               formDataNew.append(
                 `status[info][${index}][${lang}][text]`,
                 infoItem[lang].text
               );
-            }
+            } else
+              formDataNew.append(`status[info][${index}][${lang}][text]`, " ");
           }
         });
-      }
-    }
-
-    // Append textSectionTwo data
-    for (const lang of ["ar", "en", "kr"]) {
-      if (data.textSectionTwo && data.textSectionTwo[lang]) {
-        formDataNew.append(
-          `textSectionTwo[text][${lang}]`,
-          data.textSectionTwo[lang]
-        );
-      }
-    }
-
-    // Append textSectionOne data
-    for (const lang of ["ar", "en", "kr"]) {
-      if (data.textSectionOne && data.textSectionOne[lang]) {
-        formDataNew.append(
-          `textSectionOne[text][${lang}]`,
-          data.textSectionOne[lang]
-        );
       }
     }
 
@@ -174,6 +136,7 @@ const HomeIndex = () => {
         }
       });
     }
+
     _Home
       .update({
         formData: formDataNew,
@@ -193,7 +156,7 @@ const HomeIndex = () => {
             open={open}
             onClose={handleClose}
             initialData={status}
-            handleSave={handleUpdate}
+            handleSave={handleUpdateStatus}
           />
         );
       case cta:
@@ -238,7 +201,9 @@ const HomeIndex = () => {
         return null;
     }
   };
+
   const navigate = useNavigate();
+
   return (
     <>
       {isLoading && <Loader />}
@@ -410,7 +375,7 @@ const HomeIndex = () => {
             )}
 
             {/* Text Section One */}
-            {/* {textSectionOne?.value && (
+            {textSectionOne?.value && (
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
@@ -457,10 +422,10 @@ const HomeIndex = () => {
                   </CardContent>
                 </Card>
               </Grid>
-            )} */}
+            )}
 
             {/* Text Section Two */}
-            {/* {textSectionTwo?.value && (
+            {textSectionTwo?.value && (
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
@@ -507,10 +472,10 @@ const HomeIndex = () => {
                   </CardContent>
                 </Card>
               </Grid>
-            )} */}
+            )}
 
             {/* Video Section */}
-            {/* <Grid item xs={12}>
+            <Grid item xs={12}>
               <Card>
                 <CardContent>
                   <Typography variant="h5">Video Section</Typography>
@@ -550,9 +515,7 @@ const HomeIndex = () => {
                   </IconButton>
                 </CardContent>
               </Card>
-            </Grid> */}
-
-            {/* Video Text Section */}
+            </Grid>
           </Grid>
         </Box>
       )}
