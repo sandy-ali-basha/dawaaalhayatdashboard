@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
@@ -31,8 +31,17 @@ import {
 
 const OrdersIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useOrders();
+  const { data, page, setPage, isLoading, count, refetch } = useOrders();
   const [setItem] = orderStore((state) => [state.setItem]);
+  const [gettingNewData, SetGettingNewData] = useState(isLoading);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 30000);
+
+    return () => clearInterval(intervalId);
+  }, [refetch]);
 
   const navigate = useNavigate();
   // const [direction] = settingsStore((state) => [state.direction]);
@@ -46,6 +55,7 @@ const OrdersIndex = () => {
     return [
       t("reference"),
       t("total"),
+      t("customer name"),
       t("sub total"),
       t("shipping total"),
       t("created at"),
@@ -100,6 +110,11 @@ const OrdersIndex = () => {
             {orders?.reference ?? "Null"}
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>{orders?.total ?? "Null"}</TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {orders?.customer[0]?.first_name +
+              " " +
+              orders?.customer[0]?.last_name ?? "Null"}
+          </TableCell>
           <TableCell sx={{ minWidth: 50 }}>
             {orders?.sub_total ?? "Null"}
           </TableCell>
@@ -171,7 +186,8 @@ const OrdersIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("orders")}
+            {t("orders")}{" "}
+            {gettingNewData && "updating ..."}
           </Typography>
         </Box>
 

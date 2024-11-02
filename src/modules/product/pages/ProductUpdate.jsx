@@ -70,10 +70,12 @@ const ProductUpdate = ({ id }) => {
   const [producttypes, setproducttypes] = useState();
   const [cities, setCiteies] = useState([]);
   const [checked, setChecked] = useState();
+
+  console.log(data?.purchasable);
   const formOptions = {
     resolver: yupResolver(schema),
     defaultValues: {
-      purchasable: data?.purchasable === "always" ? "always" : "false",
+      purchasable: data?.purchasable,
     },
   };
   const { register, handleSubmit, formState, control, setValue } =
@@ -92,6 +94,7 @@ const ProductUpdate = ({ id }) => {
         const fetchedData = res.data?.data;
         setData(fetchedData);
         setChecked(res.data?.data?.purchasable === "always" ? true : false);
+        setValue("purchasable", res.data?.data?.purchasable || false);
         if (fetchedData.translations) {
           setValue(
             "kr.name",
@@ -213,6 +216,7 @@ const ProductUpdate = ({ id }) => {
       }
     });
   }, []);
+
   useEffect(() => {
     _axios.get("/brand").then((res) => {
       setBrand(res?.data?.data?.brands);
@@ -237,8 +241,9 @@ const ProductUpdate = ({ id }) => {
   };
 
   const { mutate } = useMutation((data) => createPost(data));
-
+  console.log(errors);
   async function createPost(data) {
+    console.log("data", data);
     _Product
       .update({
         editedID: editedID,
