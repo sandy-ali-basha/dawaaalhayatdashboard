@@ -33,8 +33,7 @@ const OrdersIndex = () => {
   const { t } = useTranslation("index");
   const { data, page, setPage, isLoading, count, refetch } = useOrders();
   const [setItem] = orderStore((state) => [state.setItem]);
-  const [gettingNewData, SetGettingNewData] = useState(isLoading);
-
+  
   useEffect(() => {
     const intervalId = setInterval(() => {
       refetch();
@@ -56,6 +55,7 @@ const OrdersIndex = () => {
       t("reference"),
       t("total"),
       t("customer name"),
+      t("Payment"),
       t("sub total"),
       t("shipping total"),
       t("created at"),
@@ -116,12 +116,17 @@ const OrdersIndex = () => {
               orders?.customer[0]?.last_name ?? "Null"}
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>
+            {orders?.transactions[0]?.driver === "coffline"
+              ? "cash"
+              : orders?.transactions[0]?.driver ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
             {orders?.sub_total ?? "Null"}
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>
             {orders?.shipping_total ?? "Null"}
           </TableCell>
-          <TableCell sx={{ minWidth: 50 }}>
+          <TableCell sx={{ minWidth: 200 }}>
             {orders?.created_at ?? "Null"}
           </TableCell>
           <TableCell sx={{ minWidth: 100 }} align="center">
@@ -186,8 +191,7 @@ const OrdersIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("orders")}{" "}
-            {gettingNewData && "updating ..."}
+            {t("orders")} {isLoading && "updating ..."}
           </Typography>
         </Box>
 

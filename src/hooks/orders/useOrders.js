@@ -1,24 +1,23 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { _Orders } from "api/orders/orders";
+import { useSnackbar } from "notistack";
 
-export const useOrders = (enqueueSnackbar) => {
-  const showSnackbar = (enqueueSnackbar, message, variant) => {
-    if (typeof message !== "string") {
-      console.error("Invalid message passed to showSnackbar:", message);
-      return;
-    }
-  
+export const useOrders = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const showSnackbar = (message, variant) => {
     enqueueSnackbar(message, {
       variant,
       autoHideDuration: 4000,
       anchorOrigin: { vertical: "bottom", horizontal: "right" },
     });
   };
+
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(10);
   const [query, setQuery] = useState("");
-  const [previousData, setPreviousData] = useState(null); // Track previous data
+  const [previousDataCount, setPreviousDataCount] = useState(0);
+  const alertShownRef = useRef(false); // Track if alert has been shown
 
   const { data, isLoading, refetch } = useQuery(
     ["orders", page, count, query],
@@ -31,11 +30,19 @@ export const useOrders = (enqueueSnackbar) => {
     {
       keepPreviousData: true,
       onSuccess: (newData) => {
-        // Check for new orders
-        if (previousData && newData?.length > previousData?.length) {
-          showSnackbar(enqueueSnackbar, "There is a new order!", "info");
+        const newOrdersCount = newData?.data?.orders?.length ?? 0;
+
+        // Show snackbar only if there are new orders and it hasn't already shown an alert
+        if (newOrdersCount > previousDataCount && !alertShownRef.current) {
+          // showSnackbar("There is a new order!", "info");
+          // alertShownRef.current = true; // Mark that we've shown an alert
         }
-        setPreviousData(newData); // Update previous data
+
+        // Update the previous data count
+        setPreviousDataCount(newOrdersCount);
+
+        // Reset the alert flag after the data has updated
+        alertShownRef.current = false;
       },
     }
   );
