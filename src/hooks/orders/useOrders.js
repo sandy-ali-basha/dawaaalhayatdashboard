@@ -1,23 +1,13 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { _Orders } from "api/orders/orders";
-import { useSnackbar } from "notistack";
 
 export const useOrders = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const showSnackbar = (message, variant) => {
-    enqueueSnackbar(message, {
-      variant,
-      autoHideDuration: 4000,
-      anchorOrigin: { vertical: "bottom", horizontal: "right" },
-    });
-  };
-
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(10);
   const [query, setQuery] = useState("");
   const [previousDataCount, setPreviousDataCount] = useState(0);
-  const alertShownRef = useRef(false); // Track if alert has been shown
+  const [newOrderAlert, setNewOrderAlert] = useState(false);
 
   const { data, isLoading, refetch } = useQuery(
     ["orders", page, count, query],
@@ -32,17 +22,15 @@ export const useOrders = () => {
       onSuccess: (newData) => {
         const newOrdersCount = newData?.data?.orders?.length ?? 0;
 
-        // Show snackbar only if there are new orders and it hasn't already shown an alert
-        if (newOrdersCount > previousDataCount && !alertShownRef.current) {
-          // showSnackbar("There is a new order!", "info");
-          // alertShownRef.current = true; // Mark that we've shown an alert
+        // Set newOrderAlert to true only if there's a new order
+        if (newOrdersCount > previousDataCount) {
+          setNewOrderAlert(true);
+        } else {
+          setNewOrderAlert(false);
         }
 
         // Update the previous data count
         setPreviousDataCount(newOrdersCount);
-
-        // Reset the alert flag after the data has updated
-        alertShownRef.current = false;
       },
     }
   );
@@ -56,5 +44,6 @@ export const useOrders = () => {
     setCount,
     refetch,
     setQuery,
+    newOrderAlert, // Expose the alert flag
   };
 };
