@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Typography, Box, Button, TextField, Chip } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Button,
+  TextField,
+  Chip,
+  Checkbox,
+} from "@mui/material";
 import Loader from "components/shared/Loader";
 import ProductUpdate from "./ProductUpdate";
 import DeleteDialog from "../components/Dialog";
@@ -11,6 +18,7 @@ import ChangeStatus from "../components/ChangeStatus";
 import ProductMenu from "../components/productMenu";
 import { useProductIndex } from "../hooks/useProductsIndex";
 import { DataGrid } from "@mui/x-data-grid";
+import ChangeStatusPurshasable from "../components/ChangeStatusPurshasable";
 
 const ProductIndex = () => {
   const {
@@ -42,8 +50,12 @@ const ProductIndex = () => {
     t,
   } = useProductIndex();
 
+  // State to track selected row IDs
+  const [selectedRowIds, setSelectedRowIds] = useState([]);
+console.log("selectedRowIds",selectedRowIds)
   // Prepare the rows for the DataGrid
   const rows = filteredData.map((product) => ({
+    select: product.id,
     id: product.id,
     name: product.name ?? "Null",
     brand: product.brand?.name ?? "Null",
@@ -53,11 +65,23 @@ const ProductIndex = () => {
     quantity: product.quantity ?? "Null",
     city: product.cities?.state[0]?.name ?? "Null",
     status: product.status,
-    actions: product, // Passing product object for actions
+    purchasable: product.purchasable,
+    actions: product,
   }));
 
-  // Define columns for the DataGridPremium
+  // Define columns for the DataGrid
   const gridColumns = [
+    {
+      field: "select",
+      headerName: "Select",
+      width: 50,
+      renderCell: (params) => (
+        <Checkbox
+          checked={selectedRowIds.includes(params.row.id)}
+          onChange={(e) => handleSelectChange(e, params.row.id)}
+        />
+      ),
+    },
     {
       field: "name",
       headerName: "Product Name",
@@ -71,7 +95,7 @@ const ProductIndex = () => {
     {
       field: "sku",
       headerName: "SKU",
-      width: 100,
+      width: 70,
     },
     {
       field: "price",
@@ -82,7 +106,7 @@ const ProductIndex = () => {
       field: "comparePrice",
       headerName: "Compare Price",
       width: 150,
-      renderCell: (params) => <Chip label={params.value}>{params.value}</Chip>,
+      renderCell: (params) => <Chip label={params.value} />,
     },
     {
       field: "quantity",
@@ -108,13 +132,26 @@ const ProductIndex = () => {
       ),
     },
     {
+      field: "purchasable",
+      headerName: "purchasable",
+      width: 100,
+      renderCell: (params) => (
+        <ChangeStatusPurshasable
+          id={params.row.id}
+          currentStatus={params.row.purchasable}
+        >
+          {params.row.purchasable}
+        </ChangeStatusPurshasable>
+      ),
+    },
+    {
       field: "actions",
       headerName: "Actions",
       width: 150,
       renderCell: (params) => (
         <ProductMenu
           product={params.value}
-          count={params.value ? params.value.length : 0} // Add fallback for undefined values
+          count={params.value ? params.value.length : 0}
           page={1}
           handleEdit={handleEdit}
           handleView={handleView}
@@ -128,13 +165,14 @@ const ProductIndex = () => {
     },
   ];
 
-  const [selectedRowIds, setSelectedRowIds] = useState([]);
-  // Capture selected row IDs
-  const handleSelectionChange = (selectionModel) => {
-    setSelectedRowIds(selectionModel);
+  // Function to handle checkbox selection
+  const handleSelectChange = (event, id) => {
+    setSelectedRowIds((prevSelected) =>
+      event.target.checked
+        ? [...prevSelected, id]
+        : prevSelected.filter((rowId) => rowId !== id)
+    );
   };
-
-  console.log(selectedRowIds);
 
   return isLoading ? (
     <Loader />
@@ -203,13 +241,17 @@ const ProductIndex = () => {
           <DataGrid
             rows={rows}
             columns={gridColumns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
             pagination
-            checkboxSelection
-            disableSelectionOnClick
             sx={{
               backgroundColor: "background.paper",
             }}
-            onSelectionModelChange={handleSelectionChange} // Capture selected row IDs
           />
         </Box>
       </Box>

@@ -243,7 +243,7 @@ const ProductUpdate = ({ id }) => {
   const { mutate } = useMutation((data) => createPost(data));
   console.log(errors);
   async function createPost(data) {
-    console.log("data", data);
+    
     _Product
       .update({
         editedID: editedID,

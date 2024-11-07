@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { colorStore } from "store/ColorsStore";
 import { useProduct } from "hooks/product/useProduct";
 
-export const useProductIndex = () => {
+export const  useProductIndex = () => {
   const { t } = useTranslation("index");
   const { data, isLoading } = useProduct();
   const navigate = useNavigate();
@@ -40,12 +40,8 @@ export const useProductIndex = () => {
   const [openAttr, setOpenAttr] = useState(false);
   const [openImagesSlider, setOpenImagesSlider] = useState(false);
   const [product_attr, setProduct_attr] = useState();
-  const [checkedIDs, setCheckedIDs] = useState([]); // New state for checked IDs
+
   // Pagination state
-  const [page, setPage] = useState(0);
-
-  const [pageSize, setPageSize] = useState(10);
-
   const handleView = useCallback(
     (id) => {
       navigate("view/" + id);
@@ -98,17 +94,9 @@ export const useProductIndex = () => {
     return filtered;
   }, [data, cityFilter, brandFilter]);
 
-  // Function to handle checkbox changes
-  const handleCheckboxChange = (id) => {
-    setCheckedIDs((prevChecked) =>
-      prevChecked.includes(id)
-        ? prevChecked.filter((checkedID) => checkedID !== id)
-        : [...prevChecked, id]
-    );
-  };
+ 
 
   return {
-    handleCheckboxChange,
     handleDelete,
     handleImagesSlider,
     handleCat,
@@ -127,7 +115,6 @@ export const useProductIndex = () => {
     setCityFilter,
     setBrandFilter,
     columns,
-    checkedIDs,
     navigate,
     setOpen,
     setOpenImagesSlider,
