@@ -6,10 +6,11 @@ import {
   IconButton,
   Tooltip,
   Chip,
+  keyframes,
 } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
@@ -28,11 +29,59 @@ import {
   Print,
   Sync,
 } from "@mui/icons-material";
-
+import { useSnackbar } from "notistack";
+import alertSoundFile from "assets/alert.mp3"
 const OrdersIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useOrders();
+  const { data, page, setPage, isLoading, count, refetch, newOrderAlert } = useOrders();
+  const { enqueueSnackbar } = useSnackbar();
+  const alertSoundRef = useRef(new Audio(alertSoundFile));
+  const [userInteracted, setUserInteracted] = useState(false);
+
+  useEffect(() => {
+    // Set userInteracted to true on the first interaction
+    const handleUserInteraction = () => {
+      setUserInteracted(true);
+      window.removeEventListener("click", handleUserInteraction);
+      window.removeEventListener("keydown", handleUserInteraction);
+    };
+
+    window.addEventListener("click", handleUserInteraction);
+    window.addEventListener("keydown", handleUserInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleUserInteraction);
+      window.removeEventListener("keydown", handleUserInteraction);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (newOrderAlert) {
+      // Show snackbar notification
+      enqueueSnackbar("There is a new order!", {
+        variant: "info",
+        autoHideDuration: 4000,
+        anchorOrigin: { vertical: "top", horizontal: "right" },
+      });
+
+      // Play alert sound only if user has interacted with the page
+      if (userInteracted) {
+        alertSoundRef.current.play().catch((error) => {
+          console.error("Error playing sound:", error);
+        });
+      }
+    }
+  }, [newOrderAlert, enqueueSnackbar, userInteracted]);
+
   const [setItem] = orderStore((state) => [state.setItem]);
+  
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 30000);
+
+    return () => clearInterval(intervalId);
+  }, [refetch]);
 
   const navigate = useNavigate();
   // const [direction] = settingsStore((state) => [state.direction]);
@@ -46,6 +95,8 @@ const OrdersIndex = () => {
     return [
       t("reference"),
       t("total"),
+      t("customer name"),
+      t("Payment"),
       t("sub total"),
       t("shipping total"),
       t("created at"),
@@ -84,6 +135,20 @@ const OrdersIndex = () => {
         return { label: "Unknown", color: "default", icon: null };
     }
   };
+const flipIn = keyframes`
+  0% {
+    transform: rotateX(-90deg);
+    opacity: 0;
+  }
+  60% {
+    transform: rotateX(20deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+`;
 
   const rows = useMemo(() => {
     return data?.data?.orders?.map((orders, id) => {
@@ -93,7 +158,8 @@ const OrdersIndex = () => {
           sx={{
             background:
               orders?.status === "order_requested" ? "#ffb3474f" : "inherit",
-          }}
+              animation: orders?.status === "order_requested" ? `${flipIn} 1s ease` : "none",
+            }}
           key={orders.id}
         >
           <TableCell sx={{ minWidth: 150 }}>
@@ -101,12 +167,22 @@ const OrdersIndex = () => {
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>{orders?.total ?? "Null"}</TableCell>
           <TableCell sx={{ minWidth: 50 }}>
+            {orders?.customer[0]?.first_name +
+              " " +
+              orders?.customer[0]?.last_name ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
+            {orders?.transactions[0]?.driver === "coffline"
+              ? "cash"
+              : orders?.transactions[0]?.driver ?? "Null"}
+          </TableCell>
+          <TableCell sx={{ minWidth: 50 }}>
             {orders?.sub_total ?? "Null"}
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>
             {orders?.shipping_total ?? "Null"}
           </TableCell>
-          <TableCell sx={{ minWidth: 50 }}>
+          <TableCell sx={{ minWidth: 200 }}>
             {orders?.created_at ?? "Null"}
           </TableCell>
           <TableCell sx={{ minWidth: 100 }} align="center">
@@ -171,7 +247,7 @@ const OrdersIndex = () => {
           }}
         >
           <Typography sx={{ color: "text.main" }} variant="h5">
-            {t("orders")}
+            {t("orders")} {isLoading && "updating ..."}
           </Typography>
         </Box>
 
