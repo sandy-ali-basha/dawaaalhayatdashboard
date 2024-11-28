@@ -5,6 +5,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import React, { useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -15,17 +16,23 @@ import ViewCarouselRoundedIcon from "@mui/icons-material/ViewCarouselRounded";
 import LinkIcon from "@mui/icons-material/Link";
 import ListAltRounded from "@mui/icons-material/ListAltRounded";
 import { settingsStore } from "store/settingsStore";
-import { DeleteTwoTone } from "@mui/icons-material";
+import {
+  DeleteTwoTone,
+  DifferenceOutlined,
+  PriceChangeOutlined,
+} from "@mui/icons-material";
+import { _Product } from "api/product/product";
+import { useSnackbar } from "notistack";
+import { useQueryClient } from "react-query";
 
 const ProductMenu = ({
   product,
-  count,
-  page,
   handleEdit,
   handleView,
   handleAddImages,
   handleImagesSlider,
   handleCat,
+  handleUpdatePrice,
   handleDelete,
   navigate,
 }) => {
@@ -40,7 +47,20 @@ const ProductMenu = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
+  const Duplicate = () => {
+    _Product.Duple(product?.id).then((res) => {
+      if (res.code === 200) {
+        enqueueSnackbar("product Duplicated", {
+          variant: "success",
+          autoHideDuration: 3000,
+          anchorOrigin: { vertical: "bottom", horizontal: "right" },
+        });
+        queryClient.invalidateQueries(["product"]);
+      }
+    });
+  };
   return (
     <TableCell align="center" sx={{ minWidth: 50 }}>
       <IconButton onClick={handleClick}>
@@ -133,11 +153,30 @@ const ProductMenu = ({
           }}
         >
           <ListItemIcon>
-            <DeleteTwoTone color="error.main" />
+            <DeleteTwoTone color="error" />
           </ListItemIcon>
           <ListItemText>Delete</ListItemText>
         </MenuItem>
+
+        {handleUpdatePrice && (
+          <MenuItem
+            onClick={() => {
+              handleUpdatePrice(product?.region_id, product?.name);
+              handleClose();
+            }}
+          >
+            <ListItemIcon>
+              <PriceChangeOutlined color="error" />
+            </ListItemIcon>
+            <ListItemText>Update Region Price</ListItemText>
+          </MenuItem>
+        )}
       </Menu>
+      <Tooltip title="Duplicate">
+        <IconButton onClick={() => Duplicate()}>
+          <DifferenceOutlined />
+        </IconButton>
+      </Tooltip>
     </TableCell>
   );
 };

@@ -22,18 +22,11 @@ export const Table = ({ rows, columns, page, setPage, count }) => {
           }}
         >
           <MuiTable>
-            {/* <TableHead>
-              {columns?.map((item, index) => (
-                <TableCell key={index} sx={{ textAlign: "center" }}>
-                  <Typography variant="subtitle1">{item}</Typography>
-                </TableCell>
-              ))}
-            </TableHead> */}
             <TableHead>
               <TableRow>
                 {columns?.map((item, index) => (
                   <TableCell key={index} sx={{ textAlign: "center" }}>
-                    <Typography variant="subtitle1">{item}</Typography>
+                    <Typography variant="body1">{item}</Typography>
                   </TableCell>
                 ))}
               </TableRow>
@@ -67,7 +60,7 @@ export const Table = ({ rows, columns, page, setPage, count }) => {
               backgroundColor: "origin.main",
             },
           }}
-        />
+        />  
       </Box>
     </Box>
   );

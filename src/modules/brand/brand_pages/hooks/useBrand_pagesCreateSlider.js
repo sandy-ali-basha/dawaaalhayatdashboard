@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as yup from "yup";
@@ -11,6 +11,8 @@ const SUPPORTED_FORMATS = [
   "image/jpeg",
   "image/png",
   "image/webp",
+  "image/svg",
+  "image/gif",
 ];
 const MAX_FILE_SIZE = 10000000000;
 const schema = yup.object().shape({

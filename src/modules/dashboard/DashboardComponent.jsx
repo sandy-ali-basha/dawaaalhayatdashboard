@@ -20,7 +20,7 @@ const DashboardComponent = () => {
       <Header open={open} />
       <SideBar open={open} setOpen={setOpen} />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Box sx={{ marginTop: "100px" }}>
+        <Box sx={{ marginTop: "50px" }}>
           <Outlet />
         </Box>
       </Box>

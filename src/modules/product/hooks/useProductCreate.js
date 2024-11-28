@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _Product } from "api/product/product";
 import { _axios } from "interceptor/http-config";
 import { _cities } from "api/cities/cities";
+import { _Regions } from "api/regions/regions";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
@@ -30,12 +31,14 @@ let schema = yup.object().shape({
   }),
 });
 
-export const useProductCreate = () => {
+export const useProductCreate = ({ setNewProductId }) => {
   const [cities, setCiteies] = useState([]);
+  const [regions, setRegions] = useState([]);
+  const [selectedRegion, setSelectedRegions] = useState([]);
+  const [selectedCities, setSelectedCities] = useState([]);
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [brands, setBrand] = useState(null);
-  const [selectedCities, setSelectedCities] = useState([]);
   const [producttypes, setproducttypes] = useState(null);
   const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
@@ -50,6 +53,7 @@ export const useProductCreate = () => {
     });
     _axios.get("/product_type").then((res) => {
       setLoading(false);
+
       setproducttypes(res?.data?.data?.producttypes);
     });
   }, []);
@@ -57,7 +61,7 @@ export const useProductCreate = () => {
     {
       head: t("arabic name"),
       type: "text",
-      placeholder: t("ar.name"),
+      placeholder: t("ar name"),
       name: "ar.name",
       register: "ar.name",
       error: "ar.name",
@@ -68,7 +72,7 @@ export const useProductCreate = () => {
       head: t("english name"),
       type: "text",
       placeholder: t("en.name"),
-      name: "en.name",
+      name: "en name",
       register: "en.name",
       error: "en.name",
       helperText: "en.name",
@@ -78,7 +82,7 @@ export const useProductCreate = () => {
       head: t("kurdish name"),
       type: "text",
       placeholder: t("kr.name"),
-      name: "kr.name",
+      name: "kr name",
       register: "kr.name",
       error: "kr.name",
       helperText: "kr.name",
@@ -86,13 +90,13 @@ export const useProductCreate = () => {
   ];
   const generalDetails = [
     {
-      head: t("sku"),
-      type: "text",
-      placeholder: "sku",
-      name: "sku",
-      register: "sku",
-      error: "sku",
-      helperText: "sku",
+      head: t("price before sale"),
+      type: "number",
+      placeholder: "compare price",
+      name: "compare_price",
+      register: "compare_price",
+      error: "compare_price",
+      helperText: "compare_price",
     },
     {
       head: t("price"),
@@ -102,6 +106,15 @@ export const useProductCreate = () => {
       register: "price",
       error: "price",
       helperText: "price",
+    },
+    {
+      head: t("sku"),
+      type: "text",
+      placeholder: "sku",
+      name: "sku",
+      register: "sku",
+      error: "sku",
+      helperText: "sku",
     },
     {
       head: t("qty"),
@@ -120,15 +133,6 @@ export const useProductCreate = () => {
       register: "points",
       error: "points",
       helperText: "points",
-    },
-    {
-      head: t("price before sale"),
-      type: "number",
-      placeholder: "compare_price",
-      name: "compare_price",
-      register: "compare_price",
-      error: "compare_price",
-      helperText: "compare_price",
     },
   ];
   const Discription = [
@@ -168,33 +172,62 @@ export const useProductCreate = () => {
     if (form) form.reset();
     reset();
   };
+
   const hanldeCreate = (input) => {
-    const requests = selectedCities?.map((city_id) => {
+    if (regions) {
       const productData = {
         ...input,
-        city_id, // Current city_id for each request
+        region_id: selectedRegion,
+        region_price: input.price,
         description: input?.en?.description || "",
       };
 
-      return _Product.post(productData, setLoading);
-    });
+      // Return a single POST request
+      return _Product
+        .post(productData, setLoading)
+        .then((res) => {
+          setNewProductId(res?.data?.products_id);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      // If multiple cities, map them to API calls and handle them
+      const requests = selectedCities?.map((city_id) => {
+        const productData = {
+          ...input,
+          city_id, // Current city_id for each request
+          description: input?.en?.description || "",
+        };
 
-    Promise.all(requests)
-      .then((responses) => {
-        navigate(-1); // Navigate or display success message
-      })
-      .catch((error) => {
-        console.error("Error creating products for multiple cities", error);
-      })
-      .finally(() => {
-        setLoading(false);
+        // Return the promise for this POST request
+        return _Product.post(productData, setLoading);
       });
+
+      // Run all requests in parallel and return the promise
+      return Promise.all(requests)
+        .then((res) => {
+          const newProductIds = res.map((response) => response?.data?.id);
+          setNewProductId(newProductIds); // Set the IDs as an array
+        })
+        .catch((error) => {
+          console.error("Error creating products for multiple cities", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   useMemo(() => {
     _cities.index().then((response) => {
       if (response.code === 200) {
         setCiteies(response.data);
+      }
+    });
+    _Regions.index().then((response) => {
+      if (response.code === 200) {
+        setRegions(response.data);
       }
     });
   }, []);
@@ -218,5 +251,8 @@ export const useProductCreate = () => {
     cities,
     selectedCities,
     setSelectedCities,
+    selectedRegion,
+    setSelectedRegions,
+    regions,
   };
 };

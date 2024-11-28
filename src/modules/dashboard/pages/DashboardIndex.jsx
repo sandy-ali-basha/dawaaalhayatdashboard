@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, Grid, Typography } from "@mui/material";
-import OrderStatusReport from "../components/OrderStatusReport";
 import ProductPerformanceReport from "../components/ProductPerformanceReport";
 import AbandonedCartReport from "../components/AbandonedCartReport";
 import WebsiteTrafficReport from "../components/WebsiteTrafficReport";

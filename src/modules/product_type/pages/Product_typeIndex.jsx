@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 
 import {
   Typography,
@@ -43,7 +44,6 @@ const Product_typeIndex = () => {
     ];
   }, [t]);
   
-  const handleView = useCallback((id) => { navigate('view/' + id) }, [navigate])
   const handleEdit = useCallback((id) => { setEditedID(id) }, [setEditedID])
 
   const rows = useMemo(() => {
@@ -78,13 +78,14 @@ const Product_typeIndex = () => {
         </TableCell>
       </TableRow>
     ));
-  },[data, count, direction, handleEdit, handleView, page,t]);
+  },[data, count, direction, handleEdit, page]);
 
   const handleCreate = () => navigate("create")
 
   return (
     <>
       {isLoading && <Loader />}
+      {/* // eslint-disable-next-line react/jsx-pascal-case, react/jsx-pascal-case */}
       {editedID && <Product_typeUpdate id={editedID} />}
 
       <Box

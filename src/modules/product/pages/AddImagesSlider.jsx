@@ -1,33 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Grid, Typography } from "@mui/material";
-import { colorStore } from "store/ColorsStore";
+import { Alert, Card, CardActions, Grid, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { _axios } from "interceptor/http-config";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { _Product } from "api/product/product";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 import Image from "components/shared/Image";
+import ImagesOfSlider from "../components/ImagesOfSlider";
 
 const SUPPORTED_FORMATS = [
   "image/jpg",
   "image/jpeg",
   "image/png",
   "image/webp",
+  "image/svg",
+  "image/gif",
 ];
 const MAX_FILE_SIZE = 1000000;
 
-const AddImagesSlider = ({ id, open, setOpen }) => {
+const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
   const { t } = useTranslation("index");
   const schema = yup.object().shape({
-    images: yup
+    SliderImages: yup
       .mixed()
       .test("File", t("image") + " " + t("is required"), (value) => {
         return value && Array.isArray(value) && value.length > 0;
@@ -53,6 +54,7 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
+  const [alert, setALert] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -61,20 +63,58 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
 
   const { mutate } = useMutation((data) => createPost(data));
 
-  async function createPost(data) {
-    _Product
-      .AddImagesSlider({
+  const handleAddImages = ({ data }) => {
+    setLoading(true);
+
+    // Map over the array of ids to create a request for each
+    const requests = id.map((id) => {
+      // Return the promise for the request
+      return _Product.AddImagesSlider({
         editedID: id,
         formData: data,
+      });
+    });
+
+    // Execute all requests concurrently
+    Promise.all(requests)
+      .then((responses) => {
+        // Handle successful responses
+        responses.forEach((res, index) => {
+          if (res.code === 200) {
+            setALert((prev) => [
+              ...prev,
+              `Images for Product ${id[index]} saved successfully.`,
+            ]);
+          } else {
+            setALert((prev) => [
+              ...prev,
+              `Failed to save images for Product ${id[index]}.`,
+            ]);
+          }
+        })
       })
-      .then((res) => {
-        if (res.code === 200) {
-          handleDialogClose();
-        }
+
+      .finally(() => {
         setLoading(false);
       });
+  };
+  async function createPost(data) {
+    if (notDialog) {
+      handleAddImages({ data });
+    } else {
+      _Product
+        .AddImagesSlider({
+          editedID: id,
+          formData: data,
+        })
+        .then((res) => {
+          if (res.code === 200) {
+            handleDialogClose();
+          }
+          setLoading(false);
+        });
+    }
   }
-
   const handleUpdate = (input) => {
     const formData = new FormData();
     images.forEach((image, idx) =>
@@ -95,36 +135,81 @@ const AddImagesSlider = ({ id, open, setOpen }) => {
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={open} onClose={handleDialogClose}>
-        <DialogTitle sx={{ color: "text.main" }}>{t("Add Images")}</DialogTitle>
-        <>
-          <Grid container component="form" key={id} sx={{ m: 1 }}>
-            <Image
-              errors={errors?.images?.message}
-              control={control}
-              register={register}
-              name={"images"}
-              setImage={setImages}
-              multiple
-            />
-          </Grid>
-        </>
-        <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "text.main" }}>
-            {t("Cancel")}
-          </Button>
-          {loading && <Loader />}
-          <ButtonLoader
-            name={t("Submit")}
-            onClick={() => handleSubmit(handleUpdate)()}
-            type="save"
-            loading={loading}
-            disableOnLoading
-          >
-            {t("Submit")}
-          </ButtonLoader>
-        </DialogActions>
-      </Dialog>
+      {notDialog ? (
+        <Card
+          sx={{
+            BoxShadow: 10,
+            p: 3,
+            opacity: id.length > 0 ? "100%" : "50%",
+            pointerEvents: id.length > 0 ? "initial" : "none",
+          }}
+        >
+          <Typography sx={{ color: "text.main" }}>
+            Add Images To Slider
+          </Typography>
+
+          <ImagesOfSlider
+            errors={errors?.images?.message}
+            control={control}
+            register={register}
+            name={"SliderImages"}
+            setImage={setImages}
+            multiple
+          />
+
+          <CardActions>
+            {loading && <Loader />}
+            <ButtonLoader
+              name={t("Submit")}
+              onClick={() => handleSubmit(handleUpdate)()}
+              type="save"
+              loading={loading}
+              disableOnLoading
+            >
+              {t("Submit")}
+            </ButtonLoader>
+          </CardActions>
+          {alert.length > 0 &&
+            alert.map((item, idx) => (
+              <Alert sx={{ mt: 1 }} key={idx} severity="info">
+                {item}
+              </Alert>
+            ))}
+        </Card>
+      ) : (
+        <Dialog open={open} onClose={handleDialogClose}>
+          <DialogTitle sx={{ color: "text.main" }}>
+            {t("Add Images")}
+          </DialogTitle>
+          <>
+            <Grid container component="form" key={id} sx={{ m: 1 }}>
+              <ImagesOfSlider
+                errors={errors?.images?.message}
+                control={control}
+                register={register}
+                name={"SliderImages"}
+                setImage={setImages}
+                multiple
+              />
+            </Grid>
+          </>
+          <DialogActions>
+            <Button onClick={handleClose} sx={{ color: "text.main" }}>
+              {t("Cancel")}
+            </Button>
+            {loading && <Loader />}
+            <ButtonLoader
+              name={t("Submit")}
+              onClick={() => handleSubmit(handleUpdate)()}
+              type="save"
+              loading={loading}
+              disableOnLoading
+            >
+              {t("Submit")}
+            </ButtonLoader>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 };

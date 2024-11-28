@@ -7,10 +7,17 @@ import {
   Tooltip,
   Chip,
   keyframes,
+  Button,
 } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo, useCallback, useEffect, useState, useRef } from "react";
+import React, {
+  useMemo,
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
@@ -24,16 +31,20 @@ import {
   Cancel,
   CheckCircle,
   Done,
+  GetAppRounded,
   LocalShipping,
   Pending,
   Print,
   Sync,
 } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
-import alertSoundFile from "assets/alert.mp3"
+import alertSoundFile from "assets/alert.mp3";
+import * as XLSX from "xlsx"; // Import xlsx for Excel export
+
 const OrdersIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count, refetch, newOrderAlert } = useOrders();
+  const { data, page, setPage, isLoading, count, refetch, newOrderAlert } =
+    useOrders();
   const { enqueueSnackbar } = useSnackbar();
   const alertSoundRef = useRef(new Audio(alertSoundFile));
   const [userInteracted, setUserInteracted] = useState(false);
@@ -55,6 +66,72 @@ const OrdersIndex = () => {
     };
   }, []);
 
+  const exportToExcel = useCallback(() => {
+    // Prepare data for export with specific columns
+    let previousReference = null;
+
+    const exportData = data?.data?.orders?.flatMap((order) => {
+      const orderDetails = order?.lines?.slice(0, -1).map((product, index) => {
+        const currentReference = order?.reference;
+
+        // Determine if fields should be included based on reference match
+        const isRepeatedReference = previousReference === currentReference;
+
+        // Update the previous reference for the next iteration
+        previousReference = currentReference;
+
+        return {
+          "customer name":
+            `${order?.customer[0]?.first_name ?? ""} ${
+              order?.customer[0]?.last_name ?? ""
+            }` || "Null",
+          age: isRepeatedReference ? "" :  order?.customer[0]?.age ?? "Null",
+          gender: isRepeatedReference ? "" :  order?.customer[0]?.gender ?? "Null",
+          "Contact Email": isRepeatedReference ? "" :  order?.address[1]?.contact_email ?? "Null",
+          "Contact Phone": isRepeatedReference ? "" :  order?.address[1]?.contact_phone ?? "Null",
+          City: order?.address[1]?.city ?? "Null",
+          "reference رقم الطلب": isRepeatedReference ? "" : order?.reference,
+          "created at تاريخ الطلب": isRepeatedReference ? "" :  order?.created_at ,
+          "order status":  isRepeatedReference ? "" :  order?.status ?? "Null",
+
+          // Conditional fields
+          "Product المنتجات": product?.description ?? "Null",
+          "Price سعر المنتج": product?.unit_price?.value ?? "Null",
+          "Quantity كمية المنتج": product?.unit_quantity ?? "Null",
+          Address: order?.address[1]?.line_one ?? "Null",
+          "city shipping price": isRepeatedReference
+            ? ""
+            : order?.address[1]?.city_shipping_price ?? "Null",
+          "delivery instructions":
+            order?.address[1]?.delivery_instructions ?? "Null",
+          "Payment Method": isRepeatedReference
+            ? ""
+            : order?.transactions[0]?.driver === "coffline"
+            ? "cash"
+            : order?.transactions[0]?.driver ?? "Null",
+          "Points deducted during the purchase process  النقاط المحسومة ضمن عملية الشراء":
+            isRepeatedReference ? "" : order?.points_used ?? "null",
+          "order sub total": isRepeatedReference ? "" : order?.sub_total,
+          "order total": isRepeatedReference ? "" : order?.total,
+        };
+      });
+
+      return orderDetails;
+    });
+
+    // Create a worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+
+    // Export the workbook
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+    const fileName = `Orders_${formattedDate}.xlsx`;
+
+    XLSX.writeFile(workbook, fileName);
+  }, [data]);
+
   useEffect(() => {
     if (newOrderAlert) {
       // Show snackbar notification
@@ -74,7 +151,7 @@ const OrdersIndex = () => {
   }, [newOrderAlert, enqueueSnackbar, userInteracted]);
 
   const [setItem] = orderStore((state) => [state.setItem]);
-  
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       refetch();
@@ -135,7 +212,7 @@ const OrdersIndex = () => {
         return { label: "Unknown", color: "default", icon: null };
     }
   };
-const flipIn = keyframes`
+  const flipIn = keyframes`
   0% {
     transform: rotateX(-90deg);
     opacity: 0;
@@ -158,8 +235,11 @@ const flipIn = keyframes`
           sx={{
             background:
               orders?.status === "order_requested" ? "#ffb3474f" : "inherit",
-              animation: orders?.status === "order_requested" ? `${flipIn} 1s ease` : "none",
-            }}
+            animation:
+              orders?.status === "order_requested"
+                ? `${flipIn} 1s ease`
+                : "none",
+          }}
           key={orders.id}
         >
           <TableCell sx={{ minWidth: 150 }}>
@@ -224,7 +304,7 @@ const flipIn = keyframes`
         </TableRow>
       );
     });
-  }, [data?.data?.orders, handleView]);
+  }, [data?.data?.orders, flipIn, handleView]);
 
   return (
     <>
@@ -249,6 +329,14 @@ const flipIn = keyframes`
           <Typography sx={{ color: "text.main" }} variant="h5">
             {t("orders")} {isLoading && "updating ..."}
           </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={exportToExcel}
+            sx={{ ml: 2 }}
+          >
+            Export to Excel <GetAppRounded/>
+          </Button>
         </Box>
 
         <BoxStyled sx={{ px: "10px" }}>

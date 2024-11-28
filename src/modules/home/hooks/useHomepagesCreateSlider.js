@@ -11,6 +11,8 @@ const SUPPORTED_FORMATS = [
   "image/jpeg",
   "image/png",
   "image/webp",
+  "image/svg",
+  "image/gif",
 ];
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 

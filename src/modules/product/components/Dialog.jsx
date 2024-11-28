@@ -9,6 +9,8 @@ import Loader from "components/shared/Loader";
 import { useTranslation } from "react-i18next";
 import { useDeleteProduct } from "hooks/product/useDeleteProduct";
 import { useProduct } from "hooks/product/useProduct";
+import { Box } from "@mui/material";
+import deleteImg from "assets/images/trash.png"
 
 const DeleteDialog = ({ id, page, count, open, setOpen }) => {
   const { t } = useTranslation("index");
@@ -42,6 +44,10 @@ const DeleteDialog = ({ id, page, count, open, setOpen }) => {
           {t("Delete Item")}
         </DialogTitle>
         <DialogContent>
+        <Box sx={{ width: "40%", margin: "0 auto" }}>
+          <img src={deleteImg} alt="" style={{ width: "100%" }} />
+        </Box>
+       
           <DialogContentText
             id="alert-dialog-description"
             sx={{ color: "text.main" }}

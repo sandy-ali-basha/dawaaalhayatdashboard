@@ -6,6 +6,9 @@ import {
   TextField,
   Chip,
   Checkbox,
+  IconButton,
+  CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import Loader from "components/shared/Loader";
 import ProductUpdate from "./ProductUpdate";
@@ -19,6 +22,9 @@ import ProductMenu from "../components/productMenu";
 import { useProductIndex } from "../hooks/useProductsIndex";
 import { DataGrid } from "@mui/x-data-grid";
 import ChangeStatusPurshasable from "../components/ChangeStatusPurshasable";
+import { DeleteSweep } from "@mui/icons-material";
+import { BoxStyled } from "components/styled/BoxStyled";
+import UpdateRegionPrice from "./UpdateRegionPrice";
 
 const ProductIndex = () => {
   const {
@@ -42,17 +48,22 @@ const ProductIndex = () => {
     navigate,
     setOpen,
     setOpenImagesSlider,
+    handleUpdatePrice,
     setOpenDelete,
     setOpenAttr,
     cityFilter,
     brandFilter,
     filteredData,
     t,
+    selectedRowIds,
+    handleSelectChange,
+    BulkDelete,
+    loading,
+    updatePrice,
+    setUpdatePrice,
+    productName
   } = useProductIndex();
 
-  // State to track selected row IDs
-  const [selectedRowIds, setSelectedRowIds] = useState([]);
-console.log("selectedRowIds",selectedRowIds)
   // Prepare the rows for the DataGrid
   const rows = filteredData.map((product) => ({
     select: product.id,
@@ -66,6 +77,7 @@ console.log("selectedRowIds",selectedRowIds)
     city: product.cities?.state[0]?.name ?? "Null",
     status: product.status,
     purchasable: product.purchasable,
+    region: product.region_name,
     actions: product,
   }));
 
@@ -105,7 +117,7 @@ console.log("selectedRowIds",selectedRowIds)
     {
       field: "comparePrice",
       headerName: "Compare Price",
-      width: 150,
+      width: 100,
       renderCell: (params) => <Chip label={params.value} />,
     },
     {
@@ -145,6 +157,11 @@ console.log("selectedRowIds",selectedRowIds)
       ),
     },
     {
+      field: "region",
+      headerName: "region",
+      width: 100,
+    },
+    {
       field: "actions",
       headerName: "Actions",
       width: 150,
@@ -157,6 +174,7 @@ console.log("selectedRowIds",selectedRowIds)
           handleView={handleView}
           handleAddImages={handleAddImages}
           handleImagesSlider={handleImagesSlider}
+          handleUpdatePrice={params.row.region ? handleUpdatePrice : false}
           handleDelete={handleDelete}
           handleCat={handleCat}
           navigate={navigate}
@@ -165,19 +183,10 @@ console.log("selectedRowIds",selectedRowIds)
     },
   ];
 
-  // Function to handle checkbox selection
-  const handleSelectChange = (event, id) => {
-    setSelectedRowIds((prevSelected) =>
-      event.target.checked
-        ? [...prevSelected, id]
-        : prevSelected.filter((rowId) => rowId !== id)
-    );
-  };
-
   return isLoading ? (
     <Loader />
   ) : (
-    <Box sx={{ overflow: "scroll" }}>
+    <Box sx={{ overflow: "scroll", scrollbarWidth: "none" }}>
       {editedID && <ProductUpdate id={editedID} />}
       {id && <AddImages id={id} open={open} setOpen={setOpen} />}
       {id && (
@@ -197,6 +206,15 @@ console.log("selectedRowIds",selectedRowIds)
         />
       )}
 
+      {id && (
+        <UpdateRegionPrice
+          id={id}
+          productName={productName}
+          open={updatePrice}
+          setOpen={setUpdatePrice}
+        />
+      )}
+
       <Box
         sx={{
           width: "100%",
@@ -204,41 +222,70 @@ console.log("selectedRowIds",selectedRowIds)
           p: 3,
         }}
       >
-        <Box
+        <BoxStyled
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             mb: 2,
+            px: 2,
           }}
         >
           <Typography variant="h5" sx={{ color: "text.main" }}>
-            {t("product")}
+            {t("products")}
           </Typography>
-          <Button
-            startIcon={<AddRoundedIcon />}
-            variant="contained"
-            color="secondary"
-            onClick={handleCreate}
-          >
-            {t("New product")}
-          </Button>
-        </Box>
-        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-          <TextField
-            label={t("City filter")}
-            value={cityFilter}
-            onChange={(e) => setCityFilter(e.target.value)}
-          />
-          <TextField
-            label={t("Brand filter")}
-            value={brandFilter}
-            onChange={(e) => setBrandFilter(e.target.value)}
-          />
-        </Box>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <TextField
+              label={t("City filter")}
+              value={cityFilter}
+              onChange={(e) => setCityFilter(e.target.value)}
+              size="small"
+            />
+            <TextField
+              label={t("Brand filter")}
+              value={brandFilter}
+              size="small"
+              onChange={(e) => setBrandFilter(e.target.value)}
+            />
+          </Box>
+          <Box>
+            {selectedRowIds.length > 0 && (
+              <Tooltip title="Delete selected products">
+                <IconButton
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => BulkDelete()}
+                  disabled={loading}
+                >
+                  {loading ? <CircularProgress /> : <DeleteSweep />}
+                </IconButton>
+              </Tooltip>
+            )}
+            <Button
+              startIcon={<AddRoundedIcon />}
+              variant="contained"
+              color="secondary"
+              onClick={handleCreate}
+            >
+              {t("New product")}
+            </Button>
+          </Box>
+        </BoxStyled>
 
-        <Box sx={{ width: "70vw", overflow: "scroll" }}>
+        <BoxStyled
+          sx={{
+            width: "71vw",
+            overflow: "scroll",
+            scrollbarWidth: "none",
+            py: 0,
+            borderRadius: 3,
+          }}
+        >
           <DataGrid
+            sx={{
+              backgroundColor: "background.paper",
+              borderRadius: 3,
+            }}
             rows={rows}
             columns={gridColumns}
             initialState={{
@@ -248,12 +295,9 @@ console.log("selectedRowIds",selectedRowIds)
                 },
               },
             }}
-            pagination
-            sx={{
-              backgroundColor: "background.paper",
-            }}
+            pageSizeOptions={[5, 10, 25, 50]}
           />
-        </Box>
+        </BoxStyled>
       </Box>
     </Box>
   );

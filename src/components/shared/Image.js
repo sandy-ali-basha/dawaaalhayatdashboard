@@ -3,6 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import slider from "assets/images/slider.png";
 
 const Image = ({
   errors,
@@ -35,66 +36,91 @@ const Image = ({
   };
 
   return (
-    <>
-      <Box sx={{ margin: "0 0 8px 5px" }}>
-        <Typography variant="body1" color="text.secondary">{t(name)}</Typography>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width:'100%'
+      }}
+    >
+      {" "}
+      <Box sx={{ width: "150px" }}>
+        <img src={slider} alt="" style={{ width: "100%" }} />
       </Box>
-      <Button
-        component="label"
-        sx={{
-          border: `1px dashed`,
-          borderColor: `${errors ? "error.main" : "text.main"}`,
-          width: "100%",
-        }}
-        htmlFor={name}
-      >
-        {NewImages.length > 0 ? (
-          <>
-            <Edit sx={{ mx: "5px" }} fontSize="medium" />
-            {"  "}
-            <span>{t("Change Images")}</span>
-          </>
-        ) : (
-          <>
-            <Upload sx={{ mx: "5px" }} fontSize="medium" />
-            {"  "}
-            <p>{t("Upload Images")}</p>
-          </>
-        )}
-        <Controller
-          control={control}
-          name={name}
-          {...register(name)}
-          render={({ field }) => (
-            <input
-              id={name}
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                handleImage(e);
-                const files = Array.from(e.target.files);
-                field.onChange(files); // Ensure the value is an array
-              }}
-              multiple={multiple}
-              style={{ display: "none" }}
-            />
+      <Box sx={{ mx: "auto", width: "60%", textAlign: "center" }}>
+        <Button
+          component="label"
+          sx={{
+            border: `1px dashed`,
+            px: 5,
+            borderColor: `${errors ? "error.main" : "text.main"}`,
+          }}
+          htmlFor={name}
+        >
+          {NewImages.length > 0 ? (
+            <>
+              <Edit sx={{ mx: "5px" }} fontSize="medium" />
+              {"  "}
+              <span>
+                {t("Change")}
+                {name}
+              </span>
+            </>
+          ) : (
+            <>
+              <Upload sx={{ mx: "5px" }} fontSize="medium" />
+              {"  "}
+              <p>
+                {t("Upload")}
+                {name}
+              </p>
+            </>
           )}
-        />
-      </Button>
-      <Typography sx={{ color: "error.main" }}>{errors}</Typography>
-      <Box sx={{ width: "300px" }}>
+          <Controller
+            control={control}
+            name={name}
+            {...register(name)}
+            render={({ field }) => (
+              <input
+                id={name}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  handleImage(e);
+                  const files = Array.from(e.target.files);
+                  field.onChange(files); // Ensure the value is an array
+                }}
+                multiple={multiple}
+                style={{ display: "none" }}
+              />
+            )}
+          />
+        </Button>
+        <Typography sx={{ color: "error.main" }}>{errors}</Typography>
+      </Box>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+          p: 2,
+        }}
+      >
         {NewImages.length > 0
           ? NewImages.map((image, index) => (
               <img
                 key={index}
-                style={{ width: "100%", margin: "1rem", borderRadius: "5px" }}
+                style={{ width: "25%", borderRadius: "5px" }}
                 src={image}
                 alt={`uploaded ${index}`}
               />
             ))
           : null}
       </Box>
-    </>
+    </Box>
   );
 };
 

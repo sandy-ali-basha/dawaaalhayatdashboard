@@ -13,11 +13,12 @@ import { useMutation, useQueryClient } from "react-query";
 import { _Settings } from "api/settings/settings";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
+import Gift_Card from "assets/images/Gift_Card.png";
 const schema = yup.object().shape({
   value: yup.string().required("value  is required"),
 });
 
-const SettingsUpdate = ({ value,open,setOpen }) => {
+const SettingsUpdate = ({ value, open, setOpen }) => {
   const { t } = useTranslation("index");
 
   const formOptions = { resolver: yupResolver(schema) };
@@ -72,28 +73,19 @@ const SettingsUpdate = ({ value,open,setOpen }) => {
         <DialogTitle sx={{ color: "text.main" }}>
           {t("Enter point price")}
         </DialogTitle>
-
-        <>
-          <Grid container component="form">
-            <Grid item md={6} sx={{ p: "10px" }}>
-              <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="body1" color="text.main">
-                  value
-                </Typography>
-              </Box>
-              <TextFieldStyled
-                sx={{ width: "100%" }}
-                type={"number"}
-                placeholder={"value"}
-                defaultValue={"value"}
-                name={"value"}
-                {...register("value")}
-                errors={errors?.value?.message}
-                initialValue={value}
-              />
-            </Grid>
-          </Grid>
-        </>
+        <Box sx={{ width: "40%", margin: "auto" }}>
+          <img src={Gift_Card} alt="" style={{ width: "100%" }} />
+        </Box>
+        <TextFieldStyled
+          sx={{ width: "90%", mx: "auto" }}
+          type={"number"}
+          placeholder={"value"}
+          defaultValue={"value"}
+          name={"value"}
+          {...register("value")}
+          errors={errors?.value?.message}
+          initialValue={value}
+        />
 
         <DialogActions>
           <Button onClick={handleClose} sx={{ color: "text.main" }}>

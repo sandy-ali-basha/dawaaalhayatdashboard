@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as yup from "yup";
@@ -22,26 +22,71 @@ const schema = yup.object().shape({
   }),
 });
 
-export const useProductdetailsCreate = () => {
+export const useProductdetailsCreate = ({ id }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [alert, setAlert] = useState([]);
+
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState, setValue, control } =
     useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
+  const handleCreatePost = (data) => {
+    setLoading(true);
+    // Ensure id is an array
+    const ids = Array.isArray(id) ? id : [id];
+    // Map over the array of ids to create a request for each
+    const requests = ids.map((productId) =>
+      _Productdetails.post(
+        { ...data, product_id: productId }, // Include product_id for each request
+        setLoading
+      )
+    );
 
-  async function createPost(data) {
-    _Productdetails
-      .post(data, setLoading)
-      .then((res) => {
-        if (res?.code === 200) navigate(-1);
-        setLoading(true);
+    // Execute all requests concurrently
+    Promise.all(requests)
+      .then((responses) => {
+        responses.forEach((res, index) => {
+          if (res?.code === 200) {
+            setAlert((prev) => [
+              ...prev,
+              `Details for Product ${ids[index]} saved successfully.`,
+            ]);
+          } else {
+            setAlert((prev) => [
+              ...prev,
+              `Failed to save Details for Product ${ids[index]}.`,
+            ]);
+          }
+        });
+      })
+      .catch((error) => {
+        console.error("Error while saving product details:", error);
+        setAlert((prev) => [
+          ...prev,
+          "An error occurred while saving details.",
+        ]);
       })
       .finally(() => {
         setLoading(false);
       });
+  };
+  async function createPost(data) {
+    if (id && Array.isArray(id)) {
+      handleCreatePost(data);
+    } else {
+      _Productdetails
+        .post(data, setLoading)
+        .then((res) => {
+          if (res?.code === 200) navigate(-1);
+          setLoading(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
   const handleCancel = () => navigate(-1);
@@ -51,6 +96,7 @@ export const useProductdetailsCreate = () => {
     if (form) form.reset();
   };
   const params = useParams();
+
   const hanldeCreate = (input) => {
     const inputWithProductId = { ...input, product_id: params?.id };
     mutate(inputWithProductId);
@@ -110,6 +156,7 @@ export const useProductdetailsCreate = () => {
     errors,
     details,
     control,
-    Discription
+    alert,
+    Discription,
   };
 };

@@ -19,16 +19,16 @@ const ChangeStatusPurchasable = ({ id, currentStatus }) => {
   const { refetch } = useProduct();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  console.log(currentStatus);
+
   const [status, setStatus] = useState(currentStatus === "always");
 
   // Setup mutation to toggle status
   const mutation = useMutation(
     () =>
-      _Product.update({
+      _Product.updatePurshasable({
         editedID: id,
         formData: {
-          purchasable: currentStatus === "always" ? "false" : "always",
+          purchasable: currentStatus === "always" ? false : true,
         },
       }),
     {

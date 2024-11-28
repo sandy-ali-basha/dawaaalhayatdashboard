@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Grid, Typography } from "@mui/material";
-import { colorStore } from "store/ColorsStore";
+import { Alert, Card, CardActions, Grid, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { _axios } from "interceptor/http-config";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { _Product } from "api/product/product";
@@ -21,10 +19,12 @@ const SUPPORTED_FORMATS = [
   "image/jpeg",
   "image/png",
   "image/webp",
+  "image/svg",
+  "image/gif",
 ];
 const MAX_FILE_SIZE = 1000000;
 
-const AddImages = ({ id, open, setOpen }) => {
+const AddImages = ({ id, open, setOpen, notDialog }) => {
   const { t } = useTranslation("index");
   const schema = yup.object().shape({
     images: yup
@@ -53,25 +53,62 @@ const AddImages = ({ id, open, setOpen }) => {
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
+  const [alert, setALert] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
   };
 
   const { mutate } = useMutation((data) => createPost(data));
-
-  async function createPost(data) {
-    _Product
-      .AddImages({
+  const handleAddImages = ({ data }) => {
+    setLoading(true);
+    // Map over the array of ids to create a request for each
+    const requests = id.map((id) => {
+      // Return the promise for the request
+      return _Product.AddImages({
         editedID: id,
         formData: data,
+      });
+    });
+
+    // Execute all requests concurrently
+    Promise.all(requests)
+      .then((responses) => {
+        // Handle successful responses
+        responses.forEach((res, index) => {
+          if (res.code === 200) {
+            setALert((prev) => [
+              ...prev,
+              `Images for Product ${id[index]} saved successfully.`,
+            ]);
+          } else {
+            setALert((prev) => [
+              ...prev,
+              `Failed to save images for Product ${id[index]}.`,
+            ]);
+          }
+        });
       })
-      .then((res) => {
-        if (res.code === 200) {
-          handleDialogClose();
-        }
+      .finally(() => {
         setLoading(false);
       });
+  };
+  async function createPost(data) {
+    if (notDialog) {
+      handleAddImages({ data });
+    } else {
+      _Product
+        .AddImages({
+          editedID: id,
+          formData: data,
+        })
+        .then((res) => {
+          if (res.code === 200) {
+            handleDialogClose();
+          }
+          setLoading(false);
+        });
+    }
   }
 
   const handleUpdate = (input) => {
@@ -93,10 +130,52 @@ const AddImages = ({ id, open, setOpen }) => {
   return (
     <>
       {loading && <Loader />}
-      <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
-        <DialogTitle sx={{ color: "text.main" }}>{t("Add Images")}</DialogTitle>
-        <>
-          <Grid container component="form" key={id} sx={{ m: 1 }}>
+      {notDialog ? (
+        <Card
+          sx={{
+            BoxShadow: 10,
+            p: 3,
+            opacity: id.length > 0 ? "100%" : "50%",
+            pointerEvents: id.length > 0 ? "initial" : "none",
+          }}
+        >
+          <Typography sx={{ color: "text.main" }}>{t("Add Images")}</Typography>
+
+          <Image
+            key={id}
+            errors={errors?.images?.message}
+            control={control}
+            register={register}
+            name={"images"}
+            setImage={setImages}
+            multiple
+          />
+
+          <CardActions>
+            {loading && <Loader />}
+            <ButtonLoader
+              name={t("Submit")}
+              onClick={() => handleSubmit(handleUpdate)()}
+              type="save"
+              loading={loading}
+              disableOnLoading
+            >
+              {t("Submit")}
+            </ButtonLoader>
+          </CardActions>
+          {alert.length > 0 &&
+            alert.map((item, idx) => (
+              <Alert sx={{ mt: 1 }} key={idx} severity="info">
+                {item}
+              </Alert>
+            ))}
+        </Card>
+      ) : (
+        <Dialog fullWidth open={open} onClose={handleDialogClose}>
+          <DialogTitle sx={{ color: "text.main" }}>
+            {t("Add Images")}
+          </DialogTitle>
+          <>
             <Image
               errors={errors?.images?.message}
               control={control}
@@ -105,24 +184,24 @@ const AddImages = ({ id, open, setOpen }) => {
               setImage={setImages}
               multiple
             />
-          </Grid>
-        </>
-        <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "text.main" }}>
-            {t("Cancel")}
-          </Button>
-          {loading && <Loader />}
-          <ButtonLoader
-            name={t("Submit")}
-            onClick={() => handleSubmit(handleUpdate)()}
-            type="save"
-            loading={loading}
-            disableOnLoading
-          >
-            {t("Submit")}
-          </ButtonLoader>
-        </DialogActions>
-      </Dialog>
+          </>
+          <DialogActions>
+            <Button onClick={handleClose} sx={{ color: "text.main" }}>
+              {t("Cancel")}
+            </Button>
+            {loading && <Loader />}
+            <ButtonLoader
+              name={t("Submit")}
+              onClick={() => handleSubmit(handleUpdate)()}
+              type="save"
+              loading={loading}
+              disableOnLoading
+            >
+              {t("Submit")}
+            </ButtonLoader>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 };

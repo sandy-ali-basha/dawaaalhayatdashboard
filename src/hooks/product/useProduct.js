@@ -9,7 +9,7 @@ export const useProduct = (id) => {
   const [query, setQuery] = useState("");
 
   const { data, isLoading, refetch } = useQuery(
-    ["product", page, count, query],
+    ["product"],
     () =>
       _Product
         .index({

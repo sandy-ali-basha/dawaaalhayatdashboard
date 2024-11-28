@@ -19,6 +19,8 @@ import DiscountsRouting from "modules/discounts/DiscountsRouting";
 import SettingsRouting from "modules/Settings/SettingsRouting";
 import HomeRouting from "modules/home/HomeRouting";
 import CitiesRouting from "modules/cities/CitiesRouting";
+import CustomersRouting from "modules/customers/CustomersRouting";
+import RegionsRouting from "modules/regions/RegionsRouting";
 
 const DashboardRouting = () => {
   return (
@@ -37,12 +39,14 @@ const DashboardRouting = () => {
             element={<CareerscategoryRouting />}
           />
           <Route path="/product/*" element={<ProductRouting />} />
+          <Route path="/customers/*" element={<CustomersRouting />} />
           <Route path="/brands/*" element={<BrandRouting />} />
           <Route path="/orders/*" element={<OrdersRouting />} />
           <Route path="/discounts/*" element={<DiscountsRouting />} />
           {/* // eslint-disable-next-line react/jsx-pascal-case */}
           <Route path="/product_type/*" element={<Product_typeRouting />} />
           <Route path="/cities/*" element={<CitiesRouting />} />
+          <Route path="/regions/*" element={<RegionsRouting />} />
 
           <Route
             path="/products/categories/*"

@@ -1,4 +1,4 @@
-import { Typography, Box, Button, Grid } from "@mui/material";
+import { Typography, Box, Button, Grid, Alert } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
 import React from "react";
@@ -6,7 +6,7 @@ import Loader from "components/shared/Loader";
 import { useProductdetailsCreate } from "../hooks/useProductdetailsCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
-const ProductdetailsCreate = () => {
+const ProductdetailsCreate = ({ id, isCreateProduct }) => {
   const {
     handleCancel,
     hanldeCreate,
@@ -19,15 +19,26 @@ const ProductdetailsCreate = () => {
     Discription,
     control,
     setValue,
-  } = useProductdetailsCreate();
+    alert,
+  } = useProductdetailsCreate({ id });
 
   return (
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Product detail}")}
+        {t("Create Product detail")}
       </Typography>
-      <BoxStyled sx={{ px: "24px" }}>
+
+      <BoxStyled
+        sx={{
+          BoxShadow: 10,
+          px: 3,
+          ...(isCreateProduct && {
+            opacity: id && id.length > 0 ? "100%" : "50%",
+            pointerEvents: id && id.length > 0 ? "initial" : "none",
+          }),
+        }}
+      >
         <Box component="form">
           <Grid container spacing={2}>
             {/* * //details */}
@@ -101,6 +112,12 @@ const ProductdetailsCreate = () => {
             {t("Submit")}
           </ButtonLoader>
         </Box>
+        {alert.length > 0 &&
+          alert.map((item, idx) => (
+            <Alert sx={{ mt: 1 }} key={idx} severity="info">
+              {item}
+            </Alert>
+          ))}
       </BoxStyled>
     </Box>
   );

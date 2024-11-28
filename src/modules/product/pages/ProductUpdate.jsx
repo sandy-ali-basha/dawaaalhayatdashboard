@@ -71,7 +71,6 @@ const ProductUpdate = ({ id }) => {
   const [cities, setCiteies] = useState([]);
   const [checked, setChecked] = useState();
 
-  console.log(data?.purchasable);
   const formOptions = {
     resolver: yupResolver(schema),
     defaultValues: {
@@ -163,14 +162,14 @@ const ProductUpdate = ({ id }) => {
 
   details.push(
     {
-      head: t("sku"),
-      type: "text",
-      placeholder: "sku",
-      name: "sku",
-      register: "sku",
-      error: "sku",
-      helperText: "sku",
-      defaultValue: data?.sku,
+      head: t("price before sale"),
+      type: "number",
+      placeholder: "compare_price",
+      name: "compare_price",
+      register: "compare_price",
+      error: "compare_price",
+      helperText: "compare_price",
+      defaultValue: data?.compare_price ? data?.compare_price : "",
     },
 
     {
@@ -180,6 +179,16 @@ const ProductUpdate = ({ id }) => {
       register: "price",
       helperText: "price",
       defaultValue: Number(data?.price),
+    },
+    {
+      head: t("sku"),
+      type: "text",
+      placeholder: "sku",
+      name: "sku",
+      register: "sku",
+      error: "sku",
+      helperText: "sku",
+      defaultValue: data?.sku,
     },
     {
       head: t("quantity"),
@@ -197,16 +206,7 @@ const ProductUpdate = ({ id }) => {
       helperText: "points",
       defaultValue: data?.points,
     },
-    {
-      head: t("price before sale"),
-      type: "number",
-      placeholder: "compare_price",
-      name: "compare_price",
-      register: "compare_price",
-      error: "compare_price",
-      helperText: "compare_price",
-      defaultValue: data?.compare_price ? data?.compare_price : "",
-    }
+    
   );
 
   useMemo(() => {
@@ -241,9 +241,8 @@ const ProductUpdate = ({ id }) => {
   };
 
   const { mutate } = useMutation((data) => createPost(data));
-  console.log(errors);
+
   async function createPost(data) {
-    
     _Product
       .update({
         editedID: editedID,
@@ -275,10 +274,19 @@ const ProductUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleDialogClose} maxWidth>
-        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>
+          {t("Edit products")}{" "}
+          <FormControl error={Boolean(errors.purchasable)}>
+            <FormControlLabel
+              control={<Switch checked={checked} onChange={handleChange} />}
+              label="Purchasable"
+            />
+          </FormControl>
+        </DialogTitle>
 
         {!!data && (
           <>
+            {" "}
             <Grid container component="form">
               {brands && (
                 <Grid item xs={6} sx={{ p: "10px" }}>
@@ -375,16 +383,7 @@ const ProductUpdate = ({ id }) => {
                   </Grid>
                 );
               })}
-              <Grid item xs={6} sx={{ p: "10px", color: "text.main", pt: 5 }}>
-                <FormControl error={Boolean(errors.purchasable)}>
-                  <FormControlLabel
-                    control={
-                      <Switch checked={checked} onChange={handleChange} />
-                    }
-                    label="Purchasable"
-                  />
-                </FormControl>
-              </Grid>
+
               {TextEditorDetails?.map((item, index) => {
                 const error = errors?.[item.register.split(".")[0]]?.name;
                 return (

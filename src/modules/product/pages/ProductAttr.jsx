@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import {
+  Alert,
   Box,
+  Card,
   Chip,
   FormControl,
   FormHelperText,
@@ -21,23 +23,23 @@ import { useMutation } from "react-query";
 import { _Product } from "api/product/product";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
+import settings from "assets/images/settings.png";
 
 let schema = yup.object().shape({
   attribute_id: yup.string().trim().required("Product attributes is required"),
   values: yup.array().min(1, "Values type is required"),
 });
 
-const ProductAttr = ({ id, open, setOpen, attr }) => {
+const ProductAttr = ({ id, open, setOpen, attr, notDialog }) => {
   const { t } = useTranslation("index");
-
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, control, setValue, reset } =
-    useForm(formOptions);
+  const { handleSubmit, formState, control, reset } = useForm(formOptions);
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
   const [product_attributes, setProductAttributes] = useState();
   const [product_attributes_values, setProductAttributesValues] = useState();
   const [selectedValue, setSelectedValue] = useState([]);
+  const [alert, setALert] = useState([]);
 
   const getValues = (value) => {
     _axios
@@ -65,55 +67,108 @@ const ProductAttr = ({ id, open, setOpen, attr }) => {
     }
   }, [open, reset, attr]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
   const { mutate } = useMutation((data) => createPost(data));
+
+  const handleAddAttr = ({ data }) => {
+    setLoading(true);
+    // Map over the array of ids to create a request for each
+    const requests = id.map((id) => {
+      // Return the promise for the request
+      const newData = {
+        ...data,
+        product_id: id, // Add product_id to the form data
+      };
+      return _Product.attribute({
+        editedID: id,
+        formData: newData,
+      });
+    });
+
+    // Execute all requests concurrently
+    Promise.all(requests)
+      .then((responses) => {
+        // Handle successful responses
+        responses.forEach((res, index) => {
+          if (res.code === 200) {
+            setALert((prev) => [
+              ...prev,
+              `categories for Product ${id[index]} saved successfully.`,
+            ]);
+          } else {
+            setALert((prev) => [
+              ...prev,
+              `Failed to save categories for Product ${id[index]}.`,
+            ]);
+          }
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   async function createPost(data) {
     const newData = {
       ...data,
       product_id: id, // Add product_id to the form data
     };
-    _Product
-      .attribute({
-        editedID: id,
-        formData: newData,
-      })
-      .catch((err) => {
-        setLoading(false);
-      })
-      .then((res) => {
-        if (res?.code === 200) setOpen(false);
-        setLoading(false);
-      });
+    if (notDialog) {
+      handleAddAttr({ data });
+    } else {
+      _Product
+        .attribute({
+          editedID: id,
+          formData: newData,
+        })
+        .catch((err) => {
+          setLoading(false);
+        })
+        .then((res) => {
+          if (res?.code === 200) setOpen(false);
+          setLoading(false);
+        });
+    }
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleUpdate = (input) => {
     mutate(input);
     setLoading(true);
   };
 
-  return (
-    <>
-      {loading && <Loader />}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
-
+  const content = useMemo(() => {
+    return (
+      <>
+        <DialogTitle sx={{ color: "text.main" }}>
+          {t("Products categories")}
+        </DialogTitle>
+        <Box sx={{ width: "30%", margin: "0 auto" }}>
+          <img src={settings} alt="" style={{ width: "100%" }} />
+        </Box>
         <Grid container component="form" key={id}>
           <Grid item xs={12} sx={{ p: "10px" }}>
-            <Typography variant="body1">Current Attributes</Typography>
+            {attr && (
+              <Typography variant="body1">Current categories</Typography>
+            )}
             {attr?.map((val, idx) => (
-              <Chip sx={{ m: 1 }} label={val?.value} key={idx} />
+              <Chip
+                variant="outlined"
+                sx={{ m: 1 }}
+                label={val?.value}
+                key={idx}
+              />
             ))}
-            <Typography variant="body1" sx={{ color: "info.main", my: 2 }}>
+            <Typography variant="body1" sx={{ color: "text.secondary", my: 2 }}>
               Each selected attribute updates or adds the values of these
               attributes.
             </Typography>
             <FormControl fullWidth>
               <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography color="text.main">Product Attribute</Typography>
+                <Typography color="text.main">Product categories</Typography>
               </Box>
               <Controller
                 name="attribute_id"
@@ -209,7 +264,49 @@ const ProductAttr = ({ id, open, setOpen, attr }) => {
             {t("Submit")}
           </ButtonLoader>
         </DialogActions>
-      </Dialog>
+      </>
+    );
+  }, [
+    attr,
+    control,
+    errors.attribute_id?.message,
+    errors.values?.message,
+    handleClose,
+    handleSubmit,
+    handleUpdate,
+    id,
+    loading,
+    product_attributes,
+    product_attributes_values,
+    selectedValue,
+    t,
+  ]);
+
+  return (
+    <>
+      {loading && <Loader />}
+      {notDialog ? (
+        <Card
+          sx={{
+            BoxShadow: 10,
+            p: 3,
+            opacity: id.length > 0 ? "100%" : "50%",
+            pointerEvents: id.length > 0 ? "initial" : "none",
+          }}
+        >
+          {content}
+          {alert.length > 0 &&
+            alert.map((item, idx) => (
+              <Alert sx={{ mt: 1 }} key={idx} severity="info">
+                {item}
+              </Alert>
+            ))}
+        </Card>
+      ) : (
+        <Dialog open={open} onClose={handleClose}>
+          {content}
+        </Dialog>
+      )}
     </>
   );
 };

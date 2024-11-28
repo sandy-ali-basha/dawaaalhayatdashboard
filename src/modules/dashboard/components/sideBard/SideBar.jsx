@@ -112,6 +112,16 @@ const SideBar = ({ open, setOpen }) => {
       link: "/dashboard/home",
       icon: <HomeRounded color={"secondary.main"} />,
     },
+    {
+      name: t("customers"),
+      link: "/dashboard/customers",
+      icon: <HomeRounded color={"secondary.main"} />,
+    },
+    {
+      name: t("regions"),
+      link: "/dashboard/regions",
+      icon: <HomeRounded color={"secondary.main"} />,
+    },
   ];
   const website_admin = [
     {
@@ -141,6 +151,13 @@ const SideBar = ({ open, setOpen }) => {
       name: t("Home"),
       link: "/dashboard/home",
       icon: <HomeRounded color={"secondary.main"} />,
+    },
+  ];
+  const orders_admin = [
+    {
+      name: t("orders"),
+      link: "/dashboard/orders",
+      icon: <ShoppingCartCheckout />,
     },
   ];
   const ecommerce_admin = [
@@ -180,11 +197,18 @@ const SideBar = ({ open, setOpen }) => {
       link: "/dashboard/discounts",
       icon: <DiscountRounded />,
     },
+    {
+      name: t("regions"),
+      link: "/dashboard/regions",
+      icon: <DiscountRounded />,
+    },
   ];
+
   const returnLinks = () => {
     if (role === "super_admin") return links;
     if (role === "website_admin") return website_admin;
     if (role === "ecommerce_admin") return ecommerce_admin;
+    if (role === "order_admin") return orders_admin;
     else return [];
   };
 

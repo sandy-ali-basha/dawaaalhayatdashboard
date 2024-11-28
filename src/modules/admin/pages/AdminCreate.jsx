@@ -93,6 +93,7 @@ const AdminCreate = () => {
                   error={errors?.role?.message}
                   helperText={errors?.role?.message}
                 >
+                  <MenuItem value={"order_admin"}>Orders admin</MenuItem>
                   <MenuItem value={"ecommerce_admin"}>
                     E-commerce admin
                   </MenuItem>
@@ -118,10 +119,9 @@ const AdminCreate = () => {
             onClick={() => handleSubmit(hanldeCreate)()}
             type="submit"
           />
-        
         </Box>
         {Err?.email &&
-            Err?.email?.map((item) => <Alert severity="error">{item}</Alert>)}
+          Err?.email?.map((item) => <Alert severity="error">{item}</Alert>)}
       </BoxStyled>
     </Box>
   );

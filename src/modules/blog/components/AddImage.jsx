@@ -21,6 +21,8 @@ const SUPPORTED_FORMATS = [
   "image/jpeg",
   "image/png",
   "image/webp",
+  "image/svg",
+  "image/gif",
 ];
 const MAX_FILE_SIZE = 10000000000;
 
@@ -87,18 +89,16 @@ const AddImage = ({ id, open, setOpen }) => {
       {loading && <Loader />}
       <Dialog fullWidth maxWidth={"xl"} open={open} onClose={handleDialogClose}>
         <DialogTitle sx={{ color: "text.main" }}>{t("Add Image")}</DialogTitle>
-        <>
-          <Grid container component="form" key={id} sx={{ m: 1 }}>
-            <Image
-              errors={errors?.image?.message}
-              control={control}
-              register={register}
-              name={"image"}
-              setImage={(file) => setImage(file)}
-              multiple={false}
-            />
-          </Grid>
-        </>
+
+        <Image
+          errors={errors?.image?.message}
+          control={control}
+          register={register}
+          name={"image"}
+          setImage={(file) => setImage(file)}
+          multiple={false}
+        />
+
         <DialogActions>
           <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}

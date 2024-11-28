@@ -42,7 +42,7 @@ const BrandIndex = () => {
   ]);
 
   const columns = useMemo(() => {
-    return [ t("name"), t("operations"), "page"];
+    return [t("name"), t("operations"), "page"];
   }, [t]);
   const [id, setID] = useState();
 
@@ -61,7 +61,6 @@ const BrandIndex = () => {
   const rows = useMemo(() => {
     return data?.data?.brands?.map((brand, id) => (
       <TableRow sx={{ height: "65px" }} key={brand.id} hover>
-     
         <TableCell sx={{ minWidth: 50 }}>{brand?.name ?? "Null"}</TableCell>
 
         <TableCell
@@ -91,19 +90,23 @@ const BrandIndex = () => {
           </IconButton>
         </TableCell>
         <TableCell>
-          <IconButton onClick={() => navigate(`page/${brand?.id}`)}>
-            <Tooltip title={"Page"}>
-              <WebRounded sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
+          {brand?.havePage && (
+            <IconButton onClick={() => navigate(`page/${brand?.id}`)}>
+              <Tooltip title={"Page"}>
+                <WebRounded sx={{ color: "text.main" }} />
+              </Tooltip>
+            </IconButton>
+          )}
+          {!brand?.havePage && (
+            <IconButton onClick={() => navigate(`page/${brand?.id}/create`)}>
+              <Tooltip title={"add Page"}>
+                <NoteAddRounded sx={{ color: "info.main" }} />
+              </Tooltip>
+            </IconButton>
+          )}
           <IconButton onClick={() => navigate(`page/${brand?.id}/addslider`)}>
             <Tooltip title={"add slider"}>
               <ViewCarousel sx={{ color: "warning.main" }} />
-            </Tooltip>
-          </IconButton>
-          <IconButton onClick={() => navigate(`page/${brand?.id}/create`)}>
-            <Tooltip title={"add Page"}>
-              <NoteAddRounded sx={{ color: "info.main" }} />
             </Tooltip>
           </IconButton>
           {/* <IconButton>
