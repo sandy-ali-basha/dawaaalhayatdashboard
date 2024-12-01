@@ -1,11 +1,12 @@
 import { Typography, Box, Button, Grid, Alert } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
-import React from "react";
+import React, { useState } from "react";
 import Loader from "components/shared/Loader";
 import { useProductdetailsCreate } from "../hooks/useProductdetailsCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
+import ButtonReset from "components/shared/ButtonReset";
 const ProductdetailsCreate = ({ id, isCreateProduct }) => {
   const {
     handleCancel,
@@ -20,6 +21,7 @@ const ProductdetailsCreate = ({ id, isCreateProduct }) => {
     control,
     setValue,
     alert,
+    handleReset
   } = useProductdetailsCreate({ id });
 
   return (
@@ -101,7 +103,14 @@ const ProductdetailsCreate = ({ id, isCreateProduct }) => {
           >
             {t("Cancel")}
           </Button>
-
+          <Button
+            id="rest"
+            variant="outlined"
+            color="secondary"
+            onClick={handleReset}
+          >
+            {t("Reset")}
+          </Button>
           <ButtonLoader
             name={t("Submit")}
             onClick={() => handleSubmit(hanldeCreate)()}

@@ -21,7 +21,6 @@ const schema = yup.object().shape({
 
 const UpdateRegionPrice = ({ id, open, setOpen, productName }) => {
   const { t } = useTranslation("index");
-  console.log("productName", productName);
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors } = formState;

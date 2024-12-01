@@ -8,6 +8,7 @@ import { _Product } from "api/product/product";
 import { _axios } from "interceptor/http-config";
 import { _cities } from "api/cities/cities";
 import { _Regions } from "api/regions/regions";
+import { useSettings } from "hooks/settings/useSettings";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
@@ -34,17 +35,39 @@ let schema = yup.object().shape({
 export const useProductCreate = ({ setNewProductId }) => {
   const [cities, setCiteies] = useState([]);
   const [regions, setRegions] = useState([]);
-  const [selectedRegion, setSelectedRegions] = useState([]);
+  const [selectedRegion, setSelectedRegions] = useState(null);
   const [selectedCities, setSelectedCities] = useState([]);
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [brands, setBrand] = useState(null);
   const [producttypes, setproducttypes] = useState(null);
+  const { data: point_price } = useSettings();
+
   const navigate = useNavigate();
-  const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, setValue, control, reset } =
+  const formOptions = {
+    resolver: yupResolver(schema),
+    defaultValues: {
+      points: 0, // Set the initial value for "points"
+    },
+  };
+
+  const { register, handleSubmit, formState, setValue, control, reset, watch } =
     useForm(formOptions);
   const { errors } = formState;
+  const price = watch("price"); // Watch for changes in the "price" field
+
+  useEffect(() => {
+    // Update the "points" field whenever "price" or "point_price" changes
+    if (price && point_price) {
+      setValue(
+        "points",
+        Math.round(price / point_price?.data?.point_price?.value) // تقريب القيمة
+      );
+  
+    } else {
+      setValue("points", 0);
+    }
+  }, [price, point_price, setValue]);
 
   useEffect(() => {
     _axios.get("/brand").then((res) => {
@@ -53,10 +76,10 @@ export const useProductCreate = ({ setNewProductId }) => {
     });
     _axios.get("/product_type").then((res) => {
       setLoading(false);
-
       setproducttypes(res?.data?.data?.producttypes);
     });
-  }, []);
+  }, [setValue]);
+
   const details = [
     {
       head: t("arabic name"),
@@ -88,6 +111,7 @@ export const useProductCreate = ({ setNewProductId }) => {
       helperText: "kr.name",
     },
   ];
+
   const generalDetails = [
     {
       head: t("price before sale"),
@@ -174,7 +198,7 @@ export const useProductCreate = ({ setNewProductId }) => {
   };
 
   const hanldeCreate = (input) => {
-    if (regions) {
+    if (selectedRegion) {
       const productData = {
         ...input,
         region_id: selectedRegion,
@@ -186,7 +210,7 @@ export const useProductCreate = ({ setNewProductId }) => {
       return _Product
         .post(productData, setLoading)
         .then((res) => {
-          setNewProductId(res?.data?.products_id);
+          if (res?.code === 200) setNewProductId(res?.data?.products_id);
         })
         .finally(() => {
           setLoading(false);

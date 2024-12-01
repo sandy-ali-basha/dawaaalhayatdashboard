@@ -29,7 +29,7 @@ export const useProductdetailsCreate = ({ id }) => {
   const [alert, setAlert] = useState([]);
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, setValue, control } =
+  const { register, handleSubmit, reset, formState, setValue, control } =
     useForm(formOptions);
   const { errors } = formState;
   const { mutate } = useMutation((data) => createPost(data));
@@ -94,6 +94,7 @@ export const useProductdetailsCreate = ({ id }) => {
   const handleReset = () => {
     const form = document.querySelector("form");
     if (form) form.reset();
+    reset();
   };
   const params = useParams();
 
@@ -146,7 +147,6 @@ export const useProductdetailsCreate = ({ id }) => {
 
   return {
     handleCancel,
-    handleReset,
     hanldeCreate,
     register,
     handleSubmit,
@@ -158,5 +158,6 @@ export const useProductdetailsCreate = ({ id }) => {
     control,
     alert,
     Discription,
+    handleReset,
   };
 };

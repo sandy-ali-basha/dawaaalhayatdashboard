@@ -22,6 +22,7 @@ import Loader from "components/shared/Loader";
 import { useProductCreate } from "../hooks/useProductCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
+import ButtonReset from "components/shared/ButtonReset";
 const CreateProductDetails = ({ setNewProductId }) => {
   const {
     handleCancel,
@@ -44,9 +45,8 @@ const CreateProductDetails = ({ setNewProductId }) => {
     generalDetails,
     regions,
     selectedRegion,
-    setSelectedRegions,
+    setSelectedRegions
   } = useProductCreate({ setNewProductId });
-
   return (
     <Box>
       {loading && <Loader />}
@@ -65,8 +65,8 @@ const CreateProductDetails = ({ setNewProductId }) => {
                 item
                 xs={5}
                 sx={{
-                  opacity: selectedRegion.length === 0 ? 1 : 0.5,
-                  pointerEvents: selectedRegion.length === 0 ? "auto" : "none",
+                  opacity: selectedRegion !== null ? 0.5 : 1,
+                  pointerEvents: selectedRegion !== null ? "none" : "auto",
                   p: "10px",
                 }}
               >
@@ -76,7 +76,7 @@ const CreateProductDetails = ({ setNewProductId }) => {
                   sx={{ textAlign: "end" }}
                   p="10px"
                 >
-                   Select Cities{" "}
+                  Select Cities{" "}
                 </Typography>
                 {cities ? (
                   <FormControl fullWidth>
@@ -128,8 +128,8 @@ const CreateProductDetails = ({ setNewProductId }) => {
                 item
                 xs={5}
                 sx={{
-                  opacity: selectedCities.length > 0 ? 0.5 : 1,
-                  pointerEvents: selectedCities.length > 0 ? "none" : "auto",
+                  opacity: selectedCities?.length > 0 ? 0.5 : 1,
+                  pointerEvents: selectedCities?.length > 0 ? "none" : "auto",
                   p: "10px",
                 }}
               >
@@ -145,7 +145,6 @@ const CreateProductDetails = ({ setNewProductId }) => {
                     <Select
                       labelId="region-label"
                       id="region"
-                      value={selectedRegion}
                       onChange={(e) => setSelectedRegions(e.target.value)}
                     >
                       {regions?.map((region) => (
@@ -219,6 +218,7 @@ const CreateProductDetails = ({ setNewProductId }) => {
                   <SelectStyled
                     sx={{ color: "text.main", borderColor: "text.main" }}
                     {...register("product_type_id")}
+                    
                   >
                     {producttypes?.map((item) => (
                       <MenuItemStyled value={item.id} key={item.id}>
@@ -236,7 +236,6 @@ const CreateProductDetails = ({ setNewProductId }) => {
                 </Typography>
               )}
             </Grid>
-
             {/* * //details */}
             {details.map((item, index) => {
               const error = errors?.[item.register.split(".")[0]]?.name;
@@ -324,6 +323,7 @@ const CreateProductDetails = ({ setNewProductId }) => {
           >
             {t("Cancel")}
           </Button>
+        
           <ButtonLoader
             name={t("save")}
             onClick={() => handleSubmit(hanldeCreate)()}

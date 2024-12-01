@@ -12,7 +12,8 @@ const ButtonReset = ({ setResetForm, setValue, resetForm }) => {
     if (resetForm) {
       setValue();
     }
-  }, [resetForm,setValue]);
+  }, [resetForm, setValue]);
+
   const handleReset = () => {
     if (document.querySelector("form") === "") {
       return enqueueSnackbar("nothing to reset", {

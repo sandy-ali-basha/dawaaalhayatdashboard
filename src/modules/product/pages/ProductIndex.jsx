@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Typography,
   Box,
@@ -64,29 +64,35 @@ const ProductIndex = () => {
     productName
   } = useProductIndex();
 
-  // Prepare the rows for the DataGrid
-  const rows = filteredData.map((product) => ({
-    select: product.id,
-    id: product.id,
-    name: product.name ?? "Null",
-    brand: product.brand?.name ?? "Null",
-    sku: product.sku ?? "Null",
-    price: product.price ?? "Null",
-    comparePrice: product.compare_price > 0 ? product.compare_price : "no sale",
-    quantity: product.quantity ?? "Null",
-    city: product.cities?.state[0]?.name ?? "Null",
-    status: product.status,
-    purchasable: product.purchasable,
-    region: product.region_name,
-    actions: product,
-  }));
+  const rows = useMemo(() => {
+    return filteredData.map((product) => ({
+      select: product.id,
+      id: product.id,
+      name: product.name ?? "Null",
+      brand: product.brand?.name ?? "Null",
+      sku: product.sku ?? "Null",
+      price: product.price ?? "Null",
+      comparePrice: product.compare_price > 0 ? product.compare_price : "no sale",
+      quantity: product.quantity ?? "Null",
+      city: product.cities?.state[0]?.name ?? "Null",
+      status: product.status,
+      purchasable: product.purchasable,
+      region: product.region_name,
+      actions: product,
+    }));
+  }, [filteredData]); // Dependency array
 
   // Define columns for the DataGrid
   const gridColumns = [
     {
-      field: "select",
-      headerName: "Select",
+      field: "id",
+      headerName: "ID",
       width: 50,
+    },
+    {
+      field: "select",
+      headerName: "",
+      width: '50',
       renderCell: (params) => (
         <Checkbox
           checked={selectedRowIds.includes(params.row.id)}

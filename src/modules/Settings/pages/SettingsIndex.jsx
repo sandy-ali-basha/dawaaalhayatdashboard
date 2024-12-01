@@ -5,13 +5,9 @@ import {
   TableCell,
   IconButton,
   Tooltip,
-  Button,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-
 import { BoxStyled } from "components/styled/BoxStyled";
 import React, { useMemo, useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
@@ -24,7 +20,6 @@ const SettingsIndex = () => {
   const { t } = useTranslation("index");
   const { data, page, setPage, isLoading, count } = useSettings();
 
-  const navigate = useNavigate();
   const [direction] = settingsStore((state) => [state.direction]);
   const [editedValue, setEditedValue] = useState(false);
 
@@ -67,9 +62,7 @@ const SettingsIndex = () => {
       </TableRow>
     );
   }, [data, direction, handleEdit]);
-
-  const handleCreate = () => navigate("create");
-
+  
   return (
     <>
       {isLoading && <Loader />}
