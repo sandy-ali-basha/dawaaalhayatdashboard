@@ -73,7 +73,7 @@ const Image = ({
               <Upload sx={{ mx: "5px" }} fontSize="medium" />
               {"  "}
               <p>
-                {t("Upload")}
+                {t("Upload")}{' '}
                 {name}
               </p>
             </>
@@ -113,7 +113,7 @@ const Image = ({
           ? NewImages.map((image, index) => (
               <img
                 key={index}
-                style={{ width: "25%", borderRadius: "5px" }}
+                style={{ width: "25%", borderRadius: "5px",objectFit:'contain' }}
                 src={image}
                 alt={`uploaded ${index}`}
               />

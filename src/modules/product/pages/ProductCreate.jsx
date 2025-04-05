@@ -5,6 +5,7 @@ import { Chip, Grid, Typography } from "@mui/material";
 import AddImagesSlider from "./AddImagesSlider";
 import ProductAttr from "./ProductAttr";
 import ProductdetailsCreate from "../ProductDetails/pages/ProductdetailsCreate";
+import ProductFeatures from "./ProductFeatures";
 
 const ProductCreate = () => {
   const [newProductId, setNewProductId] = useState([]);
@@ -29,6 +30,9 @@ const ProductCreate = () => {
       </Grid>
       <Grid item xs="6">
         <ProductAttr id={newProductId} notDialog={true} />
+      </Grid>
+      <Grid item xs="6">
+        <ProductFeatures id={newProductId}/>
       </Grid>
       <Grid item xs="12">
         <ProductdetailsCreate id={newProductId} isCreateProduct={true} />

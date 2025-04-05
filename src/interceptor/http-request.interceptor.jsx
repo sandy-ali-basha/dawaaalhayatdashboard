@@ -12,12 +12,12 @@ export const HttpRequestInterceptor = () => {
           : "";
         request.headers.Accept = "application/json";
 
-        request.headers.locale =  ["en", "ar", "kr"].includes(
+        request.headers.locale = ["en", "ar", "kr"].includes(
           localStorage.getItem("i18nextLng")
         )
           ? localStorage.getItem("i18nextLng")
           : "en";
-      }
+        }
 
       return request;
     },

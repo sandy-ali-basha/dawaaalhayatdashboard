@@ -21,11 +21,13 @@ const ProductdetailsCreate = ({ id, isCreateProduct }) => {
     control,
     setValue,
     alert,
-    handleReset
+    handleReset,
   } = useProductdetailsCreate({ id });
 
   return (
-    <Box>
+    <Box
+      
+    >
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
         {t("Create Product detail")}

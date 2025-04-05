@@ -12,6 +12,7 @@ import VerificationCodeForm from "pages/VerificationCodeForm";
 import PasswordEditForm from "pages/PasswordEditForm";
 
 import loadable from "@loadable/component";
+import Dnd from "modules/Dnd/Dnd";
 
 const DashboardRouting = loadable(() =>
   import("./modules/dashboard/DashboardRouting")
@@ -48,6 +49,8 @@ const AppRouting = () => {
         element={<PasswordEditForm />}
       />
       <Route path="/" element={<Navigate to="/reset-password" />} />
+      <Route path="/dnd/" element={<Dnd />} />
+
       <Route
         path="Dashboard/*"
         element={

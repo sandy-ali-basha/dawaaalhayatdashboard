@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -24,10 +24,10 @@ const SUPPORTED_FORMATS = [
 ];
 const MAX_FILE_SIZE = 1000000;
 
-const EditImage = ({ open, setOpen, link, status }) => {
+const EditImage = ({ open, setOpen, link, status, isProductCreate }) => {
   const { t } = useTranslation("index");
   const schema = yup.object().shape({
-    images: yup
+    features: yup
       .mixed()
       .test("File", t("image") + " " + t("is required"), (value) => {
         return value && Array.isArray(value) && value.length > 0;
@@ -54,65 +54,73 @@ const EditImage = ({ open, setOpen, link, status }) => {
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const { mutate } = useMutation((data) => createPost(data));
-
+  console.log("link", link);
   async function createPost(data) {
-    _axios
-      .post(link, data)
-      .then((res) => res?.data)
-      .then((res) => {
-        if (res.code === 200) {
-          handleDialogClose();
-        }
-        setLoading(false);
-      });
+    if (Array.isArray(link)) {
+      console.log("link is array");
+      link?.map((item) =>
+        _axios
+          .post(item, data)
+          .then((res) => res?.data)
+          .then((res) => {
+            if (res.code === 200) {
+              handleDialogClose();
+            }
+            setLoading(false);
+          })
+      );
+    } else {
+      console.log("link is link");
+      _axios
+        .post(link, data)
+        .then((res) => res?.data)
+        .then((res) => {
+          if (res.code === 200) {
+            handleDialogClose();
+          }
+          setLoading(false);
+        });
+    }
   }
   const queryClient = useQueryClient();
-  const handleUpdate = (input) => {
-    const formData = new FormData();
-    if (status === "add") {
-      images.forEach((image, idx) =>
-        formData.append("images[" + idx + "]", image)
-      );
-    } else formData.append("image", images[0]);
-    mutate(formData);
-    setLoading(true);
-    
-  };
 
-  const handleDialogClose = (event, reason) => {
-    if (reason && reason === "backdropClick") {
-      return;
-    }
-    handleClose();
-    queryClient.invalidateQueries(["product"]);
-    queryClient.invalidateQueries(["product-features"]);
-    queryClient.invalidateQueries(["product-slider"]);
-  };
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    setLoading(false);
+  }, [setOpen]);
 
-  return (
-    <>
-      {loading && <Loader />}
-      <Dialog fullWidth maxWidth={"lg"} open={open} onClose={handleDialogClose}>
+  const handleUpdate = useCallback(
+    (input) => {
+      const formData = new FormData();
+      if (status === "add") {
+        images.forEach((image, idx) =>
+          formData.append("images[" + idx + "]", image)
+        );
+      } else formData.append("image", images[0]);
+      mutate(formData);
+      setLoading(true);
+    },
+    [images, mutate, status]
+  );
+
+  const content = useMemo(() => {
+    return (
+      <>
+        {" "}
         <DialogTitle sx={{ color: "text.main" }}>
           {status === "add" ? "Add New Images" : "Update Current image"}
         </DialogTitle>
-
         <Grid container component="form" sx={{ m: 1 }}>
           <Image
             errors={errors?.images?.message}
             control={control}
             register={register}
-            name={"images"}
+            name={"features"}
             setImage={setImages}
             multiple={status === "add" ? true : false}
           />
         </Grid>
-
         <DialogActions>
           <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
@@ -128,7 +136,40 @@ const EditImage = ({ open, setOpen, link, status }) => {
             {t("Submit")}
           </ButtonLoader>
         </DialogActions>
-      </Dialog>
+      </>
+    );
+  }, [
+    control,
+    errors?.images?.message,
+    handleClose,
+    handleSubmit,
+    handleUpdate,
+    loading,
+    register,
+    status,
+    t,
+  ]);
+
+  const handleDialogClose = (event, reason) => {
+    if (reason && reason === "backdropClick") {
+      return;
+    }
+    handleClose();
+    queryClient.invalidateQueries(["product"]);
+    queryClient.invalidateQueries(["product-features"]);
+    queryClient.invalidateQueries(["product-slider"]);
+  };
+
+  return (
+    <>
+      {loading && <Loader />}
+      {isProductCreate ? (
+        <Box>{content}</Box>
+      ) : (
+        <Dialog open={open} onClose={handleDialogClose}>
+          {content}
+        </Dialog>
+      )}
     </>
   );
 };

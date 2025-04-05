@@ -14,7 +14,7 @@ function App() {
   useEffect(() => {
     HttpRequestInterceptor();
     HttpResponseInterceptor(navigate, enqueueSnackbar);
-  }, []);
+  }, [enqueueSnackbar, navigate]);
 
   return (
     <Box color="background.main">
