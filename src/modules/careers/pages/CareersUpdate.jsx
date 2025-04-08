@@ -369,7 +369,6 @@ const CareersUpdate = ({ id }) => {
                       name={"kr.description"}
                       setValue={setValue}
                       errors={errors?.kr?.description?.message}
-                      initialValue={"hola"}
                     />
                   </Grid>
                   <Grid item md={12} sx={{ p: "10px" }}>
@@ -382,7 +381,6 @@ const CareersUpdate = ({ id }) => {
                       name={"kr.about_us"}
                       setValue={setValue}
                       errors={errors?.kr?.about_us?.message}
-                      initialValue={"about_us"}
                     />
                   </Grid>
                 </Grid>

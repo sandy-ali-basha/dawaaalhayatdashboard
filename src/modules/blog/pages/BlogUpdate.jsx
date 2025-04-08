@@ -92,7 +92,8 @@ const BlogUpdate = ({ id }) => {
           );
         }
       });
-  }, [id, editedID]);
+  }, [id, editedID, setValue]);
+  
   const languages = [
     { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
@@ -187,9 +188,6 @@ const BlogUpdate = ({ id }) => {
                   name={item.register}
                   setValue={setValue}
                   errors={error?.message}
-                  initialValue={
-                    data.translations?.find((t) => t.locale === "en")?.text
-                  }
                 />
               </Grid>
             );
