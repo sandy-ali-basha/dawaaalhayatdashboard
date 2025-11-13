@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { colorStore } from "store/ColorsStore";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _axios } from "interceptor/http-config";
@@ -36,21 +36,21 @@ const schema = yup.object().shape({
     country: yup.string().required("Kurdish country is required"),
     description: yup.string().required("Kurdish description is required"),
     location: yup.string().required("Kurdish location is required"),
-    about_us: yup.string().required("Kurdish about us is required"),
+    about_us: yup.string().required("Kurdish Position Overview is required"),
   }),
   ar: yup.object().shape({
     vacancy_name: yup.string().required("Arabic vacancy name is required"),
     country: yup.string().required("Arabic country is required"),
     description: yup.string().required("Arabic description is required"),
     location: yup.string().required("Arabic location is required"),
-    about_us: yup.string().required("Arabic about us is required"),
+    about_us: yup.string().required("Arabic Position Overview is required"),
   }),
   en: yup.object().shape({
     vacancy_name: yup.string().required("English vacancy name is required"),
     country: yup.string().required("English country is required"),
     description: yup.string().required("English description is required"),
     location: yup.string().required("English location is required"),
-    about_us: yup.string().required("English about us is required"),
+    about_us: yup.string().required("English Position Overview is required"),
   }),
 });
 
@@ -70,99 +70,40 @@ const CareersUpdate = ({ id }) => {
   const [careersCategoriesData, setCareersCategoriesData] = useState();
 
   useEffect(() => {
-    _axios
-      .get("/careers/" + editedID, {
-        headers: {
-          translations: true,
-        },
-      })
-      .then((res) => {
-        setData(res.data?.data);
-        const fetchedData = res.data?.data;
-        setData(fetchedData);
-        if (fetchedData) {
-          setValue(
-            "kr.vacancy_name",
-            fetchedData?.translations.find((t) => t.locale === "kr")
-              ?.vacancy_name || ""
-          );
-          setValue(
-            "ar.vacancy_name",
-            fetchedData?.translations.find((t) => t.locale === "ar")
-              ?.vacancy_name || ""
-          );
-          setValue(
-            "en.vacancy_name",
-            fetchedData?.translations.find((t) => t.locale === "en")
-              ?.vacancy_name || ""
-          );
-          setValue(
-            "kr.country",
-            fetchedData?.translations.find((t) => t.locale === "kr")?.country ||
-              ""
-          );
-          setValue(
-            "ar.country",
-            fetchedData?.translations.find((t) => t.locale === "ar")?.country ||
-              ""
-          );
-          setValue(
-            "en.country",
-            fetchedData?.translations.find((t) => t.locale === "en")?.country ||
-              ""
-          );
-          setValue(
-            "kr.description",
-            fetchedData?.translations.find((t) => t.locale === "kr")
-              ?.description || ""
-          );
-          setValue(
-            "ar.description",
-            fetchedData?.translations.find((t) => t.locale === "ar")
-              ?.description || ""
-          );
-          setValue(
-            "en.description",
-            fetchedData?.translations.find((t) => t.locale === "en")
-              ?.description || ""
-          );
-          setValue(
-            "kr.location",
-            fetchedData?.translations.find((t) => t.locale === "kr")
-              ?.location || ""
-          );
-          setValue(
-            "ar.location",
-            fetchedData?.translations.find((t) => t.locale === "ar")
-              ?.location || ""
-          );
-          setValue(
-            "en.location",
-            fetchedData?.translations.find((t) => t.locale === "en")
-              ?.location || ""
-          );
-          setValue(
-            "kr.about_us",
-            fetchedData?.translations.find((t) => t.locale === "kr")
-              ?.about_us || ""
-          );
-          setValue(
-            "ar.about_us",
-            fetchedData?.translations.find((t) => t.locale === "ar")
-              ?.about_us || ""
-          );
-          setValue(
-            "en.about_us",
-            fetchedData?.translations.find((t) => t.locale === "en")
-              ?.about_us || ""
-          );
-        }
-      });
-    _axios.get("/careers_categories").then((res) => {
-      setCareersCategoriesData(res?.data?.data?.careers_categories);
-     
-    });
-  }, [id, editedID, setValue]);
+    async function loadData() {
+      const [careerRes, catRes] = await Promise.all([
+        _axios.get(`/careers/${editedID}`, { headers: { translations: true } }),
+        _axios.get("/careers_categories"),
+      ]);
+
+      const fetchedData = careerRes.data?.data;
+      const allCats = catRes.data?.data?.careers_categories || [];
+      setCareersCategoriesData(allCats);
+      setData(fetchedData);
+
+      if (fetchedData) {
+        // find by name
+        const matchedCategory = allCats.find(
+          (c) => c.name === fetchedData.category
+        );
+        if (matchedCategory) setValue("category_id", matchedCategory.id);
+
+        // translations
+        ["ar", "en", "kr"].forEach((lang) => {
+          const tr = fetchedData.translations.find((t) => t.locale === lang);
+          setValue(`${lang}.vacancy_name`, tr?.vacancy_name || "");
+          setValue(`${lang}.country`, tr?.country || "");
+          setValue(`${lang}.location`, tr?.location || "");
+          setValue(`${lang}.description`, tr?.description || "");
+          setValue(`${lang}.about_us`, tr?.about_us || "");
+        });
+
+        setValue("requisition_no", fetchedData.requisition_no || "");
+        setValue("time_type", fetchedData.time_type || "");
+      }
+    }
+    loadData();
+  }, [editedID, setValue]);
 
   const handleClose = () => {
     setOpen(false);
@@ -285,9 +226,7 @@ const CareersUpdate = ({ id }) => {
     <>
       {loading && <Loader />}
       <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "text.main" }}>
-          {t("Edit Row")}
-        </DialogTitle>
+        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
         {!!data && (
           <>
             <Grid container component="form" key={id}>
@@ -296,17 +235,29 @@ const CareersUpdate = ({ id }) => {
                   <Box sx={{ margin: "0 0 8px 5px" }}>
                     <Typography variant="body2">{t("category")}</Typography>
                   </Box>
-                  <SelectStyled
-                    sx={{ color: "text.main", borderColor: "text.main" }}
-                    label="category_id"
-                    {...register("category_id")}
-                  >
-                    {careersCategoriesData?.map((item) => (
-                      <MenuItemStyled value={item.id} key={item.id}>
-                        <Box style={{ color: "text.main" }}>{item.name}</Box>
-                      </MenuItemStyled>
-                    ))}
-                  </SelectStyled>
+                  <Controller
+                    name="category_id"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <SelectStyled
+                        {...field}
+                        value={field.value || ""}
+                        onChange={(e) => field.onChange(e.target.value)}
+                        sx={{ color: "text.main", borderColor: "text.main" }}
+                      >
+                        {careersCategoriesData?.map((item) => (
+                          <MenuItemStyled key={item.id} value={item.id}>
+                            <Box sx={{ color: "text.main" }}>{item.name}</Box>
+                          </MenuItemStyled>
+                        ))}
+                      </SelectStyled>
+                    )}
+                  />
+                  <FormHelperText error>
+                    {errors.category_id?.message}
+                  </FormHelperText>
+
                   <FormHelperText error>
                     {errors.category_id?.message}
                   </FormHelperText>
@@ -373,7 +324,7 @@ const CareersUpdate = ({ id }) => {
                   </Grid>
                   <Grid item md={12} sx={{ p: "10px" }}>
                     <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
-                      about us
+                      Position Overview
                     </Typography>
                     <EditorInput
                       control={control}
@@ -424,7 +375,7 @@ const CareersUpdate = ({ id }) => {
                   </Grid>
                   <Grid item md={12} sx={{ p: "10px" }}>
                     <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
-                      about us
+                      Position Overview
                     </Typography>
                     <EditorInput
                       control={control}
@@ -476,7 +427,7 @@ const CareersUpdate = ({ id }) => {
                   </Grid>
                   <Grid item md={12} sx={{ p: "10px" }}>
                     <Typography sx={{ margin: "0 0 8px 8px" }} variant="body2">
-                      about us
+                      Position Overview
                     </Typography>
                     <EditorInput
                       control={control}

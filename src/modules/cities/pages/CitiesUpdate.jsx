@@ -15,10 +15,13 @@ import { _cities } from "api/cities/cities";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 const schema = yup.object().shape({
+  name: yup.string().required("name is required"),
+  inventory: yup.string().required("inventory is required"),
   shipping_price: yup.string().required("shipping price is required"),
+  currency: yup.string().required("currency is required"),
 });
 
-const CitiesUpdate = ({ prev_shipping_price }) => {
+const CitiesUpdate = ({ old_data, setEditCity }) => {
   const { t } = useTranslation("index");
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
@@ -34,6 +37,7 @@ const CitiesUpdate = ({ prev_shipping_price }) => {
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
+    setEditCity(false);
   };
 
   const { mutate } = useMutation((data) => createPost(data));
@@ -44,9 +48,9 @@ const CitiesUpdate = ({ prev_shipping_price }) => {
         formData: {
           data: [
             {
-              id: prev_shipping_price?.id,
-              name: prev_shipping_price?.name,
-              value: prev_shipping_price?.value,
+              id: old_data?.id,
+              name: data?.name,
+              value: data?.inventory,
               shipping_price: data?.shipping_price,
             },
           ],
@@ -87,11 +91,62 @@ const CitiesUpdate = ({ prev_shipping_price }) => {
                 sx={{ width: "100%" }}
                 type={"number"}
                 placeholder={"shipping price"}
-                defaultValue={prev_shipping_price?.shipping_price}
+                defaultValue={old_data?.shipping_price}
                 name={"shipping_price"}
                 {...register("shipping_price")}
                 error={!!errors?.shipping_price}
                 helperText={errors?.message?.shipping_price || ""}
+              />
+            </Grid>
+            <Grid item md={6} sx={{ p: "10px" }}>
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  Name
+                </Typography>
+              </Box>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"name"}
+                defaultValue={old_data?.name}
+                name={"name"}
+                {...register("name")}
+                error={!!errors?.name}
+                helperText={errors?.message?.name || ""}
+              />
+            </Grid>
+            <Grid item md={6} sx={{ p: "10px" }}>
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  Inventory Name
+                </Typography>
+              </Box>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"inventory"}
+                defaultValue={old_data?.value}
+                name={"inventory"}
+                {...register("inventory")}
+                error={!!errors?.inventory}
+                helperText={errors?.message?.inventory || ""}
+              />
+            </Grid>
+            <Grid item md={6} sx={{ p: "10px" }}>
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  currency
+                </Typography>
+              </Box>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"currency"}
+                defaultValue={old_data?.currency}
+                name={"currency"}
+                {...register("currency")}
+                error={!!errors?.currency}
+                helperText={errors?.message?.currency || ""}
               />
             </Grid>
           </Grid>

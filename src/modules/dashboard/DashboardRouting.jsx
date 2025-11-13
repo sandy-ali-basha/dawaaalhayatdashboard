@@ -22,6 +22,7 @@ import CitiesRouting from "modules/cities/CitiesRouting";
 import CustomersRouting from "modules/customers/CustomersRouting";
 import RegionsRouting from "modules/regions/RegionsRouting";
 import Dnd from "modules/Dnd/Dnd";
+import InvintoryRouting from "modules/invintory/InvintoryRouting";
 
 const DashboardRouting = () => {
   return (
@@ -46,7 +47,8 @@ const DashboardRouting = () => {
           <Route path="/discounts/*" element={<DiscountsRouting />} />
           {/* // eslint-disable-next-line react/jsx-pascal-case */}
           <Route path="/product_type/*" element={<Product_typeRouting />} />
-          <Route path="/cities/*" element={<CitiesRouting />} />
+          <Route path="/Inventories/*" element={<CitiesRouting />} />
+          <Route path="/Inventory/*" element={<InvintoryRouting />} />
           <Route path="/regions/*" element={<RegionsRouting />} />
 
           <Route

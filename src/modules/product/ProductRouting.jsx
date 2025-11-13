@@ -4,9 +4,9 @@ import ProductComponent from "./ProductComponent";
 import ProductIndex from "./pages/ProductIndex";
 import ProductUpdate from "./pages/ProductUpdate";
 import ProductView from "./pages/ProductView";
-import ProductCreate from "./pages/ProductCreate";
 import NotFound from "components/NotFound";
 import ProductdetailsRouting from "./ProductDetails/ProductdetailsRouting";
+import ProductCreate from "./pages/ProductCreate";
 
 const ProductRouting = () => {
   return (

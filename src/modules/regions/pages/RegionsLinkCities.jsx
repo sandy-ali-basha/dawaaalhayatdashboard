@@ -1,30 +1,25 @@
-import { React, useMemo, useState } from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
+import React, { useEffect, useState } from "react";
 import {
-  Checkbox,
-  FormControl,
-  FormHelperText,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  Button,
   Grid,
-  ListItemText,
-  MenuItem,
-  Select,
+  Card,
+  CardActionArea,
+  CardContent,
+  Typography,
+  Chip,
+  Box,
+  TextField,
 } from "@mui/material";
-import { colorStore } from "store/ColorsStore";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
 import { _Regions } from "api/regions/regions";
+import { _cities } from "api/cities/cities";
+import { colorStore } from "store/ColorsStore";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
-import { _cities } from "api/cities/cities";
-const schema = yup.object().shape({
-  city: yup.array().required("pleas select cities"),
-});
+import Autocomplete from "@mui/material/Autocomplete";
 
 const RegionsLinkCities = ({ openLink, setopenLink }) => {
   const { t } = useTranslation("index");
@@ -32,100 +27,170 @@ const RegionsLinkCities = ({ openLink, setopenLink }) => {
     state.editedID,
     state.setEditedID,
   ]);
-  const [selectedCities, setSelectedCities] = useState([]);
-  const formOptions = { resolver: yupResolver(schema) };
-  const { handleSubmit, formState, register } = useForm(formOptions);
-  const { errors } = formState;
+
   const [loading, setLoading] = useState(false);
-  const [cities, setCiteies] = useState([]);
-  useMemo(() => {
+  const [cities, setCities] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [selectedCities, setSelectedCities] = useState([]);
+
+  // 🧠 Load all cities
+  useEffect(() => {
     _cities.index().then((response) => {
       if (response.code === 200) {
-        setCiteies(response.data);
+        const allCities = response.data?.state || [];
+        setCities(allCities);
+        setFilteredCities(allCities);
       }
     });
   }, []);
 
+  // 🧩 Preselect cities if region already has them
+  useEffect(() => {
+    if (editedID?.cities?.length > 0) {
+      setSelectedCities(editedID.cities);
+    }
+  }, [editedID]);
+
   const handleClose = () => {
     setopenLink(false);
     setEditedID(null);
+    setSelectedCities([]);
   };
 
-  const { mutate } = useMutation((data) => createPost(data));
+  const handleToggleCity = (city) => {
+    setSelectedCities((prev) => {
+      const exists = prev.some((c) => c.id === city.id);
+      return exists ? prev.filter((c) => c.id !== city.id) : [...prev, city];
+    });
+  };
 
-  async function createPost(data) {
-    _Regions
-      .Link({
-        editedID: editedID,
-        formData: {
-          cities: selectedCities,
-        },
-      })
-      .then((res) => {
-        setLoading(false);
-        if (res.code === 200) handleClose();
-      });
-  }
+  const handleSearch = (event, value) => {
+    const query = value?.toLowerCase() || "";
+    setFilteredCities(
+      cities.filter((city) => city.name.toLowerCase().includes(query))
+    );
+  };
 
-  const hanldeUpdate = (input) => {
-    mutate(input);
+  const handleSave = async () => {
+    if (!editedID?.id) return;
     setLoading(true);
+    try {
+      const response = await _Regions.Link({
+        editedID: editedID.id,
+        formData: { cities: selectedCities.map((c) => c.id) },
+      });
+      if (response.code === 200) {
+        handleClose();
+      } else {
+        console.error("Failed:", response);
+      }
+    } catch (error) {
+      console.error("Error linking cities:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={openLink} onClose={handleClose} >
-        <DialogTitle sx={{ color: "text.main" }}>
-          Link Cities with Region
+      <Dialog
+        open={openLink}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="md"
+        sx={{ "& .MuiPaper-root": { borderRadius: "16px" } }}
+      >
+        <DialogTitle sx={{ color: "text.main", fontWeight: 600 }}>
+          {t("Manage Cities in")}{" "}
+          <span style={{ color: "#7C3AED" }}>{editedID?.name}</span>
         </DialogTitle>
-        {!!cities && (
-          <>
-            <FormControl   fullWidth>
-              <Select
-              sx={{ mx: 2 }}
-                labelId="city-label"
-                id="city"
-                multiple
-                name={"city"}
-                {...register("city")}
-                value={selectedCities}
-                onChange={(e) => setSelectedCities(e.target.value)}
-                renderValue={(selected) =>
-                  selected
-                    .map(
-                      (cityId) =>
-                        cities?.state?.find((city) => city.id === cityId)?.name
-                    )
-                    .join(", ")
-                }
-              >
-                {cities?.state?.map((city) => (
-                  <MenuItem key={city.id} value={city.id}>
-                    <Checkbox checked={selectedCities.indexOf(city.id) > -1} />
-                    <ListItemText primary={city.name} />
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText error>{errors.city?.message}</FormHelperText>
-            </FormControl>
-          </>
-        )}
 
-        <DialogActions>
+        <Box sx={{ px: 3, py: 2 }}>
+          {/* 🔍 Search */}
+          <Autocomplete
+            options={cities}
+            getOptionLabel={(option) => option.name || ""}
+            onInputChange={handleSearch}
+            renderInput={(params) => (
+              <TextField {...params} label={t("Search cities...")} fullWidth />
+            )}
+          />
+          {/* 🏙 Selected cities chips */}
+          <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 1 }}>
+            {selectedCities.map((city) => (
+              <Chip
+                key={city.id}
+                label={city.name}
+                color="secondary"
+                onDelete={() =>
+                  setSelectedCities((prev) =>
+                    prev.filter((c) => c.id !== city.id)
+                  )
+                }
+              />
+            ))}
+          </Box>
+
+          {/* 🧱 Available cities */}
+          <Grid container spacing={2} sx={{ mt: 3 }}>
+            {filteredCities.map((city) => {
+              const isSelected = selectedCities.some((c) => c.id === city.id);
+              return (
+                <Grid item xs={12} sm={6} md={4} key={city.id}>
+                  <Card
+                    sx={{
+                      borderRadius: 3,
+                      border: isSelected
+                        ? "2px solid #7C3AED"
+                        : "1px solid #ccc",
+                      boxShadow: isSelected
+                        ? "0 0 10px rgba(124,58,237,0.4)"
+                        : "0 1px 4px rgba(0,0,0,0.1)",
+                      cursor: "pointer",
+                      transition: "0.3s",
+                      "&:hover": { transform: "scale(1.02)" },
+                    }}
+                  >
+                    <CardActionArea onClick={() => handleToggleCity(city)}>
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: 600,
+                            color: isSelected ? "secondary.main" : "text.main",
+                          }}
+                        >
+                          {city.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mt: 0.5 }}
+                        >
+                          Shipping: {city.shipping_price ?? "—"}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
+
+        <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={handleClose} sx={{ color: "text.main" }}>
             {t("Cancel")}
           </Button>
-          {loading && <Loader />}
-
           <ButtonLoader
-            name={t("Submit")}
-            onClick={() => handleSubmit(hanldeUpdate)()}
+            name={t("Save Changes")}
+            onClick={handleSave}
             type="save"
             loading={loading}
             disableOnLoading
           >
-            {t("Submit")}
+            {t("Save Changes")}
           </ButtonLoader>
         </DialogActions>
       </Dialog>

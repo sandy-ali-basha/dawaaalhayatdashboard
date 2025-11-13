@@ -12,7 +12,7 @@ const schema = yup.object().shape({
     name: yup.string().required("Kurdish name is required"),
 })
 
-export const useRegionsCreate = () => {
+export const useCountryCreate = () => {
   const { t } = useTranslation("index")
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()

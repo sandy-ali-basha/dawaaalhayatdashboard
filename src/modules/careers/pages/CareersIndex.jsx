@@ -20,7 +20,6 @@ import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import ChangeStatus from "../components/ChangeStatus";
 import { useCareers } from "hooks/careers/useCareers";
 import CareersUpdate from "./CareersUpdate";
 import DeleteDialog from "../components/Dialog";

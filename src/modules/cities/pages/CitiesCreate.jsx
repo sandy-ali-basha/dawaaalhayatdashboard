@@ -24,7 +24,7 @@ const CitiesCreate = () => {
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Cities}")}
+        {t("Create Cities")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">

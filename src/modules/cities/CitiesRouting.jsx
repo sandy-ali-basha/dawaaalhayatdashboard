@@ -6,6 +6,7 @@ import CitiesIndex from "./pages/CitiesIndex";
 import CitiesUpdate from "./pages/CitiesUpdate";
 import CitiesView from "./pages/CitiesView";
 import CitiesCreate from "./pages/CitiesCreate";
+import CountryCreate from "./components/CountryCreate";
 
 const CitiesRouting = () => {
   return (
@@ -15,6 +16,7 @@ const CitiesRouting = () => {
         <Route path="/update/:id" element={<CitiesUpdate />} />
         <Route path="/view/:id" element={<CitiesView />} />
         <Route path="/create" element={<CitiesCreate />} />
+        <Route path="/create/country" element={<CountryCreate />} />
       </Route>
       <Route path="*" element={<p>not found 404</p>} />
     </Routes>

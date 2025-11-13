@@ -2,7 +2,7 @@ import { Typography, Box, Button, Grid } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import React from "react";
 import Loader from "components/shared/Loader";
-import { useHomepagesCreateSlider } from "../hooks/useHomepagesCreateSlider";
+import { useHomepagesCreateSlider } from "../../hooks/useHomepagesCreateSlider";
 import ButtonLoader from "components/shared/ButtonLoader";
 import InputRepeater from "modules/brand/brand_pages/components/InputRepeater";
 

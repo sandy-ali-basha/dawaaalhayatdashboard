@@ -4,9 +4,9 @@ import { TextFieldStyled } from "components/styled/TextField";
 import React from "react";
 import Loader from "components/shared/Loader";
 import ButtonAction from "components/shared/ButtonAction";
-import { useRegionsCreate } from "../hooks/useRegionsCreate";
+import { useInvintoryCreate } from "../hooks/useInvintoryCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
-const RegionsCreate = () => {
+const InvintoryCreate = () => {
   const {
     handleCancel,
     hanldeCreate,
@@ -17,13 +17,14 @@ const RegionsCreate = () => {
     t,
     errors,
     details,
-  } = useRegionsCreate()
+  } = useInvintoryCreate()
+
 
   return (
     <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
-        {t("Create Regions")}
+        {t("Create Invintory}")}
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
@@ -44,7 +45,9 @@ const RegionsCreate = () => {
                   helperText={errors[item.helperText]?.message || ""}
                 />
               </Grid>
-            ))} 
+            ))}
+
+          
           </Grid>
         </Box>
 
@@ -89,4 +92,4 @@ const RegionsCreate = () => {
   );
 };
 
-export default RegionsCreate;
+export default InvintoryCreate;

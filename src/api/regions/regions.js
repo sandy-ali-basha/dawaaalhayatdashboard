@@ -11,10 +11,12 @@ export const _Regions = {
 
   update: ({ editedID, formData }) =>
     _axios.put(Link + "/" + editedID, formData).then((res) => res?.data),
+
   updateRegionPrice: ({ editedID, formData }) =>
     _axios
       .post(Link + "/" + editedID + "/update-price", formData)
       .then((res) => res?.data),
+      
   Link: ({ editedID, formData }) =>
     _axios
       .post(Link + "/" + editedID + "/update-cities", formData)

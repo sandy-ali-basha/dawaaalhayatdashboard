@@ -1,8 +1,16 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Grid,
+  IconButton,
+  Typography,
+  Paper,
+  Tooltip,
+} from "@mui/material";
 import ButtonAction from "components/shared/ButtonAction";
 import Loader from "components/shared/Loader";
 import { _axios } from "interceptor/http-config";
-import React from "react";
+import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,12 +20,17 @@ import {
   ArrowBack,
   ArrowForward,
   Delete,
+  ModeOutlined,
   ModeTwoTone,
 } from "@mui/icons-material";
 import EditImage from "../components/images/EditImage";
 import { useState } from "react";
 import DeleteImage from "../components/images/DeleteImage";
 import { BoxStyled } from "components/styled/BoxStyled";
+import { colorStore } from "store/ColorsStore";
+import ProductUpdate from "./ProductUpdate";
+import VariantUpdate from "../components/VariantUpdate";
+import VariantsSection from "./view/VariantSection";
 
 const ProductView = () => {
   const { t } = useTranslation("index");
@@ -27,8 +40,12 @@ const ProductView = () => {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [ImageStatus, setImageStatus] = useState(false);
-
   const [link, setLink] = useState(null);
+  const [editedID, setEditedID] = colorStore((state) => [
+    state.editedID,
+    state.setEditedID,
+  ]);
+
   const handleBack = (e) => {
     e.preventDefault();
     navigate(-1);
@@ -47,6 +64,7 @@ const ProductView = () => {
     },
     {}
   );
+
   const { data: slider } = useQuery(
     ["product-slider", "id-" + params.id],
     async () => {
@@ -60,6 +78,7 @@ const ProductView = () => {
     },
     {}
   );
+
   const { data: features } = useQuery(
     ["product-features", "id-" + params.id],
     async () => {
@@ -73,6 +92,7 @@ const ProductView = () => {
     },
     {}
   );
+
   const columns = [
     {
       head: t("name english"),
@@ -90,14 +110,18 @@ const ProductView = () => {
     { head: t("product type"), value: data?.product_type?.name },
     { head: t("status"), value: data?.status },
     { head: t("sku"), value: data?.sku },
-    { head: t("price"), value: data?.price },
+    { head: t("points"), value: data?.points },
     {
       head: t("purchasable"),
       value: data?.purchasable === "always" ? "yes" : "no",
     },
-
-    { head: t("quantity"), value: data?.quantity },
+    { head: t("length"), value: data?.length },
+    { head: t("weight"), value: data?.weight },
+    { head: t("density"), value: data?.density },
+    { head: t("width"), value: data?.width },
+    { head: t("division"), value: data?.division },
   ];
+
   const disc = [
     {
       head: t("description english"),
@@ -118,6 +142,12 @@ const ProductView = () => {
     setImageStatus(status);
     setOpen(true);
   };
+  const handleEdit = useCallback(
+    (id) => {
+      setEditedID(id);
+    },
+    [setEditedID]
+  );
   const handleDeleteImage = (e) => {
     setLink(e);
     setOpenDelete(true);
@@ -126,303 +156,336 @@ const ProductView = () => {
   return (
     <>
       {isLoading && <Loader />}
+      {editedID && <ProductUpdate id={editedID} />}
+
       {!!data && (
-        <div>
+        <Box sx={{ p: 3 }}>
+          {/* Title */}
           <Typography
+            variant="h4"
             sx={{
               backgroundColor: "card.main",
-              borderRadius: "5px",
+              borderRadius: 2,
               color: "text.main",
-              width: "40%",
-              marginInline: "auto",
-              height: "100%",
-              textTransform: "uppercase",
-              padding: "10px 20px",
               textAlign: "center",
+              py: 2,
+              textTransform: "uppercase",
+              boxShadow: 2,
+              mb: 4,
             }}
-            variant="h5"
           >
             {data?.name}
           </Typography>
-          <Box
-            key={params.id}
-            sx={{
-              display: "flex",
-              color: "text.main",
-              columnGap: 10,
-              marginTop: "2%",
-              justifyContent: "center",
-            }}
-          >
-            <Box
-              sx={{
-                backgroundColor: "card.main",
-                borderRadius: "5px",
-                padding: "20px",
-                width: "-webkit-fill-available",
-              }}
+
+          {/* Product Details */}
+          <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 700 }}>
+              {t("Details")}
+              <IconButton
+                onClick={() => {
+                  handleEdit(params?.id);
+                }}
+              >
+                <ModeOutlined sx={{ color: "text.main" }} />
+              </IconButton>
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+
+            <Grid container spacing={2}>
+              {columns.map((item, index) => (
+                <Grid item xs={12} sm={6} key={index} sx={{ display: "flex" }}>
+                  <Typography sx={{ fontWeight: 600 }}>{item.head}: </Typography>
+                  <Typography
+                    sx={{ color: "text.secondary", wordBreak: "break-word" }}
+                  >
+                    {typeof item?.value === "object"
+                      ? JSON.stringify(item?.value)
+                      : item?.value ?? "—"}
+                  </Typography>
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Descriptions */}
+            <Box mt={4}>
+              {disc.map((item, index) => (
+                <Box key={index} mt={3}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      mb: 1,
+                      color: "primary.main",
+                    }}
+                  >
+                    {item.head}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ color: "text.secondary" }}
+                    dangerouslySetInnerHTML={{ __html: item?.value }}
+                  />
+                  <Divider sx={{ mt: 2 }} />
+                </Box>
+              ))}
+            </Box>
+          </Paper>
+          <VariantsSection t={t} options={data?.variants} />
+
+          {/* Image Sections */}
+          <BoxStyled sx={{ my: 4, p: 4, boxShadow: 2, borderRadius: 3 }}>
+            <Typography
+              variant="h6"
+              color="text.main"
+              sx={{ mb: 2, display: "flex", alignItems: "center" }}
             >
-              <Grid container>
-                <Grid item md={8}>
-                  <Box>
-                    <h3>{t("Details")}</h3>
-                    {columns?.map((item, index, id) => (
-                      <Box key={id}>
-                        <Typography
-                          variant="p"
-                          sx={{
-                            fontWeight: "700",
-                            marginInlineEnd: "15px",
-                          }}
+              {t("Product Images")}
+              <Tooltip title={t("Add Image")}>
+                <IconButton
+                  onClick={() =>
+                    handleUpdateImage(
+                      `/products/${data?.id}/images/gallery`,
+                      "add"
+                    )
+                  }
+                >
+                  <AddAPhoto sx={{ color: "primary.main" }} />
+                </IconButton>
+              </Tooltip>
+            </Typography>
+
+            <Grid container spacing={2}>
+              {data?.images?.map((item, idx) => (
+                <Grid item xs={12} sm={6} md={4} key={idx}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      border: "1px solid #ddd",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      "&:hover": { boxShadow: 4 },
+                    }}
+                  >
+                    <Box sx={{ position: "absolute", top: 10, left: 10 }}>
+                      <Tooltip title={t("Edit")}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleUpdateImage(
+                              `/products/${data?.id}/images/${item?.id}/gallery`,
+                              "update"
+                            )
+                          }
                         >
-                          {item.head}:
-                        </Typography>
-                        <Typography variant="p">
-                          {typeof item?.value === "object"
-                            ? JSON.stringify(item?.value)
-                            : item?.value ?? "null"}
-                        </Typography>
-                      </Box>
-                    ))}
+                          <ModeTwoTone color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={t("Delete")}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleDeleteImage(
+                              `/products/${data?.id}/images/${item?.id}/gallery`
+                            )
+                          }
+                        >
+                          <Delete color="error" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <img
+                      src={item?.image_path}
+                      alt=""
+                      style={{
+                        width: "100%",
+                        height: "200px",
+                        objectFit: "contain",
+                        background: "#fafafa",
+                      }}
+                    />
                   </Box>
                 </Grid>
+              ))}
+            </Grid>
+          </BoxStyled>
 
-                <Grid item md={12}>
-                  {disc?.map((item, index, id) => (
-                    <Box key={id} mt={3}>
-                      <Typography
-                        variant="p"
-                        sx={{
-                          fontWeight: "700",
-                          marginInlineEnd: "15px",
-                        }}
-                      >
-                        {item.head}:
-                      </Typography>
-                      <Typography
-                        variant="p"
-                        dangerouslySetInnerHTML={{ __html: item?.value }}
-                      ></Typography>
+          {/* Product Slider */}
+          <BoxStyled sx={{ my: 4, p: 4, boxShadow: 2, borderRadius: 3 }}>
+            <Typography
+              variant="h6"
+              color="text.main"
+              sx={{ mb: 2, display: "flex", alignItems: "center" }}
+            >
+              {t("Product Slider")}
+              <Tooltip title={t("Add Slider Image")}>
+                <IconButton
+                  onClick={() =>
+                    handleUpdateImage(
+                      `/products/${data?.id}/images/slider`,
+                      "add"
+                    )
+                  }
+                >
+                  <AddAPhoto sx={{ color: "primary.main" }} />
+                </IconButton>
+              </Tooltip>
+            </Typography>
+            <Grid container spacing={2}>
+              {slider?.map((item, idx) => (
+                <Grid item xs={12} sm={6} md={4} key={idx}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      border: "1px solid #ddd",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      "&:hover": { boxShadow: 4 },
+                    }}
+                  >
+                    <Box sx={{ position: "absolute", top: 10, left: 10 }}>
+                      <Tooltip title={t("Edit")}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleUpdateImage(
+                              `/products/${data?.id}/images/${item?.id}/gallery`,
+                              "update"
+                            )
+                          }
+                        >
+                          <ModeTwoTone color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={t("Delete")}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleDeleteImage(
+                              `/products/${data?.id}/images/${item?.id}/gallery`
+                            )
+                          }
+                        >
+                          <Delete color="error" />
+                        </IconButton>
+                      </Tooltip>
                     </Box>
-                  ))}
+                    <img
+                      src={item?.image_path}
+                      alt=""
+                      style={{
+                        width: "100%",
+                        height: "200px",
+                        objectFit: "contain",
+                        background: "#fafafa",
+                      }}
+                    />
+                  </Box>
                 </Grid>
-              </Grid>
-            </Box>
+              ))}
+            </Grid>
+          </BoxStyled>
+
+          {/* Product Features */}
+          <BoxStyled sx={{ my: 4, p: 4, boxShadow: 2, borderRadius: 3 }}>
+            <Typography
+              variant="h6"
+              color="text.main"
+              sx={{ mb: 2, display: "flex", alignItems: "center" }}
+            >
+              {t("Product Features")}
+              <Tooltip title={t("Add Feature Image")}>
+                <IconButton
+                  onClick={() =>
+                    handleUpdateImage(
+                      `/products/${data?.id}/images/products_features`,
+                      "add"
+                    )
+                  }
+                >
+                  <AddAPhoto sx={{ color: "primary.main" }} />
+                </IconButton>
+              </Tooltip>
+            </Typography>
+            <Grid container spacing={2}>
+              {features?.map((item, idx) => (
+                <Grid item xs={12} sm={6} md={3} key={idx}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      border: "1px solid #ddd",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      "&:hover": { boxShadow: 4 },
+                    }}
+                  >
+                    <Box sx={{ position: "absolute", top: 10, left: 10 }}>
+                      <Tooltip title={t("Edit")}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleUpdateImage(
+                              `/products/${data?.id}/images/${item?.id}/products_features`,
+                              "update"
+                            )
+                          }
+                        >
+                          <ModeTwoTone color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={t("Delete")}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleDeleteImage(
+                              `/products/${data?.id}/images/${item?.id}/products_features`
+                            )
+                          }
+                        >
+                          <Delete color="error" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <img
+                      src={item?.image_path}
+                      alt=""
+                      style={{
+                        width: "100%",
+                        height: "200px",
+                        objectFit: "contain",
+                        background: "#fafafa",
+                      }}
+                    />
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </BoxStyled>
+
+          {/* Back Button */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: direction === "ltr" ? "flex-end" : "flex-start",
+              mt: 3,
+            }}
+          >
+            <ButtonAction
+              name={t("Back")}
+              onClick={handleBack}
+              endIcon={direction === "ltr" ? <ArrowForward /> : <ArrowBack />}
+            />
           </Box>
-        </div>
+        </Box>
       )}
+
+      {/* Modals */}
       <EditImage
         open={open}
         setOpen={setOpen}
         link={link}
         status={ImageStatus}
-      />{" "}
+      />
       <DeleteImage open={openDelete} setOpen={setOpenDelete} link={link} />
-      <BoxStyled sx={{ my: 2, p: 4 }}>
-        <Typography variant="body1" color="initial">
-          product images{" "}
-          <IconButton
-            onClick={() =>
-              handleUpdateImage(`/products/${data?.id}/images/gallery`, "add")
-            }
-          >
-            <AddAPhoto sx={{ color: "text.primary" }} />
-          </IconButton>
-        </Typography>
-        <Grid container md={12}>
-          {data?.images?.map((item, idx) => (
-            <Grid
-              item
-              md="4"
-              sx={{
-                position: "relative",
-                border: "1px solid #ddd",
-                my: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "10px",
-                  left: "10px",
-                  width: "25%",
-                }}
-              >
-                <IconButton
-                  onClick={() =>
-                    handleUpdateImage(
-                      `/products/${data?.id}/images/${item?.id}/gallery`,
-                      "update"
-                    )
-                  }
-                >
-                  <ModeTwoTone sx={{ color: "text.primary" }} />
-                </IconButton>
-                <IconButton
-                  onClick={() =>
-                    handleDeleteImage(
-                      `/products/${data?.id}/images/${item?.id}/gallery`
-                    )
-                  }
-                >
-                  <Delete sx={{ color: "text.primary" }} />
-                </IconButton>
-              </Box>
-              <img
-                style={{
-                  width: "100%",
-                  minHeight:"20vh",
-                  objectFit: "contain",
-                }}
-                key={idx}
-                src={item?.image_path}
-                alt=""
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </BoxStyled>
-      <BoxStyled sx={{ my: 2, p: 4 }}>
-        <Typography variant="body1" color="initial">
-          product slider{" "}
-          <IconButton
-            onClick={() =>
-              handleUpdateImage(`/products/${data?.id}/images/slider`, "add")
-            }
-          >
-            <AddAPhoto sx={{ color: "text.primary" }} />
-          </IconButton>
-        </Typography>
-        <Grid container sx={{ display: "flex" }}>
-          {slider?.map((item, idx) => (
-            <Grid
-              item
-              xs="4"
-              sx={{
-                position: "relative",
-                border: "1px solid #ddd",
-                my: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "10px",
-                  left: "10px",
-                  width: "25%",
-                }}
-              >
-                <IconButton
-                  onClick={() =>
-                    handleUpdateImage(
-                      `/products/${data?.id}/images/${item?.id}/gallery`,
-                      "update"
-                    )
-                  }
-                >
-                  <ModeTwoTone sx={{ color: "text.primary" }} />
-                </IconButton>
-                <IconButton
-                  onClick={() =>
-                    handleDeleteImage(
-                      `/products/${data?.id}/images/${item?.id}/gallery`
-                    )
-                  }
-                >
-                  <Delete sx={{ color: "text.primary" }} />
-                </IconButton>
-              </Box>
-              <img
-                style={{
-                  width: "100%",
-                  minHeight:"20vh",
-                  objectFit: "contain",
-                }}
-                key={idx}
-                src={item?.image_path}
-                alt=""
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </BoxStyled>
-      <BoxStyled sx={{ my: 2, p: 4 }}>
-        <Typography variant="body1" color="initial">
-          product features{" "}
-          <IconButton
-            onClick={() =>
-              handleUpdateImage(`/products/${data?.id}/images/products_features`, "add")
-            }
-          >
-            <AddAPhoto sx={{ color: "text.primary" }} />
-          </IconButton>
-        </Typography>
-        <Grid container sx={{ display: "flex" }}>
-          {features?.map((item, idx) => (
-            <Grid
-              item
-              xs="3"
-              sx={{
-                position: "relative",
-                border: "1px solid #ddd",
-                my: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "10px",
-                  left: "10px",
-                  width: "25%",
-                }}
-              >
-                <IconButton
-                  onClick={() =>
-                    handleUpdateImage(
-                      `/products/${data?.id}/images/${item?.id}/products_features`,
-                      "update"
-                    )
-                  }
-                >
-                  <ModeTwoTone sx={{ color: "text.primary" }} />
-                </IconButton>
-                <IconButton
-                  onClick={() =>
-                    handleDeleteImage(
-                      `/products/${data?.id}/images/${item?.id}/products_features`
-                    )
-                  }
-                >
-                  <Delete sx={{ color: "text.primary" }} />
-                </IconButton>
-              </Box>
-              <img
-                style={{
-                  width: "100%",
-                  minHeight:"20vh",
-                  objectFit: "contain",
-                }}
-                key={idx}
-                src={item?.image_path}
-                alt=""
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </BoxStyled>
-      <div
-        style={{
-          minWidth: "200px",
-          float: direction === "ltr" ? "right" : "left",
-          marginTop: "20px",
-        }}
-      >
-        <ButtonAction
-          name={t("Back")}
-          onClick={handleBack}
-          endIcon={direction === "ltr" ? <ArrowForward /> : <ArrowBack />}
-        />
-      </div>
     </>
   );
 };

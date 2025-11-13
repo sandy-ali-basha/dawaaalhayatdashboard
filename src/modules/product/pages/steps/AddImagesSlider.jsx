@@ -12,8 +12,7 @@ import { useMutation } from "react-query";
 import { _Product } from "api/product/product";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
-import Image from "components/shared/Image";
-import ImagesOfSlider from "../components/ImagesOfSlider";
+import ImagesOfSlider from "modules/product/components/ImagesOfSlider";
 
 const SUPPORTED_FORMATS = [
   "image/jpg",

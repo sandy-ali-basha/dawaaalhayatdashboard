@@ -9,13 +9,13 @@ import {
   IconButton,
   CircularProgress,
   Tooltip,
+  Avatar,
 } from "@mui/material";
 import Loader from "components/shared/Loader";
 import ProductUpdate from "./ProductUpdate";
 import DeleteDialog from "../components/Dialog";
-import AddImages from "./AddImages";
+import AddImages from "./steps/AddImages";
 import ProductAttr from "./ProductAttr";
-import AddImagesSlider from "./AddImagesSlider";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ChangeStatus from "../components/ChangeStatus";
 import ProductMenu from "../components/productMenu";
@@ -24,7 +24,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import ChangeStatusPurshasable from "../components/ChangeStatusPurshasable";
 import { DeleteSweep } from "@mui/icons-material";
 import { BoxStyled } from "components/styled/BoxStyled";
-import UpdateRegionPrice from "./UpdateRegionPrice";
+import UpdateRegionPrice from "../components/UpdateRegionPrice";
+import AddImagesSlider from "./steps/AddImagesSlider";
 
 const ProductIndex = () => {
   const {
@@ -61,23 +62,20 @@ const ProductIndex = () => {
     loading,
     updatePrice,
     setUpdatePrice,
-    productName
+    productName,
   } = useProductIndex();
 
   const rows = useMemo(() => {
     return filteredData.map((product) => ({
       select: product.id,
       id: product.id,
-      name: product.name ?? "Null",
-      brand: product.brand?.name ?? "Null",
-      sku: product.sku ?? "Null",
-      price: product.price ?? "Null",
-      comparePrice: product.compare_price > 0 ? product.compare_price : "no sale",
-      quantity: product.quantity ?? "Null",
-      city: product.cities?.state[0]?.name ?? "Null",
+      name: product.name ?? " ",
+      sku: product.sku ?? " ",
+      brand: product.brand ?? "",
+      comparePrice:
+        product.compare_price > 0 ? product.compare_price : "no sale",
       status: product.status,
       purchasable: product.purchasable,
-      region: product.region_name,
       actions: product,
     }));
   }, [filteredData]); // Dependency array
@@ -92,7 +90,7 @@ const ProductIndex = () => {
     {
       field: "select",
       headerName: "",
-      width: '50',
+      width: "50",
       renderCell: (params) => (
         <Checkbox
           checked={selectedRowIds.includes(params.row.id)}
@@ -104,37 +102,36 @@ const ProductIndex = () => {
       field: "name",
       headerName: "Product Name",
       width: 250,
+      renderCell: (params) => (
+        <Tooltip title="View" >
+          <Typography
+            variant="body1"
+            sx={{ cursor: "pointer",pt:2 }}
+            onClick={() => handleView(params.row.id)}
+          >
+            {" "}
+            {params.row.name}
+          </Typography>
+        </Tooltip>
+      ),
+    },
+    {
+      field: "sku",
+      headerName: "SKU",
+      width: 150,
     },
     {
       field: "brand",
       headerName: "Brand",
       width: 100,
-    },
-    {
-      field: "sku",
-      headerName: "SKU",
-      width: 70,
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      width: 100,
-    },
-    {
-      field: "comparePrice",
-      headerName: "Compare Price",
-      width: 100,
-      renderCell: (params) => <Chip label={params.value} />,
-    },
-    {
-      field: "quantity",
-      headerName: "Quantity",
-      width: 100,
-    },
-    {
-      field: "city",
-      headerName: "City",
-      width: 100,
+      renderCell: (params) => (
+        <Tooltip title="View">
+          <Typography variant="body1" sx={{ pt:2 }}>
+            {" "}
+            {params.row.brand?.name}
+          </Typography>
+        </Tooltip>
+      ),
     },
     {
       field: "status",
@@ -161,11 +158,6 @@ const ProductIndex = () => {
           {params.row.purchasable}
         </ChangeStatusPurshasable>
       ),
-    },
-    {
-      field: "region",
-      headerName: "region",
-      width: 100,
     },
     {
       field: "actions",

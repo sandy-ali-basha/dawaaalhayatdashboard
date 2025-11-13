@@ -145,7 +145,7 @@ const CareersCreate = () => {
                   sx={{ margin: "0 0 8px 8px", color: "text.primary" }}
                   variant="body2"
                 >
-                  about us
+Position Overview
                 </Typography>
                 <EditorInput
                   control={control}
@@ -200,7 +200,7 @@ const CareersCreate = () => {
                   sx={{ margin: "0 0 8px 8px", color: "text.main" }}
                   variant="body2"
                 >
-                  about us
+                  Position Overview
                 </Typography>
                 <EditorInput
                   control={control}
@@ -252,7 +252,7 @@ const CareersCreate = () => {
                   sx={{ margin: "0 0 8px 8px", color: "text.main" }}
                   variant="body2"
                 >
-                  about us
+                  Position Overview
                 </Typography>
                 <EditorInput
                   control={control}

@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { useState } from "react";
-import EditImage from "../components/images/EditImage";
+import EditImage from "./images/EditImage";
 import { BoxStyled } from "components/styled/BoxStyled";
 
 const ProductFeatures = ({ id }) => {

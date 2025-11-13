@@ -30,6 +30,8 @@ import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
 import { _cities } from "api/cities/cities";
+import DensityCalculator from "../components/DensityCalculator";
+import { BoxStyled } from "components/styled/BoxStyled";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
@@ -77,7 +79,7 @@ const ProductUpdate = ({ id }) => {
       purchasable: data?.purchasable,
     },
   };
-  const { register, handleSubmit, formState, control, setValue } =
+  const { register, handleSubmit, formState, control, watch, setValue } =
     useForm(formOptions);
   const { errors } = formState;
 
@@ -162,25 +164,6 @@ const ProductUpdate = ({ id }) => {
 
   details.push(
     {
-      head: t("price before sale"),
-      type: "number",
-      placeholder: "compare_price",
-      name: "compare_price",
-      register: "compare_price",
-      error: "compare_price",
-      helperText: "compare_price",
-      defaultValue: data?.compare_price ? data?.compare_price : "",
-    },
-
-    {
-      head: t("price"),
-      type: "number",
-      placeholder: "price",
-      register: "price",
-      helperText: "price",
-      defaultValue: Number(data?.price),
-    },
-    {
       head: t("sku"),
       type: "text",
       placeholder: "sku",
@@ -191,22 +174,13 @@ const ProductUpdate = ({ id }) => {
       defaultValue: data?.sku,
     },
     {
-      head: t("quantity"),
-      type: "number",
-      placeholder: "quantity",
-      register: "qty",
-      helperText: "qty",
-      defaultValue: data?.quantity,
-    },
-    {
       head: t("points"),
       type: "number",
       placeholder: "points",
       register: "points",
       helperText: "points",
       defaultValue: data?.points,
-    },
-    
+    }
   );
 
   useMemo(() => {
@@ -311,33 +285,7 @@ const ProductUpdate = ({ id }) => {
                   </FormControl>
                 </Grid>
               )}
-              <Grid item xs={6} sx={{ p: "10px" }}>
-                {cities ? (
-                  <FormControl fullWidth>
-                    <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography color="text.main">{t("cities")}</Typography>
-                    </Box>
-                    <SelectStyled
-                      sx={{ color: "text.main", borderColor: "text.main" }}
-                      {...register("city_id")}
-                      defaultValue={data?.cities?.state[0]?.id}
-                    >
-                      {cities?.state?.map((item) => (
-                        <MenuItemStyled value={item.id} key={item.id}>
-                          <Box style={{ color: "text.main" }}>{item.name}</Box>
-                        </MenuItemStyled>
-                      ))}
-                    </SelectStyled>
-                    <FormHelperText error>
-                      {errors.city_id?.message}
-                    </FormHelperText>
-                  </FormControl>
-                ) : (
-                  <Typography variant="body2" color="text.main">
-                    pleas add cities
-                  </Typography>
-                )}
-              </Grid>
+
               {producttypes && (
                 <Grid item xs={6} sx={{ p: "10px" }}>
                   <FormControl fullWidth>
@@ -383,7 +331,21 @@ const ProductUpdate = ({ id }) => {
                   </Grid>
                 );
               })}
-
+              <Box sx={{ border: "2px solid white", mx: 1, borderRadius: 2 }}>
+                {/* Weight & Dimensions Section */}
+                <DensityCalculator
+                  register={register}
+                  watch={watch}
+                  errors={errors}
+                  defaultData={{
+                    length: data?.length,
+                    width: data?.width,
+                    height: data?.height,
+                    weight: data?.weight,
+                    division: data?.division,
+                  }}
+                />
+              </Box>
               {TextEditorDetails?.map((item, index) => {
                 const error = errors?.[item.register.split(".")[0]]?.name;
                 return (

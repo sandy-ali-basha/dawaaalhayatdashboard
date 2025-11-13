@@ -9,7 +9,7 @@ const ButtonLoader = (props) => {
       {...rest}
       disabled={disableOnLoading === true && loading}
       sx={{
-        width: 150,
+        width: 250,
       }}
       variant="contained"
       color={"secondary"}
@@ -26,7 +26,12 @@ const ButtonLoader = (props) => {
           <CircularProgress sx={{ color: "white" }} size="25px" />
         </Box>
       )}
-      <Typography sx={{ visibility: props.loading ? "hidden" : "visible" }}>
+      <Typography
+        sx={{
+          visibility: props.loading ? "hidden" : "visible",
+          fontWeight: "bold",
+        }}
+      >
         {props.children}
       </Typography>
     </Button>

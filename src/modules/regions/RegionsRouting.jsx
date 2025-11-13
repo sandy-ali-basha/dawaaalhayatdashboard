@@ -5,7 +5,7 @@ import RegionsComponent from "./RegionsComponent";
 import RegionsIndex from "./pages/RegionsIndex";
 import RegionsUpdate from "./pages/RegionsUpdate";
 import RegionsView from "./pages/RegionsView";
-import RegionsCreate from "./pages/RegionsCreate";
+import RegionsCreate from "./pages/CountryCreate";
 
 const RegionsRouting = () => {
   return (

@@ -12,13 +12,13 @@ import {
   AdminPanelSettingsRounded,
   BookmarkRounded,
   CategoryRounded,
-  CountertopsRounded,
   DiscountRounded,
   GavelRounded,
   HomeRounded,
-  Money,
-  Public,
-  ShoppingCartCheckout,
+  Inventory2Rounded,
+  MoneyRounded,
+  PublicRounded,
+  ShoppingCartCheckoutRounded,
   SpaceDashboardRounded,
   WorkRounded,
 } from "@mui/icons-material";
@@ -65,12 +65,12 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("orders"),
       link: "/dashboard/orders",
-      icon: <ShoppingCartCheckout />,
+      icon: <ShoppingCartCheckoutRounded />,
     },
     {
-      name: t("cities"),
-      link: "/dashboard/cities",
-      icon: <Public />,
+      name: t("Inventories"),
+      link: "/dashboard/Inventories",
+      icon: <Inventory2Rounded />,
     },
 
     {
@@ -86,7 +86,7 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("point price"),
       link: "/dashboard/settings",
-      icon: <Money />,
+      icon: <MoneyRounded />,
     },
     {
       name: t("terms"),
@@ -115,11 +115,6 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("customers"),
       link: "/dashboard/customers",
-      icon: <HomeRounded color={"secondary.main"} />,
-    },
-    {
-      name: t("regions"),
-      link: "/dashboard/regions",
       icon: <HomeRounded color={"secondary.main"} />,
     },
   ];
@@ -157,7 +152,7 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("orders"),
       link: "/dashboard/orders",
-      icon: <ShoppingCartCheckout />,
+      icon: <ShoppingCartCheckoutRounded />,
     },
   ];
   const ecommerce_admin = [
@@ -173,18 +168,18 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("orders"),
       link: "/dashboard/orders",
-      icon: <ShoppingCartCheckout />,
+      icon: <ShoppingCartCheckoutRounded />,
     },
 
     {
       name: t("point price"),
       link: "/dashboard/settings",
-      icon: <Money />,
+      icon: <MoneyRounded />,
     },
     {
-      name: t("cities"),
-      link: "/dashboard/cities",
-      icon: <Public />,
+      name: t("Inventories"),
+      link: "/dashboard/Inventories",
+      icon: <PublicRounded />,
     },
 
     {
@@ -197,11 +192,7 @@ const SideBar = ({ open, setOpen }) => {
       link: "/dashboard/discounts",
       icon: <DiscountRounded />,
     },
-    {
-      name: t("regions"),
-      link: "/dashboard/regions",
-      icon: <DiscountRounded />,
-    },
+  
   ];
 
   const returnLinks = () => {

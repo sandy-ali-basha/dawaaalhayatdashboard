@@ -15,7 +15,7 @@ import { useDeleteRegions } from "hooks/regions/useDeleteRegions";
 import { useRegions } from "hooks/regions/useRegions";
 import { Box } from "@mui/material";
 import deleteImg from "assets/images/trash.png"
-const DeleteDialog = ({ id, page, count }) => {
+const DeleteCountry = ({ id, page, count }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -78,4 +78,4 @@ const DeleteDialog = ({ id, page, count }) => {
   );
 };
 
-export default DeleteDialog;
+export default DeleteCountry;

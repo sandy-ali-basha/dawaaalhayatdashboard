@@ -14,10 +14,7 @@ let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
   product_type_id: yup.string().trim().required("medical form is required"),
   status: yup.string().trim().required("status is required"),
-  price: yup.number().required("price is required"),
-  qty: yup.number().required("qty is required"),
-
-  sku: yup.string().trim().required("sku is required"),
+  sku: yup.string().required("sku is required"),
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
     description: yup.string().required("Kurdish description is required"),
@@ -49,9 +46,10 @@ export const useProductCreate = ({ setNewProductId }) => {
     defaultValues: {
       points: 0, // Set the initial value for "points"
     },
+    mode: "onChange",
   };
 
-  const { register, handleSubmit, formState, setValue, control, reset, watch } =
+  const { register, handleSubmit, formState, setValue, control, watch } =
     useForm(formOptions);
   const { errors } = formState;
   const price = watch("price"); // Watch for changes in the "price" field
@@ -63,7 +61,6 @@ export const useProductCreate = ({ setNewProductId }) => {
         "points",
         Math.round(price / point_price?.data?.point_price?.value) // تقريب القيمة
       );
-  
     } else {
       setValue("points", 0);
     }
@@ -82,9 +79,8 @@ export const useProductCreate = ({ setNewProductId }) => {
 
   const details = [
     {
-      head: t("arabic name"),
+      head: t("Name arabic"),
       type: "text",
-      placeholder: t("ar name"),
       name: "ar.name",
       register: "ar.name",
       error: "ar.name",
@@ -92,96 +88,51 @@ export const useProductCreate = ({ setNewProductId }) => {
     },
 
     {
-      head: t("english name"),
+      head: t("Name English"),
       type: "text",
-      placeholder: t("en.name"),
       name: "en name",
       register: "en.name",
       error: "en.name",
       helperText: "en.name",
     },
-
     {
-      head: t("kurdish name"),
+      head: t("Name kurdish"),
       type: "text",
-      placeholder: t("kr.name"),
       name: "kr name",
       register: "kr.name",
       error: "kr.name",
       helperText: "kr.name",
     },
-  ];
-
-  const generalDetails = [
     {
-      head: t("price before sale"),
-      type: "number",
-      placeholder: "compare price",
-      name: "compare_price",
-      register: "compare_price",
-      error: "compare_price",
-      helperText: "compare_price",
-    },
-    {
-      head: t("price"),
-      type: "number",
-      placeholder: "price",
-      name: "price",
-      register: "price",
-      error: "price",
-      helperText: "price",
-    },
-    {
-      head: t("sku"),
+      head: "SKU",
       type: "text",
-      placeholder: "sku",
       name: "sku",
       register: "sku",
       error: "sku",
       helperText: "sku",
     },
-    {
-      head: t("qty"),
-      type: "number",
-      placeholder: "qty",
-      name: "qty",
-      register: "qty",
-      error: "qty",
-      helperText: "qty",
-    },
-    {
-      head: t("points"),
-      type: "number",
-      placeholder: "points",
-      name: "points",
-      register: "points",
-      error: "points",
-      helperText: "points",
-    },
   ];
+
   const Discription = [
     {
-      head: t("arabic description"),
+      head: t("Arabic Description"),
       type: "text",
-      placeholder: t("ar.description"),
       name: "ar.description",
       register: "ar.description",
       error: "ar.description",
       helperText: "ar.description",
     },
     {
-      head: t("kurdish description"),
+      head: t("kurdish Description"),
       type: "text",
-      placeholder: t("kr.description"),
       name: "kr.description",
       register: "kr.description",
       error: "kr.description",
       helperText: "kr.description",
     },
     {
-      head: t("english description"),
+      head: t("English Description"),
       type: "text",
-      placeholder: t("en.description"),
       name: "en.description",
       register: "en.description",
       error: "en.description",
@@ -191,56 +142,46 @@ export const useProductCreate = ({ setNewProductId }) => {
 
   const handleCancel = () => navigate(-1);
 
-  const handleReset = () => {
-    const form = document.querySelector("form");
-    if (form) form.reset();
-    reset();
-  };
-
   const hanldeCreate = (input) => {
-    if (selectedRegion) {
-      const productData = {
-        ...input,
-        region_id: selectedRegion,
-        region_price: input.price,
-        description: input?.en?.description || "",
-      };
+    // Base product data
+    const productData = {
+      ...input,
+      description: input?.en?.description || "",
+    };
 
-      // Return a single POST request
-      return _Product
-        .post(productData, setLoading)
-        .then((res) => {
-          if (res?.code === 200) setNewProductId(res?.data?.products_id);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      // If multiple cities, map them to API calls and handle them
-      const requests = selectedCities?.map((city_id) => {
-        const productData = {
-          ...input,
-          city_id, // Current city_id for each request
-          description: input?.en?.description || "",
-        };
+    // Add dimensions into each language block
+    const dimensions = {
+      length: productData.length,
+      width: productData.width,
+      height: productData.height,
+      division: productData.division,
+    };
 
-        // Return the promise for this POST request
-        return _Product.post(productData, setLoading);
-      });
+    productData.ar = { ...productData.ar, ...dimensions };
+    productData.kr = { ...productData.kr, ...dimensions };
+    productData.en = { ...productData.en, ...dimensions };
 
-      // Run all requests in parallel and return the promise
-      return Promise.all(requests)
-        .then((res) => {
-          const newProductIds = res.map((response) => response?.data?.id);
-          setNewProductId(newProductIds); // Set the IDs as an array
-        })
-        .catch((error) => {
-          console.error("Error creating products for multiple cities", error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    // Optional: if density should also be calculated automatically
+    if (
+      productData.length &&
+      productData.width &&
+      productData.height &&
+      productData.weight
+    ) {
+      const volume =
+        productData.length * productData.width * productData.height;
+      productData.density = (productData.weight / volume).toFixed(4);
     }
+
+    // Send to backend
+    return _Product
+      .post(productData, setLoading)
+      .then((res) => {
+        if (res?.code === 200) setNewProductId(res?.data?.products_id);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useMemo(() => {
@@ -256,9 +197,13 @@ export const useProductCreate = ({ setNewProductId }) => {
     });
   }, []);
 
+  const packings = ["packings1", "packings"];
+
+  const addNewPacking = () => {
+    console.log("addNewPacking");
+  };
   return {
     handleCancel,
-    handleReset,
     hanldeCreate,
     register,
     handleSubmit,
@@ -267,7 +212,6 @@ export const useProductCreate = ({ setNewProductId }) => {
     t,
     errors,
     details,
-    generalDetails,
     control,
     brands,
     producttypes,
@@ -278,5 +222,8 @@ export const useProductCreate = ({ setNewProductId }) => {
     selectedRegion,
     setSelectedRegions,
     regions,
+    watch,
+    packings,
+    addNewPacking,
   };
 };

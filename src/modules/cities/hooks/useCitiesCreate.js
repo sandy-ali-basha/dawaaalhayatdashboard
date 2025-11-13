@@ -1,5 +1,4 @@
-
-import { useEffect, useState,useCallback } from "react";
+import {useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as yup from "yup";
@@ -9,47 +8,40 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _cities } from "api/cities/cities";
 
 const schema = yup.object().shape({
-  kr: yup.object().shape({
-    name: yup.string().required("Kurdish name is required"),
-  }),
-  ar: yup.object().shape({
-    name: yup.string().required("Arabic name is required"),
-  }),
-  en: yup.object().shape({
-    name: yup.string().required("English name is required"),
-  }),
+  name: yup.string().required("Kurdish name is required"),
 });
 
 export const useCitiesCreate = () => {
-  const { t } = useTranslation("index")
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  const { t } = useTranslation("index");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, setValue, control } = useForm(formOptions)
-  const { errors } = formState
-  const { mutate } = useMutation((data) => createPost(data))
+  const { register, handleSubmit, formState, setValue, control } =
+    useForm(formOptions);
+  const { errors } = formState;
+  const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
     _cities
       .post(data, setLoading)
-      .then(res => {
-        if (res.code === 200) navigate(-1)
-        setLoading(true)
+      .then((res) => {
+        if (res.code === 200) navigate(-1);
+        setLoading(true);
       })
       .finally(() => {
-        setLoading(false)
-      })
+        setLoading(false);
+      });
   }
 
-  const handleCancel = () => navigate(-1)
+  const handleCancel = () => navigate(-1);
 
   const handleReset = () => {
-    const form = document.querySelector('form');
-    if (form) form.reset()
-  }
+    const form = document.querySelector("form");
+    if (form) form.reset();
+  };
 
   const hanldeCreate = (input) => {
-    const formData = new FormData()
+    const formData = new FormData();
     const inputWithoutBirthday = { ...input };
     delete inputWithoutBirthday.birthday;
     for (const [key, value] of Object.entries(inputWithoutBirthday)) {
@@ -57,20 +49,16 @@ export const useCitiesCreate = () => {
     }
     mutate(formData);
     setLoading(true);
-  }
+  };
 
-  const languages = [
-  { code: "ar", name: "Arabic" },
-    { code: "kr", name: "Kurdish" },
-    { code: "en", name: "English" },
+  const details = [
+    {
+      head: t("name"),
+      type: "text",
+      placeholder: t("name"),
+      register: "name",
+    },
   ];
-
-  const details = languages.map((lang, index) => ({
-    head: t("name " + lang.name.toLowerCase()),
-    type: "text",
-    placeholder: t("name"),
-    register: lang.code + ".name",
-  }));
 
   return {
     handleCancel,
@@ -86,4 +74,3 @@ export const useCitiesCreate = () => {
     control,
   };
 };
-

@@ -85,14 +85,22 @@ const OrdersIndex = () => {
             `${order?.customer[0]?.first_name ?? ""} ${
               order?.customer[0]?.last_name ?? ""
             }` || "Null",
-          age: isRepeatedReference ? "" :  order?.customer[0]?.age ?? "Null",
-          gender: isRepeatedReference ? "" :  order?.customer[0]?.gender ?? "Null",
-          "Contact Email": isRepeatedReference ? "" :  order?.address[1]?.contact_email ?? "Null",
-          "Contact Phone": isRepeatedReference ? "" :  order?.address[1]?.contact_phone ?? "Null",
+          age: isRepeatedReference ? "" : order?.customer[0]?.age ?? "Null",
+          gender: isRepeatedReference
+            ? ""
+            : order?.customer[0]?.gender ?? "Null",
+          "Contact Email": isRepeatedReference
+            ? ""
+            : order?.address[1]?.contact_email ?? "Null",
+          "Contact Phone": isRepeatedReference
+            ? ""
+            : order?.address[1]?.contact_phone ?? "Null",
           City: order?.address[1]?.city ?? "Null",
           "reference رقم الطلب": isRepeatedReference ? "" : order?.reference,
-          "created at تاريخ الطلب": isRepeatedReference ? "" :  order?.created_at ,
-          "order status":  isRepeatedReference ? "" :  order?.status ?? "Null",
+          "created at تاريخ الطلب": isRepeatedReference
+            ? ""
+            : order?.created_at,
+          "order status": isRepeatedReference ? "" : order?.status ?? "Null",
 
           // Conditional fields
           "Product المنتجات": product?.description ?? "Null",
@@ -208,6 +216,8 @@ const OrdersIndex = () => {
         return { label: "Delivered", color: "success", icon: <Done /> };
       case "order_canceled":
         return { label: "Canceled", color: "error", icon: <Cancel /> };
+      case "cancel_requested":
+        return { label: "cancel requested", color: "error", icon: <Cancel /> };
       default:
         return { label: "Unknown", color: "default", icon: null };
     }
@@ -247,9 +257,10 @@ const OrdersIndex = () => {
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>{orders?.total ?? "Null"}</TableCell>
           <TableCell sx={{ minWidth: 50 }}>
-            {orders?.customer[0]?.first_name +
-              " " +
-              orders?.customer[0]?.last_name ?? "Null"}
+            {orders?.customer &&
+              (orders?.customer[0]?.first_name ??
+                "Null" + " " + orders?.customer[0]?.last_name ??
+                "Null")}
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>
             {orders?.transactions[0]?.driver === "coffline"
@@ -335,7 +346,7 @@ const OrdersIndex = () => {
             onClick={exportToExcel}
             sx={{ ml: 2 }}
           >
-            Export to Excel <GetAppRounded/>
+            Export to Excel <GetAppRounded />
           </Button>
         </Box>
 

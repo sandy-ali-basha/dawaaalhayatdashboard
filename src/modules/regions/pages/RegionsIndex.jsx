@@ -19,10 +19,8 @@ import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-// import ChangeStatus from "../components/ChangeStatus";
 import { useRegions } from "hooks/regions/useRegions";
 import RegionsUpdate from "./RegionsUpdate";
-import DeleteDialog from "../components/Dialog";
 import RegionsLinkCities from "./RegionsLinkCities";
 import { LinkRounded } from "@mui/icons-material";
 
@@ -46,7 +44,7 @@ const RegionsIndex = () => {
   const handleEdit = useCallback(
     (id) => {
       setEditedID(id);
-      setOpenEdit(true)
+      setOpenEdit(true);
     },
     [setEditedID]
   );
@@ -61,7 +59,6 @@ const RegionsIndex = () => {
     return data?.data?.map((regions, id) => (
       <TableRow sx={{ height: "65px" }} key={regions.id} hover>
         <TableCell sx={{ minWidth: 50 }}>{regions?.name ?? "Null"}</TableCell>
-
         <TableCell
           sx={{ minWidth: 400, display: "flex", flexWrap: "wrap" }}
           align="center"
@@ -76,14 +73,6 @@ const RegionsIndex = () => {
             ></Chip>
           ))}
         </TableCell>
-        {/* <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus
-            id={regions.id}
-            action={regions.status === "active" && "change-status"}
-          >
-            {regions.status === "Active" ? t("Active") : t("Not Active")}
-          </ChangeStatus>
-        </TableCell> */}
         <TableCell
           align="center"
           sx={{
@@ -95,20 +84,15 @@ const RegionsIndex = () => {
               <ModeTwoToneIcon sx={{ color: "text.main" }} />
             </Tooltip>
           </IconButton>
-          <IconButton onClick={() => handleLink(regions?.id)}>
+          <IconButton onClick={() => handleLink(regions)}>
             <Tooltip title={"Link Cities"}>
               <LinkRounded sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
-          <IconButton>
-            <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-              <DeleteDialog id={regions?.id} count={count} page={page} />
-            </Tooltip>
+            </Tooltip>o0,.
           </IconButton>
         </TableCell>
       </TableRow>
     ));
-  }, [data?.data, direction, count, page, handleEdit, handleLink]);
+  }, [data?.data, direction, handleEdit, handleLink]);
 
   const handleCreate = () => navigate("create");
 
@@ -116,7 +100,9 @@ const RegionsIndex = () => {
     <>
       {isLoading && <Loader />}
       {openEdit && <RegionsUpdate />}
-      {openLink && <RegionsLinkCities openLink={openLink} setopenLink={setopenLink}/>}
+      {openLink && (
+        <RegionsLinkCities openLink={openLink} setopenLink={setopenLink} />
+      )}
 
       <Box
         sx={{
