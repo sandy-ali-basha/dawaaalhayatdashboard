@@ -1,16 +1,13 @@
-import { React, useEffect, useState, useMemo } from "react";
+import { React, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import {
   Box,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   Grid,
-  Switch,
   Typography,
 } from "@mui/material";
 import { colorStore } from "store/ColorsStore";
@@ -29,17 +26,11 @@ import { _Product } from "api/product/product";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
-import { _cities } from "api/cities/cities";
 import DensityCalculator from "../components/DensityCalculator";
-import { BoxStyled } from "components/styled/BoxStyled";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
   product_type_id: yup.string().trim().required("product type is required"),
-  purchasable: yup
-    .string()
-    .required("Purchasable is required")
-    .oneOf(["always", "false"]),
   kr: yup.object().shape({
     name: yup.string().required("Kurdish name name is required"),
     description: yup.string().required("Kurdish description is required"),
@@ -67,8 +58,6 @@ const ProductUpdate = ({ id }) => {
   const [data, setData] = useState();
   const [brands, setBrand] = useState(data?.brand_id);
   const [producttypes, setproducttypes] = useState();
-  const [cities, setCiteies] = useState([]);
-  const [checked, setChecked] = useState();
 
   const formOptions = {
     resolver: yupResolver(schema),
@@ -91,8 +80,6 @@ const ProductUpdate = ({ id }) => {
         setData(res.data?.data);
         const fetchedData = res.data?.data;
         setData(fetchedData);
-        setChecked(res.data?.data?.purchasable === "always" ? true : false);
-        setValue("purchasable", res.data?.data?.purchasable || false);
         if (fetchedData.translations) {
           setValue(
             "kr.name",
@@ -180,14 +167,6 @@ const ProductUpdate = ({ id }) => {
     }
   );
 
-  useMemo(() => {
-    _cities.index().then((response) => {
-      if (response.code === 200) {
-        setCiteies(response.data);
-      }
-    });
-  }, []);
-
   useEffect(() => {
     _axios.get("/brand").then((res) => {
       setBrand(res?.data?.data?.brands);
@@ -235,11 +214,6 @@ const ProductUpdate = ({ id }) => {
     mutate(input);
     setLoading(true);
   };
-  const handleChange = (event) => {
-    const isChecked = event.target.checked;
-    setChecked(isChecked); // Update the local state
-    setValue("purchasable", isChecked ? "always" : "false"); // Update form value with react-hook-form
-  };
 
   return (
     <>
@@ -247,12 +221,6 @@ const ProductUpdate = ({ id }) => {
       <Dialog open={true} onClose={handleDialogClose} maxWidth>
         <DialogTitle sx={{ color: "text.main" }}>
           {t("Edit products")}{" "}
-          <FormControl error={Boolean(errors.purchasable)}>
-            <FormControlLabel
-              control={<Switch checked={checked} onChange={handleChange} />}
-              label="Purchasable"
-            />
-          </FormControl>
         </DialogTitle>
 
         {!!data && (

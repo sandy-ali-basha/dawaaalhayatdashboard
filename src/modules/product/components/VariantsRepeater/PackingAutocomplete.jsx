@@ -14,7 +14,7 @@ const PackingAutocomplete = ({ value, onChange }) => {
   const [loading, setLoading] = useState(false);
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
-
+console.log("value",value)
   // Fetch available packings
   useEffect(() => {
     setLoading(true);

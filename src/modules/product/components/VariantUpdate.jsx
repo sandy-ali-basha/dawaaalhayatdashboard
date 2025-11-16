@@ -8,6 +8,9 @@ import {
   DialogActions,
   Button,
   IconButton,
+  FormControlLabel,
+  Switch,
+  FormControl,
 } from "@mui/material";
 import {
   MonetizationOnOutlined,
@@ -138,8 +141,25 @@ const VariantUpdate = ({ variantData: initialVariant }) => {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>Edit Variant</DialogTitle>
-
+        <DialogTitle>
+          Edit Variant{" "}
+          <FormControl>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={variantData.purchasable === "always"}
+                  onChange={(e) =>
+                    handleChange(
+                      "purchasable",
+                      e.target.checked ? "always" : "false"
+                    )
+                  }
+                />
+              }
+              label="Purchasable"
+            />
+          </FormControl>
+        </DialogTitle>
         <Box sx={{ p: 3 }}>
           <Grid container spacing={2}>
             {/* SKU */}
@@ -156,7 +176,7 @@ const VariantUpdate = ({ variantData: initialVariant }) => {
             {/* Flavor */}
             <Grid item xs={12} md={4}>
               <FlavorAutocomplete
-                value={variantData.option_value_ids?.[0]}
+                value={variantData.options[0]}
                 onChange={(value) => handleOptionChange("flavor", value)}
               />
             </Grid>
@@ -164,7 +184,7 @@ const VariantUpdate = ({ variantData: initialVariant }) => {
             {/* Packing */}
             <Grid item xs={12} md={4}>
               <PackingAutocomplete
-                value={variantData.option_value_ids?.[1]}
+                value={variantData.options[1]}
                 onChange={(value) => handleOptionChange("packing", value)}
               />
             </Grid>
