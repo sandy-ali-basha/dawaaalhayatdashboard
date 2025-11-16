@@ -1,4 +1,4 @@
-import { LineWeightRounded } from "@mui/icons-material";
+import { LineWeightOutlined } from "@mui/icons-material";
 import { Box, Typography, Grid } from "@mui/material";
 import { TextFieldStyled } from "components/styled/TextField";
 
@@ -21,7 +21,7 @@ const DensityCalculator = ({ register, watch, errors, defaultData = {} }) => {
         color="text.main"
         sx={{ fontWeight: "bold", p: "10px" }}
       >
-        <LineWeightRounded sx={{ color: "error.light", mx: 1 }} />
+        <LineWeightOutlined sx={{ color: "error.light", mx: 1 }} />
         Weight & Dimensions
       </Typography>
 

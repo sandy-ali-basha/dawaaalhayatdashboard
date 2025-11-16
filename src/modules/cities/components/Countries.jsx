@@ -127,7 +127,7 @@ const Countries = () => {
                   {[...Array(4)].map((_, i) => (
                     <Grid item md={6} key={i}>
                       <Skeleton
-                        variant="rounded"
+                        variant="Outlined"
                         height={35}
                         sx={{ borderRadius: 1, mx: 1, mb: 1 }}
                       />

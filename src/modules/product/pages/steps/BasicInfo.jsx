@@ -1,3 +1,4 @@
+import React, {  useEffect, useRef } from "react";
 import {
   Typography,
   Box,
@@ -13,14 +14,13 @@ import {
   SelectStyled,
   TextFieldStyled,
 } from "components/styled/TextField";
-import React, { useEffect } from "react";
 import Loader from "components/shared/Loader";
 import { useProductCreate } from "../../hooks/useProductCreate";
 import EditorInput from "components/shared/EditorInput";
-import { DescriptionRounded, InfoOutlined } from "@mui/icons-material";
+import { DescriptionOutlined, InfoOutlined } from "@mui/icons-material";
 import DensityCalculator from "../../components/DensityCalculator";
 
-const BasicInfo = ({ setNewProductId, onNext ,setSubmitFunction}) => {
+const BasicInfo = ({ onNext, setSubmitFunction }) => {
   const {
     register,
     handleSubmit,
@@ -34,14 +34,21 @@ const BasicInfo = ({ setNewProductId, onNext ,setSubmitFunction}) => {
     control,
     setValue,
     watch,
-  } = useProductCreate({ setNewProductId });
+  } = useProductCreate();
 
-  // When component mounts, send the submit function up to parent
+  const submitRef = useRef(null);
+
+  // Build submit function only when handleSubmit/onNext change
   useEffect(() => {
-    if (setSubmitFunction) {
-      setSubmitFunction(() => handleSubmit((data) => onNext(data)));
+    submitRef.current = handleSubmit((data) => onNext(data));
+  }, [handleSubmit, onNext]);
+
+  // Send it to parent only ONCE
+  useEffect(() => {
+    if (setSubmitFunction && submitRef.current) {
+      setSubmitFunction(() => submitRef.current);
     }
-  }, [setSubmitFunction, handleSubmit, onNext]);
+  }, [setSubmitFunction]);
 
   return (
     <>
@@ -87,7 +94,11 @@ const BasicInfo = ({ setNewProductId, onNext ,setSubmitFunction}) => {
                   <SelectStyled
                     sx={{ color: "text.main", borderColor: "text.main" }}
                     {...register("brand_id")}
+                    defaultValue=""
                   >
+                    <MenuItemStyled color="text.secondary" value="">
+                      <em>Select option</em>
+                    </MenuItemStyled>
                     {brands?.map((item) => (
                       <MenuItemStyled value={item.id} key={item.id}>
                         <Box style={{ color: "text.main" }}>{item.name}</Box>
@@ -117,7 +128,11 @@ const BasicInfo = ({ setNewProductId, onNext ,setSubmitFunction}) => {
                   {...register("status")}
                   error={!!errors?.status}
                   id="status"
+                  defaultValue=""
                 >
+                  <MenuItemStyled color="text.secondary" value="">
+                    <em>Select option</em>
+                  </MenuItemStyled>
                   <MenuItem value="active">active</MenuItem>
                   <MenuItem value="inActive">not active</MenuItem>
                 </Select>
@@ -136,7 +151,11 @@ const BasicInfo = ({ setNewProductId, onNext ,setSubmitFunction}) => {
                   <SelectStyled
                     sx={{ color: "text.main", borderColor: "text.main" }}
                     {...register("product_type_id")}
+                    defaultValue=""
                   >
+                    <MenuItemStyled color="text.secondary" value="">
+                      <em>Select option</em>
+                    </MenuItemStyled>
                     {producttypes?.map((item) => (
                       <MenuItemStyled value={item.id} key={item.id}>
                         <Box style={{ color: "text.main" }}>{item.name}</Box>
@@ -173,7 +192,7 @@ const BasicInfo = ({ setNewProductId, onNext ,setSubmitFunction}) => {
               color="text.main"
               sx={{ fontWeight: "bold", p: "10px" }}
             >
-              <DescriptionRounded sx={{ color: "primary.main", mx: 1 }} />
+              <DescriptionOutlined sx={{ color: "primary.main", mx: 1 }} />
               Description
             </Typography>
             {Discription.map((item, index) => {

@@ -6,12 +6,9 @@ import VariantCard from "./VariantCard";
 import { useProductCreate } from "modules/product/hooks/useProductCreate";
 
 const VariantsRepeater = ({
-  setNewProductId,
   selectedCities,
-  newProductId,
   productData,
   setSubmitFunction, // 👈 new prop
-  onNext, //
 }) => {
   const {
     flavors,
@@ -21,7 +18,7 @@ const VariantsRepeater = ({
     regions,
     hanldeCreate,
     loading,
-  } = useProductCreate({ setNewProductId });
+  } = useProductCreate();
 
   const [variants, setVariants] = useState([
     {
@@ -35,13 +32,18 @@ const VariantsRepeater = ({
       cityData: {},
     },
   ]);
+  console.log("variants outside", variants);
 
   const handleAddVariant = () => {
     setVariants([
       ...variants,
       {
-        ...variants[0],
         sku: "",
+        tax_class_id: 1,
+        inventory: 12,
+        storage_qty: 12,
+        purchasable: "always",
+        unit_quantity: 1,
         option_value_ids: ["", ""],
         cityData: {},
       },
@@ -56,6 +58,7 @@ const VariantsRepeater = ({
   const buildOptionsPayload = useCallback(() => {
     const options = [];
 
+    console.log("variants", variants);
     variants.forEach((variant) => {
       const {
         sku,
@@ -67,25 +70,28 @@ const VariantsRepeater = ({
         cityData = {},
       } = variant;
 
+      console.log("cityData", cityData);
       Object.entries(cityData).forEach(([cityId, cityValues]) => {
         options.push({
           sku: sku || "",
           option_value_ids: option_value_ids.map(Number),
           city_id: Number(cityId),
           points: Number(cityValues.points) || 0,
+          reorder_point: Number(cityValues.reorder_point) || 0,
           price: parseFloat(cityValues.price) || 0,
           tax_class_id: Number(tax_class_id) || 1,
           inventory: Number(inventory) || 0,
           qty: Number(cityValues.quantity) || 0,
           unit: Number(unit_quantity) || 1,
           compare_price: parseFloat(cityValues.compare_price) || "",
-          compare_price_start: cityValues.compare_price_start || "",
-          compare_price_end: cityValues.compare_price_end || "",
+          compare_price_start_date: cityValues.compare_price_start_date || "",
+          compare_price_end_date: cityValues.compare_price_end_date || "",
           purchasable,
         });
       });
     });
 
+    console.log("options",options)
     return options;
   }, [variants]);
 
@@ -104,7 +110,8 @@ const VariantsRepeater = ({
     if (setSubmitFunction) {
       setSubmitFunction(() => handleSaveVariants);
     }
-  }, [setSubmitFunction, variants, productData, handleSaveVariants]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); //! do not add dependacies
 
   return (
     <>
@@ -131,7 +138,7 @@ const VariantsRepeater = ({
           />
         ))}
       </Box>
-      {loading ?? <LinearProgress size={20} sx={{ color: "white" }} />}
+      {loading && <LinearProgress size={20} sx={{ color: "text.secondary" }} />}
     </>
   );
 };

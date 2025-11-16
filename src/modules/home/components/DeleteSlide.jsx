@@ -9,7 +9,7 @@ import Loader from "components/shared/Loader";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useBrand_pages } from "hooks/brand_pages/useBrand_pages";
-import { FolderDeleteRounded } from "@mui/icons-material";
+import { FolderDeleteOutlined } from "@mui/icons-material";
 import { useDeleteSlide } from "hooks/home/useDeleteSlide";
 
 const DeleteSlide = ({ id, page, count }) => {
@@ -33,7 +33,7 @@ const DeleteSlide = ({ id, page, count }) => {
   return (
     <React.Fragment>
       <Tooltip title={"Delete slide"}>
-        <FolderDeleteRounded
+        <FolderDeleteOutlined
           sx={{ color: "error.main" }}
           onClick={handleClickOpen}
         />

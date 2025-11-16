@@ -22,7 +22,7 @@ import { settingsStore } from "store/settingsStore";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { useDebounce } from "hooks/useDebounce";
 import { TextFieldStyled } from "components/styled/TextField";
-import { ModeRounded } from "@mui/icons-material";
+import { ModeOutlined } from "@mui/icons-material";
 
 const AdminIndex = () => {
   const { t } = useTranslation("index");
@@ -89,7 +89,7 @@ const AdminIndex = () => {
           </IconButton>
           <IconButton onClick={() => handleEdit(admin?.id)}>
             <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-              <ModeRounded sx={{ color: "text.main" }} />
+              <ModeOutlined sx={{ color: "text.main" }} />
             </Tooltip>
           </IconButton>
         </TableCell>

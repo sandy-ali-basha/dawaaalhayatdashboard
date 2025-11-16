@@ -3,7 +3,7 @@ import { Box, Button, Tooltip, Typography } from "@mui/material";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import * as mammoth from "mammoth";
-import { FileOpenRounded } from "@mui/icons-material";
+import { FileOpenOutlined } from "@mui/icons-material";
 import { Controller } from "react-hook-form";
 import DOMPurify from "dompurify"; // For sanitizing the HTML content
 
@@ -81,7 +81,7 @@ const EditorInput = ({ control, register, name, setValue, errors, initialValue }
       >
         <Tooltip title="Import Microsoft Word File">
           <Button variant="outlined" component="label">
-            <FileOpenRounded />
+            <FileOpenOutlined />
             <input
               accept=".doc,.docx"
               type="file"

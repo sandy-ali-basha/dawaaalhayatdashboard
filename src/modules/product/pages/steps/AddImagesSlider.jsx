@@ -64,38 +64,11 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
 
   const handleAddImages = ({ data }) => {
     setLoading(true);
-
-    // Map over the array of ids to create a request for each
-    const requests = id.map((id) => {
-      // Return the promise for the request
       return _Product.AddImagesSlider({
         editedID: id,
         formData: data,
       });
-    });
-
-    // Execute all requests concurrently
-    Promise.all(requests)
-      .then((responses) => {
-        // Handle successful responses
-        responses.forEach((res, index) => {
-          if (res.code === 200) {
-            setALert((prev) => [
-              ...prev,
-              `Images for Product ${id[index]} saved successfully.`,
-            ]);
-          } else {
-            setALert((prev) => [
-              ...prev,
-              `Failed to save images for Product ${id[index]}.`,
-            ]);
-          }
-        })
-      })
-
-      .finally(() => {
-        setLoading(false);
-      });
+  
   };
   async function createPost(data) {
     if (notDialog) {
@@ -139,8 +112,8 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
           sx={{
             BoxShadow: 10,
             p: 3,
-            opacity: id.length > 0 ? "100%" : "50%",
-            pointerEvents: id.length > 0 ? "initial" : "none",
+            opacity: id ? "100%" : "50%",
+            pointerEvents: id ? "initial" : "none",
           }}
         >
           <Typography sx={{ color: "text.main" }}>

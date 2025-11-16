@@ -85,7 +85,7 @@ const Product_attributesUpdate = ({ id }) => {
       })
       .then((res) => {
         setLoading(false);
-        if (res.code == 200) handleClose();
+        if (res.code === 200) handleClose();
         queryClient.invalidateQueries(["product_attributes"]);
       });
   }

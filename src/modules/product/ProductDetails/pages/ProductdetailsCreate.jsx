@@ -1,12 +1,11 @@
 import { Typography, Box, Button, Grid, Alert } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
-import React, { useState } from "react";
 import Loader from "components/shared/Loader";
 import { useProductdetailsCreate } from "../hooks/useProductdetailsCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
-import ButtonReset from "components/shared/ButtonReset";
+
 const ProductdetailsCreate = ({ id, isCreateProduct }) => {
   const {
     handleCancel,
@@ -25,9 +24,7 @@ const ProductdetailsCreate = ({ id, isCreateProduct }) => {
   } = useProductdetailsCreate({ id });
 
   return (
-    <Box
-      
-    >
+    <Box>
       {loading && <Loader />}
       <Typography sx={{ color: "text.main", mb: "16px" }} variant="h5">
         {t("Create Product detail")}
@@ -38,8 +35,8 @@ const ProductdetailsCreate = ({ id, isCreateProduct }) => {
           BoxShadow: 10,
           px: 3,
           ...(isCreateProduct && {
-            opacity: id && id.length > 0 ? "100%" : "50%",
-            pointerEvents: id && id.length > 0 ? "initial" : "none",
+            opacity: id && id ? "100%" : "50%",
+            pointerEvents: id && id ? "initial" : "none",
           }),
         }}
       >

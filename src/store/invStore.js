@@ -1,8 +1,8 @@
-import create from "zustand";
+import { create } from 'zustand';
 
 export const InvStore = create((set) => ({
-  InvId: null,
-  setInvId: (id) => {
-    set(() => ({ InvId: id }));
+  InvData: null,
+  setInvData: (Data) => {
+    set(() => ({ InvData: Data }));
   },
 }));

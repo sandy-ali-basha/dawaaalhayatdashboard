@@ -5,22 +5,24 @@ import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import SideBarHeader from "./SideBarHeader";
 import SideBarLink from "./SideBarLink";
-import SellRoundedIcon from "@mui/icons-material/SellRounded";
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import {
-  AdminPanelSettingsRounded,
-  BookmarkRounded,
-  CategoryRounded,
-  DiscountRounded,
-  GavelRounded,
-  HomeRounded,
-  Inventory2Rounded,
-  MoneyRounded,
-  PublicRounded,
-  ShoppingCartCheckoutRounded,
-  SpaceDashboardRounded,
-  WorkRounded,
+  AdminPanelSettingsOutlined,
+  BookmarkOutlined,
+  CategoryOutlined,
+  CurrencyBitcoinOutlined,
+  DiscountOutlined,
+  GavelOutlined,
+  HomeOutlined,
+  Inventory2Outlined,
+  MoneyOutlined,
+  PublicOutlined,
+  ShoppingBagOutlined,
+  ShoppingCartCheckoutOutlined,
+  SpaceDashboardOutlined,
+  WorkOutlined,
 } from "@mui/icons-material";
 const SideBar = ({ open, setOpen }) => {
   const { t } = useTranslation("sidebar");
@@ -46,56 +48,67 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("Dashboard"),
       link: "/dashboard",
-      icon: <SpaceDashboardRounded />,
+      icon: <SpaceDashboardOutlined />,
     },
     {
       name: t("Admin"),
       link: "/dashboard/admin",
-      icon: <AdminPanelSettingsRounded />,
+      icon: <AdminPanelSettingsOutlined />,
     },
     {
       name: t("Products"),
-      icon: <CategoryRounded />,
+      icon: <ShoppingBagOutlined />,
       subOptions: [
         { name: t("Products"), link: "/dashboard/product" },
-        { name: t("Categories"), link: "/dashboard/products/categories" },
         { name: t("Medical form"), link: "/dashboard/product_type" },
       ],
     },
+
+    {
+      name: t("Categories"),
+      icon: <CategoryOutlined />,
+      link: "/dashboard/products/categories",
+    },
+
     {
       name: t("orders"),
       link: "/dashboard/orders",
-      icon: <ShoppingCartCheckoutRounded />,
+      icon: <ShoppingCartCheckoutOutlined />,
     },
     {
       name: t("Inventories"),
       link: "/dashboard/Inventories",
-      icon: <Inventory2Rounded />,
+      icon: <Inventory2Outlined />,
+    },
+    {
+      name: t("currencies"),
+      link: "/dashboard/currencies",
+      icon: <CurrencyBitcoinOutlined />,
     },
 
     {
       name: t("brands"),
       link: "/dashboard/brands",
-      icon: <SellRoundedIcon />,
+      icon: <SellOutlinedIcon />,
     },
     {
       name: t("discounts"),
       link: "/dashboard/discounts",
-      icon: <DiscountRounded />,
+      icon: <DiscountOutlined />,
     },
     {
       name: t("point price"),
       link: "/dashboard/settings",
-      icon: <MoneyRounded />,
+      icon: <MoneyOutlined />,
     },
     {
       name: t("terms"),
       link: "/dashboard/terms",
-      icon: <GavelRounded />,
+      icon: <GavelOutlined />,
     },
     {
       name: t("Careers"),
-      icon: <WorkRounded />,
+      icon: <WorkOutlined />,
       subOptions: [
         { name: t("Careers"), link: "/dashboard/careers" },
         { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
@@ -105,33 +118,33 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("blog"),
       link: "/dashboard/blog",
-      icon: <BookmarkRounded color={"secondary.main"} />,
+      icon: <BookmarkOutlined color={"secondary.main"} />,
     },
     {
       name: t("Home"),
       link: "/dashboard/home",
-      icon: <HomeRounded color={"secondary.main"} />,
+      icon: <HomeOutlined color={"secondary.main"} />,
     },
     {
       name: t("customers"),
       link: "/dashboard/customers",
-      icon: <HomeRounded color={"secondary.main"} />,
+      icon: <HomeOutlined color={"secondary.main"} />,
     },
   ];
   const website_admin = [
     {
       name: t("brands"),
       link: "/dashboard/brands",
-      icon: <SellRoundedIcon />,
+      icon: <SellOutlinedIcon />,
     },
     {
       name: t("terms"),
       link: "/dashboard/terms",
-      icon: <GavelRounded />,
+      icon: <GavelOutlined />,
     },
     {
       name: t("Careers"),
-      icon: <WorkRounded />,
+      icon: <WorkOutlined />,
       subOptions: [
         { name: t("Careers"), link: "/dashboard/careers" },
         { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
@@ -140,59 +153,64 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("blog"),
       link: "/dashboard/blog",
-      icon: <BookmarkRounded color={"secondary.main"} />,
+      icon: <BookmarkOutlined color={"secondary.main"} />,
     },
     {
       name: t("Home"),
       link: "/dashboard/home",
-      icon: <HomeRounded color={"secondary.main"} />,
+      icon: <HomeOutlined color={"secondary.main"} />,
     },
   ];
   const orders_admin = [
     {
       name: t("orders"),
       link: "/dashboard/orders",
-      icon: <ShoppingCartCheckoutRounded />,
+      icon: <ShoppingCartCheckoutOutlined />,
     },
   ];
   const ecommerce_admin = [
     {
+      name: t("Medical form"),
+      link: "/dashboard/product_type",
+      icon: <ShoppingCartCheckoutOutlined />,
+    },
+    {
       name: t("Products"),
-      icon: <CategoryRounded />,
-      subOptions: [
-        { name: t("Products"), link: "/dashboard/product" },
-        { name: t("Categories"), link: "/dashboard/products/categories" },
-        { name: t("Medical form"), link: "/dashboard/product_type" },
-      ],
+      link: "/dashboard/product",
+      icon: <ShoppingBagOutlined />,
+    },
+    {
+      name: t("Categories"),
+      link: "/dashboard/products/categories",
+      icon: <CategoryOutlined />,
     },
     {
       name: t("orders"),
       link: "/dashboard/orders",
-      icon: <ShoppingCartCheckoutRounded />,
+      icon: <ShoppingCartCheckoutOutlined />,
     },
 
     {
       name: t("point price"),
       link: "/dashboard/settings",
-      icon: <MoneyRounded />,
+      icon: <MoneyOutlined />,
     },
     {
       name: t("Inventories"),
       link: "/dashboard/Inventories",
-      icon: <PublicRounded />,
+      icon: <PublicOutlined />,
     },
 
     {
       name: t("brands"),
       link: "/dashboard/brands",
-      icon: <SellRoundedIcon />,
+      icon: <SellOutlinedIcon />,
     },
     {
       name: t("discounts"),
       link: "/dashboard/discounts",
-      icon: <DiscountRounded />,
+      icon: <DiscountOutlined />,
     },
-  
   ];
 
   const returnLinks = () => {

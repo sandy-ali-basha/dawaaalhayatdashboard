@@ -4,7 +4,7 @@ import Product_attributesComponent from "./Product_attributesComponent";
 import Product_attributesIndex from "./pages/Product_attributesIndex";
 import Product_attributesUpdate from "./pages/Product_attributesUpdate";
 import Product_attributesCreate from "./pages/Product_attributesCreate";
-import Product_attributes_valuesRouting from "./product_attributes_values/Product_attributes_valuesRouting";
+import Product_attributes_valuesRouting from "./product_attributes_values/Product_attributes_sub_valuesRouting";
 import NotFound from "components/NotFound";
 
 const Product_attributesRouting = () => {

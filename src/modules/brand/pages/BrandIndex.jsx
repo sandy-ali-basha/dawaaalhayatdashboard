@@ -23,9 +23,9 @@ import BrandUpdate from "./BrandUpdate";
 import DeleteDialog from "../components/Dialog";
 import {
   AddPhotoAlternate,
-  NoteAddRounded,
+  NoteAddOutlined,
   ViewCarousel,
-  WebRounded,
+  WebOutlined,
 } from "@mui/icons-material";
 import AddImage from "./AddImage";
 
@@ -93,14 +93,14 @@ const BrandIndex = () => {
           {brand?.havePage && (
             <IconButton onClick={() => navigate(`page/${brand?.id}`)}>
               <Tooltip title={"Page"}>
-                <WebRounded sx={{ color: "text.main" }} />
+                <WebOutlined sx={{ color: "text.main" }} />
               </Tooltip>
             </IconButton>
           )}
           {!brand?.havePage && (
             <IconButton onClick={() => navigate(`page/${brand?.id}/create`)}>
               <Tooltip title={"add Page"}>
-                <NoteAddRounded sx={{ color: "info.main" }} />
+                <NoteAddOutlined sx={{ color: "info.main" }} />
               </Tooltip>
             </IconButton>
           )}

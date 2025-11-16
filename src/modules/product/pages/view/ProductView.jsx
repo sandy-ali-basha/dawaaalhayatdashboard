@@ -23,14 +23,14 @@ import {
   ModeOutlined,
   ModeTwoTone,
 } from "@mui/icons-material";
-import EditImage from "../components/images/EditImage";
 import { useState } from "react";
-import DeleteImage from "../components/images/DeleteImage";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { colorStore } from "store/ColorsStore";
-import ProductUpdate from "./ProductUpdate";
-import VariantUpdate from "../components/VariantUpdate";
-import VariantsSection from "./view/VariantSection";
+
+import VariantsSection from "./VariantSection";
+import ProductUpdate from "../ProductUpdate";
+import DeleteImage from "modules/product/components/images/DeleteImage";
+import EditImage from "modules/product/components/images/EditImage";
 
 const ProductView = () => {
   const { t } = useTranslation("index");

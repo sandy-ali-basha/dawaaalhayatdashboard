@@ -20,11 +20,10 @@ import { LocationCity } from "@mui/icons-material";
 import { useProductCreate } from "modules/product/hooks/useProductCreate";
 
 const PricesAndCountries = ({
-  setNewProductId,
   selectedCities,
   setSelectedCities,
 }) => {
-  const { errors, regions } = useProductCreate({ setNewProductId });
+  const { errors, regions } = useProductCreate();
 
   const handleToggleCity = (cityId) => {
     if (selectedCities.includes(cityId)) {

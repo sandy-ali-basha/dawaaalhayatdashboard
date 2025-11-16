@@ -3,10 +3,10 @@ import { Route, Routes } from "react-router-dom";
 import ProductComponent from "./ProductComponent";
 import ProductIndex from "./pages/ProductIndex";
 import ProductUpdate from "./pages/ProductUpdate";
-import ProductView from "./pages/ProductView";
 import NotFound from "components/NotFound";
 import ProductdetailsRouting from "./ProductDetails/ProductdetailsRouting";
 import ProductCreate from "./pages/ProductCreate";
+import ProductView from "./pages/view/ProductView";
 
 const ProductRouting = () => {
   return (

@@ -11,7 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
 import React, { useMemo, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
@@ -22,6 +22,7 @@ import ChangeStatus from "../components/ChangeStatus";
 import { useProduct_attributes_values } from "hooks/product_attributes_values/useProduct_attributes_values";
 import Product_attributes_valuesUpdate from "./Product_attributes_valuesUpdate";
 import DeleteDialog from "../components/Dialog";
+import { DynamicFeedOutlined } from "@mui/icons-material";
 
 const Product_attributes_valuesIndex = () => {
   const { t } = useTranslation("index");
@@ -110,11 +111,19 @@ const Product_attributes_valuesIndex = () => {
                 />
               </Tooltip>
             </IconButton>
+            <IconButton>
+              <Tooltip title={"show values"}>
+                <Link to={`${product_attributes_values?.id}`}>
+                  {" "}
+                  <DynamicFeedOutlined sx={{ color: "text.main" }} />
+                </Link>
+              </Tooltip>
+            </IconButton>
           </TableCell>
         </TableRow>
       )
     );
-  }, [data, count, direction, handleEdit, handleView, page, t]);
+  }, [data, count, direction, handleEdit, page]);
 
   const handleCreate = () => navigate("create");
 

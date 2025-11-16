@@ -10,8 +10,8 @@ const ProductFeatures = ({ id }) => {
     <BoxStyled
       sx={{
         p: 2,
-        opacity: id.length > 0 ? "100%" : "50%",
-        pointerEvents: id.length > 0 ? "initial" : "none",
+        opacity: id ? "100%" : "50%",
+        pointerEvents: id ? "initial" : "none",
       }}
     >
       <Typography variant="body1" color="initial">
@@ -20,7 +20,7 @@ const ProductFeatures = ({ id }) => {
       <EditImage
         open={open}
         setOpen={setOpen}
-        link={id.map((item) => `/products/${item}/images/products_features`)}
+        link={`/products/${id}/images/products_features`}
         status={"add"}
         isProductCreate={true}
       />{" "}

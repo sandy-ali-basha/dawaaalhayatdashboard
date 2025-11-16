@@ -27,12 +27,12 @@ import FlavorAutocomplete from "./VariantsRepeater/FlavorAutocomplete";
 import PackingAutocomplete from "./VariantsRepeater/PackingAutocomplete";
 import { _Product } from "api/product/product";
 
-const VariantUpdate = ({ variantData: initialVariant, flavors, packings }) => {
+const VariantUpdate = ({ variantData: initialVariant }) => {
   const [loading, setLoading] = useState(false);
   const [regions, setRegions] = useState([]);
   const [open, setOpen] = useState(false);
   const [variantData, setVariantData] = useState(initialVariant || {});
-
+  console.log("initialVariant", variantData);
   useEffect(() => {
     _Regions.index().then((response) => {
       if (response.code === 200) setRegions(response.data);
@@ -65,16 +65,65 @@ const VariantUpdate = ({ variantData: initialVariant, flavors, packings }) => {
       })
       .finally(() => setLoading(false));
   };
-console.log("initialVariant",initialVariant)
   const cityFields = [
-    { name: "price", label: "Price", icon: <MonetizationOnOutlined fontSize="small" />, type: "number" },
-    { name: "compare_price", label: "Discount", icon: <DiscountOutlined fontSize="small" />, type: "number" },
-    { name: "compare_price_start", label: "Discount Start", icon: <TimerOutlined fontSize="small" />, type: "date" },
-    { name: "compare_price_end", label: "Discount End", icon: <TimerOutlined fontSize="small" />, type: "date" },
-    { name: "tax_class_id", label: "Tax Class", icon: <AddCardOutlined fontSize="small" />, type: "number" },
-    { name: "inventory", label: "Inventory", icon: <Inventory2Outlined fontSize="small" />, type: "number" },
-    { name: "qty", label: "Quantity", icon: <Inventory2Outlined fontSize="small" />, type: "number" },
-    { name: "points", label: "Points", icon: <AddCardOutlined fontSize="small" />, type: "number" },
+    {
+      name: "price",
+      label: "Price",
+      icon: <MonetizationOnOutlined fontSize="small" />,
+      type: "number",
+    },
+    {
+      name: "compare_price",
+      label: "compare price (Discount)",
+      icon: <DiscountOutlined fontSize="small" />,
+      type: "number",
+    },
+    {
+      name: "compare_price_start_date",
+      label: "Discount Start",
+      icon: <TimerOutlined fontSize="small" />,
+      type: "date",
+    },
+    {
+      name: "compare_price_end_date",
+      label: "Discount End",
+      icon: <TimerOutlined fontSize="small" />,
+      type: "date",
+    },
+    {
+      name: "tax_class_id",
+      label: "Tax",
+      icon: <AddCardOutlined fontSize="small" />,
+      type: "number",
+    },
+    {
+      name: "inventory",
+      label: "Inventory",
+      icon: <Inventory2Outlined fontSize="small" />,
+      type: "number",
+      helperText: "The number of items available for sale",
+    },
+    {
+      name: "storage_qty",
+      label: "storage qty",
+      icon: <Inventory2Outlined fontSize="small" />,
+      type: "number",
+      helperText:
+        "Total items physically in the warehouse.Includes all items—even reserved or damaged.",
+    },
+    {
+      name: "unit_quantity",
+      label: "unit quantity",
+      icon: <Inventory2Outlined fontSize="small" />,
+      type: "number",
+      helperText: "Number of units inside one pack.",
+    },
+    {
+      name: "reorder_point",
+      label: "reorder point",
+      icon: <Inventory2Outlined fontSize="small" />,
+      type: "number",
+    },
   ];
 
   return (
@@ -83,34 +132,29 @@ console.log("initialVariant",initialVariant)
         <EditOutlined color="primary.main" />
       </IconButton>
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle>Edit Variant</DialogTitle>
 
         <Box sx={{ p: 3 }}>
           <Grid container spacing={2}>
             {/* SKU */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <Typography color="text.primary">SKU</Typography>
               <TextFieldStyled
+                sx={{ mt: 1 }}
                 fullWidth
                 value={variantData.sku || ""}
                 onChange={(e) => handleChange("sku", e.target.value)}
               />
             </Grid>
 
-            {/* Inventory */}
-            <Grid item xs={12} md={6}>
-              <Typography color="text.primary">Inventory</Typography>
-              <TextFieldStyled
-                fullWidth
-                type="number"
-                value={variantData.inventory || ""}
-                onChange={(e) => handleChange("inventory", e.target.value)}
-              />
-            </Grid>
-
             {/* Flavor */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <FlavorAutocomplete
                 value={variantData.option_value_ids?.[0]}
                 onChange={(value) => handleOptionChange("flavor", value)}
@@ -118,10 +162,9 @@ console.log("initialVariant",initialVariant)
             </Grid>
 
             {/* Packing */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <PackingAutocomplete
                 value={variantData.option_value_ids?.[1]}
-                packings={packings}
                 onChange={(value) => handleOptionChange("packing", value)}
               />
             </Grid>
@@ -130,7 +173,7 @@ console.log("initialVariant",initialVariant)
             <Grid item xs={12}>
               <Box
                 sx={{
-                  border: "1px solid",
+                  border: ".0625rem solid",
                   borderColor: "primary.light",
                   borderRadius: 2,
                   p: 1,
@@ -187,6 +230,7 @@ console.log("initialVariant",initialVariant)
                           onChange={(e) =>
                             handleChange(field.name, e.target.value)
                           }
+                          helperText={field.helperText}
                         />
                       </Grid>
                     ))}

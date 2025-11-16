@@ -22,7 +22,7 @@ import { useCustomers } from "hooks/customers/useCustomers";
 import CustomersUpdate from "./CustomersUpdate";
 import DeleteDialog from "../components/Dialog";
 import * as XLSX from "xlsx"; // Import xlsx for Excel export
-import { GetAppRounded } from "@mui/icons-material";
+import { GetAppOutlined } from "@mui/icons-material";
 
 const CustomersIndex = () => {
   const { t } = useTranslation("index");
@@ -154,7 +154,7 @@ const CustomersIndex = () => {
             onClick={exportToExcel}
             sx={{ ml: 2 }}
           >
-            Export to Excel <GetAppRounded />
+            Export to Excel <GetAppOutlined />
           </Button>
         </Box>
 

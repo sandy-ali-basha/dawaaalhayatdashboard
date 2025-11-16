@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Alert, Card, CardActions, Grid, Typography } from "@mui/material";
+import { Alert, Card, CardActions, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -60,39 +60,38 @@ const AddImages = ({ id, open, setOpen, notDialog }) => {
   };
 
   const { mutate } = useMutation((data) => createPost(data));
-  const handleAddImages = ({ data }) => {
+  const handleAddImages = async ({ data }) => {
+     setLoading(true);
+        try {
+          const res = await _Product.AddImages({
+            editedID: id,
+            formData: data,
+          });
+          if (res.code === 200) {
+            setALert(["image saved successfully"]);
+          }
+        } catch (error) {
+          setALert(["image to save image"]);
+        } finally {
+          setLoading(false);
+        }
     setLoading(true);
-    // Map over the array of ids to create a request for each
-    const requests = id.map((id) => {
-      // Return the promise for the request
-      return _Product.AddImages({
+    try {
+      const res = await _Product.AddImages({
         editedID: id,
         formData: data,
       });
-    });
-
-    // Execute all requests concurrently
-    Promise.all(requests)
-      .then((responses) => {
-        // Handle successful responses
-        responses.forEach((res, index) => {
-          if (res.code === 200) {
-            setALert((prev) => [
-              ...prev,
-              `Images for Product ${id[index]} saved successfully.`,
-            ]);
-          } else {
-            setALert((prev) => [
-              ...prev,
-              `Failed to save images for Product ${id[index]}.`,
-            ]);
-          }
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      if (res.code === 200) {
+        setALert(["Image saved successfully"]);
+        handleDialogClose();
+      }
+    } catch (error) {
+      setALert(["Failed to save image"]);
+    } finally {
+      setLoading(false);
+    }
   };
+
   async function createPost(data) {
     if (notDialog) {
       handleAddImages({ data });
@@ -126,7 +125,7 @@ const AddImages = ({ id, open, setOpen, notDialog }) => {
     }
     handleClose();
   };
-
+  console.log("id", id);
   return (
     <>
       {loading && <Loader />}
@@ -135,8 +134,8 @@ const AddImages = ({ id, open, setOpen, notDialog }) => {
           sx={{
             BoxShadow: 10,
             p: 3,
-            opacity: id.length > 0 ? "100%" : "50%",
-            pointerEvents: id.length > 0 ? "initial" : "none",
+            opacity: id ? "100%" : "50%",
+            pointerEvents: id ? "initial" : "none",
           }}
         >
           <Typography sx={{ color: "text.main" }}>{t("Add Images")}</Typography>

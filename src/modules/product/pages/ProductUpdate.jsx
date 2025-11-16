@@ -36,9 +36,6 @@ import { BoxStyled } from "components/styled/BoxStyled";
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
   product_type_id: yup.string().trim().required("product type is required"),
-  price: yup.number().required("price type is required"),
-  qty: yup.number().required("quantity type is required"),
-  city_id: yup.string().trim().required("city is required"),
   purchasable: yup
     .string()
     .required("Purchasable is required")
@@ -269,6 +266,7 @@ const ProductUpdate = ({ id }) => {
                       <Typography color="text.main">{t("brand")}</Typography>
                     </Box>
                     <SelectStyled
+                      value={""}
                       defaultValue={data?.brand?.id}
                       sx={{ color: "text.main", borderColor: "text.main" }}
                       {...register("brand_id")}
@@ -295,6 +293,7 @@ const ProductUpdate = ({ id }) => {
                       </Typography>
                     </Box>
                     <SelectStyled
+                      value={""}
                       sx={{ color: "text.main", borderColor: "text.main" }}
                       {...register("product_type_id")}
                       defaultValue={data?.product_type?.id}

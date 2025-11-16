@@ -130,7 +130,7 @@ const LinkCityToCountry = ({ openLink, setopenLink }) => {
               {[...Array(5)].map((_, i) => (
                 <Skeleton
                   key={i}
-                  variant="rounded"
+                  variant="Outlined"
                   width={80 + Math.random() * 40} // random chip width for realism
                   height={32}
                   animation="wave"

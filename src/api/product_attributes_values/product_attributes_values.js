@@ -1,5 +1,4 @@
 import { _axios } from "../../interceptor/http-config";
-const Link = "/product_attributes_values/attribute";
 
 export const _Product_attributes_values = {
   index: ({ id }) =>

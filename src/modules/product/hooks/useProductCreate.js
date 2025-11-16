@@ -9,6 +9,7 @@ import { _axios } from "interceptor/http-config";
 import { _cities } from "api/cities/cities";
 import { _Regions } from "api/regions/regions";
 import { useSettings } from "hooks/settings/useSettings";
+import { ProductStore, StepsStore } from "store/productStore";
 
 let schema = yup.object().shape({
   brand_id: yup.string().trim().required("brand is required"),
@@ -29,22 +30,25 @@ let schema = yup.object().shape({
   }),
 });
 
-export const useProductCreate = ({ setNewProductId }) => {
+export const useProductCreate = () => {
   const [cities, setCiteies] = useState([]);
   const [regions, setRegions] = useState([]);
   const [selectedRegion, setSelectedRegions] = useState(null);
   const [selectedCities, setSelectedCities] = useState([]);
-  const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [brands, setBrand] = useState(null);
   const [producttypes, setproducttypes] = useState(null);
-  const { data: point_price } = useSettings();
 
+  const { data: point_price } = useSettings();
+  const { t } = useTranslation("index");
+  const setNewProductId = ProductStore((state) => state.setNewProductId);
   const navigate = useNavigate();
+
   const formOptions = {
     resolver: yupResolver(schema),
     defaultValues: {
       points: 0, // Set the initial value for "points"
+      status: "active",
     },
     mode: "onChange",
   };
@@ -111,6 +115,14 @@ export const useProductCreate = ({ setNewProductId }) => {
       error: "sku",
       helperText: "sku",
     },
+    {
+      head: "Points",
+      type: "number",
+      name: "points",
+      register: "points",
+      error: "points",
+      helperText: "points",
+    },
   ];
 
   const Discription = [
@@ -141,8 +153,8 @@ export const useProductCreate = ({ setNewProductId }) => {
   ];
 
   const handleCancel = () => navigate(-1);
-
-  const hanldeCreate = (input) => {
+  const setActiveStep = StepsStore((state) => state.setActiveStep);
+  const hanldeCreate = async (input) => {
     // Base product data
     const productData = {
       ...input,
@@ -174,17 +186,18 @@ export const useProductCreate = ({ setNewProductId }) => {
     }
 
     // Send to backend
-    return _Product
-      .post(productData, setLoading)
-      .then((res) => {
-        if (res?.code === 200) setNewProductId(res?.data?.products_id);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const res = await _Product.post(productData, setLoading);
+      if (res?.code === 200) {
+        setNewProductId(res?.data?.id);
+        setActiveStep(2);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useMemo(() => {
+  useEffect(() => {
     _cities.index().then((response) => {
       if (response.code === 200) {
         setCiteies(response.data);
@@ -199,9 +212,6 @@ export const useProductCreate = ({ setNewProductId }) => {
 
   const packings = ["packings1", "packings"];
 
-  const addNewPacking = () => {
-    console.log("addNewPacking");
-  };
   return {
     handleCancel,
     hanldeCreate,
@@ -224,6 +234,5 @@ export const useProductCreate = ({ setNewProductId }) => {
     regions,
     watch,
     packings,
-    addNewPacking,
   };
 };

@@ -53,10 +53,14 @@ const CareersCreate = () => {
                   </Typography>
                 </Box>
                 <SelectStyled
+                    defaultValue={''}
                   sx={{ color: "text.main", borderColor: "text.main" }}
                   label="category_id"
                   {...register("category_id")}
                 >
+                <MenuItemStyled color="text.secondary" value="">
+                                                  <em>Select option</em>
+                                                </MenuItemStyled>
                   {careersCategoriesData?.map((item) => (
                     <MenuItemStyled value={item.id} key={item.id}>
                       <Box style={{ color: "text.main" }}>{item.name}</Box>

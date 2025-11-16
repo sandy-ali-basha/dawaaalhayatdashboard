@@ -73,42 +73,25 @@ const ProductAttr = ({ id, open, setOpen, attr, notDialog }) => {
 
   const { mutate } = useMutation((data) => createPost(data));
 
-  const handleAddAttr = ({ data }) => {
+  const handleAddAttr = async ({ data }) => {
     setLoading(true);
-    // Map over the array of ids to create a request for each
-    const requests = id.map((id) => {
-      // Return the promise for the request
-      const newData = {
-        ...data,
-        product_id: id, // Add product_id to the form data
-      };
-      return _Product.attribute({
+    const newData = {
+      ...data,
+      product_id: id, // Add product_id to the form data
+    };
+    try {
+      const res = await _Product.attribute({
         editedID: id,
         formData: newData,
       });
-    });
-
-    // Execute all requests concurrently
-    Promise.all(requests)
-      .then((responses) => {
-        // Handle successful responses
-        responses.forEach((res, index) => {
-          if (res.code === 200) {
-            setALert((prev) => [
-              ...prev,
-              `categories for Product ${id[index]} saved successfully.`,
-            ]);
-          } else {
-            setALert((prev) => [
-              ...prev,
-              `Failed to save categories for Product ${id[index]}.`,
-            ]);
-          }
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      if (res.code === 200) {
+        setALert(["categories saved successfully"]);
+      }
+    } catch (error) {
+      setALert(["categories to save image"]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   async function createPost(data) {
@@ -175,6 +158,7 @@ const ProductAttr = ({ id, open, setOpen, attr, notDialog }) => {
                 control={control}
                 render={({ field }) => (
                   <SelectStyled
+                    defaultValue={""}
                     {...field}
                     sx={{ color: "text.main", borderColor: "text.main" }}
                     value={field.value || ""}
@@ -185,6 +169,9 @@ const ProductAttr = ({ id, open, setOpen, attr, notDialog }) => {
                       getValues(value);
                     }}
                   >
+                    <MenuItemStyled color="text.secondary" value="">
+                      <em>Select option</em>
+                    </MenuItemStyled>
                     {product_attributes &&
                       product_attributes.map((item) => (
                         <MenuItemStyled value={item.id} key={item.id}>
@@ -211,6 +198,7 @@ const ProductAttr = ({ id, open, setOpen, attr, notDialog }) => {
                   control={control}
                   render={({ field }) => (
                     <SelectStyled
+                      defaultValue={""}
                       {...field}
                       multiple
                       sx={{ color: "text.main", borderColor: "text.main" }}
@@ -234,6 +222,9 @@ const ProductAttr = ({ id, open, setOpen, attr, notDialog }) => {
                         </Box>
                       )}
                     >
+                      <MenuItemStyled color="text.secondary" value="">
+                        <em>Select option</em>
+                      </MenuItemStyled>
                       {product_attributes_values?.map((item) => (
                         <MenuItemStyled value={item.id} key={item.id}>
                           <Box style={{ color: "text.main" }}>{item.value}</Box>
@@ -290,8 +281,8 @@ const ProductAttr = ({ id, open, setOpen, attr, notDialog }) => {
           sx={{
             BoxShadow: 10,
             p: 3,
-            opacity: id.length > 0 ? "100%" : "50%",
-            pointerEvents: id.length > 0 ? "initial" : "none",
+            opacity: id ? "100%" : "50%",
+            pointerEvents: id ? "initial" : "none",
           }}
         >
           {content}

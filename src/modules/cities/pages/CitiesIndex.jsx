@@ -4,7 +4,6 @@ import {
   Typography,
   IconButton,
   Tooltip,
-  Divider,
   TextField,
   InputAdornment,
   Paper,
@@ -15,10 +14,7 @@ import {
   Search,
   Inventory2Outlined,
   AddCircleOutline,
-  InventoryOutlined,
-  StoreRounded,
-  MoveToInboxRounded,
-  ViewDayRounded,
+ 
   VisibilityOutlined,
 } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -29,13 +25,14 @@ import { useNavigate } from "react-router-dom";
 import Loader from "components/shared/Loader";
 import Countries from "../components/Countries";
 import CitiesUpdate from "./CitiesUpdate";
-import { BoxStyled } from "components/styled/BoxStyled";
 import DeleteDialog from "../components/Dialog";
 import { InvStore } from "store/invStore";
 
 const CitiesIndex = () => {
   const { t } = useTranslation("index");
   const { data, isLoading } = useCities();
+  const cities = data?.data?.state || [];
+
   const Navigate = useNavigate();
 
   const [prev_shipping_price, setPrev_shipping_price] = useState(null);
@@ -43,36 +40,42 @@ const CitiesIndex = () => {
     state.editedID,
     state.setEditedID,
   ]);
-  const [InvId, setInvId] = InvStore((state) => [state.InvId, state.setInvId]);
+  const [InvData, setInvData] = InvStore((state) => [state.InvData, state.setInvData]);
 
   const [search, setSearch] = useState("");
 
   const handleEdit = useCallback(
     (city, id) => {
       setPrev_shipping_price(city);
+      console.log(city);
       setEditedID(id);
     },
     [setPrev_shipping_price, setEditedID]
   );
-  const handleViewInv = useCallback(
-    (id) => {
-      setInvId(id);
-      Navigate("/dashboard/inventory/"+ id)
-    },
-    [Navigate, setInvId]
-  );
+
+const handleViewInv = useCallback(
+  (row) => {
+    const fullCity = cities.find((c) => c.id === row.id);
+    setInvData(fullCity); // <-- send full data now
+    Navigate("/dashboard/inventory/" + row.id);
+  },
+  [cities, setInvData, Navigate]
+);
+
 
   // Mock product stats (replace with API data)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const inventories =
-    data?.data?.state?.map((city) => ({
-      id: city.id,
-      name: city?.name || "غير معروف",
-      shipping_price: city?.shipping_price || 0,
-      totalProducts: Math.floor(Math.random() * 200),
-      stock: Math.floor(Math.random() * 3000),
-      currency: city?.currency || "USD",
-    })) || [];
+    data?.data?.state?.map((city) => {
+      return {
+        id: city.id,
+        name: city?.name || "غير معروف",
+        shipping_price: city?.shipping_price || 0,
+        totalProducts: city?.products_count,
+        currency_code: city?.currency?.code,
+        currency_name: city?.currency?.name,
+      };
+    }) || [];
 
   const filteredInventories = useMemo(() => {
     if (!search) return inventories;
@@ -80,13 +83,6 @@ const CitiesIndex = () => {
       inv.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [inventories, search]);
-
-  const totalStock = inventories.reduce((acc, inv) => acc + inv.stock, 0);
-  const totalInventories = inventories.length;
-  const totalProducts = inventories.reduce(
-    (acc, inv) => acc + inv.totalProducts,
-    0
-  );
 
   const columns = [
     {
@@ -106,6 +102,7 @@ const CitiesIndex = () => {
       headerName: "Shipping",
       flex: 0.7,
       minWidth: 60,
+      maxWidth: 100,
       renderCell: (params) => (
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography>{params.row.shipping_price}</Typography>
@@ -120,15 +117,15 @@ const CitiesIndex = () => {
       type: "number",
     },
     {
-      field: "stock",
-      headerName: "Stock",
-      flex: 0.6,
-      minWidth: 60,
-      type: "number",
+      field: "currency_code",
+      headerName: "$",
+      flex: 0.4,
+      minWidth: 40,
+      maxWidth: 70,
     },
     {
-      field: "currency",
-      headerName: "Currency",
+      field: "currency_name",
+      headerName: "Curr Name",
       flex: 0.4,
       minWidth: 50,
     },
@@ -158,7 +155,7 @@ const CitiesIndex = () => {
           <Tooltip title="View">
             <IconButton
               sx={{ color: "secondary.main" }}
-              onClick={() => handleViewInv(params.row.id)}
+              onClick={() => handleViewInv(params.row)}
             >
               <VisibilityOutlined />
             </IconButton>
@@ -168,24 +165,6 @@ const CitiesIndex = () => {
     },
   ];
 
-  const IconBox = ({ icon }) => {
-    return (
-      <Box
-        sx={{
-          background: "#eee",
-          borderRadius: 1,
-          p: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "text.primary",
-          fontSize: "2rem",
-        }}
-      >
-        {icon}
-      </Box>
-    );
-  };
 
   return (
     <>
@@ -197,55 +176,6 @@ const CitiesIndex = () => {
       </Typography>
 
       <Countries />
-      <Divider sx={{ my: 3 }} />
-
-      {/* Summary Section */}
-      <BoxStyled
-        sx={{
-          mb: 2,
-          display: "flex",
-          alignItems: "space-evenly",
-          justifyContent: "space-evenly",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Box>
-            <Typography variant="subtitle2" color="text.secondary">
-              Total Inventories
-            </Typography>
-            <Typography variant="h5" color="text.main" fontWeight={600}>
-              {totalInventories}
-            </Typography>
-          </Box>
-
-          <IconBox icon={<InventoryOutlined />} />
-        </Box>
-        <Divider orientation="vertical" flexItem />
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Box>
-            <Typography variant="subtitle2" color="text.secondary">
-              Total Stock
-            </Typography>
-            <Typography variant="h5" fontWeight={600}>
-              {totalStock}
-            </Typography>
-          </Box>
-          <IconBox icon={<StoreRounded />} />
-        </Box>
-        <Divider orientation="vertical" flexItem />
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Box>
-            <Typography variant="subtitle2" color="text.secondary">
-              Total Products
-            </Typography>
-            <Typography variant="h5" fontWeight={600}>
-              {totalProducts}
-            </Typography>
-          </Box>
-          <IconBox icon={<MoveToInboxRounded />} />
-        </Box>
-      </BoxStyled>
-
       {/* Controls */}
       <Box
         sx={{

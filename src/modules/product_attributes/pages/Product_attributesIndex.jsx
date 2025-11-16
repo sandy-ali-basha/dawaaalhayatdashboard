@@ -20,7 +20,7 @@ import { colorStore } from "store/ColorsStore";
 import { useProduct_attributes } from "hooks/product_attributes/useProduct_attributes";
 import Product_attributesUpdate from "./Product_attributesUpdate";
 import DeleteDialog from "../components/Dialog";
-import { ViewAgendaRounded } from "@mui/icons-material";
+import { AccountTreeOutlined } from "@mui/icons-material";
 
 const Product_attributesIndex = () => {
   const { t } = useTranslation("index");
@@ -43,12 +43,7 @@ const Product_attributesIndex = () => {
     ];
   }, [t]);
 
-  const handleView = useCallback(
-    (id) => {
-      navigate("view/" + id);
-    },
-    [navigate]
-  );
+
   const handleEdit = useCallback(
     (id) => {
       setEditedID(id);
@@ -59,8 +54,6 @@ const Product_attributesIndex = () => {
   const rows = useMemo(() => {
     return data?.data?.product_attributes?.map((product_attributes, id) => (
       <TableRow sx={{ height: "65px" }} key={product_attributes.id}>
-        {/* //todo add translation */}
-
         <TableCell sx={{ minWidth: 50 }}>
           {product_attributes?.translations[0]?.title ?? "Null"}
         </TableCell>
@@ -70,16 +63,7 @@ const Product_attributesIndex = () => {
         <TableCell sx={{ minWidth: 50 }}>
           {product_attributes?.translations[2]?.title ?? "Null"}
         </TableCell>
-        {/* <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus
-            id={product_attributes.id}
-            action={product_attributes.status === "active" && "change-status"}
-          >
-            {product_attributes.status === "Active"
-              ? t("Active")
-              : t("Not Active")}
-          </ChangeStatus>
-        </TableCell> */}
+  
         <TableCell
           align="center"
           sx={{
@@ -104,14 +88,14 @@ const Product_attributesIndex = () => {
             <Tooltip title={"show values"}>
               <Link to={`values/${product_attributes?.id}`}>
                 {" "}
-                <ViewAgendaRounded sx={{ color: "text.main" }} />
+                <AccountTreeOutlined sx={{ color: "text.main" }} />
               </Link>
             </Tooltip>
           </IconButton>
         </TableCell>
       </TableRow>
     ));
-  }, [data, count, direction, handleEdit, handleView, page, t]);
+  }, [data, count, direction, handleEdit, page]);
 
   const handleCreate = () => navigate("create");
 

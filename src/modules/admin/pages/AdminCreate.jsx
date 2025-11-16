@@ -86,6 +86,7 @@ const AdminCreate = () => {
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Role</InputLabel>
                 <Select
+                value=""
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="role"

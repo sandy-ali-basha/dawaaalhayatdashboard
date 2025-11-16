@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   Typography,
   Box,
   Button,
   TextField,
-  Chip,
   Checkbox,
   IconButton,
   CircularProgress,
@@ -16,13 +15,13 @@ import ProductUpdate from "./ProductUpdate";
 import DeleteDialog from "../components/Dialog";
 import AddImages from "./steps/AddImages";
 import ProductAttr from "./ProductAttr";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ChangeStatus from "../components/ChangeStatus";
 import ProductMenu from "../components/productMenu";
 import { useProductIndex } from "../hooks/useProductsIndex";
 import { DataGrid } from "@mui/x-data-grid";
 import ChangeStatusPurshasable from "../components/ChangeStatusPurshasable";
-import { DeleteSweep } from "@mui/icons-material";
+import { DeleteSweep, GifBoxOutlined, ImageOutlined } from "@mui/icons-material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import UpdateRegionPrice from "../components/UpdateRegionPrice";
 import AddImagesSlider from "./steps/AddImagesSlider";
@@ -69,13 +68,14 @@ const ProductIndex = () => {
     return filteredData.map((product) => ({
       select: product.id,
       id: product.id,
+      image: product.images?.[0]?.image_path ?? "",
       name: product.name ?? " ",
       sku: product.sku ?? " ",
       brand: product.brand ?? "",
       comparePrice:
-        product.compare_price > 0 ? product.compare_price : "no sale",
+      product.compare_price > 0 ? product.compare_price : "no sale",
       status: product.status,
-      purchasable: product.purchasable,
+      // purchasable: product.purchasable,
       actions: product,
     }));
   }, [filteredData]); // Dependency array
@@ -99,14 +99,25 @@ const ProductIndex = () => {
       ),
     },
     {
+      field: "image",
+      headerName: "",
+      width: "50",
+      renderCell: (params) =>
+        (
+          <Avatar variant="square" sx={{ bgcolor: "#e4e4e4",py:1 }} src={params.row.image}>
+            <ImageOutlined />
+          </Avatar>
+        ) ?? " ",
+    },
+    {
       field: "name",
       headerName: "Product Name",
-      width: 250,
+      width: 200,
       renderCell: (params) => (
-        <Tooltip title="View" >
+        <Tooltip title="View">
           <Typography
             variant="body1"
-            sx={{ cursor: "pointer",pt:2 }}
+            sx={{ cursor: "pointer", pt: 2 }}
             onClick={() => handleView(params.row.id)}
           >
             {" "}
@@ -126,7 +137,7 @@ const ProductIndex = () => {
       width: 100,
       renderCell: (params) => (
         <Tooltip title="View">
-          <Typography variant="body1" sx={{ pt:2 }}>
+          <Typography variant="body1" sx={{ pt: 2 }}>
             {" "}
             {params.row.brand?.name}
           </Typography>
@@ -146,23 +157,23 @@ const ProductIndex = () => {
         </ChangeStatus>
       ),
     },
-    {
-      field: "purchasable",
-      headerName: "purchasable",
-      width: 100,
-      renderCell: (params) => (
-        <ChangeStatusPurshasable
-          id={params.row.id}
-          currentStatus={params.row.purchasable}
-        >
-          {params.row.purchasable}
-        </ChangeStatusPurshasable>
-      ),
-    },
+    // {
+    //   field: "purchasable",
+    //   headerName: "purchasable",
+    //   width: 100,
+    //   renderCell: (params) => (
+    //     <ChangeStatusPurshasable
+    //       id={params.row.id}
+    //       currentStatus={params.row.purchasable}
+    //     >
+    //       {params.row.purchasable}
+    //     </ChangeStatusPurshasable>
+    //   ),
+    // },
     {
       field: "actions",
       headerName: "Actions",
-      width: 150,
+      width: 120,
       renderCell: (params) => (
         <ProductMenu
           product={params.value}
@@ -260,7 +271,7 @@ const ProductIndex = () => {
               </Tooltip>
             )}
             <Button
-              startIcon={<AddRoundedIcon />}
+              startIcon={<AddOutlinedIcon />}
               variant="contained"
               color="secondary"
               onClick={handleCreate}

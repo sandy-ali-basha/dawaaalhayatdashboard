@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import AddImages from "./steps/AddImages";
 import {
   Box,
@@ -18,44 +18,52 @@ import BasicInfo from "./steps/BasicInfo";
 import AddImagesSlider from "./steps/AddImagesSlider";
 import PricesAndCountries from "./steps/Prices&Countries";
 import { useNavigate } from "react-router-dom";
+import { ProductStore, StepsStore } from "store/productStore";
 
 const ProductCreate = () => {
-  const [newProductId, setNewProductId] = useState([]);
   const [selectedCities, setSelectedCities] = useState([]);
-  const [activeStep, setActiveStep] = useState(0);
   const [productData, setProductData] = useState(null);
   const [basicInfoSubmit, setBasicInfoSubmit] = useState(null); // 👈 store submit fn
-const [variantsSubmit, setVariantsSubmit] = useState(null)
+  const [variantsSubmit, setVariantsSubmit] = useState(null);
+  const newProductId = ProductStore((state) => state.newProductId);
+  const [activeStep, setActiveStep] = StepsStore((state) => [
+    state.activeStep,
+    state.setActiveStep,
+  ]);
+
+  console.log("newProductId", newProductId);
+  console.log("activeStep", newProductId);
 
   const steps = ["Basic Info", "Variants", "Images", "Categories & Features"];
   const Navigate = useNavigate();
 
-  const handleNext = () => {
-    // Step 0 (Basic Info) should trigger form submit
+  const handleNext = useCallback(() => {
     if (activeStep === 0 && basicInfoSubmit) {
       basicInfoSubmit();
-      return; // prevent auto-step increment, wait until onNext runs
-    }
-
-     if (activeStep === 1 && variantsSubmit) {
-    variantsSubmit();
-    return;
-  } 
-    setActiveStep((prev) => prev + 1);
-  };
-
-  const handleBack = () => {
-    if (activeStep === 1 && newProductId.length > 0) {
       return;
     }
-    setActiveStep((prev) => prev - 1);
-  };
 
-  const handleReset = () => {
+    if (activeStep === 1 && variantsSubmit) {
+      variantsSubmit();
+      return;
+    }
+
+    setActiveStep(activeStep + 1);
+  }, [activeStep, basicInfoSubmit, setActiveStep, variantsSubmit]);
+
+  const handleBack = useCallback(() => {
+    if (activeStep === 1 && newProductId) {
+      return;
+    }
+    if (newProductId) return;
+    setActiveStep(activeStep - 1);
+  }, [activeStep, newProductId, setActiveStep]);
+
+  const handleReset = useCallback(() => {
     setActiveStep(0);
     setSelectedCities([]);
     Navigate("/dashboard/product/view/" + newProductId);
-  };
+  }, [Navigate, newProductId, setActiveStep]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -79,14 +87,12 @@ const [variantsSubmit, setVariantsSubmit] = useState(null)
             <PricesAndCountries
               selectedCities={selectedCities}
               setSelectedCities={setSelectedCities}
-              setNewProductId={setNewProductId}
             />
             <BasicInfo
               onNext={(data) => {
                 setProductData(data);
                 setActiveStep(1); // move to next step after successful save
               }}
-              setNewProductId={setNewProductId}
               setSubmitFunction={setBasicInfoSubmit} // 👈 pass setter here
             />
           </Grid>
@@ -97,10 +103,8 @@ const [variantsSubmit, setVariantsSubmit] = useState(null)
             <BoxStyled sx={{ my: 2 }}>
               <VariantsRepeater
                 productData={productData}
-                newProductId={newProductId}
                 selectedCities={selectedCities}
-                  setSubmitFunction={setVariantsSubmit} // 👈 link it
-        onNext={() => setActiveStep(2)} // move to next step on success
+                setSubmitFunction={setVariantsSubmit} // 👈 link it
               />
             </BoxStyled>
           </Grid>
@@ -137,18 +141,26 @@ const [variantsSubmit, setVariantsSubmit] = useState(null)
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
         <Button
           disabled={activeStep === 0}
-          onClick={handleBack}
+          onClick={() => handleBack()}
           variant="outlined"
         >
           Back
         </Button>
 
         {activeStep < steps.length - 1 ? (
-          <Button variant="contained" color="primary" onClick={handleNext}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleNext()}
+          >
             Next
           </Button>
         ) : (
-          <Button variant="contained" color="success" onClick={handleReset}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => handleReset()}
+          >
             Finish & View
           </Button>
         )}

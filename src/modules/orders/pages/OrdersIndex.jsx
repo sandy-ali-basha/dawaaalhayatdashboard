@@ -31,7 +31,7 @@ import {
   Cancel,
   CheckCircle,
   Done,
-  GetAppRounded,
+  GetAppOutlined,
   LocalShipping,
   Pending,
   Print,
@@ -346,7 +346,7 @@ const OrdersIndex = () => {
             onClick={exportToExcel}
             sx={{ ml: 2 }}
           >
-            Export to Excel <GetAppRounded />
+            Export to Excel <GetAppOutlined />
           </Button>
         </Box>
 

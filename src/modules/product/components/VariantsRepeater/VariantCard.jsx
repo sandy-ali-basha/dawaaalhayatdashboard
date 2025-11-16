@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Grid, Typography, IconButton, Button } from "@mui/material";
 import {
   Add,
-  AddCardOutlined,
   Delete,
   DiscountOutlined,
   FlagOutlined,
@@ -22,6 +21,7 @@ const VariantCard = ({
   setVariants,
   onRemove,
   onAddVariant,
+  flavors,
   packings,
   addNewPacking,
   selectedCities,
@@ -59,7 +59,7 @@ const VariantCard = ({
 
     const flavorId = currentVariant.option_value_ids?.[0] || "";
     const packingId = currentVariant.option_value_ids?.[1] || "";
-   
+
     if (optionType === "flavor") {
       newVariants[index].option_value_ids = [value?.id || "", packingId];
     } else {
@@ -84,26 +84,42 @@ const VariantCard = ({
       type: "number",
     },
     {
-      name: "compare_price_start",
+      name: "compare_price_start_date",
       label: "Discount Start",
       icon: <TimerOutlined fontSize="small" />,
       type: "date",
     },
     {
-      name: "compare_price_end",
+      name: "compare_price_end_date",
       label: "Discount End",
       icon: <TimerOutlined fontSize="small" />,
       type: "date",
     },
     {
-      name: "tax",
-      label: "Tax",
-      icon: <AddCardOutlined fontSize="small" />,
+      name: "inventory",
+      label: "Inventory",
+      icon: <Inventory2Outlined fontSize="small" />,
       type: "number",
+      helperText: "The number of items available for sale",
     },
     {
-      name: "quantity",
-      label: "Unit Quantity",
+      name: "storage_qty",
+      label: "storage qty",
+      icon: <Inventory2Outlined fontSize="small" />,
+      type: "number",
+      helperText:
+        "Total items physically in the warehouse.Includes all items—even reserved or damaged.",
+    },
+    {
+      name: "unit_quantity",
+      label: "unit quantity",
+      icon: <Inventory2Outlined fontSize="small" />,
+      type: "number",
+      helperText: "Number of units inside one pack.",
+    },
+    {
+      name: "reorder_point",
+      label: "reorder point",
       icon: <Inventory2Outlined fontSize="small" />,
       type: "number",
     },
@@ -151,6 +167,30 @@ const VariantCard = ({
           </Box>
         </Grid>
 
+        {/* Flavor */}
+        <Grid item xs={12} md={6}>
+          <FlavorAutocomplete
+            value={
+              flavors?.find((f) => f.id === variant.option_value_ids?.[0]) ||
+              null
+            }
+            onChange={(value) => handleOptionChange("flavor", value)}
+          />
+        </Grid>
+
+        {/* Packing */}
+        <Grid item xs={12} md={6}>
+          <PackingAutocomplete
+            value={
+              packings?.find((p) => p.id === variant.option_value_ids?.[1]) ||
+              null
+            }
+            packings={packings}
+            addNewPacking={addNewPacking}
+            onChange={(value) => handleOptionChange("packing", value)}
+          />
+        </Grid>
+
         {/* SKU */}
         <Grid item xs={12} md={6}>
           <Typography color="text.primary">SKU</Typography>
@@ -169,24 +209,6 @@ const VariantCard = ({
             type="number"
             value={variant.inventory || ""}
             onChange={(e) => handleChange("inventory", e.target.value)}
-          />
-        </Grid>
-
-        {/* Flavor */}
-        <Grid item xs={12} md={6}>
-          <FlavorAutocomplete
-            value={variant.option_value_ids?.[0] || ""}
-            onChange={(value) => handleOptionChange("flavor", value)}
-          />
-        </Grid>
-
-        {/* Packing */}
-        <Grid item xs={12} md={6}>
-          <PackingAutocomplete
-            value={variant.option_value_ids?.[1] || ""}
-            packings={packings}
-            addNewPacking={addNewPacking}
-            onChange={(value) => handleOptionChange("packing", value)}
           />
         </Grid>
 
@@ -251,6 +273,7 @@ const VariantCard = ({
                           type={field.type}
                           fullWidth
                           value={cityData[field.name] || ""}
+                          helperText={field.helperText}
                           onChange={(e) =>
                             handleCityDataChange(
                               cityId,

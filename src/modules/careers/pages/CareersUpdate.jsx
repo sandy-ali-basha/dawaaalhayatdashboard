@@ -246,6 +246,9 @@ const CareersUpdate = ({ id }) => {
                         onChange={(e) => field.onChange(e.target.value)}
                         sx={{ color: "text.main", borderColor: "text.main" }}
                       >
+                      <MenuItemStyled color="text.secondary" value="">
+                                                        <em>Select option</em>
+                                                      </MenuItemStyled>
                         {careersCategoriesData?.map((item) => (
                           <MenuItemStyled key={item.id} value={item.id}>
                             <Box sx={{ color: "text.main" }}>{item.name}</Box>

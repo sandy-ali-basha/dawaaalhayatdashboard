@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { settingsStore } from "store/settingsStore";
-import { ArrowBack, ArrowForward, EditRounded } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, EditOutlined } from "@mui/icons-material";
 import { colorStore } from "store/ColorsStore";
 import Brand_pagesUpdate from "./Brand_pagesUpdate";
 import DeleteSlide from "../components/DeleteSlide";
@@ -69,7 +69,7 @@ const Brand_pagesView = () => {
               {" "}
               <IconButton onClick={() => handleEdit(data?.id)}>
                 <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                  <EditRounded sx={{ color: "text.main" }} />
+                  <EditOutlined sx={{ color: "text.main" }} />
                 </Tooltip>
               </IconButton>
             </Box>

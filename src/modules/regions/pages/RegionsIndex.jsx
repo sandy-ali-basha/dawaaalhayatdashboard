@@ -22,7 +22,7 @@ import { colorStore } from "store/ColorsStore";
 import { useRegions } from "hooks/regions/useRegions";
 import RegionsUpdate from "./RegionsUpdate";
 import RegionsLinkCities from "./RegionsLinkCities";
-import { LinkRounded } from "@mui/icons-material";
+import { LinkOutlined } from "@mui/icons-material";
 
 const RegionsIndex = () => {
   const { t } = useTranslation("index");
@@ -86,7 +86,7 @@ const RegionsIndex = () => {
           </IconButton>
           <IconButton onClick={() => handleLink(regions)}>
             <Tooltip title={"Link Cities"}>
-              <LinkRounded sx={{ color: "text.main" }} />
+              <LinkOutlined sx={{ color: "text.main" }} />
             </Tooltip>o0,.
           </IconButton>
         </TableCell>

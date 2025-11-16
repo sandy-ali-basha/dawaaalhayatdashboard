@@ -18,7 +18,8 @@ const schema = yup.object().shape({
   name: yup.string().required("name is required"),
   inventory: yup.string().required("inventory is required"),
   shipping_price: yup.string().required("shipping price is required"),
-  currency: yup.string().required("currency is required"),
+  currency_name: yup.string().required("currency name is required"),
+  currency_code: yup.string().required("currency code is required"),
 });
 
 const CitiesUpdate = ({ old_data, setEditCity }) => {
@@ -37,7 +38,6 @@ const CitiesUpdate = ({ old_data, setEditCity }) => {
   const handleClose = () => {
     setOpen(false);
     setEditedID(null);
-    setEditCity(false);
   };
 
   const { mutate } = useMutation((data) => createPost(data));
@@ -135,18 +135,35 @@ const CitiesUpdate = ({ old_data, setEditCity }) => {
             <Grid item md={6} sx={{ p: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
                 <Typography variant="body1" color="text.main">
-                  currency
+                  currency name
                 </Typography>
               </Box>
               <TextFieldStyled
                 sx={{ width: "100%" }}
                 type={"text"}
-                placeholder={"currency"}
-                defaultValue={old_data?.currency}
-                name={"currency"}
-                {...register("currency")}
-                error={!!errors?.currency}
-                helperText={errors?.message?.currency || ""}
+                placeholder={"currency name"}
+                defaultValue={old_data?.currency_name}
+                name={"currency_name"}
+                {...register("currency_name")}
+                error={!!errors?.currency_name}
+                helperText={errors?.message?.currency_name || ""}
+              />
+            </Grid>
+            <Grid item md={6} sx={{ p: "10px" }}>
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  currency code
+                </Typography>
+              </Box>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"currency code"}
+                defaultValue={old_data?.currency_code}
+                name={"currency_code"}
+                {...register("currency_code")}
+                error={!!errors?.currency_code}
+                helperText={errors?.message?.currency_code || ""}
               />
             </Grid>
           </Grid>

@@ -12,9 +12,9 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import ViewCarouselRoundedIcon from "@mui/icons-material/ViewCarouselRounded";
+import ViewCarouselOutlinedIcon from "@mui/icons-material/ViewCarouselOutlined";
 import LinkIcon from "@mui/icons-material/Link";
-import ListAltRounded from "@mui/icons-material/ListAltRounded";
+import ListAltOutlined from "@mui/icons-material/ListAltOutlined";
 import { settingsStore } from "store/settingsStore";
 import {
   DeleteTwoTone,
@@ -120,7 +120,7 @@ const ProductMenu = ({
           }}
         >
           <ListItemIcon>
-            <ViewCarouselRoundedIcon sx={{ color: "text.main" }} />
+            <ViewCarouselOutlinedIcon sx={{ color: "text.main" }} />
           </ListItemIcon>
           <ListItemText>Add Images to slider</ListItemText>
         </MenuItem>
@@ -142,7 +142,7 @@ const ProductMenu = ({
           }}
         >
           <ListItemIcon>
-            <ListAltRounded sx={{ color: "text.main" }} />
+            <ListAltOutlined sx={{ color: "text.main" }} />
           </ListItemIcon>
           <ListItemText>Details</ListItemText>
         </MenuItem>

@@ -21,6 +21,9 @@ import {
   CurrencyExchangeOutlined,
   StoreMallDirectoryOutlined,
   LayersOutlined,
+  DateRangeOutlined,
+  PointOfSale,
+  DashboardCustomizeRounded,
 } from "@mui/icons-material";
 import VariantUpdate from "modules/product/components/VariantUpdate";
 
@@ -62,7 +65,10 @@ const VariantsSection = ({ t, options = [] }) => {
                     mb={1}
                   >
                     <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                      {t("Variant")} #{idx + 1}
+                     #{idx + 1}  {t("Variant: ")} 
+                      {Array.isArray(variant.options)
+                        ? variant.options.join(", ")
+                        : "—"}
                     </Typography>
                     <Tooltip title={t("Edit Variant")}>
                       <VariantUpdate variantData={variant} />
@@ -93,9 +99,13 @@ const VariantsSection = ({ t, options = [] }) => {
                   {/* Price info */}
                   <Stack spacing={1}>
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <MonetizationOnOutlined fontSize="small" color="success" />
+                      <MonetizationOnOutlined
+                        fontSize="small"
+                        color="success"
+                      />
                       <Typography variant="body2">
-                        <strong>{t("Price")}:</strong> {variant.price}{" "}{variant.currency?.code}
+                        <strong>{t("Price")}:</strong> {variant.price}{" "}
+                        {variant.currency?.code}
                       </Typography>
                     </Stack>
 
@@ -103,7 +113,22 @@ const VariantsSection = ({ t, options = [] }) => {
                       <DiscountOutlined fontSize="small" color="warning" />
                       <Typography variant="body2">
                         <strong>{t("Compare Price")}:</strong>{" "}
-                        {variant.compare_price || "—"}{variant.currency?.code}
+                        {variant.compare_price || "—"}
+                        {variant.currency?.code}
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <DateRangeOutlined fontSize="small" color="warning" />
+                      <Typography variant="body2">
+                        <strong>{t("Compare Price start")}:</strong>{" "}
+                        {variant.compare_price_start_date || "—"}
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <DateRangeOutlined fontSize="small" color="warning" />
+                      <Typography variant="body2">
+                        <strong>{t("Compare Price end")}:</strong>{" "}
+                        {variant.compare_price_end_date || "—"}
                       </Typography>
                     </Stack>
 
@@ -148,26 +173,21 @@ const VariantsSection = ({ t, options = [] }) => {
                       </Typography>
                     </Stack>
 
-                    <Typography variant="body2" color="text.secondary">
-                      <strong>{t("Tax")}:</strong>{" "}
-                      {variant.tax_class_id || "—"}
-                    </Typography>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <DashboardCustomizeRounded fontSize="small" color="action" />
+                      <Typography variant="body2">
+                        <strong>{t("reorder point")}:</strong>{" "}
+                        {variant.reorder_point || "—"}
+                      </Typography>
+                    </Stack>
 
                     <Typography variant="body2" color="text.secondary">
-                      <strong>{t("Quantity")}:</strong>{" "}
-                      {variant.quantity || "—"}
+                      <strong>{t("Tax")}:</strong> {variant.tax_class_id || "—"}
                     </Typography>
+
                   </Stack>
 
                   <Divider sx={{ my: 1.5 }} />
-
-                  {/* Options */}
-                  <Typography variant="body2" color="text.secondary" mb={1}>
-                    <strong>{t("Options")}:</strong>{" "}
-                    {Array.isArray(variant.options)
-                      ? variant.options.join(", ")
-                      : "—"}
-                  </Typography>
 
                   {/* Purchasable */}
                   <Stack direction="row" alignItems="center" spacing={1}>
@@ -180,6 +200,7 @@ const VariantsSection = ({ t, options = [] }) => {
                       <strong>{t("Purchasable")}:</strong>{" "}
                       {variant.purchasable === "always" ? "Yes" : "No"}
                     </Typography>
+                    ``
                   </Stack>
                 </CardContent>
               </Card>

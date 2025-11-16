@@ -59,12 +59,16 @@ const ServiceCreate = () => {
                   <Typography variant="body1" color="text.secondary">{t('price type')}</Typography>
                 </Box>
                 <SelectStyled
+                    defaultValue={''}
                   sx={{ color: 'text.main', borderColor: "text.main" }}
                   label="price_type"
                   {...register('price_type')}
                   error={errors.price_type?.message}
                   helperText={errors.price_type?.message || ""}
                 >
+                <MenuItemStyled color="text.secondary" value="">
+                                                  <em>Select option</em>
+                                                </MenuItemStyled>
                   <MenuItemStyled value={'hourly'}><Box style={{ color: 'text.main' }}>{t('hourly')}</Box></MenuItemStyled>
                   <MenuItemStyled value={'daily'}><Box style={{ color: 'text.main' }}>{('daily')}</Box></MenuItemStyled>
                 </SelectStyled>

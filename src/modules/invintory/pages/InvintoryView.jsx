@@ -1,4 +1,3 @@
-
 import { Box, Typography } from "@mui/material";
 import ButtonAction from "components/shared/ButtonAction";
 import Loader from "components/shared/Loader";
@@ -9,7 +8,8 @@ import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { settingsStore } from "store/settingsStore";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
-const InvintoryView = () => {
+
+const InventoryView = () => {
   const { t } = useTranslation("index");
   const [direction] = settingsStore((state) => [state.direction]);
   const params = useParams();
@@ -18,137 +18,183 @@ const InvintoryView = () => {
   const handleBack = (e) => {
     e.preventDefault();
     navigate(-1);
-  }
+  };
 
+  // Fetch Inventory
   const { data, isLoading } = useQuery(
-    ["invintory", 'id-'+ params.id],
-  async () => {
-    return await _axios
-      .get('/invintory/' + params.id)
-      .then((res) => res.data?.invintorys);
-  },
-    {}
-  )
+    ["inventory", "id-" + params.id],
+    async () => {
+      const res = await _axios.get("/invintory/" + params.id);
+      return res.data?.invintorys;
+    }
+  );
 
-const columns = [
-  { head: t("first name"), value: data?.first_name },
-];
+  // Detail item component
+  const DetailItem = ({ label, value }) => (
+    <Box sx={{ width: "50%", mb: 1 }}>
+      <Typography sx={{ fontWeight: 600 }}>{label}:</Typography>
+      <Typography>{value}</Typography>
+    </Box>
+  );
 
-return (
-  <>
-    {isLoading && <Loader />}
-    {!!data && (
-      <div>
-        <Typography
-          sx={{
-            backgroundColor: "card.main",
-            borderRadius: "5px",
-            color: 'primary.main',
-            width: "40%",
-            marginInline: 'auto',
-            height: "100%",
-            textTransform: "uppercase",
-            padding: '10px 20px',
-            textAlign: 'center'
-          }}
-          variant="h5"
-        >
-          {data.first_name}
-        </Typography>
-        <Box
-          key={params.id}
-          sx={{
-            display: "flex",
-            color: "lightGray.main",
-            columnGap: 10,
-            marginTop: "4%",
-            justifyContent: "center",
-          }}
-        >
-          <Box
-            hover
+  return (
+    <>
+      {isLoading && <Loader />}
+      {!!data && (
+        <div>
+          {/* Inventory Header */}
+          <Typography
             sx={{
-              display: "flex",
-              justifyContent: 'center',
-              color: "text.main",
-              height: "100%",
-              flexWrap: 'wrap',
-              columnGap: 2,
+              backgroundColor: "card.main",
+              borderRadius: "5px",
+              color: "primary.main",
+              width: "40%",
+              mx: "auto",
+              mt: 2,
+              textTransform: "uppercase",
+              p: "10px 20px",
+              textAlign: "center",
+            }}
+            variant="h5"
+          >
+            {data.name}
+          </Typography>
+
+          {/* Inventory Details Card */}
+          <Box
+            sx={{
+              backgroundColor: "card.main",
+              borderRadius: "10px",
+              padding: "20px",
+              width: "80%",
+              mx: "auto",
+              mt: 3,
             }}
           >
-            <Box
-              sx={{
-                width: "70%",
-                backgroundColor: "card.main",
-                borderRadius: "5px",
-                padding: '20px'
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  rowGap: 2.1,
-                }}
-              >
-                <h3>
-                  {t("Details")}
-                </h3>
-                <Box sx={{
-                  display: 'flex',
-                  width: '100%',
-                  flexWrap: "wrap",
-                }}>
-                  {columns?.map((item, index, id) => (
-                    <Box
-                      key={id}
-                      sx={{
-                        display: "flex",
-                        pl: "10px",
-                        width: "50%",
-                        my: '5px'
-                      }}
-                    >
-                      <Typography
-                        variant="p"
-                        sx={{
-                          fontWeight: "700",
-                          fontSize: "15px",
-                          marginInlineEnd: "15px",
-                        }}
-                      >
-                        {item.head}:
-                      </Typography>
-                      <Typography variant="p">
-                        {typeof item?.value === "object"
-                          ? JSON.stringify(item?.value)
-                          : item?.value ?? "null"}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              {t("Inventory Details")}
+            </Typography>
+
+            <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+              <DetailItem label={t("City")} value={data.name} />
+              <DetailItem
+                label={t("Shipping Price")}
+                value={`${data.shipping_price} ${data.currency?.code}`}
+              />
+              <DetailItem
+                label={t("Products Count")}
+                value={data.products_count}
+              />
             </Box>
           </Box>
-        </Box>
-      </div>
-    )}
 
-    <div
-      style={{
-        minWidth: "200px",
-        float: direction === "ltr" ? "right" : "left",
-        marginTop: "20px",
-      }}
-    >
-      <ButtonAction
-        name={t("Back")}
-        onClick={handleBack}
-        endIcon={direction === "ltr" ? <ArrowForward /> : <ArrowBack />}
-      />
-    </div>
-  </>
-);
+          {/* Products + Variants */}
+          <Box sx={{ mt: 4, width: "90%", mx: "auto" }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              {t("Products in Inventory")}
+            </Typography>
+
+            <Box
+              sx={{ backgroundColor: "card.main", borderRadius: "10px", p: 2 }}
+            >
+              {data.Products.products.map((product) => (
+                <Box
+                  key={product.id}
+                  sx={{
+                    mb: 4,
+                    borderBottom: "1px solid #ddd",
+                    paddingBottom: "20px",
+                  }}
+                >
+                  {/* Product Title */}
+                  <Typography variant="h6" sx={{ mb: 1 }}>
+                    {product.name}
+                  </Typography>
+
+                  {/* Product + Variant Table */}
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ backgroundColor: "rgba(0,0,0,0.05)" }}>
+                        <th style={colStyle}>Image</th>
+                        <th style={colStyle}>{t("Variant Options")}</th>
+                        <th style={colStyle}>{t("Price")}</th>
+                        <th style={colStyle}>{t("Compare Price")}</th>
+                        <th style={colStyle}>{t("Inventory Qty")}</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {product.variants.map((variant) => (
+                        <tr
+                          key={variant.id}
+                          style={{ borderBottom: "1px solid #eee" }}
+                        >
+                          <td style={tdStyle}>
+                            <img
+                              alt={""}
+                              src={
+                                product.images?.[0]?.image_path ??
+                                "https://via.placeholder.com/60"
+                              }
+                              width={60}
+                              height={60}
+                              style={{ borderRadius: 8, objectFit: "cover" }}
+                            />
+                          </td>
+
+                          <td style={tdStyle}>{variant.options?.join(", ")}</td>
+
+                          <td style={tdStyle}>
+                            {variant.price} {variant.currency?.code}
+                          </td>
+
+                          <td style={tdStyle}>
+                            {variant.compare_price ? (
+                              <del>{variant.compare_price}</del>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+
+                          <td style={tdStyle}>{variant.inventory}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </div>
+      )}
+
+      {/* Back Button */}
+      <div
+        style={{
+          minWidth: "200px",
+          float: direction === "ltr" ? "right" : "left",
+          marginTop: "20px",
+        }}
+      >
+        <ButtonAction
+          name={t("Back")}
+          onClick={handleBack}
+          endIcon={direction === "ltr" ? <ArrowForward /> : <ArrowBack />}
+        />
+      </div>
+    </>
+  );
 };
 
-export default InvintoryView;
+// Simple minimal table style
+const colStyle = {
+  padding: "10px",
+  textAlign: "left",
+  fontWeight: "bold",
+};
+
+const tdStyle = {
+  padding: "10px",
+};
+
+export default InventoryView;

@@ -11,12 +11,16 @@ const GenderSelect = ({ register, errors }) => {
                 <Typography variant="body1" color="text.secondary">{t('gender')}</Typography>
             </Box>
             <SelectStyled
+                    defaultValue={''}
                 sx={{ color: 'text.main', borderColor: "text.main" }}
                 label="ender"
                 {...register('gender')}
                 error={errors.gender?.message}
                 helperText={errors.gender?.message || ""}
             >
+            <MenuItemStyled color="text.secondary" value="">
+                                  <em>Select option</em>
+                                </MenuItemStyled>
                 <MenuItemStyled value={'female'}><Box style={{ color: 'text.main' }}>{t('femail')}</Box></MenuItemStyled>
                 <MenuItemStyled value={'male'}><Box style={{ color: 'text.main' }}>{('male')}</Box></MenuItemStyled>
             </SelectStyled>

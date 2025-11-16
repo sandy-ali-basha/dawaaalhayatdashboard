@@ -5,7 +5,7 @@ import { TextFieldStyled } from "components/styled/TextField";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {  Grid, Typography } from "@mui/material";
-import { CloseRounded, PlusOneRounded } from "@mui/icons-material";
+import { CloseOutlined, PlusOneOutlined } from "@mui/icons-material";
 import Image from "./Image";
 
 export default function InputRepeater({
@@ -90,7 +90,7 @@ export default function InputRepeater({
           }}
           onClick={handleAddInput}
         >
-          <PlusOneRounded />
+          <PlusOneOutlined />
           <span>{t("Add Slide")}</span>
         </Button>
       </Box>
@@ -106,7 +106,7 @@ export default function InputRepeater({
             {inputs.length > 1 && (
               <Grid item xs={12} sx={{ p: 2, mt: 1 }}>
                 <Button onClick={() => handleRemoveInput(index)}>
-                  <CloseRounded />
+                  <CloseOutlined />
                 </Button>
               </Grid>
             )}

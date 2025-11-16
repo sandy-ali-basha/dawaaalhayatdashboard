@@ -1,11 +1,7 @@
-import create from "zustand";
+import { create } from 'zustand';
 
 function storeMode(mode) {
   localStorage.setItem("mode", mode);
-}
-
-function storeDirection(lang) {
-  localStorage.setItem("direction", lang);
 }
 
 function getMode() {
@@ -18,23 +14,10 @@ function getMode() {
   }
 }
 
-function getLang() {
-  if (!!localStorage.getItem("direction")) {
-    return localStorage.getItem("direction");
-  } else {
-    return "ltr";
-  }
-}
-
 export const settingsStore = create((set) => ({
-  // direction: getLang(),
   responsiveFontSizes: true,
   mode: getMode(),
 
-  // setDirection: (dir) => {
-  //   set(() => ({ direction: dir }));
-  //   storeDirection(dir);
-  // },
   setResponsiveFontSizes: (resFont) =>
     set(() => ({ responsiveFontSizes: resFont })),
   setMode: (mode) => {

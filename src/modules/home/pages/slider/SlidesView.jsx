@@ -17,9 +17,9 @@ import {
 import {
   DeleteOutline,
   ModeEditTwoTone,
-  LanguageRounded,
-  LinkRounded,
-  TitleRounded,
+  LanguageOutlined,
+  LinkOutlined,
+  TitleOutlined,
   AddAPhotoOutlined,
   AddHomeOutlined,
 } from "@mui/icons-material";
@@ -114,7 +114,7 @@ const SlidesView = () => {
                   color="primary.main"
                   gutterBottom
                 >
-                  <TitleRounded
+                  <TitleOutlined
                     fontSize="small"
                     sx={{ mr: 1, verticalAlign: "middle" }}
                   />
@@ -122,21 +122,21 @@ const SlidesView = () => {
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary" mb={1}>
-                  <LanguageRounded fontSize="small" sx={{ mr: 1 }} />
+                  <LanguageOutlined fontSize="small" sx={{ mr: 1 }} />
                   <strong>Arabic:</strong>{" "}
                   {item?.translations?.find((t) => t.locale === "ar")?.text ??
                     "—"}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary" mb={1}>
-                  <LanguageRounded fontSize="small" sx={{ mr: 1 }} />
+                  <LanguageOutlined fontSize="small" sx={{ mr: 1 }} />
                   <strong>English:</strong>{" "}
                   {item?.translations?.find((t) => t.locale === "en")?.text ??
                     "—"}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary" mb={2}>
-                  <LanguageRounded fontSize="small" sx={{ mr: 1 }} />
+                  <LanguageOutlined fontSize="small" sx={{ mr: 1 }} />
                   <strong>Kurdish:</strong>{" "}
                   {item?.translations?.find((t) => t.locale === "kr")?.text ??
                     "—"}
@@ -149,7 +149,7 @@ const SlidesView = () => {
                   color="text.secondary"
                   sx={{ display: "flex", alignItems: "center" }}
                 >
-                  <LinkRounded fontSize="small" sx={{ mr: 1 }} />
+                  <LinkOutlined fontSize="small" sx={{ mr: 1 }} />
                   {item?.link ?? "No link"}
                 </Typography>
               </CardContent>
@@ -193,7 +193,7 @@ const SlidesView = () => {
             page={page}
             onChange={handlePageChange}
             color="primary"
-            shape="rounded"
+            shape="Outlined"
             size="medium"
           />
         </Box>

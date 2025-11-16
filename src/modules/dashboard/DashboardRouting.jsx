@@ -21,8 +21,8 @@ import HomeRouting from "modules/home/HomeRouting";
 import CitiesRouting from "modules/cities/CitiesRouting";
 import CustomersRouting from "modules/customers/CustomersRouting";
 import RegionsRouting from "modules/regions/RegionsRouting";
-import Dnd from "modules/Dnd/Dnd";
 import InvintoryRouting from "modules/invintory/InvintoryRouting";
+import CurrenciesRouting from "modules/currencies/CurrenciesRouting";
 
 const DashboardRouting = () => {
   return (
@@ -58,6 +58,8 @@ const DashboardRouting = () => {
           />
           <Route path="/home/*" element={<HomeRouting />} />
           <Route path="/settings/*" element={<SettingsRouting />} />
+          <Route path="/currencies/*" element={<CurrenciesRouting />} />
+
           </Route>
       }
 
