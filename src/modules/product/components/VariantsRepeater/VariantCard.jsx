@@ -27,49 +27,65 @@ const VariantCard = ({
   selectedCities,
   regions,
 }) => {
-  // Update top-level variant fields
+  // Update top-level variant
   const handleChange = (field, value) => {
-    const newVariants = [...variants];
-    newVariants[index] = {
-      ...newVariants[index],
-      [field]: value,
-    };
-    setVariants(newVariants);
+    const updated = [...variants];
+    updated[index] = { ...updated[index], [field]: value };
+    setVariants(updated);
   };
 
   // Update per-city data
   const handleCityDataChange = (cityId, field, value) => {
-    const newVariants = [...variants];
-    const variantCityData = newVariants[index].cityData || {};
-    const cityValues = variantCityData[cityId] || {};
+    const updated = [...variants];
+    const cityData = updated[index].cityData || {};
+    const cityValues = cityData[cityId] || {};
 
-    variantCityData[cityId] = {
-      ...cityValues,
-      [field]: value,
-    };
+    let finalValue = value;
 
-    newVariants[index].cityData = variantCityData;
-    setVariants(newVariants);
-  };
-
-  const handleOptionChange = (optionType, value) => {
-    console.log("optionType, value", optionType, value);
-    const newVariants = [...variants];
-    const currentVariant = newVariants[index];
-
-    const flavorId = currentVariant.option_value_ids?.[0] || "";
-    const packingId = currentVariant.option_value_ids?.[1] || "";
-
-    if (optionType === "flavor") {
-      newVariants[index].option_value_ids = [value?.id || "", packingId];
-    } else {
-      newVariants[index].option_value_ids = [flavorId, value?.id || ""];
+    // number fields → convert to number or null
+    if (
+      [
+        "price",
+        "compare_price",
+        "inventory",
+        "qty",
+        "unit",
+        "reorder_point",
+      ].includes(field)
+    ) {
+      finalValue = value === "" ? null : Number(value);
     }
 
-    console.log("newVariants", newVariants);
-    setVariants(newVariants);
+    // date fields
+    if (
+      ["compare_price_start_date", "compare_price_end_date"].includes(field)
+    ) {
+      finalValue = value === "" ? null : value;
+    }
+
+    cityData[cityId] = { ...cityValues, [field]: finalValue };
+    updated[index].cityData = cityData;
+
+    setVariants(updated);
   };
 
+  // Option (flavor/packing)
+  const handleOptionChange = (type, value) => {
+    const updated = [...variants];
+    const current = updated[index];
+
+    const flavorId = current.option_value_ids?.[0] || null;
+    const packingId = current.option_value_ids?.[1] || null;
+
+    updated[index].option_value_ids =
+      type === "flavor"
+        ? [value?.id || null, packingId]
+        : [flavorId, value?.id || null];
+
+    setVariants(updated);
+  };
+
+  // Final required city fields
   const cityFields = [
     {
       name: "price",
@@ -103,7 +119,7 @@ const VariantCard = ({
       helperText: "The number of items available for sale",
     },
     {
-      name: "storage_qty",
+      name: "qty",
       label: "storage qty",
       icon: <Inventory2Outlined fontSize="small" />,
       type: "number",
@@ -111,7 +127,7 @@ const VariantCard = ({
         "Total items physically in the warehouse.Includes all items—even reserved or damaged.",
     },
     {
-      name: "unit_quantity",
+      name: "unit",
       label: "unit quantity",
       icon: <Inventory2Outlined fontSize="small" />,
       type: "number",
@@ -147,9 +163,10 @@ const VariantCard = ({
             alignItems: "center",
           }}
         >
-          <Typography variant="h6" color="text.primary">
+          <Typography color={"text.primary"} variant="h6">
             Variant {index + 1}
           </Typography>
+
           <Box>
             <Button
               variant="contained"
@@ -159,6 +176,7 @@ const VariantCard = ({
             >
               <Add fontSize="small" /> Add
             </Button>
+
             {variants.length > 1 && (
               <IconButton color="error" onClick={onRemove}>
                 <Delete />
@@ -174,7 +192,7 @@ const VariantCard = ({
               flavors?.find((f) => f.id === variant.option_value_ids?.[0]) ||
               null
             }
-            onChange={(value) => handleOptionChange("flavor", value)}
+            onChange={(v) => handleOptionChange("flavor", v)}
           />
         </Grid>
 
@@ -187,13 +205,13 @@ const VariantCard = ({
             }
             packings={packings}
             addNewPacking={addNewPacking}
-            onChange={(value) => handleOptionChange("packing", value)}
+            onChange={(v) => handleOptionChange("packing", v)}
           />
         </Grid>
 
         {/* SKU */}
         <Grid item xs={12} md={6}>
-          <Typography color="text.primary">SKU</Typography>
+          <Typography color={"text.primary"}>SKU</Typography>
           <TextFieldStyled
             fullWidth
             value={variant.sku || ""}
@@ -201,18 +219,7 @@ const VariantCard = ({
           />
         </Grid>
 
-        {/* Inventory */}
-        <Grid item xs={12} md={6}>
-          <Typography color="text.primary">Inventory qty</Typography>
-          <TextFieldStyled
-            fullWidth
-            type="number"
-            value={variant.inventory || ""}
-            onChange={(e) => handleChange("inventory", e.target.value)}
-          />
-        </Grid>
-
-        {/* City-Specific Fields */}
+        {/* City fields */}
         <Grid item xs={12}>
           <Box
             sx={{
@@ -223,13 +230,14 @@ const VariantCard = ({
               backgroundColor: "primary.lighter",
             }}
           >
-            <Typography variant="body1" color="text.main" fontWeight="bold">
+            <Typography color={"text.primary"} fontWeight="bold">
               <LocationCityOutlined sx={{ mb: -0.5 }} /> City-Specific Data
             </Typography>
 
             {selectedCities.map((cityId) => {
               const city = regions?.find((c) => c.id === cityId);
               const cityData = variant.cityData?.[cityId] || {};
+
               return (
                 <Box
                   key={cityId}
@@ -242,37 +250,31 @@ const VariantCard = ({
                   }}
                 >
                   <Typography
-                    color="text.primary"
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      mb: 2,
-                      gap: 0.5,
-                      fontWeight: "bold",
-                    }}
+                    color={"text.primary"}
+                    sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                    fontWeight="bold"
                   >
-                    <FlagOutlined sx={{ mr: 0.5 }} />
-                    {city?.name || `City #${cityId}`}
+                    <FlagOutlined /> {city?.name}
                   </Typography>
+
                   <Grid container spacing={2}>
                     {cityFields.map((field) => (
                       <Grid item xs={12} sm={6} md={3} key={field.name}>
                         <Typography
-                          variant="body1"
-                          color="text.main"
+                          color={"text.primary"}
                           sx={{
                             display: "flex",
                             alignItems: "center",
                             gap: 0.5,
                           }}
                         >
-                          {field.icon}
-                          {field.label}
+                          {field.icon} {field.label}
                         </Typography>
+
                         <TextFieldStyled
-                          type={field.type}
                           fullWidth
-                          value={cityData[field.name] || ""}
+                          type={field.type}
+                          value={cityData[field.name] ?? ""}
                           helperText={field.helperText}
                           onChange={(e) =>
                             handleCityDataChange(

@@ -11,18 +11,10 @@ import { useState, useEffect } from "react";
 import EditorInput from "./HomeTextEditor";
 import { BoxStyled } from "components/styled/BoxStyled";
 
-const GridUpdate = ({ open, onClose, initialData, handleSave }) => {
+const GridUpdate = ({ open, onClose, handleSave }) => {
   const [sections, setSections] = useState([]);
 
-  // Populate initial data when dialog opens
-  useEffect(() => {
-    if (initialData?.value?.sections) {
-      // Deep clone to avoid mutation
-      const cloned = JSON.parse(JSON.stringify(initialData.value.sections));
-      setSections(cloned);
-    }
-  }, [initialData, open]);
-
+  
   // Handle text change for title or subtitle
   const handleTextChange = (sectionIndex, lang, field, value) => {
     setSections((prev) =>

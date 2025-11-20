@@ -175,7 +175,9 @@ const handleViewInv = useCallback(
         Inventory & Countries Management
       </Typography>
 
+{/* Countries */}
       <Countries />
+
       {/* Controls */}
       <Box
         sx={{

@@ -20,7 +20,6 @@ import {
   LanguageOutlined,
   LinkOutlined,
   TitleOutlined,
-  AddAPhotoOutlined,
   AddHomeOutlined,
 } from "@mui/icons-material";
 import { settingsStore } from "store/settingsStore";
@@ -62,7 +61,7 @@ const SlidesView = () => {
           Slides Overview
         </Typography>
         <Tooltip title="Add Slider">
-          <IconButton variant="outlined" onClick={() => navigate("add slide")}>
+          <IconButton variant="outlined" onClick={() => navigate("addslider")}>
             <AddHomeOutlined sx={{ color: "warning.main", mr: 1 }} />
             Add Slide
           </IconButton>

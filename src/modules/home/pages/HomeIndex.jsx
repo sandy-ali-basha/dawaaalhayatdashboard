@@ -100,7 +100,7 @@ const HomeIndex = () => {
           />
         );
       case grid:
-        return <GridUpdate open={open} onClose={handleClose} initialData={grid} handleSave={handleUpdate} />;
+        return <GridUpdate open={open} onClose={handleClose} handleSave={handleUpdate} />;
       case parallax:
         return (
           <ParallaxUpdate
@@ -149,7 +149,7 @@ const HomeIndex = () => {
       {tabValue === 3 && <TextSectionOneTab textSectionOne={textSectionOne} direction={direction} onEdit={handleEditClick} />}
       {tabValue === 4 && <TextSectionTwoTab textSectionTwo={textSectionTwo} direction={direction} onEdit={handleEditClick} />}
       {tabValue === 5 && <VideoTab video={video} videoText={videoText} direction={direction} onEdit={handleEditClick} />}
-      {tabValue === 6 && <GridTab grid={grid} direction={direction} onEdit={handleEditClick} />}
+      {tabValue === 6 && <GridTab onEdit={handleEditClick} />}
       {tabValue === 7 && <ParallaxTab parallax={parallax} direction={direction} onEdit={handleEditClick} />}
       {tabValue === 8 && <SocialMediaLinks data={social} direction={direction} onEdit={handleEditClick} />}
     </Box>

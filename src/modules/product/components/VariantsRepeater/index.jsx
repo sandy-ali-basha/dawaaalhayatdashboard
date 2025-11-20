@@ -25,9 +25,9 @@ const VariantsRepeater = ({
       sku: "",
       tax_class_id: 1,
       inventory: 12,
-      storage_qty: 12,
+      qty: 12,
       purchasable: "always",
-      unit_quantity: 1,
+      unit: 1,
       option_value_ids: ["", ""],
       cityData: {},
     },
@@ -41,9 +41,9 @@ const VariantsRepeater = ({
         sku: "",
         tax_class_id: 1,
         inventory: 12,
-        storage_qty: 12,
+        qty: 12,
         purchasable: "always",
-        unit_quantity: 1,
+        unit: 1,
         option_value_ids: ["", ""],
         cityData: {},
       },
@@ -58,40 +58,41 @@ const VariantsRepeater = ({
   const buildOptionsPayload = useCallback(() => {
     const options = [];
 
-    console.log("variants", variants);
     variants.forEach((variant) => {
       const {
         sku,
         option_value_ids,
         tax_class_id = 1,
-        inventory = 0,
-        unit_quantity = 1,
         purchasable = "always",
         cityData = {},
       } = variant;
 
-      console.log("cityData", cityData);
       Object.entries(cityData).forEach(([cityId, cityValues]) => {
         options.push({
-          sku: sku || "",
+        sku: sku || "",
           option_value_ids: option_value_ids.map(Number),
           city_id: Number(cityId),
-          points: Number(cityValues.points) || 0,
-          reorder_point: Number(cityValues.reorder_point) || 0,
-          price: parseFloat(cityValues.price) || 0,
-          tax_class_id: Number(tax_class_id) || 1,
-          inventory: Number(inventory) || 0,
-          qty: Number(cityValues.quantity) || 0,
-          unit: Number(unit_quantity) || 1,
-          compare_price: parseFloat(cityValues.compare_price) || "",
+
+          // 🔥 NEW FIELDS (from cityValues)
+          price: Number(cityValues.price) || 0,
+          compare_price: Number(cityValues.compare_price) || 0,
           compare_price_start_date: cityValues.compare_price_start_date || "",
           compare_price_end_date: cityValues.compare_price_end_date || "",
+          inventory: Number(cityValues.inventory) || 0,
+          qty: Number(cityValues.qty) || 0,
+          unit: Number(cityValues.unit) || 0,
+          reorder_point: Number(cityValues.reorder_point) || 0,
+
+          // 🔥 Removed "points" moved to product
+          // points: Number(cityValues.points) || 0, ← remove this
+
+          // variant-level fields
+          tax_class_id: Number(tax_class_id) || 1,
           purchasable,
         });
       });
     });
 
-    console.log("options",options)
     return options;
   }, [variants]);
 

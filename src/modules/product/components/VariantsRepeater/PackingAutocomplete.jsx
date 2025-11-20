@@ -14,27 +14,32 @@ const PackingAutocomplete = ({ value, onChange }) => {
   const [loading, setLoading] = useState(false);
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
-console.log("value",value)
-  // Fetch available packings
-  useEffect(() => {
+
+  // Load packings
+  const loadPackings = async () => {
     setLoading(true);
-    _Product
-      .packings()
-      .then((response) => {
-        if (response.code === 200) {
-          setPackings(response.data?.product_options_values || []);
-        }
-      })
-      .finally(() => setLoading(false));
+    try {
+      const res = await _Product.packings();
+      if (res.code === 200) {
+        setPackings(res.data?.product_options_values || []);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPackings();
   }, []);
 
-  // Add new packing to backend
+  // Add new packing
   const addNewPacking = async (packingName) => {
     if (!packingName.trim()) return;
 
-    // check if already exists
     if (
-      packings.some((p) => p.name.toLowerCase() === packingName.toLowerCase())
+      packings.some(
+        (p) => p.name.toLowerCase() === packingName.toLowerCase()
+      )
     ) {
       setError(`"${packingName}" already exists`);
       return;
@@ -42,8 +47,8 @@ console.log("value",value)
 
     setAdding(true);
     setError("");
+
     try {
-      // send all localized names like in FlavorAutocomplete
       const res = await _Product.AddPacking({
         name: packingName,
         ar: { name: packingName },
@@ -51,15 +56,21 @@ console.log("value",value)
         en: { name: packingName },
       });
 
-      if (res.code === 200) {
-        const newPacking = res.data?.packing || {
-          id: Date.now(),
-          name: packingName,
-        };
-        setPackings((prev) => [...prev, newPacking]);
-        onChange(newPacking);
-      } else {
+      if (res.code !== 200 || !res.data?.id) {
         setError("Failed to add packing. Please try again.");
+        return;
+      }
+
+      const newId = res.data.id;
+
+      // Reload from backend
+      const reload = await _Product.packings();
+      if (reload.code === 200) {
+        const updated = reload.data?.product_options_values || [];
+        setPackings(updated);
+
+        const newPacking = updated.find((p) => p.id === newId);
+        if (newPacking) onChange(newPacking);
       }
     } catch {
       setError("Network error while adding packing.");
@@ -79,39 +90,39 @@ console.log("value",value)
         fullWidth
         loading={loading || adding}
         options={packings}
-        getOptionLabel={(option) =>
-          typeof option === "string" ? option : option?.name || ""
-        }
         value={value || null}
-        isOptionEqualToValue={(option, val) =>
-          option?.id === val?.id || option?.name === val?.name
-        }
+        getOptionLabel={(o) => (typeof o === "string" ? o : o?.name || "")}
+        isOptionEqualToValue={(a, b) => a?.id === b?.id}
         filterOptions={(options, { inputValue }) => {
           const filtered = options.filter((opt) =>
             opt.name.toLowerCase().includes(inputValue.toLowerCase())
           );
+
           if (
             inputValue &&
             !options.some(
               (opt) => opt.name.toLowerCase() === inputValue.toLowerCase()
             )
           ) {
-            filtered.push({ name: `Add: ${inputValue}` });
+            filtered.push({ id: null, name: `Add: ${inputValue}` });
           }
+
           return filtered;
         }}
         onChange={(_, newValue) => {
-          if (
-            typeof newValue === "object" &&
-            newValue?.name?.startsWith("Add: ")
-          ) {
-            const newPacking = newValue.name.replace("Add: ", "").trim();
-            addNewPacking(newPacking);
-          } else if (typeof newValue === "string") {
+          if (!newValue) return;
+
+          if (typeof newValue === "string") {
             addNewPacking(newValue);
-          } else {
-            onChange(newValue);
+            return;
           }
+
+          if (newValue?.name?.startsWith("Add: ")) {
+            addNewPacking(newValue.name.replace("Add: ", "").trim());
+            return;
+          }
+
+          onChange(newValue);
         }}
         renderInput={(params) => (
           <TextField
@@ -122,11 +133,7 @@ console.log("value",value)
               endAdornment: (
                 <>
                   {(loading || adding) && (
-                    <CircularProgress
-                      color="inherit"
-                      size={18}
-                      sx={{ mr: 1 }}
-                    />
+                    <CircularProgress size={18} sx={{ mr: 1 }} />
                   )}
                   {params.InputProps.endAdornment}
                 </>
