@@ -34,13 +34,15 @@ import {
   GetAppOutlined,
   LocalShipping,
   Pending,
-  Print,
+  Public,
   Sync,
+  TranslateOutlined,
 } from "@mui/icons-material";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useSnackbar } from "notistack";
 import alertSoundFile from "assets/alert.mp3";
 import * as XLSX from "xlsx"; // Import xlsx for Excel export
-
+const { REACT_APP_API_URL } = process.env;
 const OrdersIndex = () => {
   const { t } = useTranslation("index");
   const { data, page, setPage, isLoading, count, refetch, newOrderAlert } =
@@ -298,7 +300,7 @@ const OrdersIndex = () => {
           <TableCell
             align="center"
             sx={{
-              minWidth: 50,
+              minWidth: 200,
             }}
           >
             <IconButton onClick={() => handleView(orders)}>
@@ -307,9 +309,24 @@ const OrdersIndex = () => {
               </Tooltip>
             </IconButton>
             <IconButton
-              href={`https://test.dawaaalhayat.com/api/order/${orders.id}/pdf`}
+              size={"small"}
+              href={`${REACT_APP_API_URL}/order/${orders.id}/pdf/ar`}
             >
-              <Print color="secondary" />
+              AR <PictureAsPdfIcon color="warning" /> {/* Arabic */}
+            </IconButton>
+
+            <IconButton
+              size={"small"}
+              href={`${REACT_APP_API_URL}/order/${orders.id}/pdf/en`}
+            >
+              EN <PictureAsPdfIcon color="secondary" /> {/* English */}
+            </IconButton>
+
+            <IconButton
+              size={"small"}
+              href={`${REACT_APP_API_URL}/order/${orders.id}/pdf/kr`}
+            >
+              KU <PictureAsPdfIcon color="primary" /> {/* Kurdish / KR */}
             </IconButton>
           </TableCell>
         </TableRow>

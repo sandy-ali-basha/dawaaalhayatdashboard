@@ -29,13 +29,11 @@ import CitiesUpdate from "../pages/CitiesUpdate";
 const Countries = () => {
   const { t } = useTranslation("index");
   const Navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const { data: COUNTRIES, isLoading: COUNTRIESLOADING } = useRegions();
   const [openLink, setopenLink] = useState(false);
-  const [editedID, setEditedID] = colorStore((state) => [
-    state.editedID,
-    state.setEditedID,
-  ]);
+  const [setEditedID] = colorStore((state) => [state.setEditedID]);
 
   const handleLink = useCallback(
     (id) => {
@@ -51,10 +49,11 @@ const Countries = () => {
     (city, id) => {
       setPrev_cityData(city);
       setEditCity(id);
+      setOpen(true);
     },
     [setPrev_cityData, setEditCity]
   );
-  
+
   return (
     <Box sx={{ width: "100%", mt: 3 }}>
       {/* Header */}
@@ -62,7 +61,7 @@ const Countries = () => {
         <LinkCityToCountry openLink={openLink} setopenLink={setopenLink} />
       )}
       {editCity && (
-        <CitiesUpdate old_data={Prev_cityData} setEditCity={setEditCity} />
+        <CitiesUpdate old_data={Prev_cityData} open={open} setOpen={setOpen} />
       )}
       <Box
         sx={{
@@ -184,7 +183,7 @@ const Countries = () => {
                       sx={{
                         borderRadius: 1,
                         backgroundColor: "#eee",
-                        BoxShadow:'none'
+                        BoxShadow: "none",
                       }}
                     >
                       <CardContent sx={{ p: 2 }}>
@@ -257,7 +256,7 @@ const Countries = () => {
                           >
                             <AttachMoney
                               sx={{ mr: 0.5, color: "info.main" }}
-                                fontSize="small"
+                              fontSize="small"
                             />
                             <Typography variant="subtitle2" color="info.main">
                               {city?.currency || "N/A"}

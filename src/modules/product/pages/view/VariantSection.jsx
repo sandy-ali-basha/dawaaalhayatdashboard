@@ -22,10 +22,10 @@ import {
   StoreMallDirectoryOutlined,
   LayersOutlined,
   DateRangeOutlined,
-  PointOfSale,
   DashboardCustomizeRounded,
 } from "@mui/icons-material";
 import VariantUpdate from "modules/product/components/VariantUpdate";
+import VariantCreate from "modules/product/components/CreateVariant";
 
 const VariantsSection = ({ t, options = [] }) => {
   return (
@@ -41,6 +41,7 @@ const VariantsSection = ({ t, options = [] }) => {
       >
         {t("Product Variants")}
       </Typography>
+      <VariantCreate defaultCity={1} />
 
       {options?.length > 0 ? (
         <Grid container spacing={2}>
@@ -65,7 +66,7 @@ const VariantsSection = ({ t, options = [] }) => {
                     mb={1}
                   >
                     <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                     #{idx + 1}  {t("Variant: ")} 
+                      #{idx + 1} {t("Variant: ")}
                       {Array.isArray(variant.options)
                         ? variant.options.join(", ")
                         : "—"}
@@ -174,7 +175,10 @@ const VariantsSection = ({ t, options = [] }) => {
                     </Stack>
 
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <DashboardCustomizeRounded fontSize="small" color="action" />
+                      <DashboardCustomizeRounded
+                        fontSize="small"
+                        color="action"
+                      />
                       <Typography variant="body2">
                         <strong>{t("reorder point")}:</strong>{" "}
                         {variant.reorder_point || "—"}
@@ -184,7 +188,6 @@ const VariantsSection = ({ t, options = [] }) => {
                     <Typography variant="body2" color="text.secondary">
                       <strong>{t("Tax")}:</strong> {variant.tax_class_id || "—"}
                     </Typography>
-
                   </Stack>
 
                   <Divider sx={{ my: 1.5 }} />

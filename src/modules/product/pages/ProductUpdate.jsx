@@ -234,7 +234,6 @@ const ProductUpdate = ({ id }) => {
                       <Typography color="text.main">{t("brand")}</Typography>
                     </Box>
                     <SelectStyled
-                      value={""}
                       defaultValue={data?.brand?.id}
                       sx={{ color: "text.main", borderColor: "text.main" }}
                       {...register("brand_id")}
@@ -261,7 +260,6 @@ const ProductUpdate = ({ id }) => {
                       </Typography>
                     </Box>
                     <SelectStyled
-                      value={""}
                       sx={{ color: "text.main", borderColor: "text.main" }}
                       {...register("product_type_id")}
                       defaultValue={data?.product_type?.id}

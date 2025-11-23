@@ -25,7 +25,7 @@ const VariantCard = ({
   packings,
   addNewPacking,
   selectedCities,
-  regions,
+  cities,
 }) => {
   // Update top-level variant
   const handleChange = (field, value) => {
@@ -95,9 +95,11 @@ const VariantCard = ({
     },
     {
       name: "compare_price",
-      label: "Discount",
+      label: "compare price",
       icon: <DiscountOutlined fontSize="small" />,
       type: "number",
+      helperText: "compare price to original price (price before sale)",
+
     },
     {
       name: "compare_price_start_date",
@@ -235,7 +237,7 @@ const VariantCard = ({
             </Typography>
 
             {selectedCities.map((cityId) => {
-              const city = regions?.find((c) => c.id === cityId);
+              const city = cities?.state?.find((c) => c.id === cityId);
               const cityData = variant.cityData?.[cityId] || {};
 
               return (
@@ -254,7 +256,7 @@ const VariantCard = ({
                     sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                     fontWeight="bold"
                   >
-                    <FlagOutlined /> {city?.name}
+                    <FlagOutlined /> {city?.value}
                   </Typography>
 
                   <Grid container spacing={2}>

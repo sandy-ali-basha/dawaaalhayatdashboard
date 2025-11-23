@@ -69,7 +69,7 @@ const Product_attributes_valuesUpdate = ({ id }) => {
 
   const handleClose = () => {
     setOpen(false);
-    setEditedID(null);
+    // setEditedID(null);
   };
   const queryClient = useQueryClient();
 

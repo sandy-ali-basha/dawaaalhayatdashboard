@@ -11,18 +11,17 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { BoxStyled } from "components/styled/BoxStyled";
 import React, { useMemo, useCallback } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
 import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import ChangeStatus from "../components/ChangeStatus";
 import { useProduct_attributes_values } from "hooks/product_attributes_values/useProduct_attributes_values";
-import Product_attributes_valuesUpdate from "./Product_attributes_valuesUpdate";
+import ProductAttributesValuesUpdate from "./Product_attributes_valuesUpdate";
 import DeleteDialog from "../components/Dialog";
-import { DynamicFeedOutlined } from "@mui/icons-material";
+// import { DynamicFeedOutlined } from "@mui/icons-material";
 
 const Product_attributes_valuesIndex = () => {
   const { t } = useTranslation("index");
@@ -47,12 +46,6 @@ const Product_attributes_valuesIndex = () => {
     ];
   }, [t]);
 
-  const handleView = useCallback(
-    (id) => {
-      navigate("view/" + id);
-    },
-    [navigate]
-  );
   const handleEdit = useCallback(
     (id) => {
       setEditedID(id);
@@ -111,14 +104,14 @@ const Product_attributes_valuesIndex = () => {
                 />
               </Tooltip>
             </IconButton>
-            <IconButton>
+            {/* <IconButton>
               <Tooltip title={"show values"}>
                 <Link to={`${product_attributes_values?.id}`}>
                   {" "}
                   <DynamicFeedOutlined sx={{ color: "text.main" }} />
                 </Link>
               </Tooltip>
-            </IconButton>
+            </IconButton> */}
           </TableCell>
         </TableRow>
       )
@@ -130,7 +123,7 @@ const Product_attributes_valuesIndex = () => {
   return (
     <>
       {isLoading && <Loader />}
-      {editedID && <Product_attributes_valuesUpdate id={editedID} />}
+      {editedID && <ProductAttributesValuesUpdate id={editedID} />}
 
       <Box
         sx={{

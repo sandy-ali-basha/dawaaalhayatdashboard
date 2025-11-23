@@ -36,11 +36,16 @@ export const _Home = {
     _axios.post(`/home/slides/update/${id}`, data).then((res) => res.data),
 
   // items
-  getItem: (id) => _axios.get(Link + "/" + id).then((res) => res.data?.data),
+    getSection: ({ id }) =>
+      _axios.get("home_page/section/" + id).then((res) => res.data?.data),
+  getAllSections: () =>
+    _axios.get("home_page/sections").then((res) => res.data?.data),
   postItem: (data) =>
-    _axios.post(Link + "/item", data).then((res) => res?.data),
+    _axios.post("home_page/item", data).then((res) => res?.data),
   deleteItem: (id) =>
-    _axios.delete(Link + "/item/" + id).then((res) => res.data),
+    _axios.delete("home_page/item/" + id).then((res) => res.data),
   updateItem: ({ editedID, formData }) =>
-    _axios.post(Link + "/item", formData).then((res) => res?.data),
+    _axios
+      .post("home_page/item/update/" + editedID, formData)
+      .then((res) => res?.data),
 };

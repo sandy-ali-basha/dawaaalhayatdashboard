@@ -26,7 +26,6 @@ import {
 import { useState } from "react";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { colorStore } from "store/ColorsStore";
-
 import VariantsSection from "./VariantSection";
 import ProductUpdate from "../ProductUpdate";
 import DeleteImage from "modules/product/components/images/DeleteImage";
@@ -230,6 +229,7 @@ const ProductView = () => {
               ))}
             </Box>
           </Paper>
+          
           <VariantsSection t={t} options={data?.variants} />
 
           {/* Image Sections */}

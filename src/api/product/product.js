@@ -21,6 +21,11 @@ export const _Product = {
     _axios
       .post(Link + "/variants/" + id, formData)
       .then((res) => res?.data),
+      
+  createVariant: ({ product_id, formData }) =>
+    _axios
+      .post(Link + "/updatevariants/" + product_id, formData)
+      .then((res) => res?.data),
 
   updatePurshasable: ({ editedID, formData }) =>
     _axios

@@ -34,9 +34,11 @@ const CountryUpdate = ({ id }) => {
 
   useEffect(() => {
     //regions is countries
-    _axios.get("/regions/" + editedID?.id).then((res) => {
-      setData(res.data?.data);
-    });
+    if (editedID?.id) {
+      _axios.get("/regions/" + editedID?.id).then((res) => {
+        setData(res.data?.data);
+      });
+    }
   }, [id, editedID]);
 
   const details = [

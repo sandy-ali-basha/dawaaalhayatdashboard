@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, MenuItem, Typography } from "@mui/material";
 import { colorStore } from "store/ColorsStore";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -14,26 +14,28 @@ import { useMutation, useQueryClient } from "react-query";
 import { _cities } from "api/cities/cities";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
+import { useCurrencies } from "hooks/currencies/useCurrencies";
+
 const schema = yup.object().shape({
   name: yup.string().required("name is required"),
-  inventory: yup.string().required("inventory is required"),
+  inv_name: yup.string().required("inventory name is required"),
   shipping_price: yup.string().required("shipping price is required"),
-  currency_name: yup.string().required("currency name is required"),
-  currency_code: yup.string().required("currency code is required"),
+  currency_id: yup.string().required("currency is required"),
 });
 
-const CitiesUpdate = ({ old_data, setEditCity }) => {
+const CitiesUpdate = ({ old_data, open, setOpen }) => {
+
   const { t } = useTranslation("index");
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
     state.setEditedID,
   ]);
-
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors } = formState;
-  const [open, setOpen] = useState(true);
+
   const [loading, setLoading] = useState(false);
+  const { data: currencies } = useCurrencies();
 
   const handleClose = () => {
     setOpen(false);
@@ -50,8 +52,9 @@ const CitiesUpdate = ({ old_data, setEditCity }) => {
             {
               id: old_data?.id,
               name: data?.name,
-              value: data?.inventory,
+              inv_name: data?.inv_name,
               shipping_price: data?.shipping_price,
+              currency_id: data?.currency_id,
             },
           ],
         },
@@ -76,11 +79,45 @@ const CitiesUpdate = ({ old_data, setEditCity }) => {
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={true} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} close>
         <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
-
         <>
           <Grid container component="form">
+            <Grid item md={6} sx={{ p: "10px" }}>
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  Name
+                </Typography>
+              </Box>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"name"}
+                defaultValue={old_data?.name}
+                name={"name"}
+                {...register("name")}
+                error={!!errors?.name}
+                helperText={errors?.message?.message || ""}
+              />
+            </Grid>
+
+            <Grid item md={6} sx={{ p: "10px" }}>
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  inventory Name
+                </Typography>
+              </Box>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"inv_name"}
+                defaultValue={old_data?.inv_name}
+                name={"inv_name"}
+                {...register("inv_name")}
+                error={!!errors?.inv_name}
+                helperText={errors?.message?.inv_name || ""}
+              />
+            </Grid>
             <Grid item md={6} sx={{ p: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
                 <Typography variant="body1" color="text.main">
@@ -101,70 +138,25 @@ const CitiesUpdate = ({ old_data, setEditCity }) => {
             <Grid item md={6} sx={{ p: "10px" }}>
               <Box sx={{ margin: "0 0 8px 5px" }}>
                 <Typography variant="body1" color="text.main">
-                  Name
+                  Currency
                 </Typography>
               </Box>
+
               <TextFieldStyled
+                select
                 sx={{ width: "100%" }}
-                type={"text"}
-                placeholder={"name"}
-                defaultValue={old_data?.name}
-                name={"name"}
-                {...register("name")}
-                error={!!errors?.name}
-                helperText={errors?.message?.name || ""}
-              />
-            </Grid>
-            <Grid item md={6} sx={{ p: "10px" }}>
-              <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="body1" color="text.main">
-                  Inventory Name
-                </Typography>
-              </Box>
-              <TextFieldStyled
-                sx={{ width: "100%" }}
-                type={"text"}
-                placeholder={"inventory"}
-                defaultValue={old_data?.value}
-                name={"inventory"}
-                {...register("inventory")}
-                error={!!errors?.inventory}
-                helperText={errors?.message?.inventory || ""}
-              />
-            </Grid>
-            <Grid item md={6} sx={{ p: "10px" }}>
-              <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="body1" color="text.main">
-                  currency name
-                </Typography>
-              </Box>
-              <TextFieldStyled
-                sx={{ width: "100%" }}
-                type={"text"}
-                placeholder={"currency name"}
-                defaultValue={old_data?.currency_name}
-                name={"currency_name"}
-                {...register("currency_name")}
-                error={!!errors?.currency_name}
-                helperText={errors?.message?.currency_name || ""}
-              />
-            </Grid>
-            <Grid item md={6} sx={{ p: "10px" }}>
-              <Box sx={{ margin: "0 0 8px 5px" }}>
-                <Typography variant="body1" color="text.main">
-                  currency code
-                </Typography>
-              </Box>
-              <TextFieldStyled
-                sx={{ width: "100%" }}
-                type={"text"}
-                placeholder={"currency code"}
-                defaultValue={old_data?.currency_code}
-                name={"currency_code"}
-                {...register("currency_code")}
-                error={!!errors?.currency_code}
-                helperText={errors?.message?.currency_code || ""}
-              />
+                defaultValue={old_data?.currency_id || ""}
+                name="currency_id"
+                {...register("currency_id")}
+                error={!!errors?.currency_id}
+                helperText={errors?.currency_id?.message || ""}
+              >
+                {currencies?.data?.map((cur) => (
+                  <MenuItem key={cur.id} value={cur.id}>
+                    {cur.name} ({cur.code})
+                  </MenuItem>
+                ))}
+              </TextFieldStyled>
             </Grid>
           </Grid>
         </>

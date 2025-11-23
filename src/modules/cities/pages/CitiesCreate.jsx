@@ -1,6 +1,10 @@
 import { Typography, Box, Button, Grid } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
-import { TextFieldStyled } from "components/styled/TextField";
+import {
+  MenuItemStyled,
+  SelectStyled,
+  TextFieldStyled,
+} from "components/styled/TextField";
 import React from "react";
 import Loader from "components/shared/Loader";
 import ButtonAction from "components/shared/ButtonAction";
@@ -17,8 +21,9 @@ const CitiesCreate = () => {
     t,
     errors,
     details,
-  } = useCitiesCreate()
-
+    CurrenciesisLoading,
+Currencies
+  } = useCitiesCreate();
 
   return (
     <Box>
@@ -28,12 +33,14 @@ const CitiesCreate = () => {
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
-          <Grid  container spacing={2}>
+          <Grid container spacing={2}>
             {/* * //details */}
             {details.map((item, index) => (
               <Grid item key={index} xs={6} sx={{ p: "10px" }}>
                 <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography  variant="body1" color="text.main">{item.head}</Typography>
+                  <Typography variant="body1" color="text.main">
+                    {item.head}
+                  </Typography>
                 </Box>
                 <TextFieldStyled
                   sx={{ width: "100%" }}
@@ -47,7 +54,35 @@ const CitiesCreate = () => {
               </Grid>
             ))}
 
-          
+            <Grid item xs={6} sx={{ p: "10px" }}>
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  {t("Currency")}
+                </Typography>
+              </Box>
+
+              <SelectStyled
+                sx={{ width: "100%" }}
+                defaultValue=""
+                {...register("currency_id")}
+                error={errors.currency_id?.message}
+              >
+                <MenuItemStyled value="">
+                  <em>{t("Select option")}</em>
+                </MenuItemStyled>
+
+                {!CurrenciesisLoading &&
+                  Currencies?.data?.map((cur) => (
+                    <MenuItemStyled key={cur.id} value={cur.id}>
+                      {cur.name} ({cur.code})
+                    </MenuItemStyled>
+                  ))}
+              </SelectStyled>
+
+              <Typography variant="caption" color="error">
+                {errors.currency_id?.message}
+              </Typography>
+            </Grid>
           </Grid>
         </Box>
 
@@ -73,19 +108,16 @@ const CitiesCreate = () => {
           >
             {t("Cancel")}
           </Button>
-          <ButtonAction
-            name={t("Reset")}
-            onClick={handleReset}
-            type="reset"
-          />
-          <ButtonLoader name={t("Submit")}
-          onClick={() => handleSubmit(hanldeCreate)()}
-          type="submit"
-          loading={loading}
-          disableOnLoading
-        >
-          {t("Submit")}
-        </ButtonLoader>
+          <ButtonAction name={t("Reset")} onClick={handleReset} type="reset" />
+          <ButtonLoader
+            name={t("Submit")}
+            onClick={() => handleSubmit(hanldeCreate)()}
+            type="submit"
+            loading={loading}
+            disableOnLoading
+          >
+            {t("Submit")}
+          </ButtonLoader>
         </Box>
       </BoxStyled>
     </Box>

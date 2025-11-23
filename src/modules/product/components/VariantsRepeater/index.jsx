@@ -15,7 +15,7 @@ const VariantsRepeater = ({
     packings,
     addNewFlavor,
     addNewPacking,
-    regions,
+    cities,
     hanldeCreate,
     loading,
   } = useProductCreate();
@@ -69,11 +69,10 @@ const VariantsRepeater = ({
 
       Object.entries(cityData).forEach(([cityId, cityValues]) => {
         options.push({
-        sku: sku || "",
           option_value_ids: option_value_ids.map(Number),
           city_id: Number(cityId),
-
-          // 🔥 NEW FIELDS (from cityValues)
+          sku: sku?.trim() || `SKU-${Date.now()}`,
+          
           price: Number(cityValues.price) || 0,
           compare_price: Number(cityValues.compare_price) || 0,
           compare_price_start_date: cityValues.compare_price_start_date || "",
@@ -135,7 +134,7 @@ const VariantsRepeater = ({
             addNewFlavor={addNewFlavor}
             addNewPacking={addNewPacking}
             selectedCities={selectedCities}
-            regions={regions}
+            cities={cities}
           />
         ))}
       </Box>

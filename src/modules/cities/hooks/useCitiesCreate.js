@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as yup from "yup";
@@ -6,13 +6,22 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _cities } from "api/cities/cities";
+import { useCurrencies } from "hooks/currencies/useCurrencies";
 
 const schema = yup.object().shape({
-  name: yup.string().required("Kurdish name is required"),
+  name: yup.string().required("Name is required"),
+  inv_name: yup.string().required("Inventory name is required"),
+  shipping_price: yup
+    .number()
+    .typeError("Must be a number")
+    .required("Shipping price is required"),
+  currency_id: yup.number().required("Currency is required"),
 });
 
 export const useCitiesCreate = () => {
   const { t } = useTranslation("index");
+  const { data: Currencies, isLoading: CurrenciesisLoading } = useCurrencies();
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
@@ -23,7 +32,19 @@ export const useCitiesCreate = () => {
 
   async function createPost(data) {
     _cities
-      .post(data, setLoading)
+      .post(
+        {
+          data: [
+            {
+              name: data?.name,
+              inv_name: data?.inv_name,
+              shipping_price: data?.shipping_price,
+              currency_id: data?.currency_id,
+            },
+          ],
+        },
+        setLoading
+      )
       .then((res) => {
         if (res.code === 200) navigate(-1);
         setLoading(true);
@@ -41,13 +62,7 @@ export const useCitiesCreate = () => {
   };
 
   const hanldeCreate = (input) => {
-    const formData = new FormData();
-    const inputWithoutBirthday = { ...input };
-    delete inputWithoutBirthday.birthday;
-    for (const [key, value] of Object.entries(inputWithoutBirthday)) {
-      formData.append(key, value);
-    }
-    mutate(formData);
+    mutate(input);
     setLoading(true);
   };
 
@@ -57,6 +72,18 @@ export const useCitiesCreate = () => {
       type: "text",
       placeholder: t("name"),
       register: "name",
+    },
+    {
+      head: t("inventory name"),
+      type: "text",
+      placeholder: t("inventory name"),
+      register: "inv_name",
+    },
+    {
+      head: t("Shipping Price"),
+      type: "number",
+      placeholder: t("Shipping Price"),
+      register: "shipping_price",
     },
   ];
 
@@ -72,5 +99,7 @@ export const useCitiesCreate = () => {
     errors,
     details,
     control,
+    Currencies,
+    CurrenciesisLoading,
   };
 };

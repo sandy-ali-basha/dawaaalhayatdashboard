@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs, Tab } from "@mui/material";
 
-const TabsNavigation = ({ tabValue, handleTabChange }) => (
+const TabsNavigation = ({ tabValue, handleTabChange, sections }) => (
   <Tabs
     value={tabValue}
     onChange={handleTabChange}
@@ -20,9 +20,11 @@ const TabsNavigation = ({ tabValue, handleTabChange }) => (
     <Tab label="Text Section One" />
     <Tab label="Text Section Two" />
     <Tab label="Video Section" />
-    <Tab label="Grid" />
-    <Tab label="Parallax" />
-    <Tab label="Social" />
+
+    {Array.isArray(sections) &&
+      sections.map((section, index) => (
+        <Tab label={section?.type} key={section.id} />
+      ))}
   </Tabs>
 );
 

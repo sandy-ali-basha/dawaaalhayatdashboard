@@ -14,7 +14,6 @@ import {
   Search,
   Inventory2Outlined,
   AddCircleOutline,
- 
   VisibilityOutlined,
 } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -31,8 +30,8 @@ import { InvStore } from "store/invStore";
 const CitiesIndex = () => {
   const { t } = useTranslation("index");
   const { data, isLoading } = useCities();
-  const cities = data?.data?.state || [];
-
+  const cities = useMemo(() => data?.data?.state || [], [data]);
+  const [open, setOpen] = useState(false);
   const Navigate = useNavigate();
 
   const [prev_shipping_price, setPrev_shipping_price] = useState(null);
@@ -40,28 +39,31 @@ const CitiesIndex = () => {
     state.editedID,
     state.setEditedID,
   ]);
-  const [InvData, setInvData] = InvStore((state) => [state.InvData, state.setInvData]);
+
+  const [InvData, setInvData] = InvStore((state) => [
+    state.InvData,
+    state.setInvData,
+  ]);
 
   const [search, setSearch] = useState("");
 
   const handleEdit = useCallback(
     (city, id) => {
       setPrev_shipping_price(city);
-      console.log(city);
+      setOpen(true);
       setEditedID(id);
     },
     [setPrev_shipping_price, setEditedID]
   );
 
-const handleViewInv = useCallback(
-  (row) => {
-    const fullCity = cities.find((c) => c.id === row.id);
-    setInvData(fullCity); // <-- send full data now
-    Navigate("/dashboard/inventory/" + row.id);
-  },
-  [cities, setInvData, Navigate]
-);
-
+  const handleViewInv = useCallback(
+    (row) => {
+      const fullCity = cities.find((c) => c.id === row.id);
+      setInvData(fullCity); // <-- send full data now
+      Navigate("/dashboard/inventory/" + row.id);
+    },
+    [cities, setInvData, Navigate]
+  );
 
   // Mock product stats (replace with API data)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,6 +72,7 @@ const handleViewInv = useCallback(
       return {
         id: city.id,
         name: city?.name || "غير معروف",
+        inv: city?.inv_name || "-",
         shipping_price: city?.shipping_price || 0,
         totalProducts: city?.products_count,
         currency_code: city?.currency?.code,
@@ -87,13 +90,25 @@ const handleViewInv = useCallback(
   const columns = [
     {
       field: "name",
-      headerName: "Inventory Name",
+      headerName: "City Name",
       flex: 1,
       minWidth: 180,
       renderCell: (params) => (
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Inventory2Outlined sx={{ mr: 1, color: "primary.main" }} />
           <Typography>{params.row.name}</Typography>
+        </Box>
+      ),
+    },
+    {
+      field: "inv",
+      headerName: "Inventory",
+      flex: 1,
+      minWidth: 180,
+      renderCell: (params) => (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Inventory2Outlined sx={{ mr: 1, color: "primary.main" }} />
+          <Typography>{params.row.inv}</Typography>
         </Box>
       ),
     },
@@ -164,18 +179,21 @@ const handleViewInv = useCallback(
       ),
     },
   ];
-
-
+  console.log("open", open);
   return (
     <>
       {isLoading && <Loader />}
-      {editedID && <CitiesUpdate old_data={prev_shipping_price} />}
+      <CitiesUpdate
+        old_data={prev_shipping_price}
+        open={open}
+        setOpen={setOpen}
+      />
 
       <Typography sx={{ color: "text.main", fontWeight: "bold" }} variant="h4">
         Inventory & Countries Management
       </Typography>
 
-{/* Countries */}
+      {/* Countries */}
       <Countries />
 
       {/* Controls */}

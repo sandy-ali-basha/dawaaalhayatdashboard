@@ -1,68 +1,81 @@
 import React, { useState } from "react";
-import { Switch, FormControlLabel, Tooltip } from "@mui/material";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import Loader from "components/shared/Loader";
-import { useDeleteRegions } from "hooks/regions/useDeleteRegions";
-import { useRegions } from "hooks/regions/useRegions";
+import { Tooltip } from "@mui/material";
 import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
+import { Box } from "@mui/material";
+import deleteImg from "assets/images/trash.png";
+import { useDeleteRegions } from "hooks/regions/useDeleteRegions";
+import { useRegions } from "hooks/regions/useRegions";
 
-const RegionStatusSwitch = ({ id, page, count, status }) => {
+const DeleteDialog = ({ id, page, count }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
-  const [enabled, setEnabled] = useState(status === "enabled"); // or use boolean true/false depending on your API
-
+  const [open, setOpen] = React.useState(false);
   const deleteregions = useDeleteRegions({ page, count });
+  const handleClickOpen = (e) => setOpen(true);
+  const handleClose = () => setOpen(false);
   const { refetch } = useRegions();
-  const { direction } = settingsStore();
-
-  const handleToggle = () => {
-    const newStatus = !enabled;
-    setEnabled(newStatus);
+  const DeleteBrand = () => {
     setLoading(true);
-
-    // Using same delete mutation, but you could adapt it to enable/disable instead.
     deleteregions.mutate(id, {
       onSuccess: () => {
+        setOpen(false);
         refetch();
-        setLoading(false);
-      },
-      onError: () => {
-        // revert on failure
-        setEnabled(!newStatus);
-        setLoading(false);
       },
     });
   };
-
+  const { direction } = settingsStore();
   return (
-    <Tooltip
-      title={
-        direction === "ltr"
-          ? enabled
-            ? "Disable region"
-            : "Enable region"
-          : enabled
-          ? "تعطيل المنطقة"
-          : "تفعيل المنطقة"
-      }
-    >
-      <FormControlLabel
-        control={
-          loading ? (
-            <Loader size={24} />
-          ) : (
-            <Switch
-              color="primary"
-              checked={enabled}
-              onChange={handleToggle}
-              disabled={loading}
-            />
-          )
-        }
-        label={enabled ? t("Enabled") : t("Disabled")}
-      />
-    </Tooltip>
+    <React.Fragment>
+      <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
+        <DeleteTwoToneIcon
+          sx={{ color: "error.main" }}
+          onClick={handleClickOpen}
+        />
+      </Tooltip>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        sx={{
+          "&.MuiDialog-container": {
+            backgroundColor: "error.main",
+          },
+        }}
+      >
+        <DialogTitle id="alert-dialog-title" sx={{ color: "text.main" }}>
+          {t("Delete Item")}
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ width: "40%", margin: "0 auto" }}>
+            <img src={deleteImg} alt="" style={{ width: "100%" }} />
+          </Box>
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{ color: "text.main" }}
+          >
+            {t("Are you Sure you want to Delete it ?")}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>{t("Disagree")}</Button>
+          {loading && <Loader />}
+          <Button autoFocus sx={{}} variant="contained" onClick={DeleteBrand}>
+            {t("Agree")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
   );
 };
 
-export default RegionStatusSwitch;
+export default DeleteDialog;

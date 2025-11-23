@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, Skeleton } from "@mui/material";
 import { useHome } from "hooks/home/useHome";
 import { settingsStore } from "store/settingsStore";
@@ -14,8 +14,6 @@ import CtaTab from "../components/tabs/CtaTab";
 import TextSectionOneTab from "../components/tabs/TextSectionOneTab";
 import TextSectionTwoTab from "../components/tabs/TextSectionTwoTab";
 import VideoTab from "../components/tabs/VideoTab";
-import GridTab from "../components/tabs/GridTab";
-import ParallaxTab from "../components/tabs/ParallaxTab";
 
 // Modals
 import StatsUpdate from "../components/StatesUpdate";
@@ -23,17 +21,30 @@ import CtaUpdate from "../components/CtaUpdate";
 import TextSectionOneUpdate from "../components/TextSectionUpdate";
 import TextSectionTwoUpdate from "../components/TextSectionTowUpdate";
 import VideoUpdate from "../components/VedioUpdate";
-import GridUpdate from "../components/GridUpdate";
-import ParallaxUpdate from "../components/ParallaxUpdate";
-import SocialMediaLinks from "../components/tabs/SocialMediaLinks";
+import HomeSection from "../components/tabs/HomeSection";
 
 const HomeIndex = () => {
   const { data, isLoading } = useHome();
   const queryClient = useQueryClient();
   const [direction] = settingsStore((state) => [state.direction]);
   const [open, setOpen] = useState(false);
+  const [sections, setSections] = useState([]);
+
   const [editSection, setEditSection] = useState(null);
   const [tabValue, setTabValue] = useState(0);
+
+  useEffect(() => {
+    _Home
+      .getAllSections()
+      .then((res) => {
+        // your API returns data directly as an array
+        setSections(res?.home_sections || []);
+        console.log("Fetched sections:", res?.home_sections);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch sections:", err);
+      });
+  }, []);
 
   const {
     "home.page.status": status,
@@ -42,9 +53,6 @@ const HomeIndex = () => {
     "home.page.textSectionTwo": textSectionTwo,
     "home.page.video": video,
     "home.page.videoText": videoText,
-    "home.page.grid": grid,
-    "home.page.parallax": parallax,
-    "home.page.social": social,
   } = data ?? {};
 
   const handleTabChange = (_, newValue) => setTabValue(newValue);
@@ -67,10 +75,22 @@ const HomeIndex = () => {
     switch (editSection) {
       case status:
         return (
-          <StatsUpdate open={open} onClose={handleClose} initialData={status} handleSave={handleUpdate} />
+          <StatsUpdate
+            open={open}
+            onClose={handleClose}
+            initialData={status}
+            handleSave={handleUpdate}
+          />
         );
       case cta:
-        return <CtaUpdate open={open} onClose={handleClose} initialData={cta} handleSave={handleUpdate} />;
+        return (
+          <CtaUpdate
+            open={open}
+            onClose={handleClose}
+            initialData={cta}
+            handleSave={handleUpdate}
+          />
+        );
       case textSectionOne:
         return (
           <TextSectionOneUpdate
@@ -99,26 +119,6 @@ const HomeIndex = () => {
             handleSave={handleUpdate}
           />
         );
-      case grid:
-        return <GridUpdate open={open} onClose={handleClose} handleSave={handleUpdate} />;
-      case parallax:
-        return (
-          <ParallaxUpdate
-            open={open}
-            onClose={handleClose}
-            initialData={parallax}
-            handleSave={handleUpdate}
-          />
-        );
-      // case social:
-      //   return (
-      //     <SocialMediaLinksUpdate
-      //       open={open}
-      //       onClose={handleClose}
-      //       initialData={parallax}
-      //       handleSave={handleUpdate}
-      //     />
-      //   );
       default:
         return null;
     }
@@ -129,7 +129,13 @@ const HomeIndex = () => {
       <Box sx={{ p: 4 }}>
         <Loader />
         {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} variant="rectangular" height={100} animation="wave" sx={{ my: 2, borderRadius: 2 }} />
+          <Skeleton
+            key={i}
+            variant="rectangular"
+            height={100}
+            animation="wave"
+            sx={{ my: 2, borderRadius: 2 }}
+          />
         ))}
       </Box>
     );
@@ -137,21 +143,59 @@ const HomeIndex = () => {
   return (
     <Box p={3}>
       {renderUpdateModal()}
-      <Typography variant="h5" sx={{ color: "text.main", fontWeight: "bold", mb: 2 }}>
+      <Typography
+        variant="h5"
+        sx={{ color: "text.main", fontWeight: "bold", mb: 2 }}
+      >
         Home Page Management
       </Typography>
 
-      <TabsNavigation tabValue={tabValue} handleTabChange={handleTabChange} />
+      <TabsNavigation
+        tabValue={tabValue}
+        handleTabChange={handleTabChange}
+        sections={sections}
+      />
 
       {tabValue === 0 && <SlidesTab />}
-      {tabValue === 1 && <StatusTab status={status} direction={direction} onEdit={handleEditClick} />}
-      {tabValue === 2 && <CtaTab cta={cta} direction={direction} onEdit={handleEditClick} />}
-      {tabValue === 3 && <TextSectionOneTab textSectionOne={textSectionOne} direction={direction} onEdit={handleEditClick} />}
-      {tabValue === 4 && <TextSectionTwoTab textSectionTwo={textSectionTwo} direction={direction} onEdit={handleEditClick} />}
-      {tabValue === 5 && <VideoTab video={video} videoText={videoText} direction={direction} onEdit={handleEditClick} />}
-      {tabValue === 6 && <GridTab onEdit={handleEditClick} />}
-      {tabValue === 7 && <ParallaxTab parallax={parallax} direction={direction} onEdit={handleEditClick} />}
-      {tabValue === 8 && <SocialMediaLinks data={social} direction={direction} onEdit={handleEditClick} />}
+      {tabValue === 1 && (
+        <StatusTab
+          status={status}
+          direction={direction}
+          onEdit={handleEditClick}
+        />
+      )}
+      {tabValue === 2 && (
+        <CtaTab cta={cta} direction={direction} onEdit={handleEditClick} />
+      )}
+      {tabValue === 3 && (
+        <TextSectionOneTab
+          textSectionOne={textSectionOne}
+          direction={direction}
+          onEdit={handleEditClick}
+        />
+      )}
+      {tabValue === 4 && (
+        <TextSectionTwoTab
+          textSectionTwo={textSectionTwo}
+          direction={direction}
+          onEdit={handleEditClick}
+        />
+      )}
+      {tabValue === 5 && (
+        <VideoTab
+          video={video}
+          videoText={videoText}
+          direction={direction}
+          onEdit={handleEditClick}
+        />
+      )}
+      {Array.isArray(sections) &&
+        sections.map(
+          (section, index) =>
+            tabValue === index + 6 && (
+              <HomeSection key={section.id} id={section?.id} />
+            )
+        )}
     </Box>
   );
 };

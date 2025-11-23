@@ -79,6 +79,7 @@ const RegionsLinkCities = ({ openLink, setopenLink }) => {
         editedID: editedID.id,
         formData: { cities: selectedCities.map((c) => c.id) },
       });
+      
       if (response.code === 200) {
         handleClose();
       } else {

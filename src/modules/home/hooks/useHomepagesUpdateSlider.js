@@ -49,6 +49,7 @@ export const useHomepagesUpdateSlider = () => {
   const { t } = useTranslation("index");
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState(false);
   const navigate = useNavigate();
 
   const formOptions = { resolver: yupResolver(schema) };
@@ -73,8 +74,8 @@ export const useHomepagesUpdateSlider = () => {
       setLoading(true);
       const slides = await _Home.getSlides();
       const slide = slides.home_slides?.find((s) => s.id === Number(id));
-
       if (slide) {
+        setName(slide?.name);
         setValue(`ar.title`, slide.translations[0]?.title || "");
         setValue(`ar.text`, slide.translations[0]?.text || "");
         setValue(`en.title`, slide.translations[1]?.text || "");
@@ -83,16 +84,7 @@ export const useHomepagesUpdateSlider = () => {
         setValue(`kr.title`, slide.translations[2]?.title || "");
         setValue(`kr.text`, slide.translations[2]?.text || "");
         setValue("customLink", slide.link || "");
-
-        console.log(
-          "slide.translations[0]?.title",
-          slide.translations[0]?.title
-        );
       }
-      console.log(
-        "slide.translations[idx]?.title",
-        slide.translations[0]?.title
-      );
       setLoading(false);
     }
     fetchSlide();
@@ -102,7 +94,7 @@ export const useHomepagesUpdateSlider = () => {
 
   const handleUpdate = (input) => {
     const formData = new FormData();
-
+    formData.append("slides[name]", name);
     for (const [langCode, langData] of Object.entries(input)) {
       // Only append title and text if they are defined
       if (langData.title) {

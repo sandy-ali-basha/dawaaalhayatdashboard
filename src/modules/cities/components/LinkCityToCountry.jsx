@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { _Regions } from "api/regions/regions";
-import { _cities } from "api/cities/cities";
 import { colorStore } from "store/ColorsStore";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
@@ -55,8 +54,7 @@ const LinkCityToCountry = ({ openLink, setopenLink }) => {
   }, [editedID]);
 
   const handleClose = () => {
-    setopenLink(false);
-    setEditedID(null);
+    setopenLink(false)
     setSelectedCities([]);
   };
 

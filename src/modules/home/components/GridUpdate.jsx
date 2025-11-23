@@ -4,17 +4,15 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  Typography,
-  Divider,
+  Typography
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import EditorInput from "./HomeTextEditor";
 import { BoxStyled } from "components/styled/BoxStyled";
 
 const GridUpdate = ({ open, onClose, handleSave }) => {
   const [sections, setSections] = useState([]);
 
-  
   // Handle text change for title or subtitle
   const handleTextChange = (sectionIndex, lang, field, value) => {
     setSections((prev) =>
@@ -51,11 +49,11 @@ const GridUpdate = ({ open, onClose, handleSave }) => {
       // Append titles and subtitles for each language
       ["ar", "en", "kr"].forEach((lang) => {
         formData.append(
-          `grid[sections][${index}][${lang}][title]`,
+          `grid[sections][${index}[title_${lang}]]`,
           section[lang]?.title ?? ""
         );
         formData.append(
-          `grid[sections][${index}][${lang}][subtitle]`,
+          `grid[sections][${index}][description_${lang}]`,
           section[lang]?.subtitle ?? ""
         );
       });
@@ -63,7 +61,7 @@ const GridUpdate = ({ open, onClose, handleSave }) => {
       // Append image
       if (section.newImage) {
         formData.append(
-          `grid[sections][${index}][image_file]`,
+          `grid[sections][${index}][image]`,
           section.newImage
         );
       } else {

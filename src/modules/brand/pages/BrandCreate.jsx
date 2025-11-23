@@ -16,7 +16,6 @@ const BrandCreate = () => {
     loading,
     t,
     errors,
-    details,
   } = useBrandCreate();
 
   return (

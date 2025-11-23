@@ -31,9 +31,6 @@ const ProductCreate = () => {
     state.setActiveStep,
   ]);
 
-  console.log("newProductId", newProductId);
-  console.log("activeStep", newProductId);
-
   const steps = ["Basic Info", "Variants", "Images", "Categories & Features"];
   const Navigate = useNavigate();
 
