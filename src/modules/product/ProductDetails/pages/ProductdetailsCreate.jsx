@@ -120,7 +120,7 @@ const ProductdetailsCreate = ({ id, isCreateProduct }) => {
             {t("Submit")}
           </ButtonLoader>
         </Box>
-        {alert.length > 0 &&
+        {alert?.length > 0 &&
           alert.map((item, idx) => (
             <Alert sx={{ mt: 1 }} key={idx} severity="info">
               {item}

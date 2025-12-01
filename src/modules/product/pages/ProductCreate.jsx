@@ -19,6 +19,8 @@ import AddImagesSlider from "./steps/AddImagesSlider";
 import PricesAndCountries from "./steps/Prices&Countries";
 import { useNavigate } from "react-router-dom";
 import { ProductStore, StepsStore } from "store/productStore";
+import ProductdetailsCreate from "../ProductDetails/pages/ProductdetailsCreate";
+
 
 const ProductCreate = () => {
   const [selectedCities, setSelectedCities] = useState([]);
@@ -128,6 +130,9 @@ const ProductCreate = () => {
               </Grid>
               <Grid item xs={6}>
                 <ProductFeatures id={newProductId} />
+              </Grid>
+              <Grid item xs={12}>
+                  <ProductdetailsCreate id={newProductId} isCreateProduct={true} />
               </Grid>
             </Grid>
           </Grid>
