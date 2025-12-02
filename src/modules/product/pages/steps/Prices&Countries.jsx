@@ -16,13 +16,10 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { BoxStyled } from "components/styled/BoxStyled";
 import React from "react";
-import { LocationCity } from "@mui/icons-material";
+import { Inventory, Inventory2Outlined, InventoryOutlined, LocationCity } from "@mui/icons-material";
 import { useProductCreate } from "modules/product/hooks/useProductCreate";
 
-const PricesAndCountries = ({
-  selectedCities,
-  setSelectedCities,
-}) => {
+const PricesAndCountries = ({ selectedCities, setSelectedCities }) => {
   const { errors, regions } = useProductCreate();
 
   const handleToggleCity = (cityId) => {
@@ -53,7 +50,6 @@ const PricesAndCountries = ({
 
   return (
     <Box>
-      <BoxStyled sx={{ px: "24px", my: 1 }}>
         <Box component="form">
           <Typography variant="h6" color="text.main" p="10px">
             <LocationCity color="primary.main" /> Select Inv by Country
@@ -129,6 +125,30 @@ const PricesAndCountries = ({
                                     >
                                       {city.name}
                                     </Typography>
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      {city?.inv_name && (
+                                        <Inventory2Outlined
+                                          color="secondary"
+                                          size="xsmall"
+                                        />
+                                      )}
+                                      <Typography
+                                        variant="body2"
+                                        color={
+                                          isSelected
+                                            ? "primary"
+                                            : "text.secondary"
+                                        }
+                                      >
+                                        {city?.inv_name || ""}
+                                      </Typography>
+                                    </Box>
                                   </Box>
                                 </CardActionArea>
                               </Card>
@@ -159,7 +179,6 @@ const PricesAndCountries = ({
             </Grid>
           )}
         </Box>
-      </BoxStyled>
     </Box>
   );
 };

@@ -180,9 +180,14 @@ export const useProductCreate = () => {
       productData.height &&
       productData.weight
     ) {
-      const volume =
-        productData.length * productData.width * productData.height;
-      productData.density = (productData.weight / volume).toFixed(4);
+      const volumeCM =
+        productData.length * productData.width * productData.height; // cm³
+      const volumeM3 = volumeCM / 1_000_000; // m³
+
+      const weightKG = productData.weight / 1000; // kg
+
+      productData.density = (weightKG / volumeM3).toFixed(4); // kg/m³
+      productData.volumetricWeight = (volumeCM / 5000).toFixed(4); // kg (air shipping)
     }
 
     // Send to backend

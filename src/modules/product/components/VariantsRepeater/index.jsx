@@ -5,11 +5,18 @@ import { BookmarkOutlined } from "@mui/icons-material";
 import VariantCard from "./VariantCard";
 import { useProductCreate } from "modules/product/hooks/useProductCreate";
 
-const VariantsRepeater = ({
-  selectedCities,
-  productData,
-  setSubmitFunction, // 👈 new prop
-}) => {
+const createEmptyVariant = () => ({
+  sku: "",
+  tax_class_id: 1,
+  inventory: 12,  
+  qty: 12,
+  purchasable: "always",
+  unit: 1,
+  option_value_ids: ["", ""],
+  cityData: {},
+});
+
+const VariantsRepeater = ({ selectedCities, productData, setSubmitFunction }) => {
   const {
     flavors,
     packings,
@@ -20,44 +27,19 @@ const VariantsRepeater = ({
     loading,
   } = useProductCreate();
 
-  const [variants, setVariants] = useState([
-    {
-      sku: "",
-      tax_class_id: 1,
-      inventory: 12,
-      qty: 12,
-      purchasable: "always",
-      unit: 1,
-      option_value_ids: ["", ""],
-      cityData: {},
-    },
-  ]);
-  console.log("variants outside", variants);
+  const [variants, setVariants] = useState([createEmptyVariant()]);
 
   const handleAddVariant = () => {
-    setVariants([
-      ...variants,
-      {
-        sku: "",
-        tax_class_id: 1,
-        inventory: 12,
-        qty: 12,
-        purchasable: "always",
-        unit: 1,
-        option_value_ids: ["", ""],
-        cityData: {},
-      },
-    ]);
+    setVariants((prev) => [...prev, createEmptyVariant()]);
   };
 
   const handleRemoveVariant = (index) => {
-    setVariants(variants.filter((_, i) => i !== index));
+    setVariants((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // ✅ Build full options payload
+  // Build full options payload
   const buildOptionsPayload = useCallback(() => {
     const options = [];
-
     variants.forEach((variant) => {
       const {
         sku,
@@ -68,11 +50,11 @@ const VariantsRepeater = ({
       } = variant;
 
       Object.entries(cityData).forEach(([cityId, cityValues]) => {
+        console.log("cityValues", cityValues);
         options.push({
-          option_value_ids: option_value_ids.map(Number),
+          option_value_ids: option_value_ids.map((v) => Number(v) || 0),
           city_id: Number(cityId),
-          sku: sku?.trim() || `SKU-${Date.now()}`,
-          
+          sku: sku,
           price: Number(cityValues.price) || 0,
           compare_price: Number(cityValues.compare_price) || 0,
           compare_price_start_date: cityValues.compare_price_start_date || "",
@@ -81,37 +63,31 @@ const VariantsRepeater = ({
           qty: Number(cityValues.qty) || 0,
           unit: Number(cityValues.unit) || 0,
           reorder_point: Number(cityValues.reorder_point) || 0,
-
-          // 🔥 Removed "points" moved to product
-          // points: Number(cityValues.points) || 0, ← remove this
-
-          // variant-level fields
           tax_class_id: Number(tax_class_id) || 1,
           purchasable,
         });
       });
     });
-
     return options;
   }, [variants]);
 
   const handleSaveVariants = useCallback(() => {
     const options = buildOptionsPayload();
     const payload = {
-      ...productData, // from Step 1
-      options, // from Step 2
+      ...productData,
+      options,
     };
 
     hanldeCreate(payload);
   }, [productData, buildOptionsPayload, hanldeCreate]);
 
-  // 👇 expose the save function to parent
+  // expose the save function to parent — register latest handler whenever it changes
   useEffect(() => {
     if (setSubmitFunction) {
       setSubmitFunction(() => handleSaveVariants);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); //! do not add dependacies
+    // now include handleSaveVariants so parent always receives the latest one
+  }, [handleSaveVariants, setSubmitFunction]);
 
   return (
     <>
@@ -122,7 +98,7 @@ const VariantsRepeater = ({
 
         {variants.map((variant, index) => (
           <VariantCard
-            key={index}
+            key={variant.id} // use stable unique key instead of index
             index={index}
             variant={variant}
             variants={variants}

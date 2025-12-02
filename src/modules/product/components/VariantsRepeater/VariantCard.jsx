@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Grid, Typography, IconButton, Button } from "@mui/material";
 import {
   Add,
+  CopyAll,
   Delete,
   DiscountOutlined,
   FlagOutlined,
@@ -31,6 +32,41 @@ const VariantCard = ({
   const handleChange = (field, value) => {
     const updated = [...variants];
     updated[index] = { ...updated[index], [field]: value };
+    setVariants(updated);
+  };
+  const copyFirstCityToAll = () => {
+    const updated = [...variants];
+    const variantData = updated[index];
+
+    const cityIds = selectedCities.map((id) => Number(id));
+    const firstCityId = cityIds[0];
+
+    const source = variantData.cityData?.[firstCityId];
+
+    if (!source) {
+      alert("Please fill the first city data first.");
+      return;
+    }
+
+    const newCityData = { ...variantData.cityData };
+
+    cityIds.forEach((cityId) => {
+      if (cityId === firstCityId) return;
+
+      newCityData[cityId] = {
+        ...newCityData[cityId],
+        price: source.price ?? null,
+        compare_price: source.compare_price ?? null,
+        compare_price_start_date: source.compare_price_start_date ?? null,
+        compare_price_end_date: source.compare_price_end_date ?? null,
+        inventory: source.inventory ?? null,
+        qty: source.qty ?? null,
+        unit: source.unit ?? null,
+        reorder_point: source.reorder_point ?? null,
+      };
+    });
+
+    updated[index].cityData = newCityData;
     setVariants(updated);
   };
 
@@ -99,7 +135,6 @@ const VariantCard = ({
       icon: <DiscountOutlined fontSize="small" />,
       type: "number",
       helperText: "compare price to original price (price before sale)",
-
     },
     {
       name: "compare_price_start_date",
@@ -232,10 +267,26 @@ const VariantCard = ({
               backgroundColor: "primary.lighter",
             }}
           >
-            <Typography color={"text.primary"} fontWeight="bold">
-              <LocationCityOutlined sx={{ mb: -0.5 }} /> City-Specific Data
-            </Typography>
-
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography color={"text.primary"} fontWeight="bold">
+                <LocationCityOutlined sx={{ mb: -0.5 }} /> City-Specific Data
+              </Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                color="secondary"
+                sx={{ mt: 2 }}
+                onClick={copyFirstCityToAll}
+              >
+                Copy to all cities <CopyAll />
+              </Button>
+            </Box>
             {selectedCities.map((cityId) => {
               const city = cities?.state?.find((c) => c.id === cityId);
               const cityData = variant.cityData?.[cityId] || {};

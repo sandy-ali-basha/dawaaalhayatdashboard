@@ -21,7 +21,6 @@ import { useNavigate } from "react-router-dom";
 import { ProductStore, StepsStore } from "store/productStore";
 import ProductdetailsCreate from "../ProductDetails/pages/ProductdetailsCreate";
 
-
 const ProductCreate = () => {
   const [selectedCities, setSelectedCities] = useState([]);
   const [productData, setProductData] = useState(null);
@@ -132,7 +131,10 @@ const ProductCreate = () => {
                 <ProductFeatures id={newProductId} />
               </Grid>
               <Grid item xs={12}>
-                  <ProductdetailsCreate id={newProductId} isCreateProduct={true} />
+                <ProductdetailsCreate
+                  id={newProductId}
+                  isCreateProduct={true}
+                />
               </Grid>
             </Grid>
           </Grid>
