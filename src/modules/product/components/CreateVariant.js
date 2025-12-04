@@ -34,7 +34,6 @@ const emptyVariant = {
   option_value_ids: [null, null], // flavor_id, packing_id
   purchasable: "always",
   city_id: null,
-
   // city fields
   price: "",
   compare_price: "",
@@ -78,6 +77,7 @@ const VariantCreate = ({ defaultCity }) => {
   const handleChange = (field, value) => {
     setVariantData((prev) => ({ ...prev, [field]: value }));
   };
+  
   const numericFields = [
     "price",
     "compare_price",

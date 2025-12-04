@@ -26,6 +26,7 @@ import { settingsStore } from "store/settingsStore";
 import Loader from "components/shared/Loader";
 import { useHomeSlides } from "hooks/home/useHomeSlides";
 import { useNavigate } from "react-router-dom";
+import DeleteSlide from "modules/home/components/DeleteSlide";
 
 const SlidesView = () => {
   const [direction] = settingsStore((state) => [state.direction]);
@@ -54,7 +55,7 @@ const SlidesView = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          my:2
+          my: 2,
         }}
       >
         <Typography variant="h5" fontWeight="bold" color="text.main" mb={1}>
@@ -173,11 +174,11 @@ const SlidesView = () => {
                   </IconButton>
                 </Tooltip>
 
-                <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-                  <IconButton size="small" color="error">
-                    <DeleteOutline />
-                  </IconButton>
-                </Tooltip>
+                <IconButton>
+                  <Tooltip title={"Delete"}>
+                    <DeleteSlide id={item?.id} count={1} page={1} />
+                  </Tooltip>
+                </IconButton>
               </CardActions>
             </Card>
           </Grid>

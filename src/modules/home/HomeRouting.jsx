@@ -5,6 +5,7 @@ import HomeComponent from "./HomeComponent";
 import HomeIndex from "./pages/HomeIndex";
 import HomeCreateSlider from "./pages/slider/HomeCreateSlider";
 import HomeUpdateSlider from "./pages/slider/HomeUpdateSlider";
+import HomeCreateItem from "./pages/HomeCreateItem";
 
 const HomeRouting = () => {
   return (
@@ -12,6 +13,7 @@ const HomeRouting = () => {
       <Route element={<HomeComponent />}>
         <Route path="/" element={<HomeIndex />} />
         <Route path="/addSlider" element={<HomeCreateSlider />} />
+        <Route path="/create-item/:id" element={<HomeCreateItem />} />
         <Route path="/editSlide/:id" element={<HomeUpdateSlider />} />
       </Route>
       <Route path="*" element={<p>not found 404</p>} />

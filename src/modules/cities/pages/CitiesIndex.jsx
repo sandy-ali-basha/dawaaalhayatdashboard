@@ -161,11 +161,9 @@ const CitiesIndex = () => {
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Delete">
-            <IconButton sx={{ color: "error.main" }}>
-              <DeleteDialog id={params.row.id} />
-            </IconButton>
-          </Tooltip>
+        
+              <DeleteDialog products_count={params.row.totalProducts} id={params.row.id} />
+          
 
           <Tooltip title="View">
             <IconButton

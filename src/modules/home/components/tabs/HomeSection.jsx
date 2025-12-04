@@ -8,15 +8,16 @@ import {
   CardMedia,
   Grid,
   Skeleton,
+  Tooltip,
 } from "@mui/material";
 import HomeUpdate from "../HomeUpdate";
 import { colorStore } from "store/ColorsStore";
-import { Edit } from "@mui/icons-material";
+import { AddHomeOutlined, Edit } from "@mui/icons-material";
 import { useHomeSection } from "hooks/home/useHomeSection";
+import { useNavigate } from "react-router-dom";
+import DeleteItem from "../item/DeleteItem";
 
 const HomeSection = ({ id }) => {
-  console.log("loaded HomeSection with id:", id);
-
   const { data: section, isLoading } = useHomeSection(id);
 
   const [type, setType] = useState();
@@ -32,6 +33,7 @@ const HomeSection = ({ id }) => {
     },
     [setEditedID, setType]
   );
+  const navigate = useNavigate();
   // 🔥 Loading Effect — Skeleton Cards
   if (isLoading) {
     return (
@@ -40,7 +42,6 @@ const HomeSection = ({ id }) => {
           <Grid item xs={4} key={i}>
             <Card sx={{ mt: 3, borderRadius: 2, boxShadow: 2 }}>
               <Skeleton variant="rectangular" height={200} />
-
               <CardContent>
                 {[...Array(3)].map((__, j) => (
                   <Box mb={2} key={j}>
@@ -64,13 +65,35 @@ const HomeSection = ({ id }) => {
         <HomeUpdate id={editedID} type={type} setHome_section_id={id} />
       )}
 
-      <Grid container spacing={2} sx={{ mt: 2 }}>
+      {id === 4 && (
+        <>
+          <Tooltip title="Add Reel">
+            <IconButton
+              variant="contained"
+              onClick={() => navigate("create-item/4")}
+            >
+              <AddHomeOutlined sx={{ color: "warning.main", mr: 1 }} />
+              Add Reel
+            </IconButton>
+          </Tooltip>
+        </>
+      )}
+      <Grid container spacing={2}>
         {section?.items.map((item) => (
           <Grid item xs={4}>
             <Card key={item.id} sx={{ mt: 3, borderRadius: 2, boxShadow: 2 }}>
               <IconButton onClick={() => handleEdit(item?.id, "grid")}>
                 <Edit />
               </IconButton>
+
+              {id === 4 && (
+                <IconButton>
+                  <Tooltip title={"Delete"}>
+                    <DeleteItem id={item?.id} count={1} page={1} />
+                  </Tooltip>
+                </IconButton>
+              )}
+              
               <CardMedia
                 component="img"
                 height="200"

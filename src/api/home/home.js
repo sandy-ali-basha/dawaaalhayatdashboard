@@ -1,4 +1,4 @@
-import { getListItemButtonUtilityClass } from "@mui/material";
+
 import { _axios } from "../../interceptor/http-config";
 
 const Link = "/home";
@@ -43,7 +43,7 @@ export const _Home = {
   postItem: (data) =>
     _axios.post("home_page/item", data).then((res) => res?.data),
   deleteItem: (id) =>
-    _axios.delete("home_page/item/" + id).then((res) => res.data),
+    _axios.delete("home_page/item/delete/" + id).then((res) => res.data),
   updateItem: ({ editedID, formData }) =>
     _axios
       .post("home_page/item/update/" + editedID, formData)

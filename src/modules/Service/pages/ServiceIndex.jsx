@@ -10,7 +10,6 @@ import {
   Checkbox,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-
 import { BoxStyled } from "components/styled/BoxStyled";
 import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import React, { useMemo, useCallback, useState } from "react";
@@ -24,7 +23,7 @@ import { colorStore } from "store/ColorsStore";
 import { useService } from "hooks/service/useService";
 import ServiceUpdate from "./ServiceUpdate";
 import DeleteDialog from "../components/Dialog";
-import { Close, Delete, DesignServices, RestoreFromTrash, RestoreFromTrashOutlined } from "@mui/icons-material";
+import { Close, Delete, DesignServices, RestoreFromTrashOutlined } from "@mui/icons-material";
 import RestoreUser from "../components/RestoreUser";
 
 const ServiceIndex = () => {
@@ -53,7 +52,6 @@ const ServiceIndex = () => {
 
   const handleView = useCallback((id) => { navigate('view/' + id) }, [navigate])
   const handleEdit = useCallback((id) => { setEditedID(id) }, [setEditedID])
-
   const handleRestore = useCallback((id) => { setRestore(true); setRestoreId(id) }, [])
 
   const rows = useMemo(() => {

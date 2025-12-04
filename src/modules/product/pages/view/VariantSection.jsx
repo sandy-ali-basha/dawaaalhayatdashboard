@@ -26,6 +26,7 @@ import {
 } from "@mui/icons-material";
 import VariantUpdate from "modules/product/components/VariantUpdate";
 import VariantCreate from "modules/product/components/CreateVariant";
+import DeleteVariant from "modules/product/components/DeleteVariant";
 
 const VariantsSection = ({ t, options = [] }) => {
   return (
@@ -74,6 +75,7 @@ const VariantsSection = ({ t, options = [] }) => {
                     <Tooltip title={t("Edit Variant")}>
                       <VariantUpdate variantData={variant} />
                     </Tooltip>
+                    <DeleteVariant id={variant?.id} />
                   </Stack>
 
                   {/* SKU + City */}

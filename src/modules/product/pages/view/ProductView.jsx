@@ -193,10 +193,13 @@ const ProductView = () => {
             <Grid container spacing={2}>
               {columns.map((item, index) => (
                 <Grid item xs={12} sm={6} key={index} sx={{ display: "flex" }}>
-                  <Typography sx={{ fontWeight: 600 }}>{item.head}: </Typography>
+                  <Typography sx={{ fontWeight: 600 }}>
+                    {item.head} :{" "}
+                  </Typography>
                   <Typography
                     sx={{ color: "text.secondary", wordBreak: "break-word" }}
                   >
+                    {" "}
                     {typeof item?.value === "object"
                       ? JSON.stringify(item?.value)
                       : item?.value ?? "—"}
@@ -229,7 +232,7 @@ const ProductView = () => {
               ))}
             </Box>
           </Paper>
-          
+
           <VariantsSection t={t} options={data?.variants} />
 
           {/* Image Sections */}

@@ -34,9 +34,7 @@ import {
   GetAppOutlined,
   LocalShipping,
   Pending,
-  Public,
   Sync,
-  TranslateOutlined,
 } from "@mui/icons-material";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useSnackbar } from "notistack";
@@ -300,7 +298,7 @@ const OrdersIndex = () => {
           <TableCell
             align="center"
             sx={{
-              minWidth: 200,
+              minWidth: 300,  
             }}
           >
             <IconButton onClick={() => handleView(orders)}>

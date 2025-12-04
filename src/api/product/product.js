@@ -13,10 +13,11 @@ export const _Product = {
     _axios.post(Link + "s/bulk-delete", data).then((res) => res?.data),
 
   delete: (id) => _axios.delete(Link + "/" + id).then((res) => res.data),
-
+  
   update: ({ editedID, formData }) =>
     _axios.post(Link + "/" + editedID, formData).then((res) => res?.data),
 
+  deleteVariant: (id) => _axios.delete(Link + "/variants/" + id).then((res) => res.data),
   updateVariant: ({ id, formData }) =>
     _axios
       .post(Link + "/variants/" + id, formData)

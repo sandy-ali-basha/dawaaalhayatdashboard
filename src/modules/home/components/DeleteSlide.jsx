@@ -8,9 +8,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Loader from "components/shared/Loader";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useBrand_pages } from "hooks/brand_pages/useBrand_pages";
 import { FolderDeleteOutlined } from "@mui/icons-material";
 import { useDeleteSlide } from "hooks/home/useDeleteSlide";
+import { useHomeSlides } from "hooks/home/useHomeSlides";
 
 const DeleteSlide = ({ id, page, count }) => {
   const { t } = useTranslation("index");
@@ -19,7 +19,7 @@ const DeleteSlide = ({ id, page, count }) => {
   const delete_slide = useDeleteSlide({ page, count });
   const handleClickOpen = (e) => setOpen(true);
   const handleClose = () => setOpen(false);
-  const { refetch } = useBrand_pages();
+  const { refetch } = useHomeSlides();
   const Delete_slide = () => {
     setLoading(true);
     delete_slide.mutate(id, {

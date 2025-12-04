@@ -50,18 +50,6 @@ export default function InputRepeater({
     setInputs(newInputs);
   };
 
-  const handleInputChange = (event, index, lang, field) => {
-    const newInputs = [...inputs];
-    newInputs[index][lang][field] = event.target.value;
-    setInputs(newInputs);
-  };
-
-  const handleLinkChange = (event, index) => {
-    const newInputs = [...inputs];
-    newInputs[index].CustomLink = event.target.value;
-    setInputs(newInputs);
-  };
-
   const languages = [
     { code: "ar", name: "Arabic" },
     { code: "kr", name: "Kurdish" },
