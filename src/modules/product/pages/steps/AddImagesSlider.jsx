@@ -64,11 +64,14 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
 
   const handleAddImages = ({ data }) => {
     setLoading(true);
-      return _Product.AddImagesSlider({
+    return _Product
+      .AddImagesSlider({
         editedID: id,
         formData: data,
+      })
+      .then((res) => {
+        setLoading(false);
       });
-  
   };
   async function createPost(data) {
     if (notDialog) {
@@ -80,10 +83,10 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
           formData: data,
         })
         .then((res) => {
+          setLoading(false);
           if (res.code === 200) {
             handleDialogClose();
           }
-          setLoading(false);
         });
     }
   }

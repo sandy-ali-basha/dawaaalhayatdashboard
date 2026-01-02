@@ -6,12 +6,12 @@ const DensityCalculator = ({ register, watch, errors, defaultData = {} }) => {
   const length = watch("length") || defaultData.length || "";
   const width = watch("width") || defaultData.width || "";
   const height = watch("height") || defaultData.height || "";
-  const weight = watch("weight") || defaultData.weight || "";
+  // const weight = watch("weight") || defaultData.weight || "";
   const division = watch("division") || defaultData.division || "";
 
   const density =
-    length && width && height && weight
-      ? (weight / ((length * width * height) / division)).toFixed(4)
+    length && width && height 
+      ? (((length * width * height) / division)).toFixed(2)
       : "";
 
   return (
@@ -112,7 +112,7 @@ const DensityCalculator = ({ register, watch, errors, defaultData = {} }) => {
               sx={{ width: "100%" }}
               type="number"
               name="division"
-              defaultValue={defaultData.division}
+              defaultValue={defaultData.division || 6000}
               {...register("division")}
               error={!!errors["division"]}
               helperText={errors["division"]?.message || ""}

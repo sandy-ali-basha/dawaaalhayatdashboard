@@ -71,7 +71,7 @@ const CitiesIndex = () => {
     data?.data?.state?.map((city) => {
       return {
         id: city.id,
-        name: city?.name || "غير معروف",
+        name: city?.name?.replace(/^.*?\.\s*/, "") || "-",
         inv: city?.inv_name || "-",
         shipping_price: city?.shipping_price || 0,
         totalProducts: city?.products_count,
@@ -160,11 +160,7 @@ const CitiesIndex = () => {
               <ModeOutlined />
             </IconButton>
           </Tooltip>
-
-        
-              <DeleteDialog products_count={params.row.totalProducts} id={params.row.id} />
-          
-
+        <DeleteDialog products_count={params.row.totalProducts} id={params.row.id} />
           <Tooltip title="View">
             <IconButton
               sx={{ color: "secondary.main" }}

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AddImages from "./steps/AddImages";
 import {
   Box,
@@ -34,6 +34,10 @@ const ProductCreate = () => {
 
   const steps = ["Basic Info", "Variants", "Images", "Categories & Features"];
   const Navigate = useNavigate();
+
+  useEffect(() => {
+    setActiveStep(0);
+  }, [setActiveStep]);
 
   const handleNext = useCallback(() => {
     if (activeStep === 0 && basicInfoSubmit) {

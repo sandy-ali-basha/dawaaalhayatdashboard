@@ -111,7 +111,7 @@ const CitiesUpdate = ({ old_data, open, setOpen }) => {
                 sx={{ width: "100%" }}
                 type={"text"}
                 placeholder={"inv_name"}
-                defaultValue={old_data?.inv_name}
+                defaultValue={old_data?.inv}
                 name={"inv_name"}
                 {...register("inv_name")}
                 error={!!errors?.inv_name}

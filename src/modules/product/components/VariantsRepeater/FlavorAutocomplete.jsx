@@ -6,6 +6,8 @@ import {
   CircularProgress,
   Box,
   Alert,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import { _Product } from "api/product/product";
 import { Add } from "@mui/icons-material";
@@ -15,6 +17,7 @@ const FlavorAutocomplete = ({ value, onChange }) => {
   const [loading, setLoading] = useState(false);
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
+  const [isEnabled, setIsEnabled] = useState(false); // ← السويتش
 
   // Load flavors
   const loadFlavors = async () => {
@@ -32,6 +35,14 @@ const FlavorAutocomplete = ({ value, onChange }) => {
   useEffect(() => {
     loadFlavors();
   }, []);
+
+  // 🔥 Switch OFF → set default ID = 2
+  useEffect(() => {
+    if (!isEnabled) {
+      const defaultFlavor = flavors.find((f) => f.id === 2);
+      if (defaultFlavor) onChange(defaultFlavor);
+    }
+  }, [isEnabled, flavors]);
 
   // Add new flavor
   const addNewFlavor = async (flavorName) => {
@@ -77,80 +88,99 @@ const FlavorAutocomplete = ({ value, onChange }) => {
     }
   };
 
+  // 🔥 Hide ID=2 when switch = ON
+  const filteredFlavors = isEnabled
+    ? flavors.filter((f) => f.id !== 2)
+    : [];
+
   return (
     <Box sx={{ width: "100%" }}>
       <Typography color="text.primary" variant="body1" sx={{ mb: 1 }}>
         Flavor
       </Typography>
 
-      <Autocomplete
-        fullWidth
-        freeSolo
-        loading={loading || adding}
-        options={flavors}
-        value={value || null}
-        getOptionLabel={(o) => (typeof o === "string" ? o : o?.name || "")}
-        isOptionEqualToValue={(a, b) => a?.id === b?.id}
-        filterOptions={(options, { inputValue }) => {
-          const filtered = options.filter((opt) =>
-            opt.name.toLowerCase().includes(inputValue.toLowerCase())
-          );
-
-          if (
-            inputValue &&
-            !options.some(
-              (opt) => opt.name.toLowerCase() === inputValue.toLowerCase()
-            )
-          ) {
-            filtered.push({ id: null, name: `Add: ${inputValue}` });
-          }
-
-          return filtered;
-        }}
-        onChange={(_, newValue) => {
-          if (!newValue) return;
-
-          if (typeof newValue === "string") {
-            addNewFlavor(newValue);
-            return;
-          }
-
-          if (newValue?.name?.startsWith("Add: ")) {
-            addNewFlavor(newValue.name.replace("Add: ", "").trim());
-            return;
-          }
-
-          onChange(newValue);
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="Select or add flavor"
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {(loading || adding) && (
-                    <CircularProgress size={18} sx={{ mr: 1 }} />
-                  )}
-                  {params.InputProps.endAdornment}
-                </>
-              ),
-            }}
+      {/* Switch */}
+      <FormControlLabel
+        control={
+          <Switch
+            checked={isEnabled}
+            onChange={(e) => setIsEnabled(e.target.checked)}
           />
-        )}
-        renderOption={(props, option) => (
-          <li {...props}>
-            {option?.name?.startsWith("Add: ") ? (
-              <span style={{ color: "#1976d2", fontWeight: 500 }}>
-                <Add /> {option.name.replace("Add: ", "")}
-              </span>
-            ) : (
-              option?.name
-            )}
-          </li>
-        )}
+        }
+        label={isEnabled ? "ON (choose flavor)" : "OFF (default flavor)"}
       />
+
+      {/* Show autocomplete only when switch = ON */}
+      {isEnabled && (
+        <Autocomplete
+          fullWidth
+          freeSolo
+          loading={loading || adding}
+          options={filteredFlavors}
+          value={value || null}
+          getOptionLabel={(o) => (typeof o === "string" ? o : o?.name || "")}
+          isOptionEqualToValue={(a, b) => a?.id === b?.id}
+          filterOptions={(options, { inputValue }) => {
+            const filtered = options.filter((opt) =>
+              opt.name.toLowerCase().includes(inputValue.toLowerCase())
+            );
+
+            if (
+              inputValue &&
+              !options.some(
+                (opt) => opt.name.toLowerCase() === inputValue.toLowerCase()
+              )
+            ) {
+              filtered.push({ id: null, name: `Add: ${inputValue}` });
+            }
+
+            return filtered;
+          }}
+          onChange={(_, newValue) => {
+            if (!newValue) return;
+
+            if (typeof newValue === "string") {
+              addNewFlavor(newValue);
+              return;
+            }
+
+            if (newValue?.name?.startsWith("Add: ")) {
+              addNewFlavor(newValue.name.replace("Add: ", "").trim());
+              return;
+            }
+
+            onChange(newValue);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder="Select or add flavor"
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {(loading || adding) && (
+                      <CircularProgress size={18} sx={{ mr: 1 }} />
+                    )}
+                    {params.InputProps.endAdornment}
+                  </>
+                ),
+              }}
+            />
+          )}
+          renderOption={(props, option) => (
+            <li {...props}>
+              {option?.name?.startsWith("Add: ") ? (
+                <span style={{ color: "#1976d2", fontWeight: 500 }}>
+                  <Add /> {option.name.replace("Add: ", "")}
+                </span>
+              ) : (
+                option?.name
+              )}
+            </li>
+          )}
+        />
+      )}
 
       {error && (
         <Alert severity="error" sx={{ mt: 1, fontSize: 14 }}>
