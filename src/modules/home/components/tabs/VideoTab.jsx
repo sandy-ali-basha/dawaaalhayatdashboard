@@ -9,10 +9,20 @@ import {
 } from "@mui/material";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 
+import ChangeStatus from "modules/home/pages/slider/ChangeStatus";
+
 const VideoTab = ({ video, videoText, direction, onEdit }) => (
   <Card sx={{ mt: 3 }}>
     <CardContent>
-      <Typography variant="h6">Video Section</Typography>
+      <Box sx={{ display: "flex" }}>
+        <Typography variant="h6">Video Section</Typography>
+        <ChangeStatus
+          id={"video"}
+          action={video.status === "active" && "change-status"}
+        >
+          {video.status === "Active" ? "Active" : "Not Active"}
+        </ChangeStatus>
+      </Box>
       <video width="100%" controls style={{ borderRadius: 8 }}>
         <source src={video?.video ?? ""} type="video/mp4" />
       </video>

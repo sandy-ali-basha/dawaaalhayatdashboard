@@ -8,12 +8,21 @@ import {
   Box,
 } from "@mui/material";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
+import ChangeStatus from "modules/home/pages/slider/ChangeStatus";
 
-const TextSectionTwoTab = ({ textSectionTwo, direction, onEdit }) => (
+const TextSectionTwoTab = ({ textSectionTwo, direction, onEdit }) =>
   textSectionTwo?.value && (
     <Card sx={{ mt: 3 }}>
       <CardContent>
-        <Typography variant="h6">Text Section Two</Typography>
+        <Box sx={{ display: "flex" }}>
+          <Typography variant="h6">Text Section Two</Typography>
+          <ChangeStatus
+            id={"textSectionTwo"}
+            action={textSectionTwo.status === "active" && "change-status"}
+          >
+            {textSectionTwo.status === "Active" ? "Active" : "Not Active"}
+          </ChangeStatus>
+        </Box>
         {["ar", "en", "kr"].map((lang) => (
           <Typography
             key={lang}
@@ -39,7 +48,6 @@ const TextSectionTwoTab = ({ textSectionTwo, direction, onEdit }) => (
         </IconButton>
       </CardContent>
     </Card>
-  )
-);
+  );
 
 export default TextSectionTwoTab;

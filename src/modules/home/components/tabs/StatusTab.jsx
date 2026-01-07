@@ -9,15 +9,22 @@ import {
   Tooltip,
 } from "@mui/material";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
+import ChangeStatus from "modules/home/pages/slider/ChangeStatus";
 
-const StatusTab = ({ status, t, direction, onEdit }) => (
+const StatusTab = ({ status, t, direction, onEdit }) =>
   status?.value && (
     <Card sx={{ mt: 3 }}>
       <CardContent>
+      <Box sx={{display:'flex'}}>
         <Typography variant="h6">Status Section</Typography>
+        <ChangeStatus id={"status"} action={status.status === "active" && "change-status"}>
+          {status.status === "Active" ? "Active" : "Not Active"}
+        </ChangeStatus>
+      </Box>
         <Typography variant="subtitle2" color="text.secondary">
           Multi-language Titles and Info
         </Typography>
+
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2}>
             {["ar", "en", "kr"].map((lang) => (
@@ -29,10 +36,18 @@ const StatusTab = ({ status, t, direction, onEdit }) => (
                     ? "English"
                     : "Kurdish"}
                 </Typography>
-                <Typography>{status?.value?.[lang]?.title1 ?? "N/A"}</Typography>
-                <Typography>{status?.value?.[lang]?.subtitle1 ?? "N/A"}</Typography>
-                <Typography>{status?.value?.[lang]?.title2 ?? "N/A"}</Typography>
-                <Typography>{status?.value?.[lang]?.subtitle2 ?? "N/A"}</Typography>
+                <Typography>
+                  {status?.value?.[lang]?.title1 ?? "N/A"}
+                </Typography>
+                <Typography>
+                  {status?.value?.[lang]?.subtitle1 ?? "N/A"}
+                </Typography>
+                <Typography>
+                  {status?.value?.[lang]?.title2 ?? "N/A"}
+                </Typography>
+                <Typography>
+                  {status?.value?.[lang]?.subtitle2 ?? "N/A"}
+                </Typography>
               </Grid>
             ))}
           </Grid>
@@ -44,7 +59,6 @@ const StatusTab = ({ status, t, direction, onEdit }) => (
         </IconButton>
       </CardContent>
     </Card>
-  )
-);
+  );
 
 export default StatusTab;

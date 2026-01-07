@@ -9,17 +9,26 @@ import {
   Link,
 } from "@mui/material";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
+import ChangeStatus from "modules/home/pages/slider/ChangeStatus";
 
-const CtaTab = ({ cta, direction, onEdit }) => (
+const CtaTab = ({ cta, direction, onEdit }) =>
   cta?.value && (
     <Card sx={{ mt: 3 }}>
       <CardContent>
-        <IconButton onClick={() => onEdit(cta)}>
-          <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-            <ModeTwoToneIcon sx={{ color: "text.main" }} />
-          </Tooltip>
-        </IconButton>
-        <Typography variant="h6">Call To Action</Typography>
+        <Box sx={{ display: "flex" }}>
+          <IconButton onClick={() => onEdit(cta)}>
+            <Typography variant="h6">Call To Action</Typography>
+            <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+              <ModeTwoToneIcon sx={{ color: "text.main" }} />
+            </Tooltip>
+          </IconButton>
+          <ChangeStatus
+            id={"cta"}
+            action={cta.status === "active" && "change-status"}
+          >
+            {cta.status === "Active" ? "Active" : "Not Active"}
+          </ChangeStatus>
+        </Box>
         <Box sx={{ my: 2 }}>
           {["ar", "en", "kr"].map((lang) => (
             <Typography key={lang}>
@@ -38,7 +47,6 @@ const CtaTab = ({ cta, direction, onEdit }) => (
         </Link>
       </CardContent>
     </Card>
-  )
-);
+  );
 
 export default CtaTab;

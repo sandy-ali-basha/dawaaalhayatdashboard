@@ -15,7 +15,6 @@ import {
   TextField,
 } from "@mui/material";
 import {
-  DeleteOutline,
   ModeEditTwoTone,
   LanguageOutlined,
   LinkOutlined,
@@ -27,6 +26,7 @@ import Loader from "components/shared/Loader";
 import { useHomeSlides } from "hooks/home/useHomeSlides";
 import { useNavigate } from "react-router-dom";
 import DeleteSlide from "modules/home/components/DeleteSlide";
+import ChangeStatus from "./ChangeStatus";
 
 const SlidesView = () => {
   const [direction] = settingsStore((state) => [state.direction]);
@@ -61,6 +61,12 @@ const SlidesView = () => {
         <Typography variant="h5" fontWeight="bold" color="text.main" mb={1}>
           Slides Overview
         </Typography>
+        <ChangeStatus
+          action={slides.status === "active" && "change-status"}
+          id="slides"
+        >
+          {slides.status === "Active" ? "Active" : "Not Active"}
+        </ChangeStatus>
         <Tooltip title="Add Slider">
           <IconButton variant="outlined" onClick={() => navigate("addslider")}>
             <AddHomeOutlined sx={{ color: "warning.main", mr: 1 }} />

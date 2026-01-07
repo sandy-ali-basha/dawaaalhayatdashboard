@@ -48,4 +48,8 @@ export const _Home = {
     _axios
       .post("home_page/item/update/" + editedID, formData)
       .then((res) => res?.data),
+  reorderSections: ({ sections }) =>
+    _axios
+      .post("home_page/reorder", sections)
+      .then((res) => res?.data),
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Skeleton } from "@mui/material";
+import { Box, Typography, Skeleton, Button } from "@mui/material";
 import { useHome } from "hooks/home/useHome";
 import { settingsStore } from "store/settingsStore";
 import Loader from "components/shared/Loader";
@@ -22,6 +22,7 @@ import TextSectionOneUpdate from "../components/TextSectionUpdate";
 import TextSectionTwoUpdate from "../components/TextSectionTowUpdate";
 import VideoUpdate from "../components/VedioUpdate";
 import HomeSection from "../components/tabs/HomeSection";
+import SortHomeSectionsDialog from "../components/SortHomeSectionsDialog";
 
 const HomeIndex = () => {
   const { data, isLoading } = useHome();
@@ -32,6 +33,7 @@ const HomeIndex = () => {
 
   const [editSection, setEditSection] = useState(null);
   const [tabValue, setTabValue] = useState(0);
+  const [sortOpen, setSortOpen] = useState(true);
 
   useEffect(() => {
     _Home
@@ -143,12 +145,27 @@ const HomeIndex = () => {
   return (
     <Box p={3}>
       {renderUpdateModal()}
-      <Typography
-        variant="h5"
-        sx={{ color: "text.main", fontWeight: "bold", mb: 2 }}
-      >
-        Home Page Management
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h5" fontWeight="bold">
+          Home Page Management
+        </Typography>
+
+        <Button variant="outlined" onClick={() => setSortOpen(true)}>
+          Sort Sections
+        </Button>
+      </Box>
+
+      <SortHomeSectionsDialog
+        open={sortOpen}
+        onClose={() => setSortOpen(false)}
+        sections={sections}
+        onSaved={() => {
+          queryClient.invalidateQueries("home");
+          _Home
+            .getAllSections()
+            .then((res) => setSections(res?.home_sections || []));
+        }}
+      />
 
       <TabsNavigation
         tabValue={tabValue}

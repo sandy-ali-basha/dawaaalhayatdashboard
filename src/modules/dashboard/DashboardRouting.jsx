@@ -23,6 +23,8 @@ import CustomersRouting from "modules/customers/CustomersRouting";
 import RegionsRouting from "modules/regions/RegionsRouting";
 import InvintoryRouting from "modules/invintory/InvintoryRouting";
 import CurrenciesRouting from "modules/currencies/CurrenciesRouting";
+import ContactusRouting from "modules/contactus/ContactusRouting";
+import AboutusRouting from "modules/aboutuS/AboutusRouting";
 
 const DashboardRouting = () => {
   return (
@@ -56,6 +58,9 @@ const DashboardRouting = () => {
             // eslint-disable-next-line react/jsx-pascal-case
             element={<Product_attributesRouting />}
           />
+          <Route path="/home/*" element={<HomeRouting />} />
+          <Route path="/contactus/*" element={<ContactusRouting />} />
+          <Route path="/aboutus/*" element={<AboutusRouting />} />
           <Route path="/home/*" element={<HomeRouting />} />
           <Route path="/settings/*" element={<SettingsRouting />} />
           <Route path="/currencies/*" element={<CurrenciesRouting />} />

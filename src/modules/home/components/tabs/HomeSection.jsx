@@ -16,6 +16,7 @@ import { AddHomeOutlined, Edit } from "@mui/icons-material";
 import { useHomeSection } from "hooks/home/useHomeSection";
 import { useNavigate } from "react-router-dom";
 import DeleteItem from "../item/DeleteItem";
+import ChangeStatus from "modules/home/pages/slider/ChangeStatus";
 
 const HomeSection = ({ id }) => {
   const { data: section, isLoading } = useHomeSection(id);
@@ -64,6 +65,13 @@ const HomeSection = ({ id }) => {
       {editedID && (
         <HomeUpdate id={editedID} type={type} setHome_section_id={id} />
       )}
+      
+      <ChangeStatus
+        id={id}
+        action={section.status === "active" && "change-status"}
+      >
+        {section.status === "Active" ? "Active" : "Not Active"}
+      </ChangeStatus>
 
       {id === 4 && (
         <>
@@ -93,7 +101,7 @@ const HomeSection = ({ id }) => {
                   </Tooltip>
                 </IconButton>
               )}
-              
+
               <CardMedia
                 component="img"
                 height="200"

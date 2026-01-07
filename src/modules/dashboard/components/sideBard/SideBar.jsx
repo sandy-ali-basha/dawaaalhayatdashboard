@@ -12,6 +12,7 @@ import {
   AdminPanelSettingsOutlined,
   BookmarkOutlined,
   CategoryOutlined,
+  ContactSupportOutlined,
   CurrencyBitcoinOutlined,
   DiscountOutlined,
   GavelOutlined,
@@ -130,6 +131,16 @@ const SideBar = ({ open, setOpen }) => {
       link: "/dashboard/customers",
       icon: <HomeOutlined color={"secondary.main"} />,
     },
+    {
+      name: t("about us"),
+      link: "/dashboard/aboutus",
+      icon: <HomeOutlined color={"secondary.main"} />,
+    },
+    {
+      name: t("contact us "),
+      link: "/dashboard/contactus",
+      icon: <ContactSupportOutlined color={"secondary.main"} />,
+    },
   ];
   const website_admin = [
     {
@@ -159,6 +170,16 @@ const SideBar = ({ open, setOpen }) => {
       name: t("Home"),
       link: "/dashboard/home",
       icon: <HomeOutlined color={"secondary.main"} />,
+    },
+    {
+      name: t("about us"),
+      link: "/dashboard/aboutus",
+      icon: <HomeOutlined color={"secondary.main"} />,
+    },
+    {
+      name: t("contact us "),
+      link: "/dashboard/contactus",
+      icon: <ContactSupportOutlined color={"secondary.main"} />,
     },
   ];
   const orders_admin = [
