@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Typography,
   Box,
   TableRow,
   TableCell,
@@ -22,7 +21,7 @@ import { ImageOutlined } from "@mui/icons-material";
 // COMPONENT FOR EACH PRODUCT ROW
 function ProductRow({ product }) {
   const [open, setOpen] = useState(false);
-  console.log(`product in ProductRow:`, product);
+  
   return (
     <>
       {/* ---------- PRODUCT ROW ---------- */}
@@ -40,7 +39,7 @@ function ProductRow({ product }) {
         </TableCell>
 
         <TableCell>{product.id}</TableCell>
-        <TableCell>{product.name}</TableCell>
+        <TableCell>{product?.name?.en||"-"}</TableCell>
         <TableCell>{product.sku}</TableCell>
         <TableCell>{product.brand?.name ?? "-"}</TableCell>
         <TableCell>{product.product_type?.name ?? "-"}</TableCell>

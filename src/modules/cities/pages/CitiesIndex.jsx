@@ -18,7 +18,6 @@ import {
 } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useCities } from "hooks/cities/useCities";
-import { colorStore } from "store/ColorsStore";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Loader from "components/shared/Loader";
@@ -34,11 +33,7 @@ const CitiesIndex = () => {
   const [open, setOpen] = useState(false);
   const Navigate = useNavigate();
 
-  const [prev_shipping_price, setPrev_shipping_price] = useState(null);
-  const [editedID, setEditedID] = colorStore((state) => [
-    state.editedID,
-    state.setEditedID,
-  ]);
+  const [prev_data, setPrev_data] = useState(null);
 
   const [InvData, setInvData] = InvStore((state) => [
     state.InvData,
@@ -49,11 +44,10 @@ const CitiesIndex = () => {
 
   const handleEdit = useCallback(
     (city, id) => {
-      setPrev_shipping_price(city);
+      setPrev_data(city);
       setOpen(true);
-      setEditedID(id);
     },
-    [setPrev_shipping_price, setEditedID]
+    [setPrev_data]
   );
 
   const handleViewInv = useCallback(
@@ -173,12 +167,13 @@ const CitiesIndex = () => {
       ),
     },
   ];
-  console.log("open", open);
+
   return (
     <>
       {isLoading && <Loader />}
       <CitiesUpdate
-        old_data={prev_shipping_price}
+        oldData={prev_data}
+        setOldData={setPrev_data}
         open={open}
         setOpen={setOpen}
       />

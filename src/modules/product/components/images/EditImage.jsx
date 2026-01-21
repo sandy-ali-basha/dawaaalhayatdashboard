@@ -24,28 +24,18 @@ const SUPPORTED_FORMATS = [
 ];
 const MAX_FILE_SIZE = 1000000;
 
-const EditImage = ({ open, setOpen, link, status, isProductCreate }) => {
+const EditImage = ({ open, setOpen, link, status, isProductCreate, name }) => {
   const { t } = useTranslation("index");
   const schema = yup.object().shape({
-    features: yup
+    images: yup
       .mixed()
-      .test("File", t("image") + " " + t("is required"), (value) => {
-        return value && Array.isArray(value) && value.length > 0;
-      })
-      .test("fileSize", t("The file is too large"), (value) => {
-        return (
-          value &&
-          Array.isArray(value) &&
-          value.every((file) => file.size <= MAX_FILE_SIZE)
-        );
-      })
-      .test("fileFormat", t("Unsupported Format"), (value) => {
-        return (
-          value &&
-          Array.isArray(value) &&
-          value.every((file) => SUPPORTED_FORMATS.includes(file.type))
-        );
-      }),
+      .required(t("image") + " " + t("is required"))
+      .test("fileSize", t("The file is too large"), (value) =>
+        value?.every((file) => file.size <= MAX_FILE_SIZE),
+      )
+      .test("fileFormat", t("Unsupported Format"), (value) =>
+        value?.every((file) => SUPPORTED_FORMATS.includes(file.type)),
+      ),
   });
 
   const formOptions = { resolver: yupResolver(schema) };
@@ -53,7 +43,7 @@ const EditImage = ({ open, setOpen, link, status, isProductCreate }) => {
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
-
+  console.log("errors", errors);
   const { mutate } = useMutation((data) => createPost(data));
   console.log("link", link);
   async function createPost(data) {
@@ -68,7 +58,7 @@ const EditImage = ({ open, setOpen, link, status, isProductCreate }) => {
               handleDialogClose();
             }
             setLoading(false);
-          })
+          }),
       );
     } else {
       console.log("link is link");
@@ -95,13 +85,16 @@ const EditImage = ({ open, setOpen, link, status, isProductCreate }) => {
       const formData = new FormData();
       if (status === "add") {
         images.forEach((image, idx) =>
-          formData.append("images[" + idx + "]", image)
+          formData.append("images[" + idx + "]", image),
         );
-      } else formData.append("image", images[0]);
+      } else {
+        if (name) formData.append(name, images[0]);
+        else formData.append("image", images[0]);
+      }
       mutate(formData);
       setLoading(true);
     },
-    [images, mutate, status]
+    [images, mutate, name, setLoading, status],
   );
 
   const content = useMemo(() => {
@@ -116,9 +109,9 @@ const EditImage = ({ open, setOpen, link, status, isProductCreate }) => {
             errors={errors?.images?.message}
             control={control}
             register={register}
-            name={"features"}
+            name="images"
             setImage={setImages}
-            multiple={status === "add" ? true : false}
+            multiple={status === "add"}
           />
         </Grid>
         <DialogActions>

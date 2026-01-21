@@ -74,7 +74,6 @@ const ProductIndex = () => {
       comparePrice:
       product.compare_price > 0 ? product.compare_price : "no sale",
       status: product.status,
-      // purchasable: product.purchasable,
       actions: product,
     }));
   }, [filteredData]); // Dependency array

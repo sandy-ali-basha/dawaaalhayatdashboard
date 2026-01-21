@@ -5,6 +5,7 @@ import { BookmarkOutlined } from "@mui/icons-material";
 import VariantCard from "./VariantCard";
 import { useProductCreate } from "modules/product/hooks/useProductCreate";
 import { useProductOptions } from "modules/product/hooks/useProductOptions";
+import { ProductStore } from "store/productStore";
 
 const createEmptyVariant = () => ({
   sku: "",
@@ -17,13 +18,13 @@ const createEmptyVariant = () => ({
   cityData: {},
 });
 
-const VariantsRepeater = ({
-  selectedCities,
-  productData,
-  setSubmitFunction,
-}) => {
+const VariantsRepeater = ({ selectedCities, setSubmitFunction }) => {
+  const productData = ProductStore((s) => s.stepData.basicInfo);
+  const storedVariants = ProductStore((s) => s.stepData.variants);
+  const setVariantsStore = ProductStore((s) => s.setVariants);
   const { addNewFlavor, addNewPacking, cities, hanldeCreate, loading } =
     useProductCreate();
+
   const { flavorsIsLoading, packingsIsLoading, flavors, packings } =
     useProductOptions();
 
@@ -36,6 +37,12 @@ const VariantsRepeater = ({
   const handleRemoveVariant = (index) => {
     setVariants((prev) => prev.filter((_, i) => i !== index));
   };
+
+  useEffect(() => {
+    if (storedVariants?.length) {
+      setVariants(storedVariants);
+    }
+  }, [storedVariants]);
 
   // Build full options payload
   const buildOptionsPayload = useCallback(() => {
@@ -72,6 +79,8 @@ const VariantsRepeater = ({
   }, [variants]);
 
   const handleSaveVariants = useCallback(() => {
+    setVariantsStore(variants); // 👈 مهم جدًا
+
     const options = buildOptionsPayload();
     const payload = {
       ...productData,
@@ -79,7 +88,13 @@ const VariantsRepeater = ({
     };
 
     hanldeCreate(payload);
-  }, [productData, buildOptionsPayload, hanldeCreate]);
+  }, [
+    variants,
+    productData,
+    buildOptionsPayload,
+    hanldeCreate,
+    setVariantsStore,
+  ]);
 
   // expose the save function to parent — register latest handler whenever it changes
   useEffect(() => {

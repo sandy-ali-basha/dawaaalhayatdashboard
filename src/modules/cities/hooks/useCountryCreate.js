@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
@@ -9,39 +8,42 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _Regions } from "api/regions/regions";
 
 const schema = yup.object().shape({
-    name: yup.string().required("Kurdish name is required"),
-})
+  name: yup.string().required("English Name is required"),
+  name_ar: yup.string().required("Arabic Name is required"),
+  name_kr: yup.string().required("Kurdish Name is required"),
+});
 
 export const useCountryCreate = () => {
-  const { t } = useTranslation("index")
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  const { t } = useTranslation("index");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState, setValue, control } = useForm(formOptions)
-  const { errors } = formState
-  const { mutate } = useMutation((data) => createPost(data))
+  const { register, handleSubmit, formState, setValue, control } =
+    useForm(formOptions);
+  const { errors } = formState;
+  const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
     _Regions
       .post(data, setLoading)
-      .then(res => {
-        if (res.code === 200) navigate(-1)
-        setLoading(true)
+      .then((res) => {
+        if (res.code === 200) navigate(-1);
+        setLoading(true);
       })
       .finally(() => {
-        setLoading(false)
-      })
+        setLoading(false);
+      });
   }
 
-  const handleCancel = () => navigate(-1)
+  const handleCancel = () => navigate(-1);
 
   const handleReset = () => {
-    const form = document.querySelector('form');
-    if (form) form.reset()
-  }
+    const form = document.querySelector("form");
+    if (form) form.reset();
+  };
 
   const hanldeCreate = (input) => {
-    const formData = new FormData()
+    const formData = new FormData();
     const inputWithoutBirthday = { ...input };
     delete inputWithoutBirthday.birthday;
     for (const [key, value] of Object.entries(inputWithoutBirthday)) {
@@ -49,15 +51,28 @@ export const useCountryCreate = () => {
     }
     mutate(formData);
     setLoading(true);
-  }
+  };
 
-
-  const details =[ {
-    head: t("name"),
-    type: "text",
-    placeholder: t("name"),
-    register: "name",
-  }]
+  const details = [
+    {
+      head: "Name English",
+      type: "text",
+      placeholder: "Name English",
+      register: "name",
+    },
+    {
+      head: "Name Arabic",
+      type: "text",
+      placeholder: "Name Arabic",
+      register: "name_ar",
+    },
+    {
+      head: "Name Kurdish",
+      type: "text",
+      placeholder: "Name Kurdish",
+      register: "name_kr",
+    },
+  ];
 
   return {
     handleCancel,
@@ -73,4 +88,3 @@ export const useCountryCreate = () => {
     control,
   };
 };
-

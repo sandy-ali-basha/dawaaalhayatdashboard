@@ -26,7 +26,8 @@ const InvintoryIndex = () => {
               Inventory Name
             </Typography>
             <Typography color="text.primary" variant="h6">
-              {InvData?.name ?? "-"}
+                          {InvData.name?.split(".").pop() || ""}
+              {/* {InvData?.name ?? "-"} */}
             </Typography>
           </BoxStyled>
         </Grid>

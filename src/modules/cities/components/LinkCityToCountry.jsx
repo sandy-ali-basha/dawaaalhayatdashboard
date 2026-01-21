@@ -54,7 +54,7 @@ const LinkCityToCountry = ({ openLink, setopenLink }) => {
   }, [editedID]);
 
   const handleClose = () => {
-    setopenLink(false)
+    setopenLink(false);
     setSelectedCities([]);
   };
 
@@ -68,7 +68,7 @@ const LinkCityToCountry = ({ openLink, setopenLink }) => {
   const handleSearch = (event, value) => {
     const query = value?.toLowerCase() || "";
     setFilteredCities(
-      cities.filter((city) => city.name.toLowerCase().includes(query))
+      cities.filter((city) => city.name.toLowerCase().includes(query)),
     );
   };
 
@@ -145,7 +145,7 @@ const LinkCityToCountry = ({ openLink, setopenLink }) => {
                   color="secondary"
                   onDelete={() =>
                     setSelectedCities((prev) =>
-                      prev.filter((c) => c.id !== city.id)
+                      prev.filter((c) => c.id !== city.id),
                     )
                   }
                 />
@@ -182,7 +182,7 @@ const LinkCityToCountry = ({ openLink, setopenLink }) => {
                             color: isSelected ? "secondary.main" : "text.main",
                           }}
                         >
-                          {city.name}
+                          {city.name?.split(".").pop()}
                         </Typography>
                         <Typography
                           variant="body2"

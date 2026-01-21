@@ -16,9 +16,7 @@ const AboutusCreate = () => {
     loading,
     t,
     errors,
-    details,
-  } = useAboutusCreate()
-
+  } = useAboutusCreate();
 
   return (
     <Box>
@@ -28,26 +26,43 @@ const AboutusCreate = () => {
       </Typography>
       <BoxStyled sx={{ px: "24px" }}>
         <Box component="form">
-          <Grid  container spacing={2}>
-            {/* * //details */}
-            {details.map((item, index) => (
-              <Grid item key={index} xs={6} sx={{ p: "10px" }}>
-                <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography  variant="body1" color="text.main">{item.head}</Typography>
-                </Box>
-                <TextFieldStyled
-                  sx={{ width: "100%" }}
-                  type={item.type}
-                  placeholder={item.placeholder}
-                  name={item.name}
-                  {...register(item.register)}
-                  error={errors[item.error]?.message}
-                  helperText={errors[item.helperText]?.message || ""}
-                />
-              </Grid>
-            ))}
+          <Grid container spacing={2}>
+            <Grid item lg="12">
+              {/* * //details */}
 
-          
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  Name
+                </Typography>
+              </Box>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"text"}
+                placeholder={"Name"}
+                name="name"
+                {...register("name")}
+                error={errors.name?.message}
+                helperText={errors.name?.message || ""}
+              />
+            </Grid>
+            <Grid item lg="12">
+              {/* * //details */}
+
+              <Box sx={{ margin: "0 0 8px 5px" }}>
+                <Typography variant="body1" color="text.main">
+                  Image
+                </Typography>
+              </Box>
+              <TextFieldStyled
+                sx={{ width: "100%" }}
+                type={"file"}
+                placeholder={"image"}
+                name="image"
+                {...register("logo_url")}
+                error={errors.logo_url?.message}
+                helperText={errors.logo_url?.message || ""}
+              />
+            </Grid>
           </Grid>
         </Box>
 
@@ -73,19 +88,16 @@ const AboutusCreate = () => {
           >
             {t("Cancel")}
           </Button>
-          <ButtonAction
-            name={t("Reset")}
-            onClick={handleReset}
-            type="reset"
-          />
-          <ButtonLoader name={t("Submit")}
-          onClick={() => handleSubmit(hanldeCreate)()}
-          type="submit"
-          loading={loading}
-          disableOnLoading
-        >
-          {t("Submit")}
-        </ButtonLoader>
+          <ButtonAction name={t("Reset")} onClick={handleReset} type="reset" />
+          <ButtonLoader
+            name={t("Submit")}
+            onClick={() => handleSubmit(hanldeCreate)()}
+            type="submit"
+            loading={loading}
+            disableOnLoading
+          >
+            {t("Submit")}
+          </ButtonLoader>
         </Box>
       </BoxStyled>
     </Box>

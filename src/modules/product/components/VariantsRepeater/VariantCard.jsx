@@ -30,12 +30,14 @@ const VariantCard = ({
   flavorsIsLoading,
   packingsIsLoading,
 }) => {
+  
   // Update top-level variant
   const handleChange = (field, value) => {
     const updated = [...variants];
     updated[index] = { ...updated[index], [field]: value };
     setVariants(updated);
   };
+
   const copyFirstCityToAll = () => {
     const updated = [...variants];
     const variantData = updated[index];
@@ -244,7 +246,7 @@ const VariantCard = ({
         <Grid item xs={12} md={6}>
           <PackingAutocomplete
             value={
-              packings.data.product_options_values?.find((p) => p.id === variant.option_value_ids?.[1]) ||
+              packings?.data?.product_options_values?.find((p) => p.id === variant.option_value_ids?.[1]) ||
               null
             }
             packings={packings}

@@ -23,7 +23,6 @@ import ProductdetailsCreate from "../ProductDetails/pages/ProductdetailsCreate";
 
 const ProductCreate = () => {
   const [selectedCities, setSelectedCities] = useState([]);
-  const [productData, setProductData] = useState(null);
   const [basicInfoSubmit, setBasicInfoSubmit] = useState(null); // 👈 store submit fn
   const [variantsSubmit, setVariantsSubmit] = useState(null);
   const newProductId = ProductStore((state) => state.newProductId);
@@ -31,6 +30,8 @@ const ProductCreate = () => {
     state.activeStep,
     state.setActiveStep,
   ]);
+  const setBasicInfoStore = ProductStore((s) => s.setBasicInfo);
+  const setCitiesStore = ProductStore((s) => s.setSelectedCities);
 
   const steps = ["Basic Info", "Variants", "Images", "Categories & Features"];
   const Navigate = useNavigate();
@@ -88,14 +89,17 @@ const ProductCreate = () => {
           <Grid item xs={12}>
             <PricesAndCountries
               selectedCities={selectedCities}
-              setSelectedCities={setSelectedCities}
+              setSelectedCities={(cities) => {
+                setSelectedCities(cities);
+                setCitiesStore(cities); // 👈 تخزين
+              }}
             />
             <BasicInfo
               onNext={(data) => {
-                setProductData(data);
-                setActiveStep(1); // move to next step after successful save
+                setBasicInfoStore(data); // 👈 تخزين
+                setActiveStep(1);
               }}
-              setSubmitFunction={setBasicInfoSubmit} // 👈 pass setter here
+              setSubmitFunction={setBasicInfoSubmit}
             />
           </Grid>
         )}
@@ -104,7 +108,6 @@ const ProductCreate = () => {
           <Grid item xs={12}>
             <BoxStyled sx={{ my: 2 }}>
               <VariantsRepeater
-                productData={productData}
                 selectedCities={selectedCities}
                 setSubmitFunction={setVariantsSubmit} // 👈 link it
               />
@@ -161,7 +164,7 @@ const ProductCreate = () => {
             color="primary"
             onClick={() => handleNext()}
           >
-            Next
+         Next
           </Button>
         ) : (
           <Button

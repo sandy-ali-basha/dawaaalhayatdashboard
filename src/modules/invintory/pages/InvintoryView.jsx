@@ -14,7 +14,7 @@ const InventoryView = () => {
   const [direction] = settingsStore((state) => [state.direction]);
   const params = useParams();
   const navigate = useNavigate();
-
+  
   const handleBack = (e) => {
     e.preventDefault();
     navigate(-1);
@@ -57,7 +57,7 @@ const InventoryView = () => {
             }}
             variant="h5"
           >
-            {data.name}
+            {data?.name?.en}
           </Typography>
 
           {/* Inventory Details Card */}
@@ -97,7 +97,7 @@ const InventoryView = () => {
             <Box
               sx={{ backgroundColor: "card.main", borderRadius: "10px", p: 2 }}
             >
-              {data.Products.products.map((product) => (
+              {data?.Products?.products.map((product) => (
                 <Box
                   key={product.id}
                   sx={{
@@ -108,7 +108,7 @@ const InventoryView = () => {
                 >
                   {/* Product Title */}
                   <Typography variant="h6" sx={{ mb: 1 }}>
-                    {product.name}
+                    {product?.name?.en || "-"}
                   </Typography>
 
                   {/* Product + Variant Table */}

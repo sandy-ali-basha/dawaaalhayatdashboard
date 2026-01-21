@@ -1,4 +1,4 @@
-import React, {  useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Typography,
   Box,
@@ -19,6 +19,7 @@ import { useProductCreate } from "../../hooks/useProductCreate";
 import EditorInput from "components/shared/EditorInput";
 import { DescriptionOutlined, InfoOutlined } from "@mui/icons-material";
 import DensityCalculator from "../../components/DensityCalculator";
+import { ProductStore } from "store/productStore";
 
 const BasicInfo = ({ onNext, setSubmitFunction }) => {
   const {
@@ -35,9 +36,18 @@ const BasicInfo = ({ onNext, setSubmitFunction }) => {
     setValue,
     watch,
   } = useProductCreate();
+  
+  const basicInfo = ProductStore((s) => s.stepData.basicInfo);
 
   const submitRef = useRef(null);
 
+  useEffect(() => {
+    if (basicInfo) {
+      Object.entries(basicInfo).forEach(([key, value]) => {
+        setValue(key, value);
+      });
+    }
+  }, [basicInfo, setValue]);
   // Build submit function only when handleSubmit/onNext change
   useEffect(() => {
     submitRef.current = handleSubmit((data) => onNext(data));

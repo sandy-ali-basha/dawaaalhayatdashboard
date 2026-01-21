@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -23,34 +23,51 @@ const schema = yup.object().shape({
   currency_id: yup.string().required("currency is required"),
 });
 
-const CitiesUpdate = ({ old_data, open, setOpen }) => {
-
+const CitiesUpdate = ({ setOldData, oldData, open, setOpen }) => {
   const { t } = useTranslation("index");
-  const [editedID, setEditedID] = colorStore((state) => [
-    state.editedID,
-    state.setEditedID,
-  ]);
-  const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
-  const { errors } = formState;
 
+ const formOptions = { 
+  resolver: yupResolver(schema),
+  defaultValues: {
+    name: oldData?.name || "",
+    inv_name: oldData?.inv || "", // note: oldData?.inv was used, not inv_name
+    shipping_price: oldData?.shipping_price || "",
+    currency_id: oldData?.currency_id || "",
+  }
+};
+const { register, handleSubmit, formState, reset } = useForm(formOptions);
+useEffect(() => {
+  if (oldData) {
+    reset({
+      name: oldData?.name || "",
+      inv_name: oldData?.inv || "",
+      shipping_price: oldData?.shipping_price || "",
+      currency_id: oldData?.currency_id || "",
+    });
+  }
+}, [oldData, reset]);
+
+  const { errors } = formState;
+  console.log("oldData in CitiesUpdate:", oldData);
   const [loading, setLoading] = useState(false);
   const { data: currencies } = useCurrencies();
 
   const handleClose = () => {
     setOpen(false);
-    setEditedID(null);
+    setOldData(null);
   };
 
   const { mutate } = useMutation((data) => createPost(data));
+
   const queryClient = useQueryClient();
+
   async function createPost(data) {
     _cities
       .update({
         formData: {
           data: [
             {
-              id: old_data?.id,
+              id: oldData?.id,
               name: data?.name,
               inv_name: data?.inv_name,
               shipping_price: data?.shipping_price,
@@ -93,11 +110,11 @@ const CitiesUpdate = ({ old_data, open, setOpen }) => {
                 sx={{ width: "100%" }}
                 type={"text"}
                 placeholder={"name"}
-                defaultValue={old_data?.name}
+                defaultValue={oldData?.name}
                 name={"name"}
                 {...register("name")}
                 error={!!errors?.name}
-                helperText={errors?.message?.message || ""}
+                helperText={errors?.name?.message || ""}
               />
             </Grid>
 
@@ -111,11 +128,11 @@ const CitiesUpdate = ({ old_data, open, setOpen }) => {
                 sx={{ width: "100%" }}
                 type={"text"}
                 placeholder={"inv_name"}
-                defaultValue={old_data?.inv}
+                defaultValue={oldData?.inv}
                 name={"inv_name"}
                 {...register("inv_name")}
                 error={!!errors?.inv_name}
-                helperText={errors?.message?.inv_name || ""}
+                helperText={errors?.inv_name?.inv_name || ""}
               />
             </Grid>
             <Grid item md={6} sx={{ p: "10px" }}>
@@ -128,11 +145,11 @@ const CitiesUpdate = ({ old_data, open, setOpen }) => {
                 sx={{ width: "100%" }}
                 type={"number"}
                 placeholder={"shipping price"}
-                defaultValue={old_data?.shipping_price}
+                defaultValue={oldData?.shipping_price}
                 name={"shipping_price"}
                 {...register("shipping_price")}
                 error={!!errors?.shipping_price}
-                helperText={errors?.message?.shipping_price || ""}
+                helperText={errors?.shipping_price?.message || ""}
               />
             </Grid>
             <Grid item md={6} sx={{ p: "10px" }}>
@@ -145,7 +162,7 @@ const CitiesUpdate = ({ old_data, open, setOpen }) => {
               <TextFieldStyled
                 select
                 sx={{ width: "100%" }}
-                defaultValue={old_data?.currency_id || ""}
+                defaultValue={oldData?.currency_id || ""}
                 name="currency_id"
                 {...register("currency_id")}
                 error={!!errors?.currency_id}

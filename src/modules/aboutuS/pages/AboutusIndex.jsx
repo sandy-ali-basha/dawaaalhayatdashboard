@@ -18,8 +18,9 @@ import Loader from "components/shared/Loader";
 import AboutusUpdate from "./AboutusUpdate";
 import { useAboutus, usePartners } from "hooks/aboutus/useAboutus";
 import EditImage from "modules/product/components/images/EditImage";
+import { AddAPhoto } from "@mui/icons-material";
 const { REACT_APP_API_URL } = process.env;
-  
+
 const AboutusIndex = () => {
   const { t } = useTranslation("index");
   const [open, setOpen] = useState(false);
@@ -69,12 +70,13 @@ const AboutusIndex = () => {
         {/* Cards */}
         <Grid container spacing={3}>
           {data?.data?.map((aboutus) => (
-            <Grid item xs={12} md={6} lg={4} key={aboutus.id}>
+            <Grid item xs={12} md={6} lg={6} key={aboutus.id}>
               <Card
                 sx={{
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",
+                  boxShadow: 3,
                 }}
               >
                 <CardContent>
@@ -116,18 +118,26 @@ const AboutusIndex = () => {
             </Grid>
           ))}
         </Grid>
-        <Typography
-          color="text.primary"
-          variant="h5"
-          sx={{ color: "text.main" }}
-        >
-          Partners
-        </Typography>
+        <Box sx={{ display: "flex", my: 2 }}>
+          <Typography
+            color="text.primary"
+            variant="h5"
+            sx={{ color: "text.main" }}
+          >
+            Partners
+          </Typography>
+          <IconButton href="aboutus/create">
+            <Tooltip title={"add Partner"}>
+              <AddAPhoto />
+            </Tooltip>
+          </IconButton>
+        </Box>
         <EditImage
           open={open}
           setOpen={setOpen}
           link={"about/partners/" + partnerId}
-        />
+          name={"logo_url"}
+        />  
         <Grid container spacing={3}>
           {partners?.data?.map((partner) => (
             <Grid item xs={12} md={6} lg={4} key={partner.id}>
@@ -136,6 +146,7 @@ const AboutusIndex = () => {
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",
+                  boxShadow: 3,
                 }}
               >
                 <CardContent>
