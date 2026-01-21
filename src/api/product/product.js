@@ -43,12 +43,5 @@ export const _Product = {
     _axios.post("/attribute/" + editedID, formData).then((res) => res?.data),
   addDetails: ({ editedID, formData }) =>
     _axios.post("/accordion/" + editedID, formData).then((res) => res?.data),
-  //FLAVOR ID IS 10 IN DATABASE
-  flavors: () => _axios.get("/product_options/value/10").then((res) => res.data),
-  AddFlavor: (data) =>
-    _axios.post("/product_options/value/10", data).then((res) => res?.data),
-// PACKING IS 11
-  packings: () => _axios.get("/product_options/value/11").then((res) => res.data),
-  AddPacking: (data) =>
-    _axios.post("/product_options/value/11", data).then((res) => res?.data),
+
 };

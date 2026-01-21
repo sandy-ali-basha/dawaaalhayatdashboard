@@ -61,12 +61,7 @@ const SlidesView = () => {
         <Typography variant="h5" fontWeight="bold" color="text.main" mb={1}>
           Slides Overview
         </Typography>
-        <ChangeStatus
-          action={slides.status === "active" && "change-status"}
-          id="slides"
-        >
-          {slides.status === "Active" ? "Active" : "Not Active"}
-        </ChangeStatus>
+
         <Tooltip title="Add Slider">
           <IconButton variant="outlined" onClick={() => navigate("addslider")}>
             <AddHomeOutlined sx={{ color: "warning.main", mr: 1 }} />

@@ -14,8 +14,9 @@ const SUPPORTED_FORMATS = [
   "image/webp",
   "image/svg",
   "image/gif",
+  "video/*",
 ];
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 2MB
 
 // Validation schema for single item form
 const schema = yup.object().shape({
@@ -32,9 +33,6 @@ const schema = yup.object().shape({
     .test("fileSize", "File too large", (value) => {
       return value && value[0]?.size <= MAX_FILE_SIZE;
     })
-    .test("fileFormat", "Unsupported Format", (value) => {
-      return value && SUPPORTED_FORMATS.includes(value[0]?.type);
-    }),
 });
 
 export const useHomeCreateItem = () => {

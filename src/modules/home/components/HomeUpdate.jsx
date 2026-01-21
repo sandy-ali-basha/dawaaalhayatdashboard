@@ -212,13 +212,13 @@ const hanldeUpdate = (input) => {
                   <img src={data?.image} alt="item" style={{ width: "100%" }} />
                 </Box>
                 <Typography variant="body1" color="initial" sx={{ mt: 2 }}>
-                  replace current image
+                  replace current Media
                 </Typography>
                 <Image
                   errors={errors?.image?.message}
                   control={control}
                   register={register}
-                  name={"image"}
+                  name={"Media"}
                   setImage={(file) => setImage(file)}
                   multiple={false}
                 />

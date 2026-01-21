@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import {
   Typography,
   Autocomplete,
@@ -9,48 +9,56 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import { _Product } from "api/product/product";
 import { Add } from "@mui/icons-material";
+import { _Product } from "api/product/product";
+import { _Product_options } from "api/product_options/product_options";
 
-const FlavorAutocomplete = ({ value, onChange }) => {
-  const [flavors, setFlavors] = useState([]);
-  const [loading, setLoading] = useState(false);
+const DEFAULT_FLAVOR_ID = 2;
+
+const FlavorAutocomplete = ({
+  flavors,
+  value,
+  onChange,
+  flavorsIsLoading,
+}) => {
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
-  const [isEnabled, setIsEnabled] = useState(false); // ← السويتش
+  const [isEnabled, setIsEnabled] = useState(false);
 
-  // Load flavors
-  const loadFlavors = async () => {
-    setLoading(true);
-    try {
-      const response = await _Product.flavors();
-      if (response.code === 200) {
-        setFlavors(response.data?.product_options_values || []);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  // 🔒 ensure default is set only once
+  const initializedRef = useRef(false);
 
+  const options = useMemo(
+    () => flavors?.data?.product_options_values || [],
+    [flavors?.data]
+  );
+
+  // 🎯 normalize value reference (important for MUI)
+  const normalizedValue = useMemo(() => {
+    if (!value) return null;
+    return options.find((o) => o.id === value.id) || null;
+  }, [value, options]);
+
+  // 🔥 set default flavor ONLY ONCE and ONLY when switch is OFF
   useEffect(() => {
-    loadFlavors();
-  }, []);
+    if (initializedRef.current) return;
+    if (isEnabled) return;
+    if (!options.length) return;
+    if (normalizedValue) return;
 
-  // 🔥 Switch OFF → set default ID = 2
-  useEffect(() => {
-    if (!isEnabled) {
-      const defaultFlavor = flavors.find((f) => f.id === 2);
-      if (defaultFlavor) onChange(defaultFlavor);
+    const defaultFlavor = options.find((f) => f.id === DEFAULT_FLAVOR_ID);
+    if (defaultFlavor) {
+      onChange(defaultFlavor);
+      initializedRef.current = true;
     }
-  }, [isEnabled, flavors]);
+  }, [isEnabled, options, normalizedValue, onChange]);
 
-  // Add new flavor
-  const addNewFlavor = async (flavorName) => {
-    if (!flavorName.trim()) return;
+  // ➕ add new flavor
+  const addNewFlavor = async (name) => {
+    if (!name.trim()) return;
 
-    // Already exists?
-    if (flavors.some((f) => f.name.toLowerCase() === flavorName.toLowerCase())) {
-      setError(`"${flavorName}" already exists`);
+    if (options.some((f) => f.name.toLowerCase() === name.toLowerCase())) {
+      setError(`"${name}" already exists`);
       return;
     }
 
@@ -58,29 +66,22 @@ const FlavorAutocomplete = ({ value, onChange }) => {
     setError("");
 
     try {
-      const res = await _Product.AddFlavor({
-        name: flavorName,
-        ar: { name: flavorName },
-        kr: { name: flavorName },
-        en: { name: flavorName },
+      const res = await _Product_options.AddFlavor({
+        name,
+        ar: { name },
+        kr: { name },
+        en: { name },
       });
 
       if (res.code !== 200 || !res.data?.id) {
-        setError("Failed to add flavor. Please try again.");
+        setError("Failed to add flavor.");
         return;
       }
 
-      const newId = res.data.id;
-
-      // Reload list
-      const reload = await _Product.flavors();
-      if (reload.code === 200) {
-        const updatedList = reload.data?.product_options_values || [];
-        setFlavors(updatedList);
-
-        const newFlavor = updatedList.find((f) => f.id === newId);
-        if (newFlavor) onChange(newFlavor);
-      }
+      const reload = await _Product_options.flavors();
+      const updated = reload.data?.product_options_values || [];
+      const newFlavor = updated.find((f) => f.id === res.data.id);
+      if (newFlavor) onChange(newFlavor);
     } catch {
       setError("Network error while adding flavor.");
     } finally {
@@ -88,47 +89,59 @@ const FlavorAutocomplete = ({ value, onChange }) => {
     }
   };
 
-  // 🔥 Hide ID=2 when switch = ON
-  const filteredFlavors = isEnabled
-    ? flavors.filter((f) => f.id !== 2)
-    : [];
+  // 🧹 filtered options when enabled
+  const filteredOptions = useMemo(() => {
+    return isEnabled
+      ? options.filter((f) => f.id !== DEFAULT_FLAVOR_ID)
+      : [];
+  }, [isEnabled, options]);
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Typography color="text.primary" variant="body1" sx={{ mb: 1 }}>
-        Flavor
-      </Typography>
+      {/* Header */}
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="body1">Flavor</Typography>
 
-      {/* Switch */}
-      <FormControlLabel
-        control={
-          <Switch
-            checked={isEnabled}
-            onChange={(e) => setIsEnabled(e.target.checked)}
-          />
-        }
-        label={isEnabled ? "ON (choose flavor)" : "OFF (default flavor)"}
-      />
+        <FormControlLabel
+          label={isEnabled ? "ON (choose flavor)" : "OFF (default flavor)"}
+          control={
+            <Switch
+              checked={isEnabled}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setIsEnabled(checked);
 
-      {/* Show autocomplete only when switch = ON */}
+                if (checked) {
+                  // 🔥 clear default so first click works
+                  onChange(null);
+                }
+              }}
+            />
+          }
+        />
+      </Box>
+
+      {/* Autocomplete */}
       {isEnabled && (
         <Autocomplete
           fullWidth
           freeSolo
-          loading={loading || adding}
-          options={filteredFlavors}
-          value={value || null}
-          getOptionLabel={(o) => (typeof o === "string" ? o : o?.name || "")}
+          value={normalizedValue}
+          options={filteredOptions}
+          loading={flavorsIsLoading || adding}
           isOptionEqualToValue={(a, b) => a?.id === b?.id}
-          filterOptions={(options, { inputValue }) => {
-            const filtered = options.filter((opt) =>
-              opt.name.toLowerCase().includes(inputValue.toLowerCase())
+          getOptionLabel={(o) =>
+            typeof o === "string" ? o : o?.name || ""
+          }
+          filterOptions={(opts, { inputValue }) => {
+            const filtered = opts.filter((o) =>
+              o.name.toLowerCase().includes(inputValue.toLowerCase())
             );
 
             if (
               inputValue &&
-              !options.some(
-                (opt) => opt.name.toLowerCase() === inputValue.toLowerCase()
+              !opts.some(
+                (o) => o.name.toLowerCase() === inputValue.toLowerCase()
               )
             ) {
               filtered.push({ id: null, name: `Add: ${inputValue}` });
@@ -144,7 +157,7 @@ const FlavorAutocomplete = ({ value, onChange }) => {
               return;
             }
 
-            if (newValue?.name?.startsWith("Add: ")) {
+            if (newValue.name?.startsWith("Add: ")) {
               addNewFlavor(newValue.name.replace("Add: ", "").trim());
               return;
             }
@@ -159,7 +172,7 @@ const FlavorAutocomplete = ({ value, onChange }) => {
                 ...params.InputProps,
                 endAdornment: (
                   <>
-                    {(loading || adding) && (
+                    {(flavorsIsLoading || adding) && (
                       <CircularProgress size={18} sx={{ mr: 1 }} />
                     )}
                     {params.InputProps.endAdornment}
@@ -170,12 +183,13 @@ const FlavorAutocomplete = ({ value, onChange }) => {
           )}
           renderOption={(props, option) => (
             <li {...props}>
-              {option?.name?.startsWith("Add: ") ? (
+              {option.name?.startsWith("Add: ") ? (
                 <span style={{ color: "#1976d2", fontWeight: 500 }}>
-                  <Add /> {option.name.replace("Add: ", "")}
+                  <Add fontSize="small" />{" "}
+                  {option.name.replace("Add: ", "")}
                 </span>
               ) : (
-                option?.name
+                option.name
               )}
             </li>
           )}

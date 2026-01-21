@@ -68,7 +68,7 @@ const ProductIndex = () => {
       select: product.id,
       id: product.id,
       image: product.images?.[0]?.image_path ?? "",
-      name: product.name ?? " ",
+      name: product.name.en ?? " ",
       sku: product.sku ?? " ",
       brand: product.brand ?? "",
       comparePrice:

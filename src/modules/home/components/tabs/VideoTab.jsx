@@ -17,15 +17,17 @@ const VideoTab = ({ video, videoText, direction, onEdit }) => (
       <Box sx={{ display: "flex" }}>
         <Typography variant="h6">Video Section</Typography>
         <ChangeStatus
+          type={19}
           id={"video"}
-          action={video.status === "active" && "change-status"}
         >
-          {video.status === "Active" ? "Active" : "Not Active"}
+          {video.status === "1" ? "Active" : "Not Active"}
         </ChangeStatus>
       </Box>
-      <video width="100%" controls style={{ borderRadius: 8 }}>
-        <source src={video?.video ?? ""} type="video/mp4" />
-      </video>
+      <Box sx={{ mt: 2, width: "50vw" }}>
+        <video width="100%" controls style={{ borderRadius: 8 }}>
+          <source src={video?.video ?? ""} type="video/mp4" />
+        </video>
+      </Box>
       {videoText?.value && (
         <Box sx={{ mt: 2 }}>
           {["ar", "en", "kr"].map((lang) => (

@@ -27,6 +27,8 @@ const VariantCard = ({
   addNewPacking,
   selectedCities,
   cities,
+  flavorsIsLoading,
+  packingsIsLoading,
 }) => {
   // Update top-level variant
   const handleChange = (field, value) => {
@@ -37,8 +39,8 @@ const VariantCard = ({
   const copyFirstCityToAll = () => {
     const updated = [...variants];
     const variantData = updated[index];
+    const cityIds = selectedCities?.map((id) => Number(id));
 
-    const cityIds = selectedCities.map((id) => Number(id));
     const firstCityId = cityIds[0];
 
     const source = variantData.cityData?.[firstCityId];
@@ -107,16 +109,21 @@ const VariantCard = ({
 
   // Option (flavor/packing)
   const handleOptionChange = (type, value) => {
+    if (!Array.isArray(variants)) return;
+
     const updated = [...variants];
-    const current = updated[index];
+    const current = updated[index] || {};
 
     const flavorId = current.option_value_ids?.[0] || null;
     const packingId = current.option_value_ids?.[1] || null;
 
-    updated[index].option_value_ids =
-      type === "flavor"
-        ? [value?.id || null, packingId]
-        : [flavorId, value?.id || null];
+    updated[index] = {
+      ...current,
+      option_value_ids:
+        type === "flavor"
+          ? [value?.id || null, packingId]
+          : [flavorId, value?.id || null],
+    };
 
     setVariants(updated);
   };
@@ -214,11 +221,9 @@ const VariantCard = ({
               <Add fontSize="small" /> Add
             </Button>
 
-            {variants.length > 1 && (
-              <IconButton color="error" onClick={onRemove}>
-                <Delete />
-              </IconButton>
-            )}
+            <IconButton color="error" onClick={onRemove}>
+              <Delete />
+            </IconButton>
           </Box>
         </Grid>
 
@@ -226,10 +231,12 @@ const VariantCard = ({
         <Grid item xs={12} md={6}>
           <FlavorAutocomplete
             value={
-              flavors?.find((f) => f.id === variant.option_value_ids?.[0]) ||
+              flavors?.data?.product_options_values?.find((f) => f.id === variant.option_value_ids?.[0]) ||
               null
             }
             onChange={(v) => handleOptionChange("flavor", v)}
+            flavors={flavors}
+            flavorsIsLoading={flavorsIsLoading}
           />
         </Grid>
 
@@ -237,12 +244,13 @@ const VariantCard = ({
         <Grid item xs={12} md={6}>
           <PackingAutocomplete
             value={
-              packings?.find((p) => p.id === variant.option_value_ids?.[1]) ||
+              packings.data.product_options_values?.find((p) => p.id === variant.option_value_ids?.[1]) ||
               null
             }
             packings={packings}
             addNewPacking={addNewPacking}
             onChange={(v) => handleOptionChange("packing", v)}
+            packingsIsLoading={packingsIsLoading}
           />
         </Grid>
 
@@ -287,7 +295,7 @@ const VariantCard = ({
                 Copy to all cities <CopyAll />
               </Button>
             </Box>
-            {selectedCities.map((cityId) => {
+            {selectedCities?.map((cityId) => {
               const city = cities?.state?.find((c) => c.id === cityId);
               const cityData = variant.cityData?.[cityId] || {};
 
@@ -311,7 +319,7 @@ const VariantCard = ({
                   </Typography>
 
                   <Grid container spacing={2}>
-                    {cityFields.map((field) => (
+                    {cityFields?.map((field) => (
                       <Grid item xs={12} sm={6} md={3} key={field.name}>
                         <Typography
                           color={"text.primary"}

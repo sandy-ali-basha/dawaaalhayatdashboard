@@ -2,12 +2,14 @@ import React from "react";
 import { Tabs, Tab } from "@mui/material";
 
 const TabsNavigation = ({ tabValue, handleTabChange, sections }) => (
+  
   <Tabs
     value={tabValue}
     onChange={handleTabChange}
     variant="scrollable"
     scrollButtons
     sx={{
+      width: "70vw",
       "& .MuiTabs-scrollButtons": {
         color: "text.main",
         "&.Mui-disabled": { opacity: 0.3 },
@@ -25,6 +27,7 @@ const TabsNavigation = ({ tabValue, handleTabChange, sections }) => (
       sections.map((section, index) => (
         <Tab label={section?.type} key={section.id} />
       ))}
+
   </Tabs>
 );
 

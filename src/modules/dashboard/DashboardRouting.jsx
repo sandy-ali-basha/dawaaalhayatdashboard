@@ -31,7 +31,7 @@ const DashboardRouting = () => {
     <Routes>
       {
         <Route element={<DashboardComponent />}>
-          <Route path="/" element={<DashboardIndex />} />
+          <Route path="/anylatics" element={<DashboardIndex />} />
           <Route path="/admin/*" element={<AdminRouting />} />
           <Route path="/service/*" element={<ServiceRouting />} />
           <Route path="/blog/*" element={<BlogRouting />} />

@@ -1,9 +1,10 @@
 import { _axios } from "interceptor/http-config";
 import { useQueryClient, useMutation } from "react-query";
-export const useChangeStatus = ({ status, id }) => {
+
+export const useChangeStatus = ({ status, id, type }) => {
   const queryClient = useQueryClient();
   return useMutation(
-    () => _axios.get('/home/change-status/'+ id),
+    () => _axios.post('/home/toggle-status/'+ id, { type: type }),
     {
       onMutate: async (id) => {
         await queryClient.cancelQueries(["home", true, 1, 10]);

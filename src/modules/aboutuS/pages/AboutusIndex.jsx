@@ -1,137 +1,172 @@
-
+import React, { useCallback, useState } from "react";
 import {
   Typography,
   Box,
-  TableRow,
-  TableCell,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
   IconButton,
   Tooltip,
-  Button,
+  Chip,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-
-import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo,useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
-import { settingsStore } from "store/settingsStore";
 import { useTranslation } from "react-i18next";
-import { Table } from "components/shared";
-import Loader from "components/shared/Loader";
+import { settingsStore } from "store/settingsStore";
 import { colorStore } from "store/ColorsStore";
-import ChangeStatus from "../components/ChangeStatus";
-import { useAboutus } from "hooks/aboutus/useAboutus";
+import Loader from "components/shared/Loader";
 import AboutusUpdate from "./AboutusUpdate";
-import DeleteDialog from "../components/Dialog";
-
+import { useAboutus, usePartners } from "hooks/aboutus/useAboutus";
+import EditImage from "modules/product/components/images/EditImage";
+const { REACT_APP_API_URL } = process.env;
+  
 const AboutusIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useAboutus();
-
-  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [partnerId, setPartnerId] = useState(false);
+  const { data, isLoading } = useAboutus();
+  const { data: partners, isLoading: partnerLoading } = usePartners();
   const [direction] = settingsStore((state) => [state.direction]);
 
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
     state.setEditedID,
   ]);
+  const handleEdit = useCallback((id) => setEditedID(id), [setEditedID]);
 
-  const columns = useMemo(() => {
-    return [
-      t("first name"),
-      t("status"),
-      t("operations"),
-    ];
-  }, [t]);
-  
-  const handleView = useCallback((id) => { navigate('view/' + id) }, [navigate])
-  const handleEdit = useCallback((id) => { setEditedID(id) }, [setEditedID])
-  
-
-  const rows = useMemo(() => {
-    return data?.aboutus?.map((aboutus, id) => (
-      <TableRow sx={{ height: "65px" }} key={aboutus.id} hover>
-        <TableCell sx={{ minWidth: 50 }}>{aboutus?.first_name ?? "Null"}</TableCell>
-        <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus
-            id={aboutus.id}
-            action={aboutus.status === "active" && "change-status"}
-          >
-            {aboutus.status === "Active" ? t("Active") : t("Not Active")}
-          </ChangeStatus>
-        </TableCell>
-        <TableCell
-          align="center"
-          sx={{
-            minWidth: 200,
-          }}
-        >
-          <IconButton onClick={() => handleEdit(aboutus?.id)}>
-            <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-              <ModeTwoToneIcon sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
-          <IconButton>
-            <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-              <DeleteDialog id={aboutus?.id} count={count} page={page} />
-            </Tooltip>
-          </IconButton>
-          <IconButton onClick={() => handleView(aboutus.id)}>
-            <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
-              <VisibilityTwoToneIcon color="primary" />
-            </Tooltip>
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    ));
-  },[data, count, direction, handleEdit, handleView, page,t]);
-
-  const handleCreate = () => navigate("create")
+  const handleUpdatePartner = useCallback(
+    (id) => {
+      setPartnerId(id);
+      setOpen(true);
+    },
+    [setPartnerId],
+  );
 
   return (
     <>
-      {isLoading && <Loader />}
+      {isLoading || (partnerLoading && <Loader />)}
       {editedID && <AboutusUpdate id={editedID} />}
 
-      <Box
-        sx={{
-          width: { sl: "300px" },
-          backgroundColor: { xs: "background.main" },
-          ml: { xs: "0px" },
-        }}
-      >
+      <Box>
+        {/* Header */}
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: "25px",
+            mb: 3,
           }}
         >
-          <Typography sx={{ color: "text.main" }} variant="h5">
+          <Typography
+            color="text.primary"
+            variant="h5"
+            sx={{ color: "text.main" }}
+          >
             {t("aboutus")}
           </Typography>
-
-          <Button
-            startIcon={<AddIcon />}
-            variant="contained"
-            color="secondary"
-            onClick={handleCreate}
-          >
-            {t("New aboutus")}
-          </Button>
         </Box>
 
-        <BoxStyled sx={{ px: "10px" }}>
-          <Table
-            columns={columns}
-            rows={rows}
-            page={page}
-            setPage={setPage}
-            count={Math.ceil(data?.pagination?.total / count)}
-          />
-        </BoxStyled>
+        {/* Cards */}
+        <Grid container spacing={3}>
+          {data?.data?.map((aboutus) => (
+            <Grid item xs={12} md={6} lg={4} key={aboutus.id}>
+              <Card
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <CardContent>
+                  <Typography color="text.primary" variant="h6" gutterBottom>
+                    {aboutus.title}
+                  </Typography>
+
+                  <Chip label={aboutus.section} size="small" sx={{ mb: 1 }} />
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                    dangerouslySetInnerHTML={{
+                      __html: aboutus.description,
+                    }}
+                  />
+                </CardContent>
+
+                <CardActions
+                  sx={{
+                    mt: "auto",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  {/* Edit */}
+                  <IconButton onClick={() => handleEdit(aboutus.about_us_id)}>
+                    <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                      <ModeTwoToneIcon />
+                    </Tooltip>
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+        <Typography
+          color="text.primary"
+          variant="h5"
+          sx={{ color: "text.main" }}
+        >
+          Partners
+        </Typography>
+        <EditImage
+          open={open}
+          setOpen={setOpen}
+          link={"about/partners/" + partnerId}
+        />
+        <Grid container spacing={3}>
+          {partners?.data?.map((partner) => (
+            <Grid item xs={12} md={6} lg={4} key={partner.id}>
+              <Card
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <CardContent>
+                  <Typography color="text.primary" variant="h6" gutterBottom>
+                    {partner.name}
+                  </Typography>
+                  <img
+                    src={REACT_APP_API_URL + partner.logo_url}
+                    alt={partner.name}
+                    width={"40vw"}
+                    height={"40vw"}
+                  />
+                </CardContent>
+
+                <CardActions
+                  sx={{
+                    mt: "auto",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  {/* Edit */}
+                  <IconButton onClick={() => handleUpdatePartner(partner.id)}>
+                    <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
+                      <ModeTwoToneIcon />
+                    </Tooltip>
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </>
   );

@@ -17,8 +17,8 @@ const StatusTab = ({ status, t, direction, onEdit }) =>
       <CardContent>
       <Box sx={{display:'flex'}}>
         <Typography variant="h6">Status Section</Typography>
-        <ChangeStatus id={"status"} action={status.status === "active" && "change-status"}>
-          {status.status === "Active" ? "Active" : "Not Active"}
+        <ChangeStatus type="setting" id={25} >
+          {status.status === "1" ? "Active" : "Not Active"}
         </ChangeStatus>
       </Box>
         <Typography variant="subtitle2" color="text.secondary">

@@ -25,22 +25,20 @@ import {
 
 import { TextFieldStyled } from "components/styled/TextField";
 import ButtonLoader from "components/shared/ButtonLoader";
-import { _Regions } from "api/regions/regions";
-import FlavorAutocomplete from "./VariantsRepeater/FlavorAutocomplete";
-import PackingAutocomplete from "./VariantsRepeater/PackingAutocomplete";
+import FlavorAutocomplete from "../VariantsRepeater/FlavorAutocomplete";
+import PackingAutocomplete from "../VariantsRepeater/PackingAutocomplete";
 import { _Product } from "api/product/product";
 
-const VariantUpdate = ({ variantData: initialVariant }) => {
+const VariantUpdate = ({
+  variantData: initialVariant,
+  flavors,
+  packings,
+  flavorsIsLoading,
+  packingsIsLoading,
+}) => {
   const [loading, setLoading] = useState(false);
-  const [regions, setRegions] = useState([]);
   const [open, setOpen] = useState(false);
   const [variantData, setVariantData] = useState(initialVariant || {});
-  console.log("initialVariant", variantData);
-  useEffect(() => {
-    _Regions.index().then((response) => {
-      if (response.code === 200) setRegions(response.data);
-    });
-  }, []);
 
   // Handle normal input fields
   const handleChange = (field, value) => {
@@ -178,6 +176,8 @@ const VariantUpdate = ({ variantData: initialVariant }) => {
               <FlavorAutocomplete
                 value={variantData.options[0]}
                 onChange={(value) => handleOptionChange("flavor", value)}
+                flavors={flavors}
+                flavorsIsLoading={flavorsIsLoading}
               />
             </Grid>
 
@@ -186,6 +186,8 @@ const VariantUpdate = ({ variantData: initialVariant }) => {
               <PackingAutocomplete
                 value={variantData.options[1]}
                 onChange={(value) => handleOptionChange("packing", value)}
+                packings={packings}
+                packingsIsLoading={packingsIsLoading}
               />
             </Grid>
 

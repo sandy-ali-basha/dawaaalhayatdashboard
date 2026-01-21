@@ -1,10 +1,9 @@
-
 import { React, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Divider } from "@mui/material";
 import { colorStore } from "store/ColorsStore";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -12,126 +11,136 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _axios } from "interceptor/http-config";
 import { TextFieldStyled } from "components/styled/TextField";
 import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { _Contactus } from "api/contactus/contactus";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
+
+// 1. تحديث الـ Schema لتشمل الحقول الجديدة
 const schema = yup.object().shape({
-  kr: yup.object().shape({
-    name: yup.string().required("Kurdish name is required"),
-  }),
-  ar: yup.object().shape({
-    name: yup.string().required("Arabic name is required"),
-  }),
-  en: yup.object().shape({
-    name: yup.string().required("English name is required"),
-  }),
+  companyName: yup.string().required("Company name is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  whatsapp: yup.string().required("Whatsapp is required"),
+  facebook: yup.string().url("Must be a valid URL"),
+  instagram: yup.string().url("Must be a valid URL"),
+  linkedin: yup.string().url("Must be a valid URL"),
 });
 
 const ContactusUpdate = ({ id }) => {
   const { t } = useTranslation("index");
+  const queryClient = useQueryClient();
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
     state.setEditedID,
   ]);
 
-  const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
-  const { errors } = formState;
-  const [open, setOpen] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState();
+  const [data, setData] = useState(null);
 
+  // 2. جلب البيانات وتعبئة الفورم
   useEffect(() => {
-    _axios.get('/contactus/'+ editedID).then((res) => {
-      // setData(res.data?.contactus);
-        setData(res.data?.data);
-    });
-  }, [id,editedID]);
-  const languages = [
-  { code: "ar", name: "Arabic" },
-    { code: "kr", name: "Kurdish" },
-    { code: "en", name: "English" },
-  ];
+    if (editedID) {
+      setLoading(true);
+      _axios
+        .get("/contact_info/" + editedID)
+        .then((res) => {
+          const fetchedData = res.data?.data;
+          setData(fetchedData);
 
-  const details = languages.map((lang, index) => ({
-    head: t("name"+ lang.name.toLowerCase()),
-    type: "text",
-    placeholder: t("name"),
-    register: lang.code+".name",
-    defaultValue: data?.translations[index]?.name,
-  }));
+          // تعبئة القيم الافتراضية في الفورم
+          reset({
+            companyName: fetchedData?.companyName,
+            email: fetchedData?.email,
+            whatsapp: fetchedData?.whatsapp,
+            facebook: fetchedData?.facebook,
+            instagram: fetchedData?.instagram,
+            linkedin: fetchedData?.linkedin,
+          });
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }
+  }, [editedID, reset]);
+
   const handleClose = () => {
-    setOpen(false);
     setEditedID(null);
   };
 
-  const { mutate } = useMutation((data) => createPost(data))
+  const { mutate } = useMutation(
+    (formData) => _Contactus.update({ editedID: editedID, formData: formData }),
+    {
+      onSuccess: () => {
+        setLoading(false);
+        queryClient.invalidateQueries("contactus"); // تحديث الجدول بعد التعديل
+        handleClose();
+      },
+      onError: () => setLoading(false),
+    },
+  );
 
-  async function createPost(data) {
-    _Contactus.update({
-      editedID: editedID,
-      formData: data,
-    }).catch(err => {
-      setLoading(false)
-    }).then(() => {
-      setLoading(false)
-      // handleClose()
-    })
-  }
-
-  const hanldeUpdate = (input) => {
-    mutate(input);
+  const onSubmit = (input) => {
     setLoading(true);
-  }
+    mutate(input);
+  };
+
+  // مصفوفة لتسهيل رندر حقول التواصل الاجتماعية
+  const socialFields = [
+    { name: "companyName", label: t("Company Name") },
+    { name: "email", label: t("Email") },
+    { name: "whatsapp", label: t("Whatsapp") },
+    { name: "facebook", label: t("Facebook") },
+    { name: "instagram", label: t("Instagram") },
+    { name: "linkedin", label: t("Linkedin") },
+  ];
 
   return (
     <>
       {loading && <Loader />}
-      <Dialog open={true} onClose={handleClose}>
-        <DialogTitle sx={{ color: "text.main" }}>{t("Edit Row")}</DialogTitle>
-        {!!data && (
-          <>
-            <Grid container component="form" key={id}>
-              {details?.map((item, index) => {
-                const error = errors?.[item.register.split(".")[0]]?.name;
-                return (
-                  <Grid key={index} item md={6} sx={{ p: "10px" }}>
-                    <Box sx={{ margin: "0 0 8px 5px" }}>
-                      <Typography  variant="body1" color="text.main">{item.head}</Typography>
-                    </Box>
-                    <TextFieldStyled
-                      sx={{ width: "100%" }}
-                      type={item.type}
-                      placeholder={item.placeholder}
-                      defaultValue={item.defaultValue}
-                      name={item.register}
-                      {...register(item.register)}
-                      error={!!error}
-                      helperText={error?.message || ""}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </>
-        )}
+      <Dialog open={!!editedID} onClose={handleClose} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ color: "text.main" }}>
+          {t("Edit Contact Info")}
+        </DialogTitle>
 
-        <DialogActions>
-          <Button onClick={handleClose} sx={{ color: "text.main" }}>
+        <Box component="form" sx={{ p: 2 }}>
+          <Grid container spacing={2}>
+            {/* قسم حقول التواصل */}
+            {socialFields.map((field) => (
+              <Grid item md={6} xs={12} key={field.name}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  {field.label}
+                </Typography>
+                <TextFieldStyled
+                  fullWidth
+                  {...register(field.name)}
+                  error={!!errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        <DialogActions sx={{ p: 3 }}>
+          <Button onClick={handleClose} color="inherit">
             {t("Cancel")}
           </Button>
-          {loading && <Loader />}
-
-          <ButtonLoader name={t("Submit")}
-            onClick={() => handleSubmit(hanldeUpdate)()}
-            type="save"
+          <ButtonLoader
+            name={t("Save Changes")}
+            onClick={handleSubmit(onSubmit)}
             loading={loading}
             disableOnLoading
           >
-            {t("Submit")}
+            Save Changes
           </ButtonLoader>
-
         </DialogActions>
       </Dialog>
     </>
@@ -139,4 +148,3 @@ const ContactusUpdate = ({ id }) => {
 };
 
 export default ContactusUpdate;
-

@@ -1,14 +1,14 @@
-
 import { _axios } from "../../interceptor/http-config";
 
-const Link = "/product_options"
+const Link = "/product_options";
 
 export const _Product_options = {
-    index: () => _axios.get(Link).then((res) => res.data),
-
-    post: (data) => _axios.post(Link, data).then((res) => res?.data),
-
-    delete: (id) => _axios.delete(Link+'/' + id).then((res) => res.data),
-
-    update: ({ editedID, formData }) => _axios.post( Link +'/' + editedID, formData).then((res) => res?.data),
+  flavors: () => _axios.get(Link + "/value/10").then((res) => res.data),
+  packings: () => _axios.get(Link + "/value/11").then((res) => res.data),
+  //FLAVOR ID IS 10 IN DATABASE
+  AddFlavor: (data) =>
+    _axios.post("/product_options/value/10", data).then((res) => res?.data),
+  // PACKING IS 11
+  AddPacking: (data) =>
+    _axios.post("/product_options/value/11", data).then((res) => res?.data),
 };

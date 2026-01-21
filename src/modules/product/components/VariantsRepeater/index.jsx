@@ -4,11 +4,12 @@ import { Box, LinearProgress, Typography } from "@mui/material";
 import { BookmarkOutlined } from "@mui/icons-material";
 import VariantCard from "./VariantCard";
 import { useProductCreate } from "modules/product/hooks/useProductCreate";
+import { useProductOptions } from "modules/product/hooks/useProductOptions";
 
 const createEmptyVariant = () => ({
   sku: "",
   tax_class_id: 1,
-  inventory: 12,  
+  inventory: 12,
   qty: 12,
   purchasable: "always",
   unit: 1,
@@ -16,16 +17,15 @@ const createEmptyVariant = () => ({
   cityData: {},
 });
 
-const VariantsRepeater = ({ selectedCities, productData, setSubmitFunction }) => {
-  const {
-    flavors,
-    packings,
-    addNewFlavor,
-    addNewPacking,
-    cities,
-    hanldeCreate,
-    loading,
-  } = useProductCreate();
+const VariantsRepeater = ({
+  selectedCities,
+  productData,
+  setSubmitFunction,
+}) => {
+  const { addNewFlavor, addNewPacking, cities, hanldeCreate, loading } =
+    useProductCreate();
+  const { flavorsIsLoading, packingsIsLoading, flavors, packings } =
+    useProductOptions();
 
   const [variants, setVariants] = useState([createEmptyVariant()]);
 
@@ -107,6 +107,8 @@ const VariantsRepeater = ({ selectedCities, productData, setSubmitFunction }) =>
             onAddVariant={handleAddVariant}
             flavors={flavors}
             packings={packings}
+            flavorsIsLoading={flavorsIsLoading}
+            packingsIsLoading={packingsIsLoading}
             addNewFlavor={addNewFlavor}
             addNewPacking={addNewPacking}
             selectedCities={selectedCities}

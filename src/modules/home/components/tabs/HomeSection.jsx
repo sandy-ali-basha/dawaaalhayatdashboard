@@ -60,17 +60,18 @@ const HomeSection = ({ id }) => {
     );
   }
   if (!section) return <Typography>Loading...</Typography>;
+  
   return (
     <>
       {editedID && (
         <HomeUpdate id={editedID} type={type} setHome_section_id={id} />
       )}
-      
+
       <ChangeStatus
         id={id}
-        action={section.status === "active" && "change-status"}
+        type="section"
       >
-        {section.status === "Active" ? "Active" : "Not Active"}
+        {section.status ?? section.status === "1" ? "Active" : "Not Active"}
       </ChangeStatus>
 
       {id === 4 && (

@@ -14,16 +14,20 @@ import {
   CategoryOutlined,
   ContactSupportOutlined,
   CurrencyBitcoinOutlined,
+  DataArrayOutlined,
   DiscountOutlined,
   GavelOutlined,
   HomeOutlined,
   Inventory2Outlined,
   MoneyOutlined,
+  Person2Outlined,
   PublicOutlined,
   ShoppingBagOutlined,
   ShoppingCartCheckoutOutlined,
+  ShortTextOutlined,
   SpaceDashboardOutlined,
   WorkOutlined,
+  WorkOutlineRounded,
 } from "@mui/icons-material";
 const SideBar = ({ open, setOpen }) => {
   const { t } = useTranslation("sidebar");
@@ -48,7 +52,7 @@ const SideBar = ({ open, setOpen }) => {
   const links = [
     {
       name: t("Dashboard"),
-      link: "/dashboard",
+      link: "/dashboard/anylatics",
       icon: <SpaceDashboardOutlined />,
     },
     {
@@ -109,17 +113,16 @@ const SideBar = ({ open, setOpen }) => {
     },
     {
       name: t("Careers"),
-      icon: <WorkOutlined />,
+      icon: <WorkOutlineRounded />,
       subOptions: [
         { name: t("Careers"), link: "/dashboard/careers" },
         { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
       ],
     },
-
     {
       name: t("blog"),
       link: "/dashboard/blog",
-      icon: <BookmarkOutlined color={"secondary.main"} />,
+      icon: <ShortTextOutlined color={"secondary.main"} />,
     },
     {
       name: t("Home"),
@@ -129,15 +132,15 @@ const SideBar = ({ open, setOpen }) => {
     {
       name: t("customers"),
       link: "/dashboard/customers",
-      icon: <HomeOutlined color={"secondary.main"} />,
+      icon: <Person2Outlined color={"secondary.main"} />,
     },
     {
       name: t("about us"),
       link: "/dashboard/aboutus",
-      icon: <HomeOutlined color={"secondary.main"} />,
+      icon: <DataArrayOutlined color={"secondary.main"} />,
     },
     {
-      name: t("contact us "),
+      name: t("contact us"),
       link: "/dashboard/contactus",
       icon: <ContactSupportOutlined color={"secondary.main"} />,
     },

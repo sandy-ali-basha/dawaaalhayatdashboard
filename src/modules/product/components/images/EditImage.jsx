@@ -166,7 +166,7 @@ const EditImage = ({ open, setOpen, link, status, isProductCreate }) => {
       {isProductCreate ? (
         <Box>{content}</Box>
       ) : (
-        <Dialog open={open} onClose={handleDialogClose}>
+        <Dialog open={open} onClose={handleDialogClose} maxWidth="md">
           {content}
         </Dialog>
       )}

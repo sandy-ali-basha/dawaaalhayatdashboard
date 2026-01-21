@@ -23,7 +23,6 @@ import {
 
 import { TextFieldStyled } from "components/styled/TextField";
 import ButtonLoader from "components/shared/ButtonLoader";
-import { _Regions } from "api/regions/regions";
 import FlavorAutocomplete from "./VariantsRepeater/FlavorAutocomplete";
 import PackingAutocomplete from "./VariantsRepeater/PackingAutocomplete";
 import { _Product } from "api/product/product";
@@ -46,24 +45,26 @@ const emptyVariant = {
   reorder_point: "",
 };
 
-const VariantCreate = ({ defaultCity }) => {
+const VariantCreate = ({
+  defaultCity,
+  regions,
+  flavors,
+  regionsLoading,
+  packings,
+  flavorsIsLoading,
+  packingsIsLoading,
+}) => {
   const [loading, setLoading] = useState(false);
-  const [regions, setRegions] = useState([]);
   const [open, setOpen] = useState(false);
-  const params = useParams();
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [cities, setCities] = useState([]);
+
+  const params = useParams();
 
   const [variantData, setVariantData] = useState({
     ...emptyVariant,
     city_id: defaultCity || null,
   });
-
-  useEffect(() => {
-    _Regions.index().then((response) => {
-      if (response.code === 200) setRegions(response.data);
-    });
-  }, []);
 
   const openDialog = () => {
     setVariantData({
@@ -77,7 +78,7 @@ const VariantCreate = ({ defaultCity }) => {
   const handleChange = (field, value) => {
     setVariantData((prev) => ({ ...prev, [field]: value }));
   };
-  
+
   const numericFields = [
     "price",
     "compare_price",
@@ -88,6 +89,7 @@ const VariantCreate = ({ defaultCity }) => {
     "tax_class_id",
     "city_id",
   ];
+
   const normalizeVariantData = (data) => {
     const normalized = { ...data };
 
@@ -235,6 +237,8 @@ const VariantCreate = ({ defaultCity }) => {
               <FlavorAutocomplete
                 value={variantData.option_value_ids?.[0] || null}
                 onChange={(option) => handleOptionChange("flavor", option)}
+                flavors={flavors}
+                flavorsIsLoading={flavorsIsLoading}
               />
             </Grid>
 
@@ -243,6 +247,8 @@ const VariantCreate = ({ defaultCity }) => {
               <PackingAutocomplete
                 value={variantData.option_value_ids?.[1] || null}
                 onChange={(option) => handleOptionChange("packing", option)}
+                packings={packings}
+                packingsIsLoading={packingsIsLoading}
               />
             </Grid>
 
@@ -284,7 +290,9 @@ const VariantCreate = ({ defaultCity }) => {
                           const regionId = Number(e.target.value);
                           setSelectedRegion(regionId);
 
-                          const region = regions.find((r) => r.id === regionId);
+                          const region = regions?.find(
+                            (r) => r.id === regionId
+                          );
 
                           // Load cities for this region
                           setCities(region?.cities || []);
@@ -297,11 +305,15 @@ const VariantCreate = ({ defaultCity }) => {
                         }}
                       >
                         <option value="">Select Region</option>
-                        {regions.map((region) => (
-                          <option key={region.id} value={region.id}>
-                            {region.name}
-                          </option>
-                        ))}
+                        {regions ? (
+                          regions?.data?.map((region) => (
+                            <option key={region.id} value={region.id}>
+                              {region.name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value="">No Options</option>
+                        )}
                       </TextFieldStyled>
                     </Grid>
 

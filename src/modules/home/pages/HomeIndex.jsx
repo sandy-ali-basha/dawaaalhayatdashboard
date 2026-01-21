@@ -30,17 +30,27 @@ const HomeIndex = () => {
   const [direction] = settingsStore((state) => [state.direction]);
   const [open, setOpen] = useState(false);
   const [sections, setSections] = useState([]);
+  const [HomePagesections, setHomePagesections] = useState([]);
 
   const [editSection, setEditSection] = useState(null);
   const [tabValue, setTabValue] = useState(0);
-  const [sortOpen, setSortOpen] = useState(true);
+  const [sortOpen, setSortOpen] = useState(false);
 
   useEffect(() => {
     _Home
+      .getSortableSections()
+      .then((res) => {
+        setSections(res || []);
+        console.log("Fetched sections:", res);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch sections:", err);
+      });
+
+    _Home
       .getAllSections()
       .then((res) => {
-        // your API returns data directly as an array
-        setSections(res?.home_sections || []);
+        setHomePagesections(res?.home_sections || []);
         console.log("Fetched sections:", res?.home_sections);
       })
       .catch((err) => {
@@ -58,10 +68,12 @@ const HomeIndex = () => {
   } = data ?? {};
 
   const handleTabChange = (_, newValue) => setTabValue(newValue);
+
   const handleEditClick = (section) => {
     setEditSection(section);
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
     setEditSection(null);
@@ -143,10 +155,10 @@ const HomeIndex = () => {
     );
 
   return (
-    <Box p={3}>
+    <Box>
       {renderUpdateModal()}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h5" fontWeight="bold">
+        <Typography variant="h5" fontWeight="bold" color="primary">
           Home Page Management
         </Typography>
 
@@ -162,15 +174,15 @@ const HomeIndex = () => {
         onSaved={() => {
           queryClient.invalidateQueries("home");
           _Home
-            .getAllSections()
-            .then((res) => setSections(res?.home_sections || []));
+            .getSortableSections()
+            .then((res) => setSections(res || []));
         }}
       />
 
       <TabsNavigation
         tabValue={tabValue}
         handleTabChange={handleTabChange}
-        sections={sections}
+        sections={HomePagesections}
       />
 
       {tabValue === 0 && <SlidesTab />}
@@ -206,8 +218,8 @@ const HomeIndex = () => {
           onEdit={handleEditClick}
         />
       )}
-      {Array.isArray(sections) &&
-        sections.map(
+      {Array.isArray(HomePagesections) &&
+        HomePagesections.map(
           (section, index) =>
             tabValue === index + 6 && (
               <HomeSection key={section.id} id={section?.id} />

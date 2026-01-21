@@ -24,11 +24,18 @@ import {
   DateRangeOutlined,
   DashboardCustomizeRounded,
 } from "@mui/icons-material";
-import VariantUpdate from "modules/product/components/VariantUpdate";
+import VariantUpdate from "modules/product/components/UpdateAllVariants/VariantUpdate";
 import VariantCreate from "modules/product/components/CreateVariant";
 import DeleteVariant from "modules/product/components/DeleteVariant";
+import VariantsByCityDialog from "modules/product/components/UpdateAllVariants/VariantsByCityDialog";
+import { useRegions } from "hooks/regions/useRegions";
+import { useProductOptions } from "modules/product/hooks/useProductOptions";
 
 const VariantsSection = ({ t, options = [] }) => {
+  const { flavors, packings, packingsIsLoading, flavorsIsLoading } =
+    useProductOptions();
+  const { data: regions, isLoading: regionsLoading } = useRegions();
+
   return (
     <Box sx={{ my: 3 }}>
       <Typography
@@ -42,7 +49,21 @@ const VariantsSection = ({ t, options = [] }) => {
       >
         {t("Product Variants")}
       </Typography>
-      <VariantCreate defaultCity={1} />
+
+      <VariantCreate
+        regions={regions}
+        regionsLoading={regionsLoading}
+        defaultCity={1}
+        flavors={flavors}
+        packings={packings}
+      />
+      <VariantsByCityDialog
+        flavors={flavors}
+        packings={packings}
+        variants={options}
+        packingsIsLoading={packingsIsLoading}
+        flavorsIsLoading={flavorsIsLoading}
+      />
 
       {options?.length > 0 ? (
         <Grid container spacing={2}>
@@ -73,7 +94,13 @@ const VariantsSection = ({ t, options = [] }) => {
                         : "—"}
                     </Typography>
                     <Tooltip title={t("Edit Variant")}>
-                      <VariantUpdate variantData={variant} />
+                      <VariantUpdate
+                        variantData={variant}
+                        flavors={flavors}
+                        flavorsIsLoading={flavorsIsLoading}
+                        packings={packings}
+                        packingsIsLoading={packingsIsLoading}
+                      />
                     </Tooltip>
                     <DeleteVariant id={variant?.id} />
                   </Stack>
@@ -205,7 +232,6 @@ const VariantsSection = ({ t, options = [] }) => {
                       <strong>{t("Purchasable")}:</strong>{" "}
                       {variant.purchasable === "always" ? "Yes" : "No"}
                     </Typography>
-                    ``
                   </Stack>
                 </CardContent>
               </Card>

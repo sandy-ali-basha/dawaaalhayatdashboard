@@ -9,39 +9,30 @@ import {
 import Loader from "components/shared/Loader";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useService } from "hooks/service/useService";
-import { useChangeStatus } from "modules/Service/hooks/useChangeStatus";
+import { useChangeStatus } from "modules/home/hooks/useChangeStatus";
+import { useQueryClient } from "react-query";
 
-const ChangeStatus = ({ id, children, action }) => {
+const ChangeStatus = ({ id, children,  type }) => {
   const { t } = useTranslation("index");
-  const { refetch } = useService();
-  // if(id === "status"){
-  //   console.log("status id");
-  // }
-  // if(id === "slides"){
-  //   console.log("slides id");
-  // }
-  // if(id === "cta"){
-  //   console.log("cta id");
-  // }
-  // if(id === "textSectionOne"){
-  //   console.log("textSectionOne id");
-  // } tow and vedio
-  const changeStatus = useChangeStatus({ id: id, is_blocked: action });
-
+  const changeStatus = useChangeStatus({
+    id: id,
+    type: type,
+  });
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = (e) => setOpen(true);
   const handleClose = () => setOpen(false);
+  const queryClient = useQueryClient();
+
   const handleToggleChangeStatus = () => {
     setLoading(true);
     changeStatus.mutate(
       {},
       {
         onSuccess: () => {
+          queryClient.invalidateQueries(["home"]);
           setOpen(false);
           setLoading(false);
-          refetch();
         },
       }
     );
@@ -49,7 +40,9 @@ const ChangeStatus = ({ id, children, action }) => {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>{children}</Button>
+      <Button variant="outlined" onClick={handleClickOpen}>
+        {children}
+      </Button>
       <Dialog
         open={open}
         onClose={handleClose}

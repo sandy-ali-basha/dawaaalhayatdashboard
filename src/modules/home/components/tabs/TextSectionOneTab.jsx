@@ -17,10 +17,11 @@ const TextSectionOneTab = ({ textSectionOne, direction, onEdit }) =>
         <Box sx={{ display: "flex" }}>
           <Typography variant="h6">Text Section One</Typography>
           <ChangeStatus
-            id={"textSectionOne"}
-            action={textSectionOne.status === "active" && "change-status"}
+            id={17}
+            action={textSectionOne.status === "1" && "change-status"}
+            type="setting"
           >
-            {textSectionOne.status === "Active" ? "Active" : "Not Active"}
+            {textSectionOne.status === "1" ? "Active" : "Not Active"}
           </ChangeStatus>
         </Box>
         {["ar", "en", "kr"].map((lang) => (

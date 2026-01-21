@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Typography,
   Autocomplete,
@@ -7,51 +7,61 @@ import {
   Box,
   Alert,
   Switch,
-  FormControlLabel
+  FormControlLabel,
 } from "@mui/material";
-import { _Product } from "api/product/product";
+import { Add } from "@mui/icons-material";
+import { _Product_options } from "api/product_options/product_options";
 
-const PackingAutocomplete = ({ value, onChange }) => {
-  const [packings, setPackings] = useState([]);
-  const [loading, setLoading] = useState(false);
+const DEFAULT_PACKING_ID = 1;
+
+const PackingAutocomplete = ({
+  value,
+  onChange,
+  packings,
+  packingsIsLoading,
+}) => {
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
+  const [isEnabled, setIsEnabled] = useState(false);
 
-  const [isEnabled, setIsEnabled] = useState(false); // <-- السويتش
+  // 🔒 prevent default logic from running more than once
+  const initializedRef = useRef(false);
 
-  // Load packings
-  const loadPackings = async () => {
-    setLoading(true);
-    try {
-      const res = await _Product.packings();
-      if (res.code === 200) {
-        setPackings(res.data?.product_options_values || []);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  // ✅ normalize options
+  const options = useMemo(
+    () => packings?.data?.product_options_values || [],
+    [packings?.data]
+  );
 
+  // ✅ normalize value reference (important for MUI)
+  const normalizedValue = useMemo(() => {
+    if (!value) return null;
+    return options.find((o) => o.id === value.id) || null;
+  }, [value, options]);
+
+  // 🔥 set default packing ONCE when switch is OFF
   useEffect(() => {
-    loadPackings();
-  }, []);
+    if (initializedRef.current) return;
+    if (isEnabled) return;
+    if (!options.length) return;
+    if (normalizedValue) return;
 
-  // Switch logic
-  useEffect(() => {
-    if (!isEnabled) {
-      const defaultPacking = packings.find((p) => p.id === 1);
-      if (defaultPacking) onChange(defaultPacking);
+    const defaultPacking = options.find(
+      (p) => p.id === DEFAULT_PACKING_ID
+    );
+
+    if (defaultPacking) {
+      onChange(defaultPacking);
+      initializedRef.current = true;
     }
-  }, [isEnabled, packings]);
+  }, [isEnabled, options, normalizedValue, onChange]);
 
-  // Add new packing
-  const addNewPacking = async (packingName) => {
-    if (!packingName.trim()) return;
+  // ➕ add new packing
+  const addNewPacking = async (name) => {
+    if (!name.trim()) return;
 
-    if (
-      packings.some((p) => p.name.toLowerCase() === packingName.toLowerCase())
-    ) {
-      setError(`"${packingName}" already exists`);
+    if (options.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
+      setError(`"${name}" already exists`);
       return;
     }
 
@@ -59,28 +69,22 @@ const PackingAutocomplete = ({ value, onChange }) => {
     setError("");
 
     try {
-      const res = await _Product.AddPacking({
-        name: packingName,
-        ar: { name: packingName },
-        kr: { name: packingName },
-        en: { name: packingName },
+      const res = await _Product_options.AddPacking({
+        name,
+        ar: { name },
+        kr: { name },
+        en: { name },
       });
 
       if (res.code !== 200 || !res.data?.id) {
-        setError("Failed to add packing. Please try again.");
+        setError("Failed to add packing.");
         return;
       }
 
-      const newId = res.data.id;
-
-      const reload = await _Product.packings();
-      if (reload.code === 200) {
-        const updated = reload.data?.product_options_values || [];
-        setPackings(updated);
-
-        const newPacking = updated.find((p) => p.id === newId);
-        if (newPacking) onChange(newPacking);
-      }
+      const reload = await _Product_options.packings();
+      const updated = reload.data?.product_options_values || [];
+      const newPacking = updated.find((p) => p.id === res.data.id);
+      if (newPacking) onChange(newPacking);
     } catch {
       setError("Network error while adding packing.");
     } finally {
@@ -88,48 +92,59 @@ const PackingAutocomplete = ({ value, onChange }) => {
     }
   };
 
-  // hide option with ID = 1 when switch is ON
-  const filteredPackings = isEnabled
-    ? packings.filter((p) => p.id !== 1)
-    : [];
+  // 🔥 hide default packing when enabled
+  const filteredOptions = useMemo(() => {
+    return isEnabled
+      ? options.filter((p) => p.id !== DEFAULT_PACKING_ID)
+      : [];
+  }, [isEnabled, options]);
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Typography color="text.primary" variant="body1" sx={{ mb: 1 }}>
-        Packing
-      </Typography>
+      {/* Header */}
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="body1">Packing</Typography>
 
-      {/* Switch */}
-      <FormControlLabel
-        control={
-          <Switch
-            checked={isEnabled}
-            onChange={(e) => setIsEnabled(e.target.checked)}
-          />
-        }
-        label={isEnabled ? "ON (choose packing)" : "OFF (default packing)"}
-      />
+        <FormControlLabel
+          label={isEnabled ? "ON (choose packing)" : "OFF (default packing)"}
+          control={
+            <Switch
+              checked={isEnabled}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setIsEnabled(checked);
 
-      {/* When OFF → hide autocomplete */}
+                if (checked) {
+                  // 🔥 clear default so first selection works
+                  onChange(null);
+                }
+              }}
+            />
+          }
+        />
+      </Box>
+
+      {/* Autocomplete */}
       {isEnabled && (
         <Autocomplete
-          freeSolo
           fullWidth
-          loading={loading || adding}
-          options={filteredPackings}
-          value={value || null}
-          getOptionLabel={(o) => (typeof o === "string" ? o : o?.name || "")}
+          freeSolo
+          value={normalizedValue}
+          options={filteredOptions}
+          loading={packingsIsLoading || adding}
           isOptionEqualToValue={(a, b) => a?.id === b?.id}
-          filterOptions={(options, { inputValue }) => {
-            const filtered = options.filter((opt) =>
-              opt.name.toLowerCase().includes(inputValue.toLowerCase())
+          getOptionLabel={(o) =>
+            typeof o === "string" ? o : o?.name || ""
+          }
+          filterOptions={(opts, { inputValue }) => {
+            const filtered = opts.filter((o) =>
+              o.name.toLowerCase().includes(inputValue.toLowerCase())
             );
 
             if (
               inputValue &&
-              !options.some(
-                (opt) =>
-                  opt.name.toLowerCase() === inputValue.toLowerCase()
+              !opts.some(
+                (o) => o.name.toLowerCase() === inputValue.toLowerCase()
               )
             ) {
               filtered.push({ id: null, name: `Add: ${inputValue}` });
@@ -145,7 +160,7 @@ const PackingAutocomplete = ({ value, onChange }) => {
               return;
             }
 
-            if (newValue?.name?.startsWith("Add: ")) {
+            if (newValue.name?.startsWith("Add: ")) {
               addNewPacking(newValue.name.replace("Add: ", "").trim());
               return;
             }
@@ -160,7 +175,7 @@ const PackingAutocomplete = ({ value, onChange }) => {
                 ...params.InputProps,
                 endAdornment: (
                   <>
-                    {(loading || adding) && (
+                    {(packingsIsLoading || adding) && (
                       <CircularProgress size={18} sx={{ mr: 1 }} />
                     )}
                     {params.InputProps.endAdornment}
@@ -169,11 +184,23 @@ const PackingAutocomplete = ({ value, onChange }) => {
               }}
             />
           )}
+          renderOption={(props, option) => (
+            <li {...props}>
+              {option.name?.startsWith("Add: ") ? (
+                <span style={{ color: "#1976d2", fontWeight: 500 }}>
+                  <Add fontSize="small" />{" "}
+                  {option.name.replace("Add: ", "")}
+                </span>
+              ) : (
+                option.name
+              )}
+            </li>
+          )}
         />
       )}
 
       {error && (
-        <Alert severity="error" sx={{ mt: 1, fontSize: 14 }}>
+        <Alert severity="error" sx={{ mt: 1 }}>
           {error}
         </Alert>
       )}

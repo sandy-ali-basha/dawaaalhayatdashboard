@@ -1,137 +1,134 @@
-
+import React from "react";
 import {
   Typography,
   Box,
-  TableRow,
-  TableCell,
+  Card,
+  CardContent,
+  Grid,
+  Divider,
+  Stack,
   IconButton,
-  Tooltip,
-  Button,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-
-import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
-import React, { useMemo,useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
-import { settingsStore } from "store/settingsStore";
+
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import EmailIcon from "@mui/icons-material/Email";
+import LanguageIcon from "@mui/icons-material/Language";
 import { useTranslation } from "react-i18next";
-import { Table } from "components/shared";
 import Loader from "components/shared/Loader";
 import { colorStore } from "store/ColorsStore";
-import ChangeStatus from "../components/ChangeStatus";
 import { useContactus } from "hooks/contactus/useContactus";
 import ContactusUpdate from "./ContactusUpdate";
-import DeleteDialog from "../components/Dialog";
 
 const ContactusIndex = () => {
   const { t } = useTranslation("index");
-  const { data, page, setPage, isLoading, count } = useContactus();
 
-  const navigate = useNavigate();
-  const [direction] = settingsStore((state) => [state.direction]);
+  const { data, isLoading } = useContactus();
 
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
     state.setEditedID,
   ]);
 
-  const columns = useMemo(() => {
-    return [
-      t("first name"),
-      t("status"),
-      t("operations"),
-    ];
-  }, [t]);
-  
-  const handleView = useCallback((id) => { navigate('view/' + id) }, [navigate])
-  const handleEdit = useCallback((id) => { setEditedID(id) }, [setEditedID])
-  
+  const company = data?.data?.[0];
 
-  const rows = useMemo(() => {
-    return data?.contactus?.map((contactus, id) => (
-      <TableRow sx={{ height: "65px" }} key={contactus.id} hover>
-        <TableCell sx={{ minWidth: 50 }}>{contactus?.first_name ?? "Null"}</TableCell>
-        <TableCell sx={{ minWidth: 120 }} align="center">
-          <ChangeStatus
-            id={contactus.id}
-            action={contactus.status === "active" && "change-status"}
-          >
-            {contactus.status === "Active" ? t("Active") : t("Not Active")}
-          </ChangeStatus>
-        </TableCell>
-        <TableCell
-          align="center"
-          sx={{
-            minWidth: 200,
-          }}
-        >
-          <IconButton onClick={() => handleEdit(contactus?.id)}>
-            <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-              <ModeTwoToneIcon sx={{ color: "text.main" }} />
-            </Tooltip>
-          </IconButton>
-          <IconButton>
-            <Tooltip title={direction === "ltr" ? "Delete" : "حذف"}>
-              <DeleteDialog id={contactus?.id} count={count} page={page} />
-            </Tooltip>
-          </IconButton>
-          <IconButton onClick={() => handleView(contactus.id)}>
-            <Tooltip title={direction === "ltr" ? "View" : "مشاهدة"}>
-              <VisibilityTwoToneIcon color="primary" />
-            </Tooltip>
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    ));
-  },[data, count, direction, handleEdit, handleView, page,t]);
+  if (isLoading) return <Loader />;
 
-  const handleCreate = () => navigate("create")
+  if (!company) {
+    return <Typography>No contact data found</Typography>;
+  }
 
   return (
     <>
-      {isLoading && <Loader />}
       {editedID && <ContactusUpdate id={editedID} />}
 
-      <Box
-        sx={{
-          width: { sl: "300px" },
-          backgroundColor: { xs: "background.main" },
-          ml: { xs: "0px" },
-        }}
-      >
+      <Box>
+        {/* Header */}
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: "25px",
+            mb: 3,
           }}
         >
-          <Typography sx={{ color: "text.main" }} variant="h5">
+          <Typography variant="h5" sx={{ color: "text.main" }}>
             {t("contactus")}
           </Typography>
-
-          <Button
-            startIcon={<AddIcon />}
-            variant="contained"
-            color="secondary"
-            onClick={handleCreate}
-          >
-            {t("New contactus")}
-          </Button>
         </Box>
 
-        <BoxStyled sx={{ px: "10px" }}>
-          <Table
-            columns={columns}
-            rows={rows}
-            page={page}
-            setPage={setPage}
-            count={Math.ceil(data?.pagination?.total / count)}
-          />
-        </BoxStyled>
+        <Grid container spacing={3}>
+          {/* Company Card */}
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="h6">
+                    {company.companyName}
+                  </Typography>
+
+                  <IconButton onClick={() => setEditedID(company.id)}>
+                    <ModeTwoToneIcon />
+                  </IconButton>
+                </Stack>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Stack spacing={1}>
+                  <Typography>
+                    <EmailIcon fontSize="small" /> {company.email}
+                  </Typography>
+
+                  <Typography>
+                    <WhatsAppIcon fontSize="small" /> {company.whatsapp}
+                  </Typography>
+
+                  <Typography>
+                    <FacebookIcon fontSize="small" /> {company.facebook}
+                  </Typography>
+
+                  <Typography>
+                    <InstagramIcon fontSize="small" /> {company.instagram}
+                  </Typography>
+
+                  <Typography>
+                    <LinkedInIcon fontSize="small" /> {company.linkedin}
+                  </Typography>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Locations Cards */}
+          {company.locations?.map((loc) => (
+            <Grid item xs={12} md={6} key={loc.id}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Stack spacing={1}>
+                    <Typography variant="subtitle1">
+                      <LanguageIcon fontSize="small" /> {loc.office_name}
+                    </Typography>
+
+                    <Typography variant="body2" color="text.secondary">
+                      {loc.address}
+                    </Typography>
+
+                    <Typography variant="caption">
+                      Lang: {loc.locale}
+                    </Typography>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </>
   );

@@ -215,8 +215,6 @@ export const useProductCreate = () => {
     });
   }, []);
 
-  const packings = ["packings1", "packings"];
-
   return {
     handleCancel,
     hanldeCreate,
@@ -238,6 +236,5 @@ export const useProductCreate = () => {
     setSelectedRegions,
     regions,
     watch,
-    packings,
   };
 };

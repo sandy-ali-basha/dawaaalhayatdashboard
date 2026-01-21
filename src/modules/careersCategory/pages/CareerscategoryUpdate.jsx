@@ -68,7 +68,7 @@ const CareerscategoryUpdate = ({ id }) => {
           );
         }
       });
-  }, [id, editedID]);
+  }, [id, editedID, setValue]);
 
   const handleClose = () => {
     setOpen(false);

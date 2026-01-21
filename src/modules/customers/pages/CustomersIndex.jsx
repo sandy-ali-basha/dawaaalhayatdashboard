@@ -7,10 +7,7 @@ import {
   Tooltip,
   Button,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-
 import { BoxStyled } from "components/styled/BoxStyled";
-import VisibilityTwoToneIcon from "@mui/icons-material/VisibilityTwoTone";
 import React, { useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { settingsStore } from "store/settingsStore";
@@ -121,8 +118,6 @@ const CustomersIndex = () => {
       </TableRow>
     ));
   }, [data, count, direction, page]);
-
-  const handleCreate = () => navigate("create");
 
   return (
     <>

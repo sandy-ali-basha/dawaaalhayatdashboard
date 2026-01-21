@@ -42,7 +42,7 @@ const Image = ({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width:'100%'
+        width: "100%",
       }}
     >
       {" "}
@@ -73,8 +73,7 @@ const Image = ({
               <Upload sx={{ mx: "5px" }} fontSize="medium" />
               {"  "}
               <p>
-                {t("Upload")}{' '}
-                {name}
+                {t("Upload")} {name}
               </p>
             </>
           )}
@@ -86,7 +85,7 @@ const Image = ({
               <input
                 id={name}
                 type="file"
-                accept="image/*"
+                accept="image/*,video/*"
                 onChange={(e) => {
                   handleImage(e);
                   const files = Array.from(e.target.files);
@@ -113,7 +112,11 @@ const Image = ({
           ? NewImages.map((image, index) => (
               <img
                 key={index}
-                style={{ width: "25%", borderRadius: "5px",objectFit:'contain' }}
+                style={{
+                  width: "25%",
+                  borderRadius: "5px",
+                  objectFit: "contain",
+                }}
                 src={image}
                 alt={`uploaded ${index}`}
               />

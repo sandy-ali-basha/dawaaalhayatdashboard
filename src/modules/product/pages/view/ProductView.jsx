@@ -173,7 +173,7 @@ const ProductView = () => {
               mb: 4,
             }}
           >
-            {data?.name}
+            {data?.name.en}
           </Typography>
 
           {/* Product Details */}
@@ -209,6 +209,7 @@ const ProductView = () => {
             </Grid>
 
             {/* Descriptions */}
+
             <Box mt={4}>
               {disc.map((item, index) => (
                 <Box key={index} mt={3}>

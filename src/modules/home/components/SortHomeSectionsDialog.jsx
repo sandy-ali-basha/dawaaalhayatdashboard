@@ -10,13 +10,12 @@ import {
   ListItemText,
   IconButton,
   Box,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
-import {
-  DndContext,
-  closestCenter,
-} from "@dnd-kit/core";
+import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
@@ -26,19 +25,22 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { _Home } from "api/home/home";
 
-/* ------------------ Sortable Item ------------------ */
-const SortableItem = ({ id, title }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id });
+/* ================== Helpers ================== */
+
+const getItemId = (item) => `${item.type}-${item.data.id}`;
+
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+/* ================== Sortable Item ================== */
+
+const SortableItem = ({ id, title, disabled }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id, disabled });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: disabled ? 0.6 : 1,
   };
 
   return (
@@ -47,81 +49,126 @@ const SortableItem = ({ id, title }) => {
       style={style}
       divider
       secondaryAction={
-        <IconButton edge="end" {...attributes} {...listeners}>
+        <IconButton
+          edge="end"
+          {...attributes}
+          {...listeners}
+          disabled={disabled}
+        >
           <DragIndicatorIcon />
         </IconButton>
       }
     >
-      <ListItemText primary={title} />
+      <ListItemText primary={title || "Unnamed"} />
     </ListItem>
   );
 };
 
-/* ------------------ Dialog ------------------ */
-const SortHomeSectionsDialog = ({ open, onClose, sections, onSaved }) => {
+/* ================== Dialog ================== */
+
+const SortHomeSectionsDialog = ({ open, onClose, sections }) => {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setItems(sections || []);
   }, [sections]);
 
-  const handleDragEnd = (event) => {
+  /* ---------- Update backend with delay ---------- */
+  const updateAllOrders = async (orderedItems) => {
+    setLoading(true);
+
+    for (let i = 0; i < orderedItems.length; i++) {
+      const item = orderedItems[i];
+
+      try {
+        await _Home.updateOrder(item.data.id, {
+          type: item.type,
+          order: i + 1,
+        });
+
+        await sleep(200);
+      } catch (err) {
+        console.error(
+          `Failed updating order for ${item.type}-${item.data.id}`,
+          err
+        );
+      }
+    }
+
+    setLoading(false);
+  };
+
+  /* ---------- Drag End ---------- */
+  const handleDragEnd = async (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    setItems((prev) => {
-      const oldIndex = prev.findIndex(i => i.id === active.id);
-      const newIndex = prev.findIndex(i => i.id === over.id);
-      return arrayMove(prev, oldIndex, newIndex);
-    });
-  };
+    const oldIndex = items.findIndex(
+      (i) => getItemId(i) === active.id
+    );
+    const newIndex = items.findIndex(
+      (i) => getItemId(i) === over.id
+    );
 
-  const handleSave = async () => {
-    const payload = items.map((section, index) => ({
-      id: section.id,
-      order: index + 1,
-    }));
+    const newItems = arrayMove(items, oldIndex, newIndex);
 
-    await _Home.reorderSections({ sections: payload });
-    onSaved?.();
-    onClose();
+    setItems(newItems);
+    await updateAllOrders(newItems);
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Sort Home Sections</DialogTitle>
+    <>
+      {/* 🔄 Loader overlay */}
+      <Backdrop
+        open={loading}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.modal + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
-      <DialogContent>
-        <Box mt={1}>
-          <DndContext
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={items.map(i => i.id)}
-              strategy={verticalListSortingStrategy}
+      <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+        <DialogTitle>Sort Home Sections</DialogTitle>
+
+        <DialogContent>
+          <Box mt={1}>
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
             >
-              <List>
-                {items.map((section) => (
-                  <SortableItem
-                    key={section.id}
-                    id={section.id}
-                    title={section.title || section.type}
-                  />
-                ))}
-              </List>
-            </SortableContext>
-          </DndContext>
-        </Box>
-      </DialogContent>
+              <SortableContext
+                items={items.map(getItemId)}
+                strategy={verticalListSortingStrategy}
+              >
+                <List>
+                  {items.map((section) => {
+                    const title =
+                      section.type === "section"
+                        ? section?.data?.title?.en
+                        : section?.data?.name;
 
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleSave}>
-          Save Order
-        </Button>
-      </DialogActions>
-    </Dialog>
+                    return (
+                      <SortableItem
+                        key={getItemId(section)}
+                        id={getItemId(section)}
+                        title={title}
+                        disabled={loading}
+                      />
+                    );
+                  })}
+                </List>
+              </SortableContext>
+            </DndContext>
+          </Box>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={onClose} disabled={loading}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

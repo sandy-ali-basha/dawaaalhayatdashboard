@@ -12,6 +12,7 @@ export const _Home = {
         },
       })
       .then((res) => res.data?.data),
+      
   getSlides: () =>
     _axios
       .get(Link + "/slides", {
@@ -34,6 +35,10 @@ export const _Home = {
     _axios.delete("/home/slides/delete/" + id).then((res) => res.data),
   updateSlide: (id, data) =>
     _axios.post(`/home/slides/update/${id}`, data).then((res) => res.data),
+  updateOrder: (id, data) =>
+    _axios.post(`/home/order/update/${id}`, data).then((res) => res.data),
+  getSortableSections: () =>
+    _axios.get("home/tabs").then((res) => res.data?.data),
 
   // items
     getSection: ({ id }) =>

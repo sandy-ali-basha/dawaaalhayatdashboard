@@ -23,10 +23,11 @@ const CtaTab = ({ cta, direction, onEdit }) =>
             </Tooltip>
           </IconButton>
           <ChangeStatus
-            id={"cta"}
+            id={16}
             action={cta.status === "active" && "change-status"}
+            type="setting"
           >
-            {cta.status === "Active" ? "Active" : "Not Active"}
+            {cta.status === "1" ? "Active" : "Not Active"}
           </ChangeStatus>
         </Box>
         <Box sx={{ my: 2 }}>

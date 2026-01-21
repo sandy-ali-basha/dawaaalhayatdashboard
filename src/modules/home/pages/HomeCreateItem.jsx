@@ -70,6 +70,7 @@ const HomeCreateItem = () => {
                 {...register("image")}
                 error={!!errors.image}
                 helperText={errors.image?.message}
+
               />
             </Grid>
           </Grid>
@@ -82,15 +83,15 @@ const HomeCreateItem = () => {
           <Button variant="outlined" onClick={handleCancel}>
             {t("Cancel")}
           </Button>
-        <ButtonLoader
-                    name={t("Submit")}
-                    onClick={() => handleSubmit(handleCreate)()}
-                    type="submit"
-                    loading={loading}
-                    disableOnLoading
-                  >
-                    {t("Submit")}
-                  </ButtonLoader>
+          <ButtonLoader
+            name={t("Submit")}
+            onClick={() => handleSubmit(handleCreate)()}
+            type="submit"
+            loading={loading}
+            disableOnLoading
+          >
+            {t("Submit")}
+          </ButtonLoader>
         </Box>
       </BoxStyled>
     </Box>
