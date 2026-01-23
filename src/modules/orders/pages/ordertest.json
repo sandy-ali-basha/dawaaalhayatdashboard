@@ -1,0 +1,38 @@
+{
+    "city_id": 34,
+    "customer": {
+        "name": "sandy ali basha",
+        "phone": "01020479941",
+        "address": "giza, 6th of october",
+        "notes": "test"
+    },
+    "items": [
+        {
+            "product_id": 967,
+            "name": "Fine’s Spirulina+ Appetite Booster",
+            "variant_id": 1060,
+            "variant_name": [
+                "default",
+                "default"
+            ],
+            "price": 15000,
+            "quantity": 1
+        },
+        {
+            "product_id": 970,
+            "name": "Fine's Passiflora+ Sleep Well",
+            "variant_id": 1134,
+            "variant_name": [
+                "default",
+                "default"
+            ],
+            "price": 17000,
+            "quantity": 1
+        }
+    ],
+    "totals": {
+        "subtotal": 32000,
+        "shipping": 50,
+        "total": 32050
+    }
+}
