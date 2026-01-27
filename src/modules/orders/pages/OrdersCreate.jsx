@@ -19,6 +19,7 @@ import { _axios } from "interceptor/http-config";
 import i18next from "i18next";
 import { useCallback } from "react";
 import { BoxStyled } from "components/styled/BoxStyled";
+import { _Orders } from "api/orders/orders";
 
 export default function OrdersCreate() {
   /* ------------------ location ------------------ */
@@ -34,10 +35,12 @@ export default function OrdersCreate() {
 
   /* ------------------ customer ------------------ */
   const [customer, setCustomer] = useState({
-    name: "",
+    first_name: "",
+    last_name: "",
     phone: "",
     address: "",
     notes: "",
+    contact_email: "",
   });
 
   /* ------------------ totals ------------------ */
@@ -99,7 +102,9 @@ export default function OrdersCreate() {
         product_id: product.id,
         name: product.name.en,
         variant_id: variant.id,
-        variant_name: variant.options,
+        variant_name: Array.isArray(variant.options)
+          ? variant.options
+          : [variant.options, variant.options],
         price: variant.price,
         quantity: 1,
       },
@@ -130,15 +135,39 @@ export default function OrdersCreate() {
 
   /* ------------------ create order ------------------ */
   const createOrder = () => {
+    const productsPayload = selectedItems.map((item) => ({
+      product_id: item.product_id,
+      name: item.name,
+      variant_id: item.variant_id,
+      variant_name: Array.isArray(item.variant_name)
+        ? item.variant_name
+        : [item.variant_name, item.variant_name],
+      price: item.price,
+      qty: item.quantity,
+    }));
+
     const payload = {
+      country_id: countryId,
+      currency_id: products?.[0]?.variants?.[0]?.currency?.id || 2,
       city_id: cityId,
-      customer,
-      items: selectedItems,
-      totals,
+      customer: {
+        first_name: customer.first_name,
+        last_name: customer.last_name,
+        phone: customer.phone,
+        address: customer.address,
+        notes: customer.notes,
+        contact_email: customer.contact_email,
+      },
+      products: productsPayload,
+      totals: {
+        subtotal: totals.subtotal,
+        shipping: totals.shipping,
+        total: totals.total,
+      },
     };
 
     console.log("ORDER PAYLOAD", payload);
-    // _orders.create(payload)
+    _Orders.create(payload);
   };
 
   /* ------------------ filter variants by city ------------------ */
@@ -159,7 +188,7 @@ export default function OrdersCreate() {
 
       {/* ------------------ Country & City ------------------ */}
       <BoxStyled>
-        <Grid container spacing={2} sx={{p:2}}>
+        <Grid container spacing={2} sx={{ p: 2 }}>
           <Grid item md={6} xs={12}>
             <FormControl fullWidth>
               <InputLabel>Country</InputLabel>
@@ -196,21 +225,58 @@ export default function OrdersCreate() {
       <Grid container spacing={2} mt={2}>
         {products?.map((p) => (
           <Grid item md={4} key={p.id}>
-            <Card>
-              <CardContent>
-                <Typography color="text.primary" fontWeight="bold">
+            <Card
+              sx={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: 2,
+                boxShadow: 4,
+                transition: "0.2s",
+                "&:hover": {
+                  boxShadow: 6,
+                },
+              }}
+            >
+              <CardContent sx={{ flexGrow: 1 }}>
+                {/* Product name */}
+                <Typography
+                  color="text.primary"
+                  fontWeight={700}
+                  fontSize={16}
+                  mb={1}
+                >
                   {p.name.en}
                 </Typography>
-                {filteredVariants(p.variants)?.map((v) => (
-                  <Button
-                    key={v.id}
-                    size="small"
-                    sx={{ mt: 1 }}
-                    onClick={() => addProduct(p, v)}
-                  >
-                    + {v.options} – {v.price} {v.currency.code}
-                  </Button>
-                ))}
+
+                {/* Variants */}
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  {filteredVariants(p.variants)?.map((v) => (
+                    <Button
+                      key={v.id}
+                      size="small"
+                      variant="outlined"
+                      sx={{
+                        textTransform: "none",
+                        borderRadius: 2,
+                        fontSize: 13,
+                        px: 1.5,
+                        "&:hover": {
+                          backgroundColor: "primary.main",
+                          color: "#fff",
+                        },
+                      }}
+                      onClick={() => addProduct(p, v)}
+                    >
+                      <Box sx={{ display: "flex", gap: 0.5 }}>
+                        <span>{v.options}</span>
+                        <strong>
+                          – {v.price} {v.currency.code}
+                        </strong>
+                      </Box>
+                    </Button>
+                  ))}
+                </Box>
               </CardContent>
             </Card>
           </Grid>
@@ -218,7 +284,7 @@ export default function OrdersCreate() {
       </Grid>
 
       {/* ------------------ Cart ------------------ */}
-      <BoxStyled mt={4} sx={{p:2}}>
+      <BoxStyled mt={4} sx={{ p: 2 }}>
         <Typography color="text.primary" variant="h6">
           Order Items
         </Typography>
@@ -250,11 +316,29 @@ export default function OrdersCreate() {
       </BoxStyled>
 
       {/* ------------------ Customer ------------------ */}
-      <BoxStyled mt={4} sx={{p:2}}>
+      <BoxStyled mt={4} sx={{ p: 2 }}>
         <TextField
           fullWidth
-          label="Customer Name"
-          onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
+          label="First Name"
+          onChange={(e) =>
+            setCustomer({ ...customer, first_name: e.target.value })
+          }
+        />
+        <TextField
+          fullWidth
+          label="Last Name"
+          sx={{ mt: 2 }}
+          onChange={(e) =>
+            setCustomer({ ...customer, last_name: e.target.value })
+          }
+        />
+        <TextField
+          fullWidth
+          label="Contact Email"
+          sx={{ mt: 2 }}
+          onChange={(e) =>
+            setCustomer({ ...customer, contact_email: e.target.value })
+          }
         />
         <TextField
           fullWidth

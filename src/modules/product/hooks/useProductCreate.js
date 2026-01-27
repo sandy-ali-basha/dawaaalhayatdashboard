@@ -123,6 +123,7 @@ export const useProductCreate = () => {
       error: "points",
       helperText: "points",
     },
+   
   ];
 
   const Discription = [

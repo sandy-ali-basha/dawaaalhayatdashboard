@@ -28,6 +28,7 @@ import { useOrders } from "hooks/orders/useOrders";
 import OrdersUpdate from "./OrdersUpdate";
 import { orderStore } from "../store/orderStore";
 import {
+  Add,
   Cancel,
   CheckCircle,
   Done,
@@ -85,22 +86,22 @@ const OrdersIndex = () => {
             `${order?.customer[0]?.first_name ?? ""} ${
               order?.customer[0]?.last_name ?? ""
             }` || "Null",
-          age: isRepeatedReference ? "" : order?.customer[0]?.age ?? "Null",
+          age: isRepeatedReference ? "" : (order?.customer[0]?.age ?? "Null"),
           gender: isRepeatedReference
             ? ""
-            : order?.customer[0]?.gender ?? "Null",
+            : (order?.customer[0]?.gender ?? "Null"),
           "Contact Email": isRepeatedReference
             ? ""
-            : order?.address[1]?.contact_email ?? "Null",
+            : (order?.address[1]?.contact_email ?? "Null"),
           "Contact Phone": isRepeatedReference
             ? ""
-            : order?.address[1]?.contact_phone ?? "Null",
+            : (order?.address[1]?.contact_phone ?? "Null"),
           City: order?.address[1]?.city ?? "Null",
           "reference رقم الطلب": isRepeatedReference ? "" : order?.reference,
           "created at تاريخ الطلب": isRepeatedReference
             ? ""
             : order?.created_at,
-          "order status": isRepeatedReference ? "" : order?.status ?? "Null",
+          "order status": isRepeatedReference ? "" : (order?.status ?? "Null"),
 
           // Conditional fields
           "Product المنتجات": product?.description ?? "Null",
@@ -109,16 +110,16 @@ const OrdersIndex = () => {
           Address: order?.address[1]?.line_one ?? "Null",
           "city shipping price": isRepeatedReference
             ? ""
-            : order?.address[1]?.city_shipping_price ?? "Null",
+            : (order?.address[1]?.city_shipping_price ?? "Null"),
           "delivery instructions":
             order?.address[1]?.delivery_instructions ?? "Null",
           "Payment Method": isRepeatedReference
             ? ""
             : order?.transactions[0]?.driver === "coffline"
-            ? "cash"
-            : order?.transactions[0]?.driver ?? "Null",
+              ? "cash"
+              : (order?.transactions[0]?.driver ?? "Null"),
           "Points deducted during the purchase process  النقاط المحسومة ضمن عملية الشراء":
-            isRepeatedReference ? "" : order?.points_used ?? "null",
+            isRepeatedReference ? "" : (order?.points_used ?? "null"),
           "order sub total": isRepeatedReference ? "" : order?.sub_total,
           "order total": isRepeatedReference ? "" : order?.total,
         };
@@ -195,7 +196,7 @@ const OrdersIndex = () => {
       setItem(item);
       navigate("view");
     },
-    [navigate, setItem]
+    [navigate, setItem],
   );
 
   const getStatusDetails = (status) => {
@@ -258,14 +259,14 @@ const OrdersIndex = () => {
           <TableCell sx={{ minWidth: 50 }}>{orders?.total ?? "Null"}</TableCell>
           <TableCell sx={{ minWidth: 50 }}>
             {orders?.customer &&
-              (orders?.customer[0]?.first_name ??
-                "Null" + " " + orders?.customer[0]?.last_name ??
-                "Null")}
+              (orders?.customer[0]?.first_name ?? "Null") +
+                " " +
+                (orders?.customer[0]?.last_name ?? "Null")}
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>
             {orders?.transactions[0]?.driver === "coffline"
               ? "cash"
-              : orders?.transactions[0]?.driver ?? "Null"}
+              : (orders?.transactions[0]?.driver ?? "Null")}
           </TableCell>
           <TableCell sx={{ minWidth: 50 }}>
             {orders?.sub_total ?? "Null"}
@@ -298,7 +299,7 @@ const OrdersIndex = () => {
           <TableCell
             align="center"
             sx={{
-              minWidth: 300,  
+              minWidth: 300,
             }}
           >
             <IconButton onClick={() => handleView(orders)}>
@@ -355,14 +356,25 @@ const OrdersIndex = () => {
           <Typography sx={{ color: "text.main" }} variant="h5">
             {t("orders")} {isLoading && "updating ..."}
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={exportToExcel}
-            sx={{ ml: 2 }}
-          >
-            Export to Excel <GetAppOutlined />
-          </Button>
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={exportToExcel}
+              sx={{ mx: 2 }}
+              startIcon={<GetAppOutlined />}
+            >
+              Export to Excel 
+            </Button>
+            <Button
+              startIcon={<Add />}
+              variant="outlined"
+              color="primary"
+              href="orders/create"
+            >
+              {t("New Order")}
+            </Button>
+          </Box>
         </Box>
 
         <BoxStyled sx={{ px: "10px" }}>

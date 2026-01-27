@@ -12,4 +12,5 @@ export const _Orders = {
 
     update: ({ editedID, formData }) => _axios.post( Link +'/' + editedID, formData).then((res) => res?.data),
     updateStatus: ({ editedID, formData }) => _axios.post( Link +'/' + editedID+'/update-status', formData).then((res) => res?.data),
+    create: (data) => _axios.post( Link + "/admin", data).then((res) => res?.data),
 };
