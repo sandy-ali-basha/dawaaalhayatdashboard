@@ -1,17 +1,14 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   Box,
   Button,
   Grid,
-  MenuItem,
   TextField,
   Typography,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
 import { usePharmaciesCreate } from "hooks/pharmacies/usePharmaciesCreate";
 import PharmacyMapPicker from "../components/PharmacyMapPicker";
-import { pharmaciesSeed } from "../data/pharmacies";
+import { BoxStyled } from "components/styled/BoxStyled";
 
 const PharmaciesCreate = () => {
   const {
@@ -24,66 +21,22 @@ const PharmaciesCreate = () => {
     loading,
     errors,
   } = usePharmaciesCreate();
-  const [selectedPharmacyId, setSelectedPharmacyId] = useState("");
-
   const mapValue = useMemo(
     () => ({ lat: watch("lat"), lng: watch("lng") }),
     [watch]
   );
-
-  const handleSelectPharmacy = (event) => {
-    const selectedId = event.target.value;
-    setSelectedPharmacyId(selectedId);
-
-    const selected = pharmaciesSeed.find(
-      (pharmacy) => pharmacy.id === Number(selectedId)
-    );
-
-    if (selected) {
-      setValue("name", selected.name);
-      setValue("city", selected.city);
-      setValue("phone", selected.phone);
-      setValue("address", selected.address);
-      setValue("lat", selected.lat);
-      setValue("lng", selected.lng);
-      setValue("hasProducts", selected.hasProducts !== false);
-    }
-  };
-
   const handleMapChange = ({ lat, lng }) => {
     setValue("lat", Number(lat));
     setValue("lng", Number(lng));
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit(hanldeCreate)}>
+    <BoxStyled sx={{ p: 2 }} component="form" onSubmit={handleSubmit(hanldeCreate)}>
       <Typography variant="h4" sx={{ color: "text.main", mb: 2 }}>
         Add Pharmacy
       </Typography>
 
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            select
-            label="Choose pharmacy"
-            value={selectedPharmacyId}
-            onChange={handleSelectPharmacy}
-            fullWidth
-          >
-            <MenuItem value="">Custom entry</MenuItem>
-            {pharmaciesSeed.map((pharmacy) => (
-              <MenuItem key={pharmacy.id} value={pharmacy.id}>
-                {pharmacy.name} ({pharmacy.city})
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControlLabel
-            control={<Checkbox {...register("hasProducts")} defaultChecked />}
-            label="Has products"
-          />
-        </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             label="Name"
@@ -153,7 +106,7 @@ const PharmaciesCreate = () => {
           Save Pharmacy
         </Button>
       </Box>
-    </Box>
+    </BoxStyled>
   );
 };
 

@@ -13,6 +13,7 @@ import { usePharmacy } from "hooks/pharmacies/usePharmacy";
 import { usePharmaciesUpdate } from "hooks/pharmacies/usePharmaciesUpdate";
 import PharmacyMapPicker from "../components/PharmacyMapPicker";
 import Loader from "components/shared/Loader";
+import { BoxStyled } from "components/styled/BoxStyled";
 
 const PharmaciesUpdate = () => {
   const { id } = useParams();
@@ -60,7 +61,7 @@ const PharmaciesUpdate = () => {
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit((input) => handleUpdate(id, input))}>
+    <BoxStyled sx={{ p: 2 }} component="form" onSubmit={handleSubmit((input) => handleUpdate(id, input))}>
       <Typography variant="h4" sx={{ color: "text.main", mb: 2 }}>
         Update Pharmacy
       </Typography>
@@ -121,13 +122,7 @@ const PharmaciesUpdate = () => {
             error={Boolean(errors.lng)}
             helperText={errors.lng?.message}
           />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={<Checkbox {...register("hasProducts")} />}
-            label="Has products"
-          />
-        </Grid>
+        </Grid>>
         <Grid item xs={12}>
           <PharmacyMapPicker value={mapValue} onChange={handleMapChange} />
         </Grid>
@@ -141,7 +136,7 @@ const PharmaciesUpdate = () => {
           Save Changes
         </Button>
       </Box>
-    </Box>
+    </BoxStyled>
   );
 };
 
