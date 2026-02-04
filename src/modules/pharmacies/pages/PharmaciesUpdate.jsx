@@ -5,8 +5,6 @@ import {
   Grid,
   TextField,
   Typography,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { usePharmacy } from "hooks/pharmacies/usePharmacy";
@@ -122,7 +120,7 @@ const PharmaciesUpdate = () => {
             error={Boolean(errors.lng)}
             helperText={errors.lng?.message}
           />
-        </Grid>>
+        </Grid>
         <Grid item xs={12}>
           <PharmacyMapPicker value={mapValue} onChange={handleMapChange} />
         </Grid>
