@@ -17,10 +17,73 @@ import RoomOutlined from "@mui/icons-material/RoomOutlined";
 import PharmacyDeleteDialog from "../components/PharmacyDeleteDialog";
 
 const PharmaciesIndex = () => {
-  const { data, isLoading } = usePharmacies();
+  const { isLoading } = usePharmacies();
   const navigate = useNavigate();
+  const rows = useMemo(() => {
+    const data = [
+      {
+        id: 1,
+        name: "صيدلية الشفاء",
+        lat: 33.3152,
+        lng: 44.3661,
+        city: "Baghdad",
 
-  const rows = useMemo(() => data?.data || [], [data]);
+        phone: "+964 1 555 0101",
+        address: "الكرادة داخل، شارع 52",
+      },
+      {
+        id: 2,
+        name: "صيدلية النور",
+        lat: 33.3205,
+        lng: 44.3612,
+        city: "Baghdad",
+
+        phone: "+964 1 555 0102",
+        address: "المنصور، شارع 14",
+      },
+      {
+        id: 3,
+        name: "صيدلية الرافدين",  
+        lat: 33.3121,
+        lng: 44.3523,
+        city: "Baghdad",
+
+        phone: "+964 1 555 0103",
+        address: "الزيونة، شارع الربيع",
+      },
+      {
+        id: 4,
+        name: "صيدلية الحياة",
+        lat: 33.5138,
+        lng: 36.2765,
+        city: "Damascus",
+
+        phone: "+963 11 555 0104",
+        address: "أبو رمانة، شارع العابد",
+      },
+      {
+        id: 5,
+        name: "صيدلية الشام",
+        lat: 33.5102,
+        lng: 36.2914,
+        city: "Damascus",
+
+        phone: "+963 11 555 0105",
+        address: "المزة، شارع 30",
+      },
+      {
+        id: 6,
+        name: "صيدلية الياسمين",
+        lat: 33.5268,
+        lng: 36.3127,
+        city: "Damascus",
+
+        phone: "+963 11 555 0106",
+        address: "كفرسوسة، شارع الجلاء",
+      },
+    ];
+    return data || [];
+  }, []);
 
   const columns = [
     {
@@ -61,13 +124,7 @@ const PharmaciesIndex = () => {
         </Box>
       ),
     },
-    {
-      field: "hasProducts",
-      headerName: "Products",
-      flex: 0.6,
-      minWidth: 110,
-      valueGetter: (params) => (params.row.hasProducts === false ? "No" : "Yes"),
-    },
+
     {
       field: "actions",
       headerName: "Actions",
