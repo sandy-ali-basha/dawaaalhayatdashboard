@@ -1,46 +1,38 @@
-import React, { useMemo, useRef, useState, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 
 const DEFAULT_CENTER = { lat: 33.3152, lng: 44.3661 };
-const DEFAULT_ZOOM = 12;
-const TILE_SIZE = 256;
+const DEFAULT_ZOOM = 13;
+const GOOGLE_MAPS_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+let googleMapsPromise;
 
-const latLngToPoint = (lat, lng, zoom) => {
-  const sinLat = Math.sin((lat * Math.PI) / 180);
-  const mapSize = TILE_SIZE * Math.pow(2, zoom);
-  const x = ((lng + 180) / 360) * mapSize;
-  const y =
-    (0.5 - Math.log((1 + sinLat) / (1 - sinLat)) / (4 * Math.PI)) * mapSize;
-  return { x, y };
+const loadGoogleMaps = () => {
+  if (googleMapsPromise) return googleMapsPromise;
+  googleMapsPromise = new Promise((resolve, reject) => {
+    if (window.google?.maps) {
+      resolve(window.google.maps);
+      return;
+    }
+    if (!GOOGLE_MAPS_KEY) {
+      reject(new Error("Missing Google Maps API key"));
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve(window.google.maps);
+    script.onerror = () => reject(new Error("Failed to load Google Maps"));
+    document.head.appendChild(script);
+  });
+  return googleMapsPromise;
 };
-
-const pointToLatLng = (x, y, zoom) => {
-  const mapSize = TILE_SIZE * Math.pow(2, zoom);
-  const lng = (x / mapSize) * 360 - 180;
-  const n = Math.PI - (2 * Math.PI * y) / mapSize;
-  const lat = (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
-  return { lat, lng };
-};
-
-const getTileUrl = (x, y, z) =>
-  `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
 
 const PharmacyMapPicker = ({ value, onChange }) => {
-  const containerRef = useRef(null);
-  const [size, setSize] = useState({ width: 600, height: 320 });
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const updateSize = () => {
-      setSize({
-        width: containerRef.current.clientWidth,
-        height: containerRef.current.clientHeight,
-      });
-    };
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
+  const mapRef = useRef(null);
+  const markerRef = useRef(null);
+  const inputRef = useRef(null);
+  const [error, setError] = useState("");
 
   const center = useMemo(() => {
     if (value?.lat && value?.lng) {
@@ -49,121 +41,135 @@ const PharmacyMapPicker = ({ value, onChange }) => {
     return DEFAULT_CENTER;
   }, [value]);
 
-  const { tiles, markerPosition } = useMemo(() => {
-    const centerPoint = latLngToPoint(center.lat, center.lng, DEFAULT_ZOOM);
-    const topLeft = {
-      x: centerPoint.x - size.width / 2,
-      y: centerPoint.y - size.height / 2,
-    };
+  useEffect(() => {
+    let mapInstance;
+    let autocomplete;
+    let clickListener;
+    setError("");
 
-    const startX = Math.floor(topLeft.x / TILE_SIZE);
-    const startY = Math.floor(topLeft.y / TILE_SIZE);
-    const endX = Math.floor((topLeft.x + size.width) / TILE_SIZE);
-    const endY = Math.floor((topLeft.y + size.height) / TILE_SIZE);
-
-    const tilesToRender = [];
-    for (let x = startX; x <= endX; x += 1) {
-      for (let y = startY; y <= endY; y += 1) {
-        tilesToRender.push({
-          x,
-          y,
-          left: x * TILE_SIZE - topLeft.x,
-          top: y * TILE_SIZE - topLeft.y,
-          url: getTileUrl(x, y, DEFAULT_ZOOM),
+    loadGoogleMaps()
+      .then((maps) => {
+        if (!mapRef.current) return;
+        mapInstance = new maps.Map(mapRef.current, {
+          center,
+          zoom: DEFAULT_ZOOM,
+          mapTypeControl: false,
+          streetViewControl: false,
         });
-      }
-    }
 
-    const markerPoint =
-      value?.lat && value?.lng
-        ? latLngToPoint(value.lat, value.lng, DEFAULT_ZOOM)
-        : null;
-
-    const markerPos = markerPoint
-      ? {
-          left: markerPoint.x - topLeft.x,
-          top: markerPoint.y - topLeft.y,
+        if (value?.lat && value?.lng) {
+          markerRef.current = new maps.Marker({
+            position: value,
+            map: mapInstance,
+          });
         }
-      : null;
 
-    return { tiles: tilesToRender, markerPosition: markerPos };
-  }, [center, size, value]);
+        clickListener = mapInstance.addListener("click", (event) => {
+          const next = {
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng(),
+          };
+          if (!markerRef.current) {
+            markerRef.current = new maps.Marker({
+              position: next,
+              map: mapInstance,
+            });
+          } else {
+            markerRef.current.setPosition(next);
+          }
+          onChange(next);
+        });
 
-  const handleClick = (event) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const clickY = event.clientY - rect.top;
+        if (inputRef.current) {
+          autocomplete = new maps.places.Autocomplete(inputRef.current, {
+            fields: ["geometry", "name"],
+          });
+          autocomplete.addListener("place_changed", () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry?.location) return;
+            const next = {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+            };
+            mapInstance.panTo(next);
+            mapInstance.setZoom(DEFAULT_ZOOM);
+            if (!markerRef.current) {
+              markerRef.current = new maps.Marker({
+                position: next,
+                map: mapInstance,
+              });
+            } else {
+              markerRef.current.setPosition(next);
+            }
+            onChange(next);
+          });
+        }
+      })
+      .catch((err) => setError(err.message));
 
-    const centerPoint = latLngToPoint(center.lat, center.lng, DEFAULT_ZOOM);
-    const topLeft = {
-      x: centerPoint.x - size.width / 2,
-      y: centerPoint.y - size.height / 2,
+    return () => {
+      if (clickListener) clickListener.remove();
+      if (autocomplete) autocomplete.unbindAll();
     };
+  }, [center, onChange, value?.lat, value?.lng]);
 
-    const clickedPoint = {
-      x: topLeft.x + clickX,
-      y: topLeft.y + clickY,
-    };
-
-    const next = pointToLatLng(clickedPoint.x, clickedPoint.y, DEFAULT_ZOOM);
-    onChange({
-      lat: Number(next.lat.toFixed(6)),
-      lng: Number(next.lng.toFixed(6)),
-    });
+  const handleNearMe = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported in this browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const next = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
+        onChange(next);
+        if (window.google?.maps && markerRef.current) {
+          markerRef.current.setPosition(next);
+        }
+      },
+      () => setError("Unable to access your location.")
+    );
   };
 
   return (
     <Box>
+      <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mb: 2 }}>
+        <TextField
+          inputRef={inputRef}
+          fullWidth
+          label="Search location"
+          placeholder="Search on map"
+        />
+        <Button variant="outlined" onClick={handleNearMe}>
+          Near me
+        </Button>
+      </Stack>
+
       <Typography sx={{ mb: 1, fontWeight: 600 }} color="text.main">
         Pick pharmacy location from map
       </Typography>
+      {error && (
+        <Typography color="error.main" sx={{ mb: 1 }}>
+          {error}
+        </Typography>
+      )}
+      {!GOOGLE_MAPS_KEY && (
+        <Typography color="error.main" sx={{ mb: 1 }}>
+          Missing REACT_APP_GOOGLE_MAPS_API_KEY to load Google Maps.
+        </Typography>
+      )}
       <Box
-        ref={containerRef}
-        onClick={handleClick}
+        ref={mapRef}
         sx={{
-          height: 320,
+          height: 360,
           borderRadius: 2,
           overflow: "hidden",
           border: "1px solid",
           borderColor: "divider",
-          cursor: "crosshair",
-          position: "relative",
-          backgroundColor: "grey.100",
         }}
-      >
-        {tiles.map((tile) => (
-          <Box
-            component="img"
-            key={`${tile.x}-${tile.y}`}
-            src={tile.url}
-            alt=""
-            sx={{
-              position: "absolute",
-              width: TILE_SIZE,
-              height: TILE_SIZE,
-              left: tile.left,
-              top: tile.top,
-            }}
-          />
-        ))}
-        {markerPosition && (
-          <Box
-            sx={{
-              position: "absolute",
-              left: markerPosition.left,
-              top: markerPosition.top,
-              transform: "translate(-50%, -100%)",
-              width: 16,
-              height: 16,
-              borderRadius: "50%",
-              backgroundColor: "error.main",
-              border: "2px solid white",
-              boxShadow: 1,
-            }}
-          />
-        )}
-      </Box>
+      />
     </Box>
   );
 };
