@@ -3,10 +3,11 @@ import { Box, Typography } from "@mui/material";
 
 const DEFAULT_CENTER = { lat: 33.3152, lng: 44.3661 };
 const DEFAULT_ZOOM = 12;
+const TILE_SIZE = 256;
 
 const latLngToPoint = (lat, lng, zoom) => {
   const sinLat = Math.sin((lat * Math.PI) / 180);
-  const mapSize = 256 * Math.pow(2, zoom);
+  const mapSize = TILE_SIZE * Math.pow(2, zoom);
   const x = ((lng + 180) / 360) * mapSize;
   const y =
     (0.5 - Math.log((1 + sinLat) / (1 - sinLat)) / (4 * Math.PI)) * mapSize;
@@ -14,12 +15,15 @@ const latLngToPoint = (lat, lng, zoom) => {
 };
 
 const pointToLatLng = (x, y, zoom) => {
-  const mapSize = 256 * Math.pow(2, zoom);
+  const mapSize = TILE_SIZE * Math.pow(2, zoom);
   const lng = (x / mapSize) * 360 - 180;
   const n = Math.PI - (2 * Math.PI * y) / mapSize;
   const lat = (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
   return { lat, lng };
 };
+
+const getTileUrl = (x, y, z) =>
+  `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
 
 const PharmacyMapPicker = ({ value, onChange }) => {
   const containerRef = useRef(null);
@@ -45,12 +49,44 @@ const PharmacyMapPicker = ({ value, onChange }) => {
     return DEFAULT_CENTER;
   }, [value]);
 
-  const mapUrl = useMemo(() => {
-    const marker = value?.lat && value?.lng ? `${value.lat},${value.lng}` : null;
-    const markerParam = marker ? `&markers=${marker},red-pushpin` : "";
-    return `https://staticmap.openstreetmap.de/staticmap.php?center=${center.lat},${center.lng}&zoom=${DEFAULT_ZOOM}&size=${Math.round(
-      size.width
-    )}x${Math.round(size.height)}${markerParam}`;
+  const { tiles, markerPosition } = useMemo(() => {
+    const centerPoint = latLngToPoint(center.lat, center.lng, DEFAULT_ZOOM);
+    const topLeft = {
+      x: centerPoint.x - size.width / 2,
+      y: centerPoint.y - size.height / 2,
+    };
+
+    const startX = Math.floor(topLeft.x / TILE_SIZE);
+    const startY = Math.floor(topLeft.y / TILE_SIZE);
+    const endX = Math.floor((topLeft.x + size.width) / TILE_SIZE);
+    const endY = Math.floor((topLeft.y + size.height) / TILE_SIZE);
+
+    const tilesToRender = [];
+    for (let x = startX; x <= endX; x += 1) {
+      for (let y = startY; y <= endY; y += 1) {
+        tilesToRender.push({
+          x,
+          y,
+          left: x * TILE_SIZE - topLeft.x,
+          top: y * TILE_SIZE - topLeft.y,
+          url: getTileUrl(x, y, DEFAULT_ZOOM),
+        });
+      }
+    }
+
+    const markerPoint =
+      value?.lat && value?.lng
+        ? latLngToPoint(value.lat, value.lng, DEFAULT_ZOOM)
+        : null;
+
+    const markerPos = markerPoint
+      ? {
+          left: markerPoint.x - topLeft.x,
+          top: markerPoint.y - topLeft.y,
+        }
+      : null;
+
+    return { tiles: tilesToRender, markerPosition: markerPos };
   }, [center, size, value]);
 
   const handleClick = (event) => {
@@ -71,7 +107,10 @@ const PharmacyMapPicker = ({ value, onChange }) => {
     };
 
     const next = pointToLatLng(clickedPoint.x, clickedPoint.y, DEFAULT_ZOOM);
-    onChange({ lat: Number(next.lat.toFixed(6)), lng: Number(next.lng.toFixed(6)) });
+    onChange({
+      lat: Number(next.lat.toFixed(6)),
+      lng: Number(next.lng.toFixed(6)),
+    });
   };
 
   return (
@@ -89,13 +128,41 @@ const PharmacyMapPicker = ({ value, onChange }) => {
           border: "1px solid",
           borderColor: "divider",
           cursor: "crosshair",
+          position: "relative",
+          backgroundColor: "grey.100",
         }}
       >
-        <img
-          src={mapUrl}
-          alt="Pharmacy location picker"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
+        {tiles.map((tile) => (
+          <Box
+            component="img"
+            key={`${tile.x}-${tile.y}`}
+            src={tile.url}
+            alt=""
+            sx={{
+              position: "absolute",
+              width: TILE_SIZE,
+              height: TILE_SIZE,
+              left: tile.left,
+              top: tile.top,
+            }}
+          />
+        ))}
+        {markerPosition && (
+          <Box
+            sx={{
+              position: "absolute",
+              left: markerPosition.left,
+              top: markerPosition.top,
+              transform: "translate(-50%, -100%)",
+              width: 16,
+              height: 16,
+              borderRadius: "50%",
+              backgroundColor: "error.main",
+              border: "2px solid white",
+              boxShadow: 1,
+            }}
+          />
+        )}
       </Box>
     </Box>
   );
