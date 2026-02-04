@@ -1,117 +1,108 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import MapComponent from "@terrestris/react-geo/dist/Map/MapComponent/MapComponent";
+import OlLayerTile from "ol/layer/Tile";
+import OlMap from "ol/Map";
+import { fromLonLat, toLonLat } from "ol/proj";
+import OlSourceOsm from "ol/source/OSM";
+import OlView from "ol/View";
+import { Feature } from "ol";
+import { Point } from "ol/geom";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import Icon from "ol/style/Icon";
+import Style from "ol/style/Style";
+import Modify from "ol/interaction/Modify";
+import Collection from "ol/Collection";
+import "ol/ol.css";
+import "@terrestris/react-geo/dist/style.css";
 
 const DEFAULT_CENTER = { lat: 33.3152, lng: 44.3661 };
-const DEFAULT_ZOOM = 13;
-const GOOGLE_MAPS_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-let googleMapsPromise;
-
-const loadGoogleMaps = () => {
-  if (googleMapsPromise) return googleMapsPromise;
-  googleMapsPromise = new Promise((resolve, reject) => {
-    if (window.google?.maps) {
-      resolve(window.google.maps);
-      return;
-    }
-    if (!GOOGLE_MAPS_KEY) {
-      reject(new Error("Missing Google Maps API key"));
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => resolve(window.google.maps);
-    script.onerror = () => reject(new Error("Failed to load Google Maps"));
-    document.head.appendChild(script);
-  });
-  return googleMapsPromise;
-};
+const DEFAULT_ZOOM = 16;
 
 const PharmacyMapPicker = ({ value, onChange }) => {
-  const mapRef = useRef(null);
-  const markerRef = useRef(null);
-  const inputRef = useRef(null);
+  const [map, setMap] = useState(null);
+  const [marker, setMarker] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
   const [error, setError] = useState("");
+  const vectorSourceRef = useRef(new VectorSource({}));
 
   const center = useMemo(() => {
     if (value?.lat && value?.lng) {
-      return { lat: value.lat, lng: value.lng };
+      return fromLonLat([value.lng, value.lat]);
     }
-    return DEFAULT_CENTER;
+    return fromLonLat([DEFAULT_CENTER.lng, DEFAULT_CENTER.lat]);
   }, [value]);
 
+  const vectorLayer = useMemo(
+    () =>
+      new VectorLayer({
+        source: vectorSourceRef.current,
+      }),
+    []
+  );
+
   useEffect(() => {
-    let mapInstance;
-    let autocomplete;
-    let clickListener;
-    setError("");
+    const mapInstance = new OlMap({
+      target: undefined,
+      layers: [
+        new OlLayerTile({
+          source: new OlSourceOsm(),
+        }),
+        vectorLayer,
+      ],
+    });
 
-    loadGoogleMaps()
-      .then((maps) => {
-        if (!mapRef.current) return;
-        mapInstance = new maps.Map(mapRef.current, {
-          center,
-          zoom: DEFAULT_ZOOM,
-          mapTypeControl: false,
-          streetViewControl: false,
-        });
+    const view = new OlView({
+      center,
+      zoom: DEFAULT_ZOOM,
+    });
+    mapInstance.setView(view);
 
-        if (value?.lat && value?.lng) {
-          markerRef.current = new maps.Marker({
-            position: value,
-            map: mapInstance,
-          });
-        }
-
-        clickListener = mapInstance.addListener("click", (event) => {
-          const next = {
-            lat: event.latLng.lat(),
-            lng: event.latLng.lng(),
-          };
-          if (!markerRef.current) {
-            markerRef.current = new maps.Marker({
-              position: next,
-              map: mapInstance,
-            });
-          } else {
-            markerRef.current.setPosition(next);
-          }
-          onChange(next);
-        });
-
-        if (inputRef.current) {
-          autocomplete = new maps.places.Autocomplete(inputRef.current, {
-            fields: ["geometry", "name"],
-          });
-          autocomplete.addListener("place_changed", () => {
-            const place = autocomplete.getPlace();
-            if (!place.geometry?.location) return;
-            const next = {
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng(),
-            };
-            mapInstance.panTo(next);
-            mapInstance.setZoom(DEFAULT_ZOOM);
-            if (!markerRef.current) {
-              markerRef.current = new maps.Marker({
-                position: next,
-                map: mapInstance,
-              });
-            } else {
-              markerRef.current.setPosition(next);
-            }
-            onChange(next);
-          });
-        }
+    const markerFeature = new Feature({
+      geometry: new Point(center),
+    });
+    markerFeature.setStyle(
+      new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+          scale: 1,
+        }),
       })
-      .catch((err) => setError(err.message));
+    );
 
-    return () => {
-      if (clickListener) clickListener.remove();
-      if (autocomplete) autocomplete.unbindAll();
+    vectorSourceRef.current.addFeature(markerFeature);
+    setMarker(markerFeature);
+
+    const modify = new Modify({
+      features: new Collection([markerFeature]),
+    });
+
+    modify.on("modifyend", () => {
+      const coords = markerFeature.getGeometry().getCoordinates();
+      const [lng, lat] = toLonLat(coords);
+      onChange({ lat, lng });
+    });
+
+    mapInstance.addInteraction(modify);
+    setMap(mapInstance);
+  }, [center, onChange, vectorLayer]);
+
+  useEffect(() => {
+    if (!map || !marker) return;
+    const clickHandler = (event) => {
+      const clickedCoord = event.coordinate;
+      marker.getGeometry().setCoordinates(clickedCoord);
+      const [lng, lat] = toLonLat(clickedCoord);
+      onChange({ lat, lng });
     };
-  }, [center, onChange, value?.lat, value?.lng]);
+
+    map.on("click", clickHandler);
+    return () => {
+      map.un("click", clickHandler);
+    };
+  }, [map, marker, onChange]);
 
   const handleNearMe = () => {
     if (!navigator.geolocation) {
@@ -119,29 +110,72 @@ const PharmacyMapPicker = ({ value, onChange }) => {
       return;
     }
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const next = {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        };
-        onChange(next);
-        if (window.google?.maps && markerRef.current) {
-          markerRef.current.setPosition(next);
+      (position) => {
+        const coords = fromLonLat([
+          position.coords.longitude,
+          position.coords.latitude,
+        ]);
+        if (map) {
+          map.getView().setCenter(coords);
+          map.getView().setZoom(DEFAULT_ZOOM);
         }
+        if (marker) {
+          marker.getGeometry().setCoordinates(coords);
+        }
+        onChange({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setError("");
       },
       () => setError("Unable to access your location.")
     );
   };
 
+  const handleSearch = async () => {
+    if (!searchValue.trim()) return;
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          searchValue
+        )}`
+      );
+      const results = await response.json();
+      if (!results.length) {
+        setError("No results found for this search.");
+        return;
+      }
+      const top = results[0];
+      const coords = fromLonLat([Number(top.lon), Number(top.lat)]);
+      if (map) {
+        map.getView().setCenter(coords);
+        map.getView().setZoom(DEFAULT_ZOOM);
+      }
+      if (marker) {
+        marker.getGeometry().setCoordinates(coords);
+      }
+      onChange({ lat: Number(top.lat), lng: Number(top.lon) });
+      setError("");
+    } catch (err) {
+      setError("Search failed. Please try again.");
+    }
+  };
+
+  if (!map) return null;
+
   return (
     <Box>
       <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mb: 2 }}>
         <TextField
-          inputRef={inputRef}
+          value={searchValue}
+          onChange={(event) => setSearchValue(event.target.value)}
           fullWidth
           label="Search location"
           placeholder="Search on map"
         />
+        <Button variant="outlined" onClick={handleSearch}>
+          Search
+        </Button>
         <Button variant="outlined" onClick={handleNearMe}>
           Near me
         </Button>
@@ -155,19 +189,15 @@ const PharmacyMapPicker = ({ value, onChange }) => {
           {error}
         </Typography>
       )}
-      {!GOOGLE_MAPS_KEY && (
-        <Typography color="error.main" sx={{ mb: 1 }}>
-          Missing REACT_APP_GOOGLE_MAPS_API_KEY to load Google Maps.
-        </Typography>
-      )}
-      <Box
-        ref={mapRef}
-        sx={{
-          height: 360,
-          borderRadius: 2,
+      <MapComponent
+        map={map}
+        style={{
+          height: "360px",
+          flex: 1,
+          minWidth: "400px",
+          maxWidth: "100%",
+          borderRadius: "16px",
           overflow: "hidden",
-          border: "1px solid",
-          borderColor: "divider",
         }}
       />
     </Box>
