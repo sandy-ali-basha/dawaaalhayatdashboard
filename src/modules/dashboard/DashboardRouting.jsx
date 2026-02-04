@@ -25,6 +25,7 @@ import InvintoryRouting from "modules/invintory/InvintoryRouting";
 import CurrenciesRouting from "modules/currencies/CurrenciesRouting";
 import ContactusRouting from "modules/contactus/ContactusRouting";
 import AboutusRouting from "modules/aboutuS/AboutusRouting";
+import PharmaciesRouting from "modules/pharmacies/PharmaciesRouting";
 
 const DashboardRouting = () => {
   return (
@@ -64,6 +65,7 @@ const DashboardRouting = () => {
           <Route path="/home/*" element={<HomeRouting />} />
           <Route path="/settings/*" element={<SettingsRouting />} />
           <Route path="/currencies/*" element={<CurrenciesRouting />} />
+          <Route path="/pharmacies/*" element={<PharmaciesRouting />} />
 
           </Route>
       }

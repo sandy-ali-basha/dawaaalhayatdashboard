@@ -19,6 +19,7 @@ import {
   GavelOutlined,
   HomeOutlined,
   Inventory2Outlined,
+  LocalPharmacyOutlined,
   MoneyOutlined,
   Person2Outlined,
   PublicOutlined,
@@ -84,6 +85,11 @@ const SideBar = ({ open, setOpen }) => {
       name: t("Inventories"),
       link: "/dashboard/Inventories",
       icon: <Inventory2Outlined />,
+    },
+    {
+      name: t("pharmacies"),
+      link: "/dashboard/pharmacies",
+      icon: <LocalPharmacyOutlined />,
     },
     {
       name: t("currencies"),
@@ -223,6 +229,11 @@ const SideBar = ({ open, setOpen }) => {
       name: t("Inventories"),
       link: "/dashboard/Inventories",
       icon: <PublicOutlined />,
+    },
+    {
+      name: t("pharmacies"),
+      link: "/dashboard/pharmacies",
+      icon: <LocalPharmacyOutlined />,
     },
 
     {
