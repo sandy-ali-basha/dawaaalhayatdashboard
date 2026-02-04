@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -6,6 +6,8 @@ import {
   Typography,
   IconButton,
   Tooltip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
@@ -14,13 +16,80 @@ import Loader from "components/shared/Loader";
 import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
 import ModeOutlined from "@mui/icons-material/ModeOutlined";
 import RoomOutlined from "@mui/icons-material/RoomOutlined";
+import Search from "@mui/icons-material/Search";
 import PharmacyDeleteDialog from "../components/PharmacyDeleteDialog";
+
+const toRadians = (deg) => (deg * Math.PI) / 180;
+
+const haversineDistance = (from, to) => {
+  if (!from || !to) return null;
+  const earthRadius = 6371;
+  const dLat = toRadians(to.lat - from.lat);
+  const dLng = toRadians(to.lng - from.lng);
+  const lat1 = toRadians(from.lat);
+  const lat2 = toRadians(to.lat);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLng / 2) * Math.sin(dLng / 2) * Math.cos(lat1) * Math.cos(lat2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return earthRadius * c;
+};
 
 const PharmaciesIndex = () => {
   const { data, isLoading } = usePharmacies();
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const [userLocation, setUserLocation] = useState(null);
+  const [nearbyOnly, setNearbyOnly] = useState(false);
 
-  const rows = useMemo(() => data?.data || [], [data]);
+  const rows = useMemo(() => {
+    const source = data?.data || [];
+    const filtered = source.filter((pharmacy) => {
+      if (!search) return true;
+      const query = search.toLowerCase();
+      return (
+        pharmacy.name?.toLowerCase().includes(query) ||
+        pharmacy.city?.toLowerCase().includes(query) ||
+        pharmacy.phone?.toLowerCase().includes(query)
+      );
+    });
+
+    const withDistance = filtered.map((pharmacy) => ({
+      ...pharmacy,
+      distanceKm: userLocation
+        ? haversineDistance(userLocation, {
+            lat: pharmacy.lat,
+            lng: pharmacy.lng,
+          })
+        : null,
+    }));
+
+    if (nearbyOnly && userLocation) {
+      return withDistance
+        .filter((pharmacy) => pharmacy.distanceKm !== null)
+        .filter((pharmacy) => pharmacy.distanceKm <= 10)
+        .sort((a, b) => a.distanceKm - b.distanceKm);
+    }
+
+    if (userLocation) {
+      return withDistance.sort(
+        (a, b) => (a.distanceKm ?? 0) - (b.distanceKm ?? 0)
+      );
+    }
+
+    return withDistance;
+  }, [data, search, userLocation, nearbyOnly]);
+
+  const handleNearMe = () => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setUserLocation({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      });
+      setNearbyOnly(true);
+    });
+  };
 
   const columns = [
     {
@@ -61,6 +130,20 @@ const PharmaciesIndex = () => {
         </Box>
       ),
     },
+    ...(userLocation
+      ? [
+          {
+            field: "distanceKm",
+            headerName: "Distance (km)",
+            flex: 0.7,
+            minWidth: 120,
+            valueGetter: (params) =>
+              params.row.distanceKm
+                ? params.row.distanceKm.toFixed(2)
+                : "--",
+          },
+        ]
+      : []),
     {
       field: "hasProducts",
       headerName: "Products",
@@ -100,10 +183,30 @@ const PharmaciesIndex = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           mb: 2,
+          gap: 2,
+          flexWrap: "wrap",
         }}
       >
+        <TextField
+          variant="outlined"
+          size="small"
+          placeholder="Search pharmacies..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          sx={{ width: { xs: "100%", md: "300px" } }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search color="action" />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button variant="outlined" onClick={handleNearMe}>
+          Near me
+        </Button>
         <Button
           variant="contained"
           startIcon={<AddCircleOutline />}
