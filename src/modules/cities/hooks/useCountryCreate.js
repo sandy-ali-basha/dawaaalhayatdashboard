@@ -8,9 +8,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _Regions } from "api/regions/regions";
 
 const schema = yup.object().shape({
-  name: yup.string().required("English Name is required"),
-  name_ar: yup.string().required("Arabic Name is required"),
-  name_kr: yup.string().required("Kurdish Name is required"),
+  name: yup.object().shape({
+    en: yup.string().required("English Name is required"),
+    ar: yup.string().required("Arabic Name is required"),
+    kr: yup.string().required("Kurdish Name is required"),
+  }),
 });
 
 export const useCountryCreate = () => {
@@ -42,14 +44,24 @@ export const useCountryCreate = () => {
     const form = document.querySelector("form");
     if (form) form.reset();
   };
-
   const hanldeCreate = (input) => {
     const formData = new FormData();
-    const inputWithoutBirthday = { ...input };
-    delete inputWithoutBirthday.birthday;
-    for (const [key, value] of Object.entries(inputWithoutBirthday)) {
-      formData.append(key, value);
+
+    // 1. Manually append nested name fields
+    if (input.name) {
+      formData.append("name[en]", input.name.en);
+      formData.append("name[ar]", input.name.ar);
+      formData.append("name[kr]", input.name.kr);
     }
+
+    // 2. Append other top-level fields (like currency_id)
+    // We skip 'name' here because we handled it above
+    for (const [key, value] of Object.entries(input)) {
+      if (key !== "name" && key !== "birthday") {
+        formData.append(key, value);
+      }
+    }
+
     mutate(formData);
     setLoading(true);
   };
@@ -59,19 +71,19 @@ export const useCountryCreate = () => {
       head: "Name English",
       type: "text",
       placeholder: "Name English",
-      register: "name",
+      register: "name.en",
     },
     {
       head: "Name Arabic",
       type: "text",
       placeholder: "Name Arabic",
-      register: "name_ar",
+      register: "name.ar",
     },
     {
       head: "Name Kurdish",
       type: "text",
       placeholder: "Name Kurdish",
-      register: "name_kr",
+      register: "name.kr",
     },
   ];
 
