@@ -21,6 +21,7 @@ const PharmaciesCreate = () => {
     loading,
     errors,
   } = usePharmaciesCreate();
+  
   const mapValue = useMemo(
     () => ({ lat: watch("lat"), lng: watch("lng") }),
     [watch]

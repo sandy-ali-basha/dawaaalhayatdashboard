@@ -44,10 +44,13 @@ const PharmaciesUpdate = () => {
     }
   }, [pharmacy, reset]);
 
-  const mapValue = useMemo(
-    () => ({ lat: watch("lat"), lng: watch("lng") }),
-    [watch]
-  );
+const watchedLat = watch("lat");
+const watchedLng = watch("lng");
+
+const mapValue = useMemo(
+  () => ({ lat: watchedLat, lng: watchedLng }),
+  [watchedLat, watchedLng]
+);
 
   const handleMapChange = ({ lat, lng }) => {
     setValue("lat", Number(lat));

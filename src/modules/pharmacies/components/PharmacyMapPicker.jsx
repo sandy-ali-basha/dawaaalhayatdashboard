@@ -15,7 +15,7 @@ import Style from "ol/style/Style";
 import Modify from "ol/interaction/Modify";
 import Collection from "ol/Collection";
 import "ol/ol.css";
-import "@terrestris/react-geo/dist/style.css";
+// import "@terrestris/react-geo/dist/style.css";
 
 const DEFAULT_CENTER = { lat: 33.3152, lng: 44.3661 };
 const DEFAULT_ZOOM = 16;
@@ -26,84 +26,77 @@ const PharmacyMapPicker = ({ value, onChange }) => {
   const [searchValue, setSearchValue] = useState("");
   const [error, setError] = useState("");
   const vectorSourceRef = useRef(new VectorSource({}));
-
-  const center = useMemo(() => {
-    if (value?.lat && value?.lng) {
-      return fromLonLat([value.lng, value.lat]);
-    }
-    return fromLonLat([DEFAULT_CENTER.lng, DEFAULT_CENTER.lat]);
-  }, [value]);
-
-  const vectorLayer = useMemo(
-    () =>
-      new VectorLayer({
-        source: vectorSourceRef.current,
-      }),
-    []
-  );
-
+  const mapElement = useRef(null); // Ref for the map container
+  const isInternalUpdate = useRef(false); // To prevent loops
+  // 1. Initialize Map ONCE
   useEffect(() => {
-    const mapInstance = new OlMap({
-      target: undefined,
-      layers: [
-        new OlLayerTile({
-          source: new OlSourceOsm(),
-        }),
-        vectorLayer,
-      ],
-    });
-
-    const view = new OlView({
-      center,
-      zoom: DEFAULT_ZOOM,
-    });
-    mapInstance.setView(view);
-
     const markerFeature = new Feature({
-      geometry: new Point(center),
+      geometry: new Point(
+        fromLonLat([
+          value?.lng || DEFAULT_CENTER.lng,
+          value?.lat || DEFAULT_CENTER.lat,
+        ]),
+      ),
     });
+
     markerFeature.setStyle(
       new Style({
         image: new Icon({
           anchor: [0.5, 1],
-          src: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-          scale: 1,
+          src: "https://cdn-icons-png.flaticon.com/512/684/684908.png", // Use a valid icon URL
+          scale: 0.05,
         }),
-      })
+      }),
     );
 
+    const vectorLayer = new VectorLayer({ source: vectorSourceRef.current });
     vectorSourceRef.current.addFeature(markerFeature);
-    setMarker(markerFeature);
 
-    const modify = new Modify({
-      features: new Collection([markerFeature]),
+    const mapInstance = new OlMap({
+      layers: [new OlLayerTile({ source: new OlSourceOsm() }), vectorLayer],
+      view: new OlView({
+        center: fromLonLat([
+          value?.lng || DEFAULT_CENTER.lng,
+          value?.lat || DEFAULT_CENTER.lat,
+        ]),
+        zoom: DEFAULT_ZOOM,
+      }),
     });
 
+    const modify = new Modify({ features: new Collection([markerFeature]) });
     modify.on("modifyend", () => {
       const coords = markerFeature.getGeometry().getCoordinates();
       const [lng, lat] = toLonLat(coords);
+      isInternalUpdate.current = true;
+      onChange({ lat, lng });
+    });
+
+    mapInstance.on("click", (event) => {
+      markerFeature.getGeometry().setCoordinates(event.coordinate);
+      const [lng, lat] = toLonLat(event.coordinate);
+      isInternalUpdate.current = true;
       onChange({ lat, lng });
     });
 
     mapInstance.addInteraction(modify);
+    setMarker(markerFeature);
     setMap(mapInstance);
-  }, [center, onChange, vectorLayer]);
 
+    return () => mapInstance.setTarget(undefined);
+  }, []); // Empty dependency array: run once
+
+  // 2. Sync Marker when "value" prop changes (e.g., after API load)
   useEffect(() => {
-    if (!map || !marker) return;
-    const clickHandler = (event) => {
-      const clickedCoord = event.coordinate;
-      marker.getGeometry().setCoordinates(clickedCoord);
-      const [lng, lat] = toLonLat(clickedCoord);
-      onChange({ lat, lng });
-    };
-
-    map.on("click", clickHandler);
-    return () => {
-      map.un("click", clickHandler);
-    };
-  }, [map, marker, onChange]);
-
+    if (map && marker && value?.lat && value?.lng) {
+      if (isInternalUpdate.current) {
+        isInternalUpdate.current = false;
+        return;
+      }
+      const coords = fromLonLat([value.lng, value.lat]);
+      marker.getGeometry().setCoordinates(coords);
+      map.getView().setCenter(coords);
+    }
+  }, [value?.lat, value?.lng, map, marker]);
   const handleNearMe = () => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported in this browser.");
@@ -128,36 +121,33 @@ const PharmacyMapPicker = ({ value, onChange }) => {
         });
         setError("");
       },
-      () => setError("Unable to access your location.")
+      () => setError("Unable to access your location."),
     );
+  };
+  // Move map function
+  const moveTo = (lat, lng) => {
+    if (!map || !marker) return;
+    const coords = fromLonLat([lng, lat]);
+    marker.getGeometry().setCoordinates(coords);
+    map.getView().animate({ center: coords, duration: 500 });
+    onChange({ lat, lng });
   };
 
   const handleSearch = async () => {
     if (!searchValue.trim()) return;
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          searchValue
-        )}`
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchValue)}`,
       );
-      const results = await response.json();
-      if (!results.length) {
-        setError("No results found for this search.");
-        return;
+      const data = await res.json();
+      if (data.length > 0) {
+        moveTo(Number(data[0].lat), Number(data[0].lon));
+        setError("");
+      } else {
+        setError("Not found");
       }
-      const top = results[0];
-      const coords = fromLonLat([Number(top.lon), Number(top.lat)]);
-      if (map) {
-        map.getView().setCenter(coords);
-        map.getView().setZoom(DEFAULT_ZOOM);
-      }
-      if (marker) {
-        marker.getGeometry().setCoordinates(coords);
-      }
-      onChange({ lat: Number(top.lat), lng: Number(top.lon) });
-      setError("");
-    } catch (err) {
-      setError("Search failed. Please try again.");
+    } catch {
+      setError("Search error");
     }
   };
 
