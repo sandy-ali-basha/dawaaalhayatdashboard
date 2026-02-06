@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   IconButton,
@@ -10,10 +10,12 @@ import {
   ListItemText,
 } from "@mui/material";
 import { NotificationsOutlined } from "@mui/icons-material";
+import { useNotifications } from "hooks/notifications/useNotifications";
 
 export default function NotificationDropdown() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const { data, isLoading } = useNotifications();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -22,37 +24,44 @@ export default function NotificationDropdown() {
     setAnchorEl(null);
   };
 
-  const notifications = [
-    {
-      id: 1,
-      title: "Congratulations Lettie 🎉",
-      message: "Won the monthly best seller gold badge",
-      time: "1h ago", 
-    },
-    {
-      id: 2,
-      title: "Charles Franklin",
-      message: "Accepted your connection",
-      time: "12h ago",
-    },
-    {
-      id: 3,
-      title: "New Message ✉️",
-      message: "You have new message from Natalie",
-      time: "1h ago",
-    },
-    {
-      id: 4,
-      title: "Whoo! You have new order 🛒",
-      message: "ACME Inc. made new order $1,154",
-      time: "1d ago",
-    },
-  ];
+  const notifications = useMemo(() => {
+    if (!data) return [];
+    return Object.entries(data)
+      .map(([id, notification]) => ({
+        id,
+        ...notification,
+      }))
+      .filter((notification) => notification.is_active);
+  }, [data]);
+
+  const sortedNotifications = useMemo(() => {
+    return [...notifications].sort(
+      (a, b) => (b.created_at || 0) - (a.created_at || 0)
+    );
+  }, [notifications]);
+
+  const unreadCount = useMemo(() => {
+    return notifications.filter((item) => item.is_active && !item.is_read)
+      .length;
+  }, [notifications]);
+
+  const formatTimestamp = (createdAt) => {
+    if (!createdAt) return "";
+    const date =
+      typeof createdAt === "number"
+        ? new Date(createdAt * 1000)
+        : new Date(createdAt);
+    return date.toLocaleString();
+  };
 
   return (
     <Box>
       <IconButton color="text.main" onClick={handleClick}>
-        <Badge badgeContent={8} color="primary">
+        <Badge
+          badgeContent={unreadCount}
+          color="primary"
+          invisible={unreadCount === 0}
+        >
           <NotificationsOutlined />
         </Badge>
       </IconButton>
@@ -68,12 +77,32 @@ export default function NotificationDropdown() {
         <Box sx={{ p: 2, pb: 0, display: "flex" }}>
           <Typography variant="h6">Notifications</Typography>
           <Typography variant="caption" color="text.secondary">
-            8 New
+            {unreadCount} New
           </Typography>
         </Box>
         <Divider sx={{ my: 1, color: "text.secondary" }} />
 
-        {notifications.map((n) => (
+        {isLoading && (
+          <MenuItem sx={{ alignItems: "flex-start" }}>
+            <ListItemText
+              primary={<Typography variant="subtitle2">Loading...</Typography>}
+            />
+          </MenuItem>
+        )}
+
+        {!isLoading && sortedNotifications.length === 0 && (
+          <MenuItem sx={{ alignItems: "flex-start" }}>
+            <ListItemText
+              primary={
+                <Typography variant="subtitle2">
+                  No notifications yet.
+                </Typography>
+              }
+            />
+          </MenuItem>
+        )}
+
+        {sortedNotifications.map((n) => (
           <MenuItem
             key={n.id}
             onClick={handleClose}
@@ -81,17 +110,20 @@ export default function NotificationDropdown() {
           >
             <ListItemText
               primary={
-                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: n.is_read ? 500 : 700 }}
+                >
                   {n.title}
                 </Typography>
               }
               secondary={
                 <>
                   <Typography variant="body2" color="text.secondary">
-                    {n.message}
+                    {n.body}
                   </Typography>
                   <Typography variant="caption" color="text.disabled">
-                    {n.time}
+                    {formatTimestamp(n.created_at)}
                   </Typography>
                 </>
               }
