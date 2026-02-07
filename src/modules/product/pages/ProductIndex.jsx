@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Typography,
   Box,
@@ -9,6 +9,9 @@ import {
   CircularProgress,
   Tooltip,
   Avatar,
+  Card,
+  CardContent,
+  Stack,
 } from "@mui/material";
 import Loader from "components/shared/Loader";
 import ProductUpdate from "./ProductUpdate";
@@ -24,6 +27,9 @@ import { DeleteSweep, ImageOutlined } from "@mui/icons-material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import UpdateRegionPrice from "../components/UpdateRegionPrice";
 import AddImagesSlider from "./steps/AddImagesSlider";
+import { useSettings } from "hooks/settings/useSettings";
+import SettingsUpdate from "modules/Settings/pages/SettingsUpdate";
+import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 
 const ProductIndex = () => {
   const {
@@ -62,6 +68,10 @@ const ProductIndex = () => {
     setUpdatePrice,
     productName,
   } = useProductIndex();
+
+  const { data: settingsData, isLoading: settingsLoading } = useSettings();
+  const [openPointPrice, setOpenPointPrice] = useState(false);
+  const pointPrice = settingsData?.data?.point_price;
 
   const rows = useMemo(() => {
     return filteredData.map((product) => ({
@@ -221,6 +231,13 @@ const ProductIndex = () => {
           setOpen={setUpdatePrice}
         />
       )}
+      {openPointPrice && (
+        <SettingsUpdate
+          open={openPointPrice}
+          setOpen={setOpenPointPrice}
+          value={pointPrice?.value}
+        />
+      )}
 
       <Box
         sx={{
@@ -278,6 +295,36 @@ const ProductIndex = () => {
             </Button>
           </Box>
         </BoxStyled>
+
+        <Card sx={{ mb: 2 }}>
+          <CardContent>
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              spacing={2}
+              alignItems={{ xs: "flex-start", md: "center" }}
+              justifyContent="space-between"
+            >
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                  {t("point price")}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {settingsLoading
+                    ? t("Loading...")
+                    : pointPrice?.value ?? t("Null")}
+                </Typography>
+              </Box>
+              <Button
+                startIcon={<ModeTwoToneIcon />}
+                variant="outlined"
+                onClick={() => setOpenPointPrice(true)}
+                disabled={settingsLoading || !pointPrice}
+              >
+                {t("Edit")}
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
 
         <BoxStyled
           sx={{
