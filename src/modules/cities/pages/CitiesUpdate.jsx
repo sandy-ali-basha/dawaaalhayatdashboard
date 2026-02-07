@@ -39,7 +39,7 @@ const CitiesUpdate = ({ setOldData, oldData, open, setOpen }) => {
   useEffect(() => {
     if (oldData) {
       reset({
-        name: oldData?.name?.replace(/^.*?\.\s*/, "") || "",
+        name: oldData?.name || "",
         inv_name: oldData?.inv_name || "",
         shipping_price: oldData?.shipping_price || "",
         currency_id: oldData?.currency_id || "",

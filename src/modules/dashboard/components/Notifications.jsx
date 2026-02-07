@@ -10,12 +10,20 @@ import {
   ListItemText,
 } from "@mui/material";
 import { NotificationsOutlined } from "@mui/icons-material";
+import { useMutation, useQueryClient } from "react-query";
+import { _Notifications } from "api/notifications/notifications";
 import { useNotifications } from "hooks/notifications/useNotifications";
+import { useNotificationsUnreadCount } from "hooks/notifications/useNotificationsUnreadCount";
 
 export default function NotificationDropdown() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const { data, isLoading } = useNotifications();
+  const { data: unreadData } = useNotificationsUnreadCount();
+  const queryClient = useQueryClient();
+  const { mutate: markAsRead } = useMutation((id) =>
+    _Notifications.markRead(id)
+  );
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,9 +49,12 @@ export default function NotificationDropdown() {
   }, [notifications]);
 
   const unreadCount = useMemo(() => {
+    if (typeof unreadData?.count === "number") {
+      return unreadData.count;
+    }
     return notifications.filter((item) => item.is_active && !item.is_read)
       .length;
-  }, [notifications]);
+  }, [notifications, unreadData]);
 
   const formatTimestamp = (createdAt) => {
     if (!createdAt) return "";
@@ -105,7 +116,17 @@ export default function NotificationDropdown() {
         {sortedNotifications.map((n) => (
           <MenuItem
             key={n.id}
-            onClick={handleClose}
+            onClick={() => {
+              if (!n.is_read) {
+                markAsRead(n.id, {
+                  onSuccess: () => {
+                    queryClient.invalidateQueries(["notifications"]);
+                    queryClient.invalidateQueries(["notifications-unread-count"]);
+                  },
+                });
+              }
+              handleClose();
+            }}
             sx={{ alignItems: "flex-start" }}
           >
             <ListItemText
