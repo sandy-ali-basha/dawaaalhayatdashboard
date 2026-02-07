@@ -9,9 +9,8 @@ import {
   CircularProgress,
   Tooltip,
   Avatar,
-  Card,
-  CardContent,
   Stack,
+  Card,
 } from "@mui/material";
 import Loader from "components/shared/Loader";
 import ProductUpdate from "./ProductUpdate";
@@ -23,7 +22,7 @@ import ChangeStatus from "../components/ChangeStatus";
 import ProductMenu from "../components/productMenu";
 import { useProductIndex } from "../hooks/useProductsIndex";
 import { DataGrid } from "@mui/x-data-grid";
-import { DeleteSweep, ImageOutlined } from "@mui/icons-material";
+import { DeleteSweep, ImageOutlined, MonetizationOn } from "@mui/icons-material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import UpdateRegionPrice from "../components/UpdateRegionPrice";
 import AddImagesSlider from "./steps/AddImagesSlider";
@@ -82,7 +81,7 @@ const ProductIndex = () => {
       sku: product.sku ?? " ",
       brand: product.brand ?? "",
       comparePrice:
-      product.compare_price > 0 ? product.compare_price : "no sale",
+        product.compare_price > 0 ? product.compare_price : "no sale",
       status: product.status,
       actions: product,
     }));
@@ -112,7 +111,11 @@ const ProductIndex = () => {
       width: "50",
       renderCell: (params) =>
         (
-          <Avatar variant="square" sx={{ bgcolor: "#e4e4e4",py:1 }} src={params.row.image}>
+          <Avatar
+            variant="square"
+            sx={{ bgcolor: "#e4e4e4", py: 1 }}
+            src={params.row.image}
+          >
             <ImageOutlined />
           </Avatar>
         ) ?? " ",
@@ -238,121 +241,148 @@ const ProductIndex = () => {
           value={pointPrice?.value}
         />
       )}
+   <Box sx={{ p: { xs: 2, md: 2 }, backgroundColor: "background.main", minHeight: "100vh" }}>
+      
+      {/* 1. Header Section: Title and Point Price */}
+      <Stack 
+        direction={{ xs: "column", sm: "row" }} 
+        justifyContent="space-between" 
+        alignItems={{ xs: "flex-start", sm: "center" }} 
+        sx={{ mb: 4, gap: 1 }}
+      >
+        <Typography variant="h4" sx={{ color: "text.main", fontWeight: 700 }}>
+          {t("products")}
+        </Typography>
 
-      <Box
+        <Card sx={{ 
+          p: "6px 16px", 
+          borderRadius: "12px", 
+          boxShadow: "0px 2px 10px rgba(0,0,0,0.05)",
+          border: "1px solid",
+          borderColor: "divider"
+        }}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <MonetizationOn color="primary" />
+            <Box>
+              <Typography variant="caption" color="text.secondary" display="block">
+                {t("point price")}
+              </Typography>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1 }}>
+                {settingsLoading ? <CircularProgress size={16} /> : (pointPrice?.value ?? t("Null"))}
+              </Typography>
+            </Box>
+            <IconButton
+              size="small"
+              onClick={() => setOpenPointPrice(true)}
+              disabled={settingsLoading || !pointPrice}
+              sx={{ bgcolor: "action.hover" }}
+            >
+              <ModeTwoToneIcon fontSize="small" />
+            </IconButton>
+          </Stack>
+        </Card>
+      </Stack>
+
+      {/* 2. Actions & Filters Bar */}
+      <BoxStyled
         sx={{
-          width: "100%",
-          backgroundColor: "background.main",
-          p: 3,
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          justifyContent: "space-between",
+          alignItems: { xs: "stretch", md: "center" },
+          gap: 2,
+          mb: 3,
+          p: 2,
+          borderRadius: "16px",
+          bgcolor: "background.paper",
+          boxShadow: "0px 4px 20px rgba(0,0,0,0.03)"
         }}
       >
-        <BoxStyled
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2,
-            px: 2,
-          }}
-        >
-          <Typography variant="h5" sx={{ color: "text.main" }}>
-            {t("products")}
-          </Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <TextField
-              label={t("City filter")}
-              value={cityFilter}
-              onChange={(e) => setCityFilter(e.target.value)}
-              size="small"
-            />
-            <TextField
-              label={t("Brand filter")}
-              value={brandFilter}
-              size="small"
-              onChange={(e) => setBrandFilter(e.target.value)}
-            />
-          </Box>
-          <Box>
-            {selectedRowIds.length > 0 && (
-              <Tooltip title="Delete selected products">
-                <IconButton
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => BulkDelete()}
-                  disabled={loading}
-                >
-                  {loading ? <CircularProgress /> : <DeleteSweep />}
-                </IconButton>
-              </Tooltip>
-            )}
-            <Button
-              startIcon={<AddOutlinedIcon />}
-              variant="contained"
-              color="secondary"
-              onClick={handleCreate}
-            >
-              {t("New product")}
-            </Button>
-          </Box>
-        </BoxStyled>
-
-        <Card sx={{ mb: 2 }}>
-          <CardContent>
-            <Stack
-              direction={{ xs: "column", md: "row" }}
-              spacing={2}
-              alignItems={{ xs: "flex-start", md: "center" }}
-              justifyContent="space-between"
-            >
-              <Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {t("point price")}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {settingsLoading
-                    ? t("Loading...")
-                    : pointPrice?.value ?? t("Null")}
-                </Typography>
-              </Box>
-              <Button
-                startIcon={<ModeTwoToneIcon />}
-                variant="outlined"
-                onClick={() => setOpenPointPrice(true)}
-                disabled={settingsLoading || !pointPrice}
-              >
-                {t("Edit")}
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-
-        <BoxStyled
-          sx={{
-            width: "71vw",
-            overflow: "scroll",
-            scrollbarWidth: "none",
-            py: 0,
-            borderRadius: 3,
-          }}
-        >
-          <DataGrid
-            sx={{
-              backgroundColor: "background.paper",
-              borderRadius: 3,
-            }}
-            rows={rows}
-            columns={gridColumns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
-            }}
-            pageSizeOptions={[5, 10, 25, 50]}
+        {/* Filters Group */}
+        <Stack direction="row" spacing={2} flexGrow={1}>
+          <TextField
+            label={t("City filter")}
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+            size="small"
+            sx={{ minWidth: 200 }}
           />
-        </BoxStyled>
-      </Box>
+          <TextField
+            label={t("Brand filter")}
+            value={brandFilter}
+            onChange={(e) => setBrandFilter(e.target.value)}
+            size="small"
+            sx={{ minWidth: 200 }}
+          />
+        </Stack>
+
+        {/* Buttons Group */}
+        <Stack direction="row" spacing={1.5} justifyContent="flex-end">
+          {selectedRowIds.length > 0 && (
+            <Tooltip title={t("Delete selected")}>
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <DeleteSweep />}
+                onClick={() => BulkDelete()}
+                disabled={loading}
+                sx={{ borderRadius: "8px", textTransform: "none" }}
+              >
+                {t("Delete")} ({selectedRowIds.length})
+              </Button>
+            </Tooltip>
+          )}
+          
+          <Button
+            startIcon={<AddOutlinedIcon />}
+            variant="contained"
+            color="secondary"
+            onClick={handleCreate}
+            sx={{ 
+                borderRadius: "8px", 
+                px: 3,
+                textTransform: "none",
+                fontWeight: 600,
+                boxShadow: "0px 4px 12px rgba(var(--mui-palette-secondary-mainChannel), 0.3)"
+            }}
+          >
+            {t("New product")}
+          </Button>
+        </Stack>
+      </BoxStyled>
+
+      {/* 3. DataGrid Section */}
+      <BoxStyled
+        sx={{
+          width: "100%",
+          borderRadius: "16px",
+          overflow: "hidden", // لمنع خروج الحواف عن الانحناء
+          bgcolor: "background.paper",
+          boxShadow: "0px 10px 30px rgba(0,0,0,0.04)",
+          "& .MuiDataGrid-root": {
+            border: "none",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            bgcolor: "action.hover",
+            fontWeight: 700
+          }
+        }}
+      >
+        <DataGrid
+          autoHeight
+          rows={rows}
+          columns={gridColumns}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[5, 10, 25, 50]}
+          checkboxSelection // تفعيل اختيار الصفوف للحذف الجماعي
+          disableRowSelectionOnClick
+        />
+      </BoxStyled>
+    </Box>
     </Box>
   );
 };
