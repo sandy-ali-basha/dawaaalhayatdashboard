@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
@@ -21,18 +21,19 @@ export const useCountryCreate = () => {
   const { register, handleSubmit, formState, setValue, control } =
     useForm(formOptions);
   const { errors } = formState;
+  const queryClient = useQueryClient();
   const { mutate } = useMutation((data) => createPost(data));
 
   async function createPost(data) {
-    _Regions
-      .post(data, setLoading)
-      .then((res) => {
-        if (res.code === 200) navigate(-1);
-        setLoading(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const res = await _Regions.post(data);
+      if (res?.code === 200) {
+        queryClient.invalidateQueries(["regions"]);
+        navigate(-1);
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleCancel = () => navigate(-1);

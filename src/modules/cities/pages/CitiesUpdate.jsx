@@ -26,29 +26,28 @@ const schema = yup.object().shape({
 const CitiesUpdate = ({ setOldData, oldData, open, setOpen }) => {
   const { t } = useTranslation("index");
 
- const formOptions = { 
-  resolver: yupResolver(schema),
-  defaultValues: {
-    name: oldData?.name || "",
-    inv_name: oldData?.inv || "", // note: oldData?.inv was used, not inv_name
-    shipping_price: oldData?.shipping_price || "",
-    currency_id: oldData?.currency_id || "",
-  }
-};
-const { register, handleSubmit, formState, reset } = useForm(formOptions);
-useEffect(() => {
-  if (oldData) {
-    reset({
+  const formOptions = {
+    resolver: yupResolver(schema),
+    defaultValues: {
       name: oldData?.name || "",
-      inv_name: oldData?.inv || "",
+      inv_name: oldData?.inv_name || "",
       shipping_price: oldData?.shipping_price || "",
       currency_id: oldData?.currency_id || "",
-    });
-  }
-}, [oldData, reset]);
+    },
+  };
+  const { register, handleSubmit, formState, reset } = useForm(formOptions);
+  useEffect(() => {
+    if (oldData) {
+      reset({
+        name: oldData?.name || "",
+        inv_name: oldData?.inv_name || "",
+        shipping_price: oldData?.shipping_price || "",
+        currency_id: oldData?.currency_id || "",
+      });
+    }
+  }, [oldData, reset]);
 
   const { errors } = formState;
-  console.log("oldData in CitiesUpdate:", oldData);
   const [loading, setLoading] = useState(false);
   const { data: currencies } = useCurrencies();
 
@@ -128,11 +127,11 @@ useEffect(() => {
                 sx={{ width: "100%" }}
                 type={"text"}
                 placeholder={"inv_name"}
-                defaultValue={oldData?.inv}
+                defaultValue={oldData?.inv_name}
                 name={"inv_name"}
                 {...register("inv_name")}
                 error={!!errors?.inv_name}
-                helperText={errors?.inv_name?.inv_name || ""}
+                helperText={errors?.inv_name?.message || ""}
               />
             </Grid>
             <Grid item md={6} sx={{ p: "10px" }}>
