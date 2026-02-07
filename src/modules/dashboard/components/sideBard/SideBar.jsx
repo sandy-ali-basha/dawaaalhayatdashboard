@@ -20,7 +20,6 @@ import {
   HomeOutlined,
   Inventory2Outlined,
   LocalPharmacyOutlined,
-  MoneyOutlined,
   Person2Outlined,
   PublicOutlined,
   ShoppingBagOutlined,
@@ -65,8 +64,16 @@ const SideBar = ({ open, setOpen }) => {
       name: t("Products"),
       icon: <ShoppingBagOutlined />,
       subOptions: [
-        { name: t("Products"), link: "/dashboard/product" },
-        { name: t("Medical form"), link: "/dashboard/product_type" },
+        {
+          name: t("Products"),
+          link: "/dashboard/product",
+          icon: <ShoppingBagOutlined />,
+        },
+        {
+          name: t("Medical form"),
+          link: "/dashboard/product_type",
+          icon: <CategoryOutlined />,
+        },
       ],
     },
 
@@ -108,11 +115,6 @@ const SideBar = ({ open, setOpen }) => {
       icon: <DiscountOutlined />,
     },
     {
-      name: t("point price"),
-      link: "/dashboard/settings",
-      icon: <MoneyOutlined />,
-    },
-    {
       name: t("terms"),
       link: "/dashboard/terms",
       icon: <GavelOutlined />,
@@ -121,8 +123,16 @@ const SideBar = ({ open, setOpen }) => {
       name: t("Careers"),
       icon: <WorkOutlineRounded />,
       subOptions: [
-        { name: t("Careers"), link: "/dashboard/careers" },
-        { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
+        {
+          name: t("Careers"),
+          link: "/dashboard/careers",
+          icon: <WorkOutlineRounded />,
+        },
+        {
+          name: t("Careers Categories"),
+          link: "/dashboard/careersCategory",
+          icon: <WorkOutlined />,
+        },
       ],
     },
     {
@@ -166,8 +176,16 @@ const SideBar = ({ open, setOpen }) => {
       name: t("Careers"),
       icon: <WorkOutlined />,
       subOptions: [
-        { name: t("Careers"), link: "/dashboard/careers" },
-        { name: t("Careers Categories"), link: "/dashboard/careersCategory" },
+        {
+          name: t("Careers"),
+          link: "/dashboard/careers",
+          icon: <WorkOutlined />,
+        },
+        {
+          name: t("Careers Categories"),
+          link: "/dashboard/careersCategory",
+          icon: <WorkOutlineRounded />,
+        },
       ],
     },
     {
@@ -220,11 +238,6 @@ const SideBar = ({ open, setOpen }) => {
       icon: <ShoppingCartCheckoutOutlined />,
     },
 
-    {
-      name: t("point price"),
-      link: "/dashboard/settings",
-      icon: <MoneyOutlined />,
-    },
     {
       name: t("Inventories"),
       link: "/dashboard/Inventories",
@@ -320,7 +333,7 @@ const SideBar = ({ open, setOpen }) => {
                           style={{ paddingTop: "5px" }}
                           text={t(subOption.name)}
                           active={isActive}
-                          icon={null}
+                          icon={subOption.icon}
                           open={open || hovered}
                         />
                       )}

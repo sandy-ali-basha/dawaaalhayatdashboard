@@ -43,11 +43,12 @@ const CitiesIndex = () => {
   const [search, setSearch] = useState("");
 
   const handleEdit = useCallback(
-    (city, id) => {
-      setPrev_data(city);
+    (city) => {
+      const fullCity = cities.find((c) => c.id === city.id);
+      setPrev_data(fullCity || city);
       setOpen(true);
     },
-    [setPrev_data]
+    [cities]
   );
 
   const handleViewInv = useCallback(
@@ -154,7 +155,10 @@ const CitiesIndex = () => {
               <ModeOutlined />
             </IconButton>
           </Tooltip>
-        <DeleteDialog products_count={params.row.totalProducts} id={params.row.id} />
+          <DeleteDialog
+            products_count={params.row.totalProducts}
+            id={params.row.id}
+          />
           <Tooltip title="View">
             <IconButton
               sx={{ color: "secondary.main" }}
