@@ -24,9 +24,18 @@ export default function NotificationDropdown() {
   const { mutate: markAsRead } = useMutation((id) =>
     _Notifications.markRead(id)
   );
+  const { mutate: markAllRead } = useMutation(() =>
+    _Notifications.markAllRead()
+  );
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    markAllRead(undefined, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["notifications"]);
+        queryClient.invalidateQueries(["notifications-unread-count"]);
+      },
+    });
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -127,7 +136,13 @@ export default function NotificationDropdown() {
               }
               handleClose();
             }}
-            sx={{ alignItems: "flex-start" }}
+            sx={{
+              alignItems: "flex-start",
+              backgroundColor: n.is_read ? "transparent" : "action.hover",
+              "&:hover": {
+                backgroundColor: n.is_read ? "action.hover" : "action.selected",
+              },
+            }}
           >
             <ListItemText
               primary={
@@ -140,7 +155,11 @@ export default function NotificationDropdown() {
               }
               secondary={
                 <>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ whiteSpace: "normal", wordBreak: "break-word" }}
+                  >
                     {n.body}
                   </Typography>
                   <Typography variant="caption" color="text.disabled">
