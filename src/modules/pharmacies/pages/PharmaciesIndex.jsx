@@ -44,7 +44,7 @@ const PharmaciesIndex = () => {
   const [nearbyOnly, setNearbyOnly] = useState(false);
 
   const rows = useMemo(() => {
-    const source = data?.data || [];
+    const source = data?.pharmacies || [];
     console.log("Pharmacies data:", source);
     const filtered = source.filter((pharmacy) => {
       if (!search) return true;
