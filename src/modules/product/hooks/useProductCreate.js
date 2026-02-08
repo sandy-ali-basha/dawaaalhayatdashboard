@@ -116,6 +116,14 @@ export const useProductCreate = () => {
       helperText: "sku",
     },
     {
+      head: "TAG",
+      type: "text",
+      name: "tag",
+      register: "tag",
+      error: "tag",
+      helperText: "tag",
+    },
+    {
       head: "Points",
       type: "number",
       name: "points",
