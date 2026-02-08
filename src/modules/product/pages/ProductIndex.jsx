@@ -90,11 +90,6 @@ const ProductIndex = () => {
   // Define columns for the DataGrid
   const gridColumns = [
     {
-      field: "id",
-      headerName: "ID",
-      width: 50,
-    },
-    {
       field: "select",
       headerName: "",
       width: "50",
@@ -104,6 +99,11 @@ const ProductIndex = () => {
           onChange={(e) => handleSelectChange(e, params.row.id)}
         />
       ),
+    },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 50,
     },
     {
       field: "image",
@@ -168,19 +168,7 @@ const ProductIndex = () => {
         </ChangeStatus>
       ),
     },
-    // {
-    //   field: "purchasable",
-    //   headerName: "purchasable",
-    //   width: 100,
-    //   renderCell: (params) => (
-    //     <ChangeStatusPurshasable
-    //       id={params.row.id}
-    //       currentStatus={params.row.purchasable}
-    //     >
-    //       {params.row.purchasable}
-    //     </ChangeStatusPurshasable>
-    //   ),
-    // },
+    
     {
       field: "actions",
       headerName: "Actions",
@@ -378,7 +366,6 @@ const ProductIndex = () => {
             },
           }}
           pageSizeOptions={[5, 10, 25, 50]}
-          checkboxSelection // تفعيل اختيار الصفوف للحذف الجماعي
           disableRowSelectionOnClick
         />
       </BoxStyled>

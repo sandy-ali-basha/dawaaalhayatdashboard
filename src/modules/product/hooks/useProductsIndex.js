@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { colorStore } from "store/ColorsStore";
@@ -6,6 +6,7 @@ import { useProduct } from "hooks/product/useProduct";
 import { _Product } from "api/product/product";
 import { useSnackbar } from "notistack";
 import { useQueryClient } from "react-query";
+import { ProductStore } from "store/productStore";
 
 export const useProductIndex = () => {
   const { t } = useTranslation("index");
@@ -13,11 +14,14 @@ export const useProductIndex = () => {
   const navigate = useNavigate();
   const [id, setID] = useState();
   const [productName, setProductName] = useState();
+    const setNewProductId = ProductStore((state) => state.setNewProductId);
+  
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
     state.setEditedID,
   ]);
 
+  
   // States for sorting and filtering
 
   const [cityFilter, setCityFilter] = useState("");
@@ -37,6 +41,7 @@ export const useProductIndex = () => {
       t("option"),
     ];
   }, [t]);
+
   const handleCreate = () => navigate("create");
 
   const [OpenDelete, setOpenDelete] = useState(false);
@@ -48,6 +53,7 @@ export const useProductIndex = () => {
   const [updatePrice, setUpdatePrice] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  useEffect(() => {setNewProductId(null)}, [setNewProductId])
   // Pagination state
   const handleView = useCallback(
     (id) => {
