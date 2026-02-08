@@ -20,12 +20,11 @@ export default function NotificationDropdown() {
   const open = Boolean(anchorEl);
   const { data, isLoading } = useNotifications();
   const { data: unreadData } = useNotificationsUnreadCount();
+
   const queryClient = useQueryClient();
-  const { mutate: markAsRead } = useMutation((id) =>
-    _Notifications.markRead(id)
-  );
+ 
   const { mutate: markAllRead } = useMutation(() =>
-    _Notifications.markAllRead()
+    _Notifications.markAllRead(),
   );
 
   const handleClick = (event) => {
@@ -37,6 +36,7 @@ export default function NotificationDropdown() {
       },
     });
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -53,7 +53,7 @@ export default function NotificationDropdown() {
 
   const sortedNotifications = useMemo(() => {
     return [...notifications].sort(
-      (a, b) => (b.created_at || 0) - (a.created_at || 0)
+      (a, b) => (b.created_at || 0) - (a.created_at || 0),
     );
   }, [notifications]);
 
@@ -126,14 +126,6 @@ export default function NotificationDropdown() {
           <MenuItem
             key={n.id}
             onClick={() => {
-              if (!n.is_read) {
-                markAsRead(n.id, {
-                  onSuccess: () => {
-                    queryClient.invalidateQueries(["notifications"]);
-                    queryClient.invalidateQueries(["notifications-unread-count"]);
-                  },
-                });
-              }
               handleClose();
             }}
             sx={{

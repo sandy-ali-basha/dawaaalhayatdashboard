@@ -116,12 +116,28 @@ export const useProductCreate = () => {
       helperText: "sku",
     },
     {
-      head: "TAG",
+      head: "TAG ENGLISH",
       type: "text",
-      name: "tag",
-      register: "tag",
-      error: "tag",
-      helperText: "tag",
+      name: "en.tag",
+      register: "en.tag",
+      error: "en.tag",
+      helperText: "en.tag",
+    },
+    {
+      head: "TAG ARABIC",
+      type: "text",
+      name: "ar.tag",
+      register: "ar.tag",
+      error: "ar.tag",
+      helperText: "ar.tag",
+    },
+    {
+      head: "TAG KURDISH",
+      type: "text",
+      name: "kr.tag",
+      register: "kr.tag",
+      error: "kr.tag",
+      helperText: "kr.tag",
     },
     {
       head: "Points",
@@ -203,6 +219,7 @@ export const useProductCreate = () => {
     try {
       const res = await _Product.post(productData, setLoading);
       if (res?.code === 200) {
+        console.log("res?.data", res?.data);
         setNewProductId(res?.data?.id);
         setActiveStep(2);
       }
