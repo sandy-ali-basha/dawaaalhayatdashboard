@@ -1,12 +1,14 @@
 import { create } from "zustand";
 
 export const ProductStore = create((set) => ({
+  newProductId: null,
   stepData: {
     basicInfo: {},
     selectedCities: [],
     variants: [],
   },
 
+  setNewProductId: (newProductId) => set({ newProductId }),
   setBasicInfo: (data) =>
     set((state) => ({
       stepData: { ...state.stepData, basicInfo: data },

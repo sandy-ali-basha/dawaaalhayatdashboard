@@ -42,6 +42,7 @@ export const useProductCreate = () => {
   const { data: point_price } = useSettings();
   const { t } = useTranslation("index");
   const setNewProductId = ProductStore((state) => state.setNewProductId);
+  const resetProductSteps = ProductStore((state) => state.resetProductSteps);
   const navigate = useNavigate();
 
   const formOptions = {
@@ -221,6 +222,7 @@ export const useProductCreate = () => {
       if (res?.code === 200) {
         console.log("res?.data", res?.data);
         setNewProductId(res?.data?.id);
+        resetProductSteps();
         setActiveStep(2);
       }
     } finally {

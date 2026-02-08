@@ -8,6 +8,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
+import { Controller } from "react-hook-form";
 import { BoxStyled } from "components/styled/BoxStyled";
 import {
   MenuItemStyled,
@@ -101,20 +102,28 @@ const BasicInfo = ({ onNext, setSubmitFunction }) => {
                   <Box sx={{ margin: "0 0 8px 5px" }}>
                     <Typography color="text.main">{t("Brand")}</Typography>
                   </Box>
-                  <SelectStyled
-                    sx={{ color: "text.main", borderColor: "text.main" }}
-                    {...register("brand_id")}
-                    defaultValue=""
-                  >
-                    <MenuItemStyled color="text.secondary" value="">
-                      <em>Select option</em>
-                    </MenuItemStyled>
-                    {brands?.map((item) => (
-                      <MenuItemStyled value={item.id} key={item.id}>
-                        <Box style={{ color: "text.main" }}>{item.name}</Box>
-                      </MenuItemStyled>
-                    ))}
-                  </SelectStyled>
+                  <Controller
+                    name="brand_id"
+                    control={control}
+                    render={({ field }) => (
+                      <SelectStyled
+                        sx={{ color: "text.main", borderColor: "text.main" }}
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                      >
+                        <MenuItemStyled color="text.secondary" value="">
+                          <em>Select option</em>
+                        </MenuItemStyled>
+                        {brands?.map((item) => (
+                          <MenuItemStyled value={item.id} key={item.id}>
+                            <Box style={{ color: "text.main" }}>
+                              {item.name}
+                            </Box>
+                          </MenuItemStyled>
+                        ))}
+                      </SelectStyled>
+                    )}
+                  />
                   <FormHelperText error>
                     {errors.brand_id?.message}
                   </FormHelperText>
@@ -133,19 +142,24 @@ const BasicInfo = ({ onNext, setSubmitFunction }) => {
                   <Typography color="text.main">{t("status")}</Typography>
                 </Box>
 
-                <Select
+                <Controller
                   name="status"
-                  {...register("status")}
-                  error={!!errors?.status}
-                  id="status"
-                  defaultValue=""
-                >
-                  <MenuItemStyled color="text.secondary" value="">
-                    <em>Select option</em>
-                  </MenuItemStyled>
-                  <MenuItem value="active">active</MenuItem>
-                  <MenuItem value="inActive">not active</MenuItem>
-                </Select>
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      error={!!errors?.status}
+                      id="status"
+                      value={field.value ?? ""}
+                    >
+                      <MenuItemStyled color="text.secondary" value="">
+                        <em>Select option</em>
+                      </MenuItemStyled>
+                      <MenuItem value="active">active</MenuItem>
+                      <MenuItem value="inActive">not active</MenuItem>
+                    </Select>
+                  )}
+                />
                 <FormHelperText error>{errors?.status?.message}</FormHelperText>
               </FormControl>
             </Grid>
@@ -158,20 +172,28 @@ const BasicInfo = ({ onNext, setSubmitFunction }) => {
                       {t("medical form")}
                     </Typography>
                   </Box>
-                  <SelectStyled
-                    sx={{ color: "text.main", borderColor: "text.main" }}
-                    {...register("product_type_id")}
-                    defaultValue=""
-                  >
-                    <MenuItemStyled color="text.secondary" value="">
-                      <em>Select option</em>
-                    </MenuItemStyled>
-                    {producttypes?.map((item) => (
-                      <MenuItemStyled value={item.id} key={item.id}>
-                        <Box style={{ color: "text.main" }}>{item.name}</Box>
-                      </MenuItemStyled>
-                    ))}
-                  </SelectStyled>
+                  <Controller
+                    name="product_type_id"
+                    control={control}
+                    render={({ field }) => (
+                      <SelectStyled
+                        sx={{ color: "text.main", borderColor: "text.main" }}
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                      >
+                        <MenuItemStyled color="text.secondary" value="">
+                          <em>Select option</em>
+                        </MenuItemStyled>
+                        {producttypes?.map((item) => (
+                          <MenuItemStyled value={item.id} key={item.id}>
+                            <Box style={{ color: "text.main" }}>
+                              {item.name}
+                            </Box>
+                          </MenuItemStyled>
+                        ))}
+                      </SelectStyled>
+                    )}
+                  />
                   <FormHelperText error>
                     {errors.product_type_id?.message}
                   </FormHelperText>
