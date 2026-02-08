@@ -1,6 +1,4 @@
-import { pharmaciesSeed } from "modules/pharmacies/data/pharmacies";
-
-let pharmaciesData = [...pharmaciesSeed];
+import { _axios } from "interceptor/http-config";
 
 const toNumber = (value) => {
   const parsed = Number(value);
@@ -15,31 +13,18 @@ const normalizePayload = (payload) => ({
 });
 
 export const _Pharmacies = {
-  list: async () => ({ data: pharmaciesData }),
-  get: async (id) => ({
-    data: pharmaciesData.find((pharmacy) => pharmacy.id === Number(id)),
-  }),
+  list: async () => _axios.get("/pharmacies").then((res) => res.data),
+  get: async (id) => _axios.get(`/pharmacies/${id}`).then((res) => res.data),
   create: async (payload) => {
     const normalized = normalizePayload(payload);
-    const nextId =
-      pharmaciesData.reduce((max, item) => Math.max(max, item.id), 0) + 1;
-    const created = { ...normalized, id: nextId };
-    pharmaciesData = [...pharmaciesData, created];
-    return { data: created };
+    return _axios.post("/pharmacies", normalized).then((res) => res.data);
   },
   update: async ({ id, payload }) => {
     const normalized = normalizePayload(payload);
-    pharmaciesData = pharmaciesData.map((item) =>
-      item.id === Number(id) ? { ...item, ...normalized } : item
-    );
-    return {
-      data: pharmaciesData.find((pharmacy) => pharmacy.id === Number(id)),
-    };
+    return _axios
+      .put(`/pharmacies/${id}`, normalized)
+      .then((res) => res.data);
   },
-  delete: async (id) => {
-    pharmaciesData = pharmaciesData.filter(
-      (pharmacy) => pharmacy.id !== Number(id)
-    );
-    return { data: { id: Number(id) } };
-  },
+  delete: async (id) =>
+    _axios.delete(`/pharmacies/${id}`).then((res) => res.data),
 };
