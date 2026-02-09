@@ -15,7 +15,6 @@ import { usePharmacies } from "hooks/pharmacies/usePharmacies";
 import Loader from "components/shared/Loader";
 import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
 import ModeOutlined from "@mui/icons-material/ModeOutlined";
-import RoomOutlined from "@mui/icons-material/RoomOutlined";
 import Search from "@mui/icons-material/Search";
 import PharmacyDeleteDialog from "../components/PharmacyDeleteDialog";
 
@@ -44,54 +43,47 @@ const PharmaciesIndex = () => {
   const [nearbyOnly, setNearbyOnly] = useState(false);
 
   const rows = useMemo(() => {
-    const source = data?.pharmacies || [];
-    console.log("Pharmacies data:", source);
-    const filtered = source.filter((pharmacy) => {
-      if (!search) return true;
-      const query = search.toLowerCase();
-      return (
-        pharmacy.name?.toLowerCase().includes(query) ||
-        pharmacy.city?.toLowerCase().includes(query) ||
-        pharmacy.phone?.toLowerCase().includes(query)
-      );
-    });
-
-    const withDistance = filtered.map((pharmacy) => ({
-      ...pharmacy,
-      distanceKm: userLocation
-        ? haversineDistance(userLocation, {
-            lat: pharmacy.lat,
-            lng: pharmacy.lng,
-          })
-        : null,
-    }));
-
-    if (nearbyOnly && userLocation) {
-      return withDistance
-        .filter((pharmacy) => pharmacy.distanceKm !== null)
-        .filter((pharmacy) => pharmacy.distanceKm <= 10)
-        .sort((a, b) => a.distanceKm - b.distanceKm);
-    }
-
-    if (userLocation) {
-      return withDistance.sort(
-        (a, b) => (a.distanceKm ?? 0) - (b.distanceKm ?? 0),
-      );
-    }
-
-    return withDistance;
-  }, [data, search, userLocation, nearbyOnly]);
-
-  const handleNearMe = () => {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition((pos) => {
-      setUserLocation({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
+    if(isLoading) return
+    else {
+    
+      const source = data?.data;
+      const filtered = source.filter((pharmacy) => {
+        if (!search) return true;
+        const query = search.toLowerCase();
+        return (
+          pharmacy.name?.toLowerCase().includes(query) ||
+          pharmacy.city?.toLowerCase().includes(query) ||
+          pharmacy.phone?.toLowerCase().includes(query)
+        );
       });
-      setNearbyOnly(true);
-    });
-  };
+  
+      const withDistance = filtered.map((pharmacy) => ({
+        ...pharmacy,
+        distanceKm: userLocation
+          ? haversineDistance(userLocation, {
+              lat: pharmacy.lat,
+              lng: pharmacy.lng,
+            })
+          : null,
+      }));
+  
+      if (nearbyOnly && userLocation) {
+        return withDistance
+          .filter((pharmacy) => pharmacy.distanceKm !== null)
+          .filter((pharmacy) => pharmacy.distanceKm <= 10)
+          .sort((a, b) => a.distanceKm - b.distanceKm);
+      }
+  
+      if (userLocation) {
+        return withDistance.sort(
+          (a, b) => (a.distanceKm ?? 0) - (b.distanceKm ?? 0),
+        );
+      }
+  
+      return withDistance;
+    }
+  }, [isLoading, data?.data, nearbyOnly, userLocation, search]);
+
 
   const columns = [
     {
@@ -119,33 +111,6 @@ const PharmaciesIndex = () => {
       minWidth: 200,
     },
     {
-      field: "coordinates",
-      headerName: "Location",
-      flex: 1,
-      minWidth: 140,
-      renderCell: (params) => (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <RoomOutlined sx={{ mr: 0.5, color: "primary.main" }} />
-          <Typography variant="body2">
-            {params?.row.lat?.toFixed(4)}, {params.row.lng?.toFixed(4)}
-          </Typography>
-        </Box>
-      ),
-    },
-    ...(userLocation
-      ? [
-          {
-            field: "distanceKm",
-            headerName: "Distance (km)",
-            flex: 0.7,
-            minWidth: 120,
-            valueGetter: (params) =>
-              params.row.distanceKm ? params.row.distanceKm.toFixed(2) : "--",
-          },
-        ]
-      : []),
-
-    {
       field: "actions",
       headerName: "Actions",
       sortable: false,
@@ -167,9 +132,10 @@ const PharmaciesIndex = () => {
     },
   ];
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <>
-      {isLoading && <Loader />}
       <Typography sx={{ color: "text.main", fontWeight: "bold" }} variant="h4">
         Pharmacies Management
       </Typography>
@@ -198,9 +164,7 @@ const PharmaciesIndex = () => {
             ),
           }}
         />
-        <Button variant="outlined" onClick={handleNearMe}>
-          Near me
-        </Button>
+ 
         <Button
           variant="contained"
           startIcon={<AddCircleOutline />}
