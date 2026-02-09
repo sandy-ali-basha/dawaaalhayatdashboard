@@ -1,18 +1,31 @@
-import { Box, IconButton, Toolbar, Tooltip } from "@mui/material";
+import { Box, IconButton, Toolbar, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import React from "react";
 import { AppBar } from "../styled/AppBar";
 import SettingsMenu from "./SettingsMenu";
 import { settingsStore } from "store/settingsStore";
 import Notifications from "../Notifications";
-import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
+import { DarkModeOutlined, LightModeOutlined, Menu } from "@mui/icons-material";
 
-const Header = ({ open }) => {
+const Header = ({ open, isMobile, onOpenMobile }) => {
   const [setMode, mode] = settingsStore((state) => [state.setMode, state.mode]);
+  const theme = useTheme();
+  const isMobileViewport = useMediaQuery(theme.breakpoints.down("md"));
+  const showMobileToggle = isMobile ?? isMobileViewport;
 
   return (
-    <AppBar position="fixed" open={open}>
+    <AppBar position="fixed" open={open} ismobile={showMobileToggle ? "true" : ""}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box></Box>
+        <Box>
+          {showMobileToggle && (
+            <IconButton
+              onClick={onOpenMobile}
+              sx={{ color: "text.main" }}
+              aria-label="open navigation"
+            >
+              <Menu />
+            </IconButton>
+          )}
+        </Box>
         <Box
           sx={{
             display: "flex",

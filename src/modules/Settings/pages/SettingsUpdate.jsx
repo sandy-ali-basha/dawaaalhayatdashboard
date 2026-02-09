@@ -73,11 +73,11 @@ const SettingsUpdate = ({ value, open, setOpen }) => {
         <DialogTitle sx={{ color: "text.main" }}>
           {t("Enter point price")}
         </DialogTitle>
-        <Box sx={{ width: "40%", margin: "auto" }}>
+        <Box sx={{ width: { xs: "100%", md: "40%" }, margin: "auto" }}>
           <img src={Gift_Card} alt="" style={{ width: "100%" }} />
         </Box>
         <TextFieldStyled
-          sx={{ width: "90%", mx: "auto" }}
+          sx={{ width: { xs: "100%", md: "90%" }, mx: "auto" }}
           type={"number"}
           placeholder={"value"}
           defaultValue={"value"}

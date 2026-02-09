@@ -129,7 +129,7 @@ const ProductAttr = ({ id, open, setOpen, attr, notDialog }) => {
         <DialogTitle sx={{ color: "text.main" }}>
           {t("Products categories")}
         </DialogTitle>
-        <Box sx={{ width: "30%", margin: "0 auto" }}>
+        <Box sx={{ width: { xs: "100%", md: "30%" }, margin: "0 auto" }}>
           <img src={settings} alt="" style={{ width: "100%" }} />
         </Box>
         <Grid container component="form" key={id}>

@@ -63,7 +63,7 @@ const UpdateRegionPrice = ({ id, open, setOpen, productName }) => {
         <DialogTitle sx={{ color: "text.main" }}>Update Price</DialogTitle>
 
         <DialogContent>
-          <Box sx={{ width: "50%", margin: "0 auto" }}>
+          <Box sx={{ width: { xs: "100%", sm: "50%" }, margin: "0 auto" }}>
             <img src={wallet} alt="" style={{ width: "100%" }} />
           </Box>
           <DialogContentText>

@@ -3,8 +3,8 @@ import MuiAppBar from "@mui/material/AppBar";
 import { drawerWidth } from "modules/dashboard/DashboardComponent";
 
 export const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "ismobile",
+})(({ theme, open, ismobile }) => ({
   backgroundColor: theme.palette.background.main,
   backdropFilter: "blur(21px)",
   zIndex: theme.zIndex.drawer + 1,
@@ -13,13 +13,14 @@ export const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   boxShadow: "none",
-  ...(open && {
-    left: `0`,
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin", "left"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
+  ...(open &&
+    !ismobile && {
+      left: `0`,
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`,
+      transition: theme.transitions.create(["width", "margin", "left"], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
     }),
-  }),
 }));

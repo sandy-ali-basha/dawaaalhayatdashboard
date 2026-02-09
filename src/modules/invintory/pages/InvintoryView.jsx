@@ -31,7 +31,7 @@ const InventoryView = () => {
 
   // Detail item component
   const DetailItem = ({ label, value }) => (
-    <Box sx={{ width: "50%", mb: 1 }}>
+    <Box sx={{ width: { xs: "100%", sm: "50%" }, mb: 1 }}>
       <Typography sx={{ fontWeight: 600 }}>{label}:</Typography>
       <Typography>{value}</Typography>
     </Box>
@@ -48,7 +48,7 @@ const InventoryView = () => {
               backgroundColor: "card.main",
               borderRadius: "5px",
               color: "primary.main",
-              width: "40%",
+              width: { xs: "100%", md: "40%" },
               mx: "auto",
               mt: 2,
               textTransform: "uppercase",
@@ -66,7 +66,7 @@ const InventoryView = () => {
               backgroundColor: "card.main",
               borderRadius: "10px",
               padding: "20px",
-              width: "80%",
+              width: { xs: "100%", md: "80%" },
               mx: "auto",
               mt: 3,
             }}
@@ -89,7 +89,7 @@ const InventoryView = () => {
           </Box>
 
           {/* Products + Variants */}
-          <Box sx={{ mt: 4, width: "90%", mx: "auto" }}>
+          <Box sx={{ mt: 4, width: { xs: "100%", md: "90%" }, mx: "auto" }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               {t("Products in Inventory")}
             </Typography>

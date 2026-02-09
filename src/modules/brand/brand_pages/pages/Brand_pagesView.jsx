@@ -78,7 +78,7 @@ const Brand_pagesView = () => {
                 backgroundColor: "card.main",
                 borderRadius: "5px",
                 color: "primary.main",
-                width: "40%",
+                width: { xs: "100%", md: "40%" },
                 marginInline: "auto",
                 height: "100%",
                 textTransform: "uppercase",
@@ -103,7 +103,7 @@ const Brand_pagesView = () => {
           >
             <Box
               sx={{
-                width: "90%",
+                width: { xs: "100%", md: "90%" },
                 backgroundColor: "card.main",
                 borderRadius: 2,
                 padding: 5,
@@ -132,7 +132,7 @@ const Brand_pagesView = () => {
                       sx={{
                         display: "flex",
                         pl: "10px",
-                        width: "50%",
+                        width: { xs: "100%", sm: "50%" },
                         my: "5px",
                       }}
                     >
@@ -158,7 +158,7 @@ const Brand_pagesView = () => {
                   sx={{
                     display: "flex",
                     pl: "10px",
-                    width: "50%",
+                    width: { xs: "100%", sm: "50%" },
                     my: "5px",
                   }}
                 >
@@ -203,7 +203,7 @@ const Brand_pagesView = () => {
                         key={idx}
                         src={item.image_path}
                         style={{
-                          width: "90%",
+                          width: { xs: "100%", md: "90%" },
                           margin: "auto",
                           height: "20vh",
                           objectFit: "contain",
