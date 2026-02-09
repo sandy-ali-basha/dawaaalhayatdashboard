@@ -23,7 +23,7 @@ const VideoTab = ({ video, videoText, direction, onEdit }) => (
           {video.status === "1" ? "Active" : "Not Active"}
         </ChangeStatus>
       </Box>
-      <Box sx={{ mt: 2, width: "50vw" }}>
+      <Box sx={{ mt: 2, width: { xs: "100%", md: "50vw" } }}>
         <video width="100%" controls style={{ borderRadius: 8 }}>
           <source src={video?.video ?? ""} type="video/mp4" />
         </video>

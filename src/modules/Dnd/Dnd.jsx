@@ -86,7 +86,7 @@ const Dnd = () => {
                   padding: "10px",
                   borderRadius: "5px",
                   minHeight: "90vh",
-                  width: "20vw",
+                  width: { xs: "100%", md: "20vw" },
                 }}
               >
                 {column1.includes("column2-item-3") && (
@@ -122,7 +122,7 @@ const Dnd = () => {
                   padding: "10px",
                   borderRadius: "5px",
                   minHeight: "90vh",
-                  width: "80vw",
+                  width: { xs: "100%", md: "80vw" },
                 }}
               >
                 {column2.includes("column2-item-3") && (

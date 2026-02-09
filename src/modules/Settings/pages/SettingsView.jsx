@@ -45,7 +45,7 @@ return (
             backgroundColor: "card.main",
             borderRadius: "5px",
             color: 'primary.main',
-            width: "40%",
+            width: { xs: "100%", md: "40%" },
             marginInline: 'auto',
             height: "100%",
             textTransform: "uppercase",
@@ -79,7 +79,7 @@ return (
           >
             <Box
               sx={{
-                width: "70%",
+                width: { xs: "100%", md: "70%" },
                 backgroundColor: "card.main",
                 borderRadius: "5px",
                 padding: '20px'
@@ -106,7 +106,7 @@ return (
                       sx={{
                         display: "flex",
                         pl: "10px",
-                        width: "50%",
+                        width: { xs: "100%", sm: "50%" },
                         my: '5px'
                       }}
                     >

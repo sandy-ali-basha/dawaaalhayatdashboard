@@ -9,7 +9,7 @@ const TabsNavigation = ({ tabValue, handleTabChange, sections }) => (
     variant="scrollable"
     scrollButtons
     sx={{
-      width: "70vw",
+      width: { xs: "100%", md: "70vw" },
       "& .MuiTabs-scrollButtons": {
         color: "text.main",
         "&.Mui-disabled": { opacity: 0.3 },

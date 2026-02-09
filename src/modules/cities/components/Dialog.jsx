@@ -64,7 +64,7 @@ const DeleteDialog = ({ id, page, count, products_count }) => {
           {t("Delete Item")}
         </DialogTitle>
         <DialogContent>
-          <Box sx={{ width: "40%", margin: "0 auto" }}>
+          <Box sx={{ width: { xs: "100%", md: "40%" }, margin: "0 auto" }}>
             <img src={deleteImg} alt="" style={{ width: "100%" }} />
           </Box>
           <DialogContentText

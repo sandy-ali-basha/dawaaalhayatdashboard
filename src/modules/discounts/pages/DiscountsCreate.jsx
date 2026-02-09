@@ -151,7 +151,7 @@ const DiscountsCreate = () => {
             </Box>
           </Box>
         </BoxStyled>
-        <Box sx={{ width: "50%", margin: "auto" }}>
+        <Box sx={{ width: { xs: "100%", sm: "50%" }, margin: "auto" }}>
           <img src={discount} alt="" style={{ width: "100%" }} />
         </Box>
       </Box>

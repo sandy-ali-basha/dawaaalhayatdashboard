@@ -56,13 +56,13 @@ const CareersView = () => {
       {isLoading && <Loader />}
 
       {data && (
-        <Box sx={{ width: "70vw" }}>
+        <Box sx={{ width: { xs: "100%", md: "70vw" } }}>
           <Typography
             sx={{
               backgroundColor: "card.main",
               borderRadius: "5px",
               color: "text.main",
-              width: "40%",
+              width: { xs: "100%", md: "40%" },
               marginInline: "auto",
               textTransform: "uppercase",
               padding: "10px 20px",
@@ -79,7 +79,7 @@ const CareersView = () => {
               color: "lightGray.main",
               columnGap: 10,
               marginTop: "4%",
-              width: "75vw",
+              width: { xs: "100%", md: "75vw" },
               justifyContent: "center",
             }}
           >
@@ -90,7 +90,7 @@ const CareersView = () => {
                 color: "text.main",
                 flexWrap: "wrap",
                 columnGap: 2,
-                width: "75vw",
+                width: { xs: "100%", md: "75vw" },
               }}
             >
               <Box
@@ -98,7 +98,7 @@ const CareersView = () => {
                   backgroundColor: "card.main",
                   borderRadius: "5px",
                   padding: 2,
-                  width: "75vw",
+                  width: { xs: "100%", md: "75vw" },
                 }}
               >
                 <Box sx={{ width: "100%" }}>

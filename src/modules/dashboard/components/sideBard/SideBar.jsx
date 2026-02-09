@@ -29,7 +29,7 @@ import {
   WorkOutlined,
   WorkOutlineRounded,
 } from "@mui/icons-material";
-const SideBar = ({ open, setOpen }) => {
+const SideBar = ({ open, setOpen, isMobile, mobileOpen, onCloseMobile }) => {
   const { t } = useTranslation("sidebar");
   const [hovered, setHovered] = useState(false);
   const [openSections, setOpenSections] = useState({});
@@ -269,11 +269,16 @@ const SideBar = ({ open, setOpen }) => {
     else return [];
   };
 
+  const isDrawerExpanded = open || hovered || (isMobile && mobileOpen);
+
   return (
     <Drawer
-      variant="permanent"
-      open={open}
-      hovered={hovered ? "true" : ""}
+      variant={isMobile ? "temporary" : "permanent"}
+      open={isMobile ? mobileOpen : open}
+      onClose={isMobile ? onCloseMobile : undefined}
+      ModalProps={isMobile ? { keepMounted: true } : undefined}
+      hovered={!isMobile && hovered ? "true" : ""}
+      ismobile={isMobile ? "true" : ""}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       sx={{
@@ -284,9 +289,9 @@ const SideBar = ({ open, setOpen }) => {
       }}
     >
       <SideBarHeader
-        open={open}
+        open={isDrawerExpanded}
         setOpen={setOpen}
-        hovered={hovered ? "true" : ""}
+        hovered={isDrawerExpanded ? "true" : ""}
       />
       <Box
         sx={{
@@ -310,11 +315,7 @@ const SideBar = ({ open, setOpen }) => {
                   }}
                   onClick={() => handleToggleSection(link.name)}
                 >
-                  <SideBarLink
-                    text={t(link.name)}
-                    icon={link.icon}
-                    open={open || hovered}
-                  />
+                  <SideBarLink text={t(link.name)} icon={link.icon} open={isDrawerExpanded} />
                   {openSections[link.name] ? (
                     <ExpandLessIcon sx={{ color: "text.main" }} />
                   ) : (
@@ -327,14 +328,18 @@ const SideBar = ({ open, setOpen }) => {
                   unmountOnExit
                 >
                   {link.subOptions.map((subOption, subIndex) => (
-                    <NavLink to={subOption.link} key={subIndex}>
+                    <NavLink
+                      to={subOption.link}
+                      key={subIndex}
+                      onClick={isMobile ? onCloseMobile : undefined}
+                    >
                       {({ isActive }) => (
                         <SideBarLink
                           style={{ paddingTop: "5px" }}
                           text={t(subOption.name)}
                           active={isActive}
                           icon={subOption.icon}
-                          open={open || hovered}
+                          open={isDrawerExpanded}
                         />
                       )}
                     </NavLink>
@@ -342,13 +347,17 @@ const SideBar = ({ open, setOpen }) => {
                 </Collapse>
               </>
             ) : (
-              <NavLink to={link.link} key={index}>
+              <NavLink
+                to={link.link}
+                key={index}
+                onClick={isMobile ? onCloseMobile : undefined}
+              >
                 {({ isActive }) => (
                   <SideBarLink
                     text={t(link.name)}
                     active={isActive}
                     icon={link.icon}
-                    open={open || hovered}
+                    open={isDrawerExpanded}
                   />
                 )}
               </NavLink>

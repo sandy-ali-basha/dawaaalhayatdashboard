@@ -39,7 +39,7 @@ const ServiceView = () => {
               backgroundColor: "card.main",
               borderRadius: "5px",
               color: 'primary.main',
-              width: "40%",
+              width: { xs: "100%", md: "40%" },
               marginInline: 'auto',
               height: "100%",
               textTransform: "uppercase",

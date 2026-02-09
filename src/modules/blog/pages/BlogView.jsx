@@ -72,7 +72,7 @@ const BlogView = () => {
               backgroundColor: "card.main",
               borderRadius: "5px",
               color: "primary.main",
-              width: "40%",
+              width: { xs: "100%", md: "40%" },
               marginInline: "auto",
               height: "100%",
               textTransform: "uppercase",
@@ -106,7 +106,7 @@ const BlogView = () => {
             >
               <Box
                 sx={{
-                  width: "70%",
+                  width: { xs: "100%", md: "70%" },
                   backgroundColor: "card.main",
                   borderRadius: "5px",
                   padding: "20px",
@@ -133,7 +133,7 @@ const BlogView = () => {
                         sx={{
                           display: "flex",
                           pl: "10px",
-                          width: "50%",
+                          width: { xs: "100%", sm: "50%" },
                           my: "5px",
                         }}
                       >
@@ -160,7 +160,7 @@ const BlogView = () => {
                         sx={{
                           display: "flex",
                           pl: "10px",
-                          width: "80%",
+                          width: { xs: "100%", md: "80%" },
                           my: "5px",
                         }}
                       >

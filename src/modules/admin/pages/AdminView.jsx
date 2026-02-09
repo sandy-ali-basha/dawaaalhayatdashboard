@@ -61,7 +61,7 @@ const AdminView = () => {
             >
               <Box
                 sx={{
-                  width: "40vw",
+                  width: { xs: "100%", md: "40vw" },
                   backgroundColor: "card.paper",
                   boxShadow:
                     "rgb(145 158 171 / 10%) 0px 0px 2px 0px, rgb(145 158 171 / 22%) 0px -1px 24px 4px",
@@ -95,7 +95,7 @@ const AdminView = () => {
                         sx={{
                           backgroundColor: "rgba(255, 76, 81, 0.12)",
                           borderRadius: "20px",
-                          width: "20%",
+                          width: { xs: "100%", sm: "50%", md: "20%" },
                           height: "100%",
                           display: "flex",
                           textAlign: "center",
@@ -118,7 +118,7 @@ const AdminView = () => {
                     sx={{
                       borde: "1px solid black",
                       backgroundColor: "black",
-                      width: "50%",
+                      width: { xs: "100%", sm: "50%" },
                       height: "2px",
                       ml: "10px",
                     }}
