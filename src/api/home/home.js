@@ -39,6 +39,10 @@ export const _Home = {
     _axios.post(`/home/order/update/${id}`, data).then((res) => res.data),
   getSortableSections: () =>
     _axios.get("home/tabs").then((res) => res.data?.data),
+  getFreeShippingLimit: () =>
+    _axios.get("/home/free_shipping").then((res) => res.data),
+  updateFreeShippingLimit: (data) =>
+    _axios.post("/home/free_shipping", data).then((res) => res.data),
 
   // items
     getSection: ({ id }) =>

@@ -8,6 +8,8 @@ import {
   InputAdornment,
   Paper,
   Button,
+  Card,
+  CardContent,
 } from "@mui/material";
 import {
   ModeOutlined,
@@ -25,6 +27,8 @@ import Countries from "../components/Countries";
 import CitiesUpdate from "./CitiesUpdate";
 import DeleteDialog from "../components/Dialog";
 import { InvStore } from "store/invStore";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { _Home } from "api/home/home";
 
 const CitiesIndex = () => {
   const { t } = useTranslation("index");
@@ -41,6 +45,30 @@ const CitiesIndex = () => {
   ]);
 
   const [search, setSearch] = useState("");
+  const [shippingLimit, setShippingLimit] = useState("");
+  const queryClient = useQueryClient();
+
+  const { isLoading: isLoadingShippingLimit } = useQuery(
+    ["free-shipping-limit"],
+    () => _Home.getFreeShippingLimit(),
+    {
+      onSuccess: (response) => {
+        const limitFromResponse =
+          response?.data?.limit ?? response?.limit ?? response?.data?.data?.limit;
+
+        if (limitFromResponse !== undefined && limitFromResponse !== null) {
+          setShippingLimit(String(limitFromResponse));
+        }
+      },
+    }
+  );
+
+  const { mutate: updateFreeShippingLimit, isLoading: isUpdatingShippingLimit } =
+    useMutation((limit) => _Home.updateFreeShippingLimit({ limit }), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["free-shipping-limit"]);
+      },
+    });
 
   const handleEdit = useCallback(
     (city) => {
@@ -188,6 +216,43 @@ const CitiesIndex = () => {
 
       {/* Countries */}
       <Countries />
+
+      <Card sx={{ borderRadius: 3, mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+            Free Shipping Limit
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 2,
+              alignItems: "center",
+            }}
+          >
+            <TextField
+              label="Limit"
+              type="number"
+              size="small"
+              value={shippingLimit}
+              onChange={(e) => setShippingLimit(e.target.value)}
+              sx={{ minWidth: 220 }}
+              disabled={isLoadingShippingLimit || isUpdatingShippingLimit}
+            />
+            <Button
+              variant="contained"
+              onClick={() => updateFreeShippingLimit(shippingLimit)}
+              disabled={
+                isLoadingShippingLimit ||
+                isUpdatingShippingLimit ||
+                shippingLimit === ""
+              }
+            >
+              {isUpdatingShippingLimit ? "Updating..." : "Update"}
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
 
       {/* Controls */}
       <Box
