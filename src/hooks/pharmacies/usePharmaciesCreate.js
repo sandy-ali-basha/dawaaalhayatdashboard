@@ -32,8 +32,8 @@ export const usePharmaciesCreate = () => {
 
   const { mutate } = useMutation((payload) => _Pharmacies.create(payload), {
     onSuccess: () => {
+      navigate(-1);
       queryClient.invalidateQueries(["pharmacies"]);
-      navigate("/pharmacies");
     },
   });
 
