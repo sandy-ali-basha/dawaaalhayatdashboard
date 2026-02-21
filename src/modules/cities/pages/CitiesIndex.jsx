@@ -54,7 +54,7 @@ const CitiesIndex = () => {
     {
       onSuccess: (response) => {
         const limitFromResponse =
-          response?.data?.limit ?? response?.limit ?? response?.data?.data?.limit;
+          response?.data?.free_shipping_limit ;
 
         if (limitFromResponse !== undefined && limitFromResponse !== null) {
           setShippingLimit(String(limitFromResponse));
@@ -214,13 +214,10 @@ const CitiesIndex = () => {
         Inventory & Countries Management
       </Typography>
 
-      {/* Countries */}
-      <Countries />
-
-      <Card sx={{ borderRadius: 3, mb: 3 }}>
+      <Card sx={{ borderRadius: 3, my: 3 }}>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-            Free Shipping Limit
+            Free Shipping Limit: {shippingLimit}
           </Typography>
           <Box
             sx={{
@@ -231,10 +228,8 @@ const CitiesIndex = () => {
             }}
           >
             <TextField
-              label="Limit"
               type="number"
               size="small"
-              value={shippingLimit}
               onChange={(e) => setShippingLimit(e.target.value)}
               sx={{ minWidth: 220 }}
               disabled={isLoadingShippingLimit || isUpdatingShippingLimit}
@@ -253,6 +248,9 @@ const CitiesIndex = () => {
           </Box>
         </CardContent>
       </Card>
+      {/* Countries */}
+      <Countries />
+
 
       {/* Controls */}
       <Box
