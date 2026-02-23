@@ -84,9 +84,7 @@ const AddImages = ({ id, open, setOpen, notDialog }) => {
       if (res.code === 200) {
         setALert(["Image saved successfully"]);
         handleDialogClose();
-      }
-    } catch (error) {
-      setALert(["Failed to save image"]);
+      }else setALert(["Failed to save image"]);
     } finally {
       setLoading(false);
     }

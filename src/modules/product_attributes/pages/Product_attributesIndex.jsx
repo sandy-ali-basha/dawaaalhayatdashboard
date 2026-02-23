@@ -40,6 +40,7 @@ const Product_attributesIndex = () => {
       t("title arabic"),
       t("title kurdish"),
       t("title english"),
+      t("status"),
       t("operations"),
     ];
   }, [t]);

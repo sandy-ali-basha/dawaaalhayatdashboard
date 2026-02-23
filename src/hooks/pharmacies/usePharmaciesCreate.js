@@ -9,7 +9,6 @@ import { _Pharmacies } from "api/pharmacies/pharmacies";
 const schema = yup.object().shape({
   name: yup.string().required("name is required"),
   city: yup.string().required("city is required"),
-  phone: yup.string().required("phone is required"),
   address: yup.string().required("address is required"),
   lat: yup
     .number()

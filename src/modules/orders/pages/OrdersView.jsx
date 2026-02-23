@@ -21,8 +21,6 @@ const OrdersView = () => {
   const { t } = useTranslation("index");
   const navigate = useNavigate();
   const [item, setItem] = orderStore((state) => [state.item, state.setItem]);
-
-  // Function to handle navigation back
   const handleBack = (e) => {
     e.preventDefault();
     navigate(-1);
@@ -71,8 +69,8 @@ const OrdersView = () => {
               item?.status === "awaiting-payment"
                 ? "info"
                 : item?.status === "payment-offline"
-                ? "primary"
-                : "success"
+                  ? "primary"
+                  : "success"
             }
           />
         </Box>
@@ -80,7 +78,6 @@ const OrdersView = () => {
 
       <Typography color="textSecondary" variant="body1">
         {t("Order Date")}: {item?.created_at ?? "N/A"}{" "}
-        {/* Example order date */}
       </Typography>
 
       <Grid container spacing={2} mt={2}>
@@ -103,23 +100,26 @@ const OrdersView = () => {
           </BoxStyled>
         </Grid>
 
-        <Grid item xs={12} md={4}>
-          <BoxStyled sx={{ p: 2, color: "text.main" }}>
-            <Typography variant="h6" gutterBottom>
-              CUSTOMER
-            </Typography>
-            <Typography>
-              {t("NAME")}: {item?.customer[0]?.first_name ?? "N/A"}{" "}
-              {item?.customer[0]?.last_name ?? " N/A"}
-            </Typography>
-            <Typography>
-              {t("age")}: {item?.customer[0]?.age ?? "N/A"}
-            </Typography>
-            <Typography>
-              {t("gender")}: {item?.customer[0]?.gender ?? "N/A"}
-            </Typography>
-          </BoxStyled>
-        </Grid>
+        {item?.customer && (
+          <Grid item xs={12} md={4}>
+            <BoxStyled sx={{ p: 2, color: "text.main" }}>
+              <Typography variant="h6" gutterBottom>
+                CUSTOMER
+              </Typography>
+              <Typography>
+                {t("NAME")}: {item?.customer[0]?.first_name ?? "N/A"}{" "}
+                {item?.customer[0]?.last_name ?? " N/A"}
+              </Typography>
+              <Typography>
+                {t("age")}: {item?.customer[0]?.age ?? "N/A"}
+              </Typography>
+              <Typography>
+                {t("gender")}: {item?.customer[0]?.gender ?? "N/A"}
+              </Typography>
+            </BoxStyled>
+          </Grid>
+        )}
+
         <Grid item xs={12} md={4}>
           <BoxStyled sx={{ p: 2, color: "text.main" }}>
             <Typography variant="h6" gutterBottom>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Grid,
@@ -116,6 +116,29 @@ const VariantCreate = ({
     });
   };
 
+  const normalizedRegions = useMemo(() => {
+    if (Array.isArray(regions)) return regions;
+    if (Array.isArray(regions?.data)) return regions.data;
+    return [];
+  }, [regions]);
+
+  useEffect(() => {
+    if (!defaultCity || normalizedRegions.length === 0) {
+      return;
+    }
+
+    const matchedRegion = normalizedRegions.find((region) =>
+      region?.cities?.some((city) => city.id === Number(defaultCity)),
+    );
+
+    if (!matchedRegion) {
+      return;
+    }
+
+    setSelectedRegion(matchedRegion.id);
+    setCities(matchedRegion.cities || []);
+  }, [defaultCity, normalizedRegions]);
+
   const handleCreate = () => {
     setLoading(true);
     const payload = normalizeVariantData(variantData);
@@ -209,7 +232,7 @@ const VariantCreate = ({
                   onChange={(e) =>
                     handleChange(
                       "purchasable",
-                      e.target.checked ? "always" : "false"
+                      e.target.checked ? "always" : "false",
                     )
                   }
                 />
@@ -289,11 +312,9 @@ const VariantCreate = ({
                         onChange={(e) => {
                           const regionId = Number(e.target.value);
                           setSelectedRegion(regionId);
-
-                          const region = regions?.find(
-                            (r) => r.id === regionId
+                          const region = normalizedRegions.find(
+                            (r) => r.id === regionId,
                           );
-
                           // Load cities for this region
                           setCities(region?.cities || []);
 
@@ -305,8 +326,8 @@ const VariantCreate = ({
                         }}
                       >
                         <option value="">Select Region</option>
-                        {regions ? (
-                          regions?.data?.map((region) => (
+                        {normalizedRegions.length > 0 ? (
+                          normalizedRegions.map((region) => (
                             <option key={region.id} value={region.id}>
                               {region.name}
                             </option>
@@ -332,7 +353,7 @@ const VariantCreate = ({
                             city_id: Number(e.target.value),
                           }))
                         }
-                        disabled={!selectedRegion}
+                        disabled={!selectedRegion || regionsLoading}
                       >
                         <option value="">Select City</option>
 
