@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import * as yup from "yup";
@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _Product_attributes } from "api/product_attributes/product_attributes";
 
 const schema = yup.object().shape({
-  image_url: yup.string().trim().nullable(),
+  image: yup.mixed().nullable(),
   kr: yup.object().shape({
     title: yup.string().required("Kurdish title is required"),
   }),
@@ -23,6 +23,7 @@ const schema = yup.object().shape({
 export const useProduct_attributesCreate = () => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState([]);
   const navigate = useNavigate();
   const formOptions = { resolver: yupResolver(schema) };
   const { register, handleSubmit, formState, setValue, control } =
@@ -54,7 +55,13 @@ export const useProduct_attributesCreate = () => {
   const handleCancel = () => navigate(-1);
 
   const hanldeCreate = (input) => {
-    mutate(input);
+    const formData = new FormData();
+    formData.append("ar[title]", input?.ar?.title || "");
+    formData.append("en[title]", input?.en?.title || "");
+    formData.append("kr[title]", input?.kr?.title || "");
+    if (image?.[0]) formData.append("image", image[0]);
+
+    mutate(formData);
     setLoading(true);
   };
 
@@ -71,12 +78,6 @@ export const useProduct_attributesCreate = () => {
     register: lang.code + ".title",
   }));
 
-  details.push({
-    head: t("image url"),
-    type: "text",
-    placeholder: t("image url"),
-    register: "image_url",
-  });
 
   return {
     handleCancel,
@@ -90,5 +91,6 @@ export const useProduct_attributesCreate = () => {
     errors,
     details,
     control,
+    setImage,
   };
 };
