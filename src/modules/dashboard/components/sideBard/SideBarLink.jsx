@@ -20,11 +20,7 @@ const SideBarLink = (props) => {
           variant="body1"
           sx={{
             textDecoration: "none",
-            opacity: props.open ? 1 : 0,
-            visibility: props.open ? "visible" : "hidden",
-            width: props.open ? "auto" : 0,
-            overflow: "hidden",
-            whiteSpace: "nowrap",
+            display: props.open ? "block" : "none",
             color: props.disabled ? "text.disabled" : "text.main",
           }}
         >
