@@ -19,8 +19,12 @@ const DashboardComponent = () => {
     setMobileOpen(false);
   }, [isMobile]);
 
-  const handleMobileToggle = () => {
-    setMobileOpen((prevState) => !prevState);
+  const handleMobileOpen = () => {
+    setMobileOpen(true);
+  };
+
+  const handleMobileClose = () => {
+    setMobileOpen(false);
   };
 
   return (
@@ -31,13 +35,13 @@ const DashboardComponent = () => {
         minHeight: "100vh",
       }}
     >
-      <Header open={open} isMobile={isMobile} onOpenMobile={handleMobileToggle} />
+      <Header open={open} isMobile={isMobile} onOpenMobile={handleMobileOpen} />
       <SideBar
         open={open}
         setOpen={setOpen}
         isMobile={isMobile}
         mobileOpen={mobileOpen}
-        onCloseMobile={() => setMobileOpen(false)}
+        onCloseMobile={handleMobileClose}
       />
       <Box
         component="main"

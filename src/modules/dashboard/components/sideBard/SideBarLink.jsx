@@ -21,6 +21,10 @@ const SideBarLink = (props) => {
           sx={{
             textDecoration: "none",
             opacity: props.open ? 1 : 0,
+            visibility: props.open ? "visible" : "hidden",
+            width: props.open ? "auto" : 0,
+            overflow: "hidden",
+            whiteSpace: "nowrap",
             color: props.disabled ? "text.disabled" : "text.main",
           }}
         >

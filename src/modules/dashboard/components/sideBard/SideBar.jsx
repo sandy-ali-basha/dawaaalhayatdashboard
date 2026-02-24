@@ -277,7 +277,7 @@ const SideBar = ({ open, setOpen, isMobile, mobileOpen, onCloseMobile }) => {
       open={isMobile ? mobileOpen : open}
       onClose={isMobile ? onCloseMobile : undefined}
       ModalProps={isMobile ? { keepMounted: true } : undefined}
-      hovered={!isMobile && hovered ? "true" : ""}
+      hoverd={!isMobile && hovered ? "true" : ""}
       ismobile={isMobile ? "true" : ""}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -291,7 +291,7 @@ const SideBar = ({ open, setOpen, isMobile, mobileOpen, onCloseMobile }) => {
       <SideBarHeader
         open={isDrawerExpanded}
         setOpen={setOpen}
-        hovered={isDrawerExpanded ? "true" : ""}
+        hoverd={isDrawerExpanded ? "true" : ""}
       />
       <Box
         sx={{
