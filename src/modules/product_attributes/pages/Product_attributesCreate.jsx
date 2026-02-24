@@ -6,6 +6,7 @@ import Loader from "components/shared/Loader";
 import ButtonAction from "components/shared/ButtonAction";
 import { useProduct_attributesCreate } from "../hooks/useProduct_attributesCreate";
 import ButtonLoader from "components/shared/ButtonLoader";
+import Image from "components/shared/Image";
 const Product_attributesCreate = () => {
   const {
     handleCancel,
@@ -17,6 +18,8 @@ const Product_attributesCreate = () => {
     t,
     errors,
     details,
+    control,
+    setImage,
   } = useProduct_attributesCreate();
 
   return (
@@ -47,6 +50,16 @@ const Product_attributesCreate = () => {
                 />
               </Grid>
             ))}
+                      <Grid item xs={12} sx={{ p: "10px" }}>
+              <Image
+                errors={errors?.image?.message}
+                control={control}
+                register={register}
+                name={"image"}
+                setImage={setImage}
+              />
+            </Grid>
+
           </Grid>
         </Box>
 

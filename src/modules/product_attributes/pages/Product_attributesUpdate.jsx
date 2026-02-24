@@ -15,8 +15,9 @@ import { useMutation, useQueryClient } from "react-query";
 import { _Product_attributes } from "api/product_attributes/product_attributes";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
+import Image from "components/shared/Image";
 const schema = yup.object().shape({
-  image_url: yup.string().trim().nullable(),
+  image: yup.mixed().nullable(),
   kr: yup.object().shape({
     title: yup.string().required("Kurdish title is required"),
   }),
@@ -41,6 +42,7 @@ const Product_attributesUpdate = ({ id }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
+  const [image, setImage] = useState([]);
 
   useEffect(() => {
     _axios
@@ -92,7 +94,14 @@ const Product_attributesUpdate = ({ id }) => {
   }
 
   const hanldeUpdate = (input) => {
-    mutate(input);
+    const formData = new FormData();
+    formData.append("ar[title]", input?.ar?.title || "");
+    formData.append("en[title]", input?.en?.title || "");
+    formData.append("kr[title]", input?.kr?.title || "");
+    formData.append("status", input?.status ?? data?.status ?? 0);
+    if (image?.[0]) formData.append("image", image[0]);
+
+    mutate(formData);
     setLoading(true);
   };
 
@@ -146,21 +155,15 @@ const Product_attributesUpdate = ({ id }) => {
                   </Grid>
                 );
               })}
-              <Grid item md={6} sx={{ p: "10px" }}>
-                <Box sx={{ margin: "0 0 8px 5px" }}>
-                  <Typography variant="body1" color="text.main">
-                    {t("image url")}
-                  </Typography>
-                </Box>
-                <TextFieldStyled
-                  sx={{ width: "100%" }}
-                  type="text"
-                  placeholder={t("image url")}
-                  defaultValue={data?.image_url || ""}
-                  name="image_url"
-                  {...register("image_url")}
-                  error={!!errors?.image_url}
-                  helperText={errors?.image_url?.message || ""}
+
+              <Grid item xs={12} sx={{ p: "10px" }}>
+                <Image
+                  errors={errors?.image?.message}
+                  control={control}
+                  register={register}
+                  name={"image"}
+                  setImage={setImage}
+                  image={data?.image_url}
                 />
               </Grid>
             </Grid>
