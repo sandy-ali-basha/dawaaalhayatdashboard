@@ -60,7 +60,7 @@ const HomeSection = ({ id }) => {
     );
   }
   if (!section) return <Typography>Loading...</Typography>;
-console.log("section",section)
+
   return (
     <>
       {editedID && (
@@ -68,12 +68,9 @@ console.log("section",section)
       )}
 
       <ChangeStatus id={id} type="section">
-        {(section.active ?? section.active === 1) ? "Active" : "Not Active"}
+        {(section.status ?? section.status === 1) ? "Active" : "Not Active"}
       </ChangeStatus>
 
-      <Typography variant="h6" sx={{ mt: 3, color: "black" }}>
-        active: {section.active}
-      </Typography>
 
       {id === 4 && (
         <>

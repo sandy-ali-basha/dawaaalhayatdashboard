@@ -20,7 +20,7 @@ const VideoTab = ({ video, videoText, direction, onEdit }) => (
           type={19}
           id={"video"}
         >
-          {video.value.status === 1 ? "Active" : "Not Active"}
+          {video.status === 1 ? "Active" : "Not Active"}
         </ChangeStatus>
       </Box>
       <Box sx={{ mt: 2, width: { xs: "100%", md: "50vw" } }}>

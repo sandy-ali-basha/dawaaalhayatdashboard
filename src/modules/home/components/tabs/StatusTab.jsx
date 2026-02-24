@@ -11,14 +11,14 @@ import {
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import ChangeStatus from "modules/home/pages/slider/ChangeStatus";
 
-const StatusTab = ({ status, t, direction, onEdit }) =>
+const StatusTab = ({ status, t, direction, onEdit,active }) =>
   status?.value && (
     <Card sx={{ mt: 3 }}>
       <CardContent>
       <Box sx={{display:'flex'}}>
         <Typography variant="h6">Status Section</Typography>
         <ChangeStatus type="setting" id={25} >
-          {status.value.status === 1 ? "Active" : "Not Active"}
+          {status.status === 1 ? "Active" : "Not Active"}
         </ChangeStatus>
       </Box>
         <Typography variant="subtitle2" color="text.secondary">

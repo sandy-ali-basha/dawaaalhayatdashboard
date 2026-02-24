@@ -25,11 +25,10 @@ const CtaTab = ({ cta, direction, onEdit }) =>
           
           <ChangeStatus
             id={16}
-            action={cta?.value.active === 1 && "change-status"}
+            action={cta?.status === 1 && "change-status"}
             type="setting"
           >
-            {cta.value.active === 1 ? "Active" : "Not Active"}
-            {cta?.value.active}
+            {cta.status === 1 ? "Active" : "Not Active"}
           </ChangeStatus>
           
         </Box>

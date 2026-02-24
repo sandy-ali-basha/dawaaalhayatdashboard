@@ -31,6 +31,7 @@ const ChangeStatus = ({ id, children,  type }) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["home"]);
+          queryClient.invalidateQueries(["getHomeSection", id]);
           setOpen(false);
           setLoading(false);
         },
