@@ -32,7 +32,7 @@ const HomeSection = ({ id }) => {
       setEditedID(id);
       setType(type);
     },
-    [setEditedID, setType]
+    [setEditedID, setType],
   );
   const navigate = useNavigate();
   // 🔥 Loading Effect — Skeleton Cards
@@ -60,19 +60,20 @@ const HomeSection = ({ id }) => {
     );
   }
   if (!section) return <Typography>Loading...</Typography>;
-  
+console.log("section",section)
   return (
     <>
       {editedID && (
         <HomeUpdate id={editedID} type={type} setHome_section_id={id} />
       )}
 
-      <ChangeStatus
-        id={id}
-        type="section"
-      >
-        {section.status ?? section.status === "1" ? "Active" : "Not Active"}
+      <ChangeStatus id={id} type="section">
+        {(section.active ?? section.active === 1) ? "Active" : "Not Active"}
       </ChangeStatus>
+
+      <Typography variant="h6" sx={{ mt: 3, color: "black" }}>
+        active: {section.active}
+      </Typography>
 
       {id === 4 && (
         <>

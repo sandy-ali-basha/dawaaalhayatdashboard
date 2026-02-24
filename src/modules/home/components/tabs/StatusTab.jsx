@@ -18,7 +18,7 @@ const StatusTab = ({ status, t, direction, onEdit }) =>
       <Box sx={{display:'flex'}}>
         <Typography variant="h6">Status Section</Typography>
         <ChangeStatus type="setting" id={25} >
-          {status.status === "1" ? "Active" : "Not Active"}
+          {status.value.status === 1 ? "Active" : "Not Active"}
         </ChangeStatus>
       </Box>
         <Typography variant="subtitle2" color="text.secondary">

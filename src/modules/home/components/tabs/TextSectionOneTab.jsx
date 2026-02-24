@@ -18,10 +18,10 @@ const TextSectionOneTab = ({ textSectionOne, direction, onEdit }) =>
           <Typography variant="h6">Text Section One</Typography>
           <ChangeStatus
             id={17}
-            action={textSectionOne.status === "1" && "change-status"}
+            action={textSectionOne.value.status === 1 && "change-status"}
             type="setting"
           >
-            {textSectionOne.status === "1" ? "Active" : "Not Active"}
+            {textSectionOne.value.status === 1 ? "Active" : "Not Active"}
           </ChangeStatus>
         </Box>
         {["ar", "en", "kr"].map((lang) => (

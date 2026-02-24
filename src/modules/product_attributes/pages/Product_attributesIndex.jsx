@@ -37,10 +37,10 @@ const Product_attributesIndex = () => {
 
   const columns = useMemo(() => {
     return [
+      t("image"),
       t("title arabic"),
       t("title kurdish"),
       t("title english"),
-      t("image"),
       t("status"),
       t("operations"),
     ];
@@ -56,6 +56,18 @@ const Product_attributesIndex = () => {
   const rows = useMemo(() => {
     return data?.data?.product_attributes?.map((product_attributes, id) => (
       <TableRow sx={{ height: "65px" }} key={product_attributes.id}>
+       <TableCell sx={{ minWidth: 90 }}>
+          {product_attributes?.image_url ? (
+            <Box
+              component="image"
+              src={product_attributes.image}
+              alt={product_attributes?.translations[2]?.title || "category"}
+              sx={{ width: 48, height: 48, objectFit: "cover", borderRadius: 1 }}
+            />
+          ) : (
+            "-"
+          )}
+        </TableCell>
         <TableCell sx={{ minWidth: 50 }}>
           {product_attributes?.translations[0]?.title ?? "Null"}
         </TableCell>
@@ -73,20 +85,6 @@ const Product_attributesIndex = () => {
             {product_attributes.status === 1 ? "Active" : "Not Active"}
           </ChangeStatus>
           </TableCell>
-        <TableCell sx={{ minWidth: 90 }}>
-          {product_attributes?.image_url ? (
-            <Box
-              component="img"
-              src={product_attributes.image_url}
-              alt={product_attributes?.translations[2]?.title || "category"}
-              sx={{ width: 48, height: 48, objectFit: "cover", borderRadius: 1 }}
-            />
-          ) : (
-            "-"
-          )}
-        </TableCell>
-
-
         <TableCell
           align="center"
           sx={{

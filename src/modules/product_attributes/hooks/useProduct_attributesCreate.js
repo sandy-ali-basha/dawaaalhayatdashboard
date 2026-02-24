@@ -59,6 +59,7 @@ export const useProduct_attributesCreate = () => {
     formData.append("ar[title]", input?.ar?.title || "");
     formData.append("en[title]", input?.en?.title || "");
     formData.append("kr[title]", input?.kr?.title || "");
+    formData.append("status", 1);
     if (image?.[0]) formData.append("image", image[0]);
 
     mutate(formData);

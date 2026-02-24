@@ -22,13 +22,16 @@ const CtaTab = ({ cta, direction, onEdit }) =>
               <ModeTwoToneIcon sx={{ color: "text.main" }} />
             </Tooltip>
           </IconButton>
+          
           <ChangeStatus
             id={16}
-            action={cta.status === "active" && "change-status"}
+            action={cta?.value.active === 1 && "change-status"}
             type="setting"
           >
-            {cta.status === "1" ? "Active" : "Not Active"}
+            {cta.value.active === 1 ? "Active" : "Not Active"}
+            {cta?.value.active}
           </ChangeStatus>
+          
         </Box>
         <Box sx={{ my: 2 }}>
           {["ar", "en", "kr"].map((lang) => (
