@@ -16,6 +16,7 @@ import { _Product_attributes } from "api/product_attributes/product_attributes";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 const schema = yup.object().shape({
+  image_url: yup.string().trim().nullable(),
   kr: yup.object().shape({
     title: yup.string().required("Kurdish title is required"),
   }),
@@ -145,6 +146,23 @@ const Product_attributesUpdate = ({ id }) => {
                   </Grid>
                 );
               })}
+              <Grid item md={6} sx={{ p: "10px" }}>
+                <Box sx={{ margin: "0 0 8px 5px" }}>
+                  <Typography variant="body1" color="text.main">
+                    {t("image url")}
+                  </Typography>
+                </Box>
+                <TextFieldStyled
+                  sx={{ width: "100%" }}
+                  type="text"
+                  placeholder={t("image url")}
+                  defaultValue={data?.image_url || ""}
+                  name="image_url"
+                  {...register("image_url")}
+                  error={!!errors?.image_url}
+                  helperText={errors?.image_url?.message || ""}
+                />
+              </Grid>
             </Grid>
           </>
         )}
