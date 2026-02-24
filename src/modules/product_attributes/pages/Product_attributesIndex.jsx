@@ -40,6 +40,7 @@ const Product_attributesIndex = () => {
       t("title arabic"),
       t("title kurdish"),
       t("title english"),
+      t("image"),
       t("status"),
       t("operations"),
     ];
@@ -71,7 +72,20 @@ const Product_attributesIndex = () => {
           >
             {product_attributes.status === 1 ? "Active" : "Not Active"}
           </ChangeStatus>
+          </TableCell>
+        <TableCell sx={{ minWidth: 90 }}>
+          {product_attributes?.image_url ? (
+            <Box
+              component="img"
+              src={product_attributes.image_url}
+              alt={product_attributes?.translations[2]?.title || "category"}
+              sx={{ width: 48, height: 48, objectFit: "cover", borderRadius: 1 }}
+            />
+          ) : (
+            "-"
+          )}
         </TableCell>
+
 
         <TableCell
           align="center"

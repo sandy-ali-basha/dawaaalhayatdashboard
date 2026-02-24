@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _Product_attributes } from "api/product_attributes/product_attributes";
 
 const schema = yup.object().shape({
+  image_url: yup.string().trim().nullable(),
   kr: yup.object().shape({
     title: yup.string().required("Kurdish title is required"),
   }),
@@ -69,6 +70,13 @@ export const useProduct_attributesCreate = () => {
     placeholder: t("title"),
     register: lang.code + ".title",
   }));
+
+  details.push({
+    head: t("image url"),
+    type: "text",
+    placeholder: t("image url"),
+    register: "image_url",
+  });
 
   return {
     handleCancel,
