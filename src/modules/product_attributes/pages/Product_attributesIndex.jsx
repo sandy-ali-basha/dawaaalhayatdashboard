@@ -57,7 +57,7 @@ const Product_attributesIndex = () => {
     return data?.data?.product_attributes?.map((product_attributes, id) => (
       <TableRow sx={{ height: "65px" }} key={product_attributes.id}>
        <TableCell sx={{ minWidth: 90 }}>
-          {product_attributes?.image_url ? (
+          {product_attributes?.image ? (
             <Box
               component="image"
               src={product_attributes.image}

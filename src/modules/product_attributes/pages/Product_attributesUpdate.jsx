@@ -99,7 +99,7 @@ const Product_attributesUpdate = ({ id }) => {
     formData.append("en[title]", input?.en?.title || "");
     formData.append("kr[title]", input?.kr?.title || "");
     formData.append("status", input?.status ?? data?.status ?? 0);
-    if (image?.[0]) formData.append("image", image[0]);
+    if (image?.[0]) formData.append("image_url", image[0]);
 
     mutate(formData);
     setLoading(true);

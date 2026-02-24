@@ -44,6 +44,7 @@ export const useProduct_attributesCreate = () => {
         if (res.code === 200) {
           handleReset();
           queryClient.invalidateQueries(["product_attributes"]);
+          navigate(-1);
         }
         setLoading(true);
       })
@@ -60,7 +61,7 @@ export const useProduct_attributesCreate = () => {
     formData.append("en[title]", input?.en?.title || "");
     formData.append("kr[title]", input?.kr?.title || "");
     formData.append("status", 1);
-    if (image?.[0]) formData.append("image", image[0]);
+    if (image?.[0]) formData.append("image_url", image[0]);
 
     mutate(formData);
     setLoading(true);
