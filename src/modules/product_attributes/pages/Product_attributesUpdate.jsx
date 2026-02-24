@@ -3,9 +3,9 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
 import { colorStore } from "store/ColorsStore";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _axios } from "interceptor/http-config";
@@ -35,7 +35,7 @@ const Product_attributesUpdate = ({ id }) => {
   ]);
 
   const formOptions = { resolver: yupResolver(schema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { register, handleSubmit, formState, control } = useForm(formOptions);
   const { errors } = formState;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -103,6 +103,26 @@ const Product_attributesUpdate = ({ id }) => {
         {!!data && (
           <>
             <Grid container component="form" key={id}>
+              <Grid item md={12} sx={{ p: "10px" }}>
+                <Controller
+                  name="status"
+                  control={control}
+                  defaultValue={data?.status === 1}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      label="status"
+                      control={
+                        <Switch
+                          checked={field.value}
+                          onChange={(e) =>
+                            field.onChange(e.target.checked ? 1 : 0)
+                          }
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
               {details?.map((item, index) => {
                 const error = errors?.[item.register.split(".")[0]]?.name;
                 return (

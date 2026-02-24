@@ -64,13 +64,9 @@ const Product_attributesIndex = () => {
         <TableCell sx={{ minWidth: 50 }}>
           {product_attributes?.translations[2]?.title ?? "Null"}
         </TableCell>
+ 
         <TableCell sx={{ minWidth: 50 }}>
-          <ChangeStatus
-            id={"cta"}
-            action={product_attributes.id === "active" && "change-status"}
-          >
-            {product_attributes.id === "Active" ? "Active" : "Not Active"}
-          </ChangeStatus>
+            {product_attributes.status === 1 ? "Active" : "Not Active"}
         </TableCell>
 
         <TableCell
