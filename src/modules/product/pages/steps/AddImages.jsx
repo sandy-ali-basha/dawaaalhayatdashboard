@@ -56,7 +56,7 @@ const AddImages = ({ id, open, setOpen, notDialog }) => {
   const [alert, setALert] = useState([]);
 
   const handleClose = () => {
-    setOpen(false);
+   if(setOpen) setOpen(false);
   };
 
   const { mutate } = useMutation((data) => createPost(data));
@@ -123,7 +123,7 @@ const AddImages = ({ id, open, setOpen, notDialog }) => {
     }
     handleClose();
   };
-  console.log("id", id);
+
   return (
     <>
       {loading && <Loader />}

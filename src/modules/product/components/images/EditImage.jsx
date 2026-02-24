@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Grid } from "@mui/material";
+import { Alert, Box, Grid } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -43,12 +43,11 @@ const EditImage = ({ open, setOpen, link, status, isProductCreate, name }) => {
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
-  console.log("errors", errors);
+  const [alert, setALert] = useState(false);
   const { mutate } = useMutation((data) => createPost(data));
-  console.log("link", link);
+
   async function createPost(data) {
     if (Array.isArray(link)) {
-      console.log("link is array");
       link?.map((item) =>
         _axios
           .post(item, data)
@@ -56,18 +55,20 @@ const EditImage = ({ open, setOpen, link, status, isProductCreate, name }) => {
           .then((res) => {
             if (res.code === 200) {
               handleDialogClose();
+              setALert("image saved successfully");
             }
             setLoading(false);
           }),
       );
     } else {
-      console.log("link is link");
       _axios
         .post(link, data)
         .then((res) => res?.data)
         .then((res) => {
           if (res.code === 200) {
             handleDialogClose();
+              setALert("image saved successfully");
+
           }
           setLoading(false);
         });
@@ -162,6 +163,11 @@ const EditImage = ({ open, setOpen, link, status, isProductCreate, name }) => {
         <Dialog open={open} onClose={handleDialogClose} maxWidth="md">
           {content}
         </Dialog>
+      )}
+      {alert && (
+        <Alert sx={{ mt: 1 }} severity="info">
+          {alert}
+        </Alert>
       )}
     </>
   );

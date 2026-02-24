@@ -53,7 +53,7 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
   const { errors } = formState;
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
-  const [alert, setALert] = useState([]);
+  const [alert, setALert] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -70,6 +70,7 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
         formData: data,
       })
       .then((res) => {
+        if (res?.code === 200) setALert("image saved successfully");
         setLoading(false);
       });
   };
@@ -84,8 +85,10 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
         })
         .then((res) => {
           setLoading(false);
-          if (res.code === 200) {
-            handleDialogClose();
+          if (res?.code === 200) {
+            if (!notDialog) {
+              handleDialogClose();
+            }
           }
         });
     }
@@ -93,7 +96,7 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
   const handleUpdate = (input) => {
     const formData = new FormData();
     images.forEach((image, idx) =>
-      formData.append("images[" + idx + "]", image)
+      formData.append("images[" + idx + "]", image),
     );
 
     mutate(formData);
@@ -144,12 +147,12 @@ const AddImagesSlider = ({ id, open, setOpen, notDialog }) => {
               {t("Submit")}
             </ButtonLoader>
           </CardActions>
-          {alert.length > 0 &&
-            alert.map((item, idx) => (
-              <Alert sx={{ mt: 1 }} key={idx} severity="info">
-                {item}
-              </Alert>
-            ))}
+
+          {alert && (
+            <Alert sx={{ mt: 1 }} severity="info">
+              {alert}
+            </Alert>
+          )}
         </Card>
       ) : (
         <Dialog open={open} onClose={handleDialogClose}>
