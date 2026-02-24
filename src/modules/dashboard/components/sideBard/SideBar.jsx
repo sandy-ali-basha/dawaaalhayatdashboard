@@ -29,6 +29,7 @@ import {
   WorkOutlined,
   WorkOutlineRounded,
 } from "@mui/icons-material";
+
 const SideBar = ({ open, setOpen, isMobile, mobileOpen, onCloseMobile }) => {
   const { t } = useTranslation("sidebar");
   const [hovered, setHovered] = useState(false);
