@@ -3,7 +3,7 @@ import { useQueryClient, useMutation } from "react-query";
 export const useChangeStatus = ({ status, id }) => {
   const queryClient = useQueryClient();
   return useMutation(
-    () => _axios.get('/product_attributes/change-status/'+ id),
+    () => _axios.get('/product_attributes/toggle-status/'+ id),
     {
       onMutate: async (id) => {
         await queryClient.cancelQueries(["product_attributes", true, 1, 10]);
