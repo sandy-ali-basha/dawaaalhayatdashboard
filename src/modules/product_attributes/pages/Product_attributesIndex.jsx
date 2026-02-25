@@ -22,6 +22,7 @@ import Product_attributesUpdate from "./Product_attributesUpdate";
 import DeleteDialog from "../components/Dialog";
 import { AccountTreeOutlined } from "@mui/icons-material";
 import ChangeStatus from "../components/ChangeStatus";
+import ChangeNavStatus from "../components/ChangeNavStatus";
 
 const Product_attributesIndex = () => {
   const { t } = useTranslation("index");
@@ -42,6 +43,7 @@ const Product_attributesIndex = () => {
       t("title kurdish"),
       t("title english"),
       t("status"),
+      t("nav status"),
       t("operations"),
     ];
   }, [t]);
@@ -50,19 +52,24 @@ const Product_attributesIndex = () => {
     (id) => {
       setEditedID(id);
     },
-    [setEditedID]
+    [setEditedID],
   );
 
   const rows = useMemo(() => {
     return data?.data?.product_attributes?.map((product_attributes, id) => (
       <TableRow sx={{ height: "65px" }} key={product_attributes.id}>
-       <TableCell sx={{ minWidth: 90 }}>
+        <TableCell sx={{ minWidth: 90 }}>
           {product_attributes?.image ? (
             <Box
               component="image"
               src={product_attributes.image}
               alt={product_attributes?.translations[2]?.title || "category"}
-              sx={{ width: 48, height: 48, objectFit: "cover", borderRadius: 1 }}
+              sx={{
+                width: 48,
+                height: 48,
+                objectFit: "cover",
+                borderRadius: 1,
+              }}
             />
           ) : (
             "-"
@@ -80,11 +87,20 @@ const Product_attributesIndex = () => {
         <TableCell sx={{ minWidth: 50 }}>
           <ChangeStatus
             id={product_attributes?.id}
-            action={product_attributes.status === 1 ? 0 : 1}
+            action={product_attributes.status}
           >
-            {product_attributes.status === 1 ? "Active" : "Not Active"}
+            {product_attributes.status ? "Active" : "Not Active"}
           </ChangeStatus>
-          </TableCell>
+        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          <ChangeNavStatus
+            id={product_attributes?.id}
+            action={product_attributes.navActive === 1 ? 0 : 1}
+          >
+            {product_attributes.navActive === 1 ? "Active" : "Not Active"}
+          </ChangeNavStatus>
+        </TableCell>
+
         <TableCell
           align="center"
           sx={{
