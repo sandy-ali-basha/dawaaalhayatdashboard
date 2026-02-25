@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Card, Grid, Typography } from "@mui/material";
 import ProductPerformanceReport from "../components/ProductPerformanceReport";
 import AbandonedCartReport from "../components/AbandonedCartReport";
@@ -13,21 +13,6 @@ const Dashboard = () => {
   const { data, isLoading } = useAnalytics();
 
   const analytics = data?.data || {}; // Just to avoid undefined
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: "dashboard_analytics_view",
-      page_path: window.location.pathname,
-      page_title: document.title,
-      analytics_loaded: !isLoading,
-      total_orders: analytics.orderStatusData?.totalOrders ?? 0,
-      completed_carts: analytics.orderStatusData?.completedCarts ?? 0,
-      abandoned_carts: analytics.orderStatusData?.abandonedCart ?? 0,
-    });
-  }, [analytics.orderStatusData, isLoading]);
 
   // -------------------------
   // 🔹 Extract API data safely
