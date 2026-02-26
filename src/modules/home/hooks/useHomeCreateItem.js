@@ -22,6 +22,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 2MB
 export const useHomeCreateItem = () => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
   const params = useParams(); // for home_section_id if needed
   const isReelSection = Number(params.id) === 4;
@@ -90,6 +91,7 @@ export const useHomeCreateItem = () => {
     // Append reel videos for section 4
     if (isReelSection) {
       if (data.video_en && data.video_en[0]) {
+        formData.append("image", data.video_en[0]);
         formData.append("video_en", data.video_en[0]);
       }
 
