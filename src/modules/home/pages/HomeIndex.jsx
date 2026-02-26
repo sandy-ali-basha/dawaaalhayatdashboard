@@ -37,21 +37,18 @@ const HomeIndex = () => {
   const [sortOpen, setSortOpen] = useState(false);
 
   useEffect(() => {
-    _Home
-      .getSortableSections()
-      .then((res) => {
-        setSections(res || []);
-        console.log("Fetched sections:", res);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch sections:", err);
-      });
+    Promise.all([_Home.getSortableSections(), _Home.getAllSections()])
+      .then(([sortableSections, allSectionsRes]) => {
+        const safeSortableSections = sortableSections || [];
+        const allSections = allSectionsRes?.home_sections || [];
+        const allowedSectionIds = new Set(
+          safeSortableSections.map((section) => section.id)
+        );
 
-    _Home
-      .getAllSections()
-      .then((res) => {
-        setHomePagesections(res?.home_sections || []);
-        console.log("Fetched sections:", res?.home_sections);
+        setSections(safeSortableSections);
+        setHomePagesections(
+          allSections.filter((section) => allowedSectionIds.has(section.id))
+        );
       })
       .catch((err) => {
         console.error("Failed to fetch sections:", err);
