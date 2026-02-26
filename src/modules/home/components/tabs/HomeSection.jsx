@@ -19,10 +19,7 @@ import DeleteItem from "../item/DeleteItem";
 import ChangeStatus from "modules/home/pages/slider/ChangeStatus";
 
 const HomeSection = ({ id }) => {
-  console.log("Rendering HomeSection with id:", id);
-
   const { data: section, isLoading } = useHomeSection(id);
-  console.log("Fetched section data:", section);
   const [type, setType] = useState();
   
   const [editedID, setEditedID] = colorStore((state) => [
