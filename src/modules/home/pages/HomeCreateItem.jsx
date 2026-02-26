@@ -15,7 +15,10 @@ const HomeCreateItem = () => {
     loading,
     t,
     errors,
+    sectionId,
   } = useHomeCreateItem();
+
+  const isReelSection = sectionId === 4;
 
   return (
     <Box>
@@ -62,17 +65,31 @@ const HomeCreateItem = () => {
               />
             </Grid>
 
-            {/* Image upload */}
-            <Grid item xs={12}>
-              <TextFieldStyled
-                fullWidth
-                type="file"
-                {...register("image")}
-                error={!!errors.image}
-                helperText={errors.image?.message}
-
-              />
-            </Grid>
+            {isReelSection ? (
+              ["en", "ar", "kr"].map((lang) => (
+                <Grid item xs={12} key={`video-${lang}`}>
+                  <TextFieldStyled
+                    fullWidth
+                    type="file"
+                    inputProps={{ accept: "video/*" }}
+                    label={`${t("Video")} (${lang})`}
+                    {...register(`video_${lang}`)}
+                    error={!!errors[`video_${lang}`]}
+                    helperText={errors[`video_${lang}`]?.message}
+                  />
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <TextFieldStyled
+                  fullWidth
+                  type="file"
+                  {...register("image")}
+                  error={!!errors.image}
+                  helperText={errors.image?.message}
+                />
+              </Grid>
+            )}
           </Grid>
         </Box>
 
