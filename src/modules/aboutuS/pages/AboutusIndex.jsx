@@ -9,6 +9,7 @@ import {
   IconButton,
   Tooltip,
   Chip,
+  CardMedia,
 } from "@mui/material";
 import ModeTwoToneIcon from "@mui/icons-material/ModeTwoTone";
 import { useTranslation } from "react-i18next";
@@ -42,7 +43,13 @@ const AboutusIndex = () => {
     },
     [setPartnerId],
   );
-
+  const groupedAboutUs = data?.data?.reduce((acc, item) => {
+    if (!acc[item.about_us_id]) {
+      acc[item.about_us_id] = [];
+    }
+    acc[item.about_us_id].push(item);
+    return acc;
+  }, {});
   return (
     <>
       {isLoading || (partnerLoading && <Loader />)}
@@ -69,54 +76,72 @@ const AboutusIndex = () => {
 
         {/* Cards */}
         <Grid container spacing={3}>
-          {data?.data?.map((aboutus) => (
-            <Grid item xs={12} md={6} lg={6} key={aboutus.id}>
-              <Card
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  boxShadow: 3,
-                }}
-              >
-                <CardContent>
-                  <Typography color="text.primary" variant="h6" gutterBottom>
-                    {aboutus.title}
+          {groupedAboutUs &&
+            Object.entries(groupedAboutUs).map(([aboutUsId, items]) => (
+              <Grid item xs={12} md={6} lg={6}>
+                <Box key={aboutUsId}>
+                  {/* Section Title (مثلاً Welcome / Mission / Vision) */}
+                  <Typography variant="h5" sx={{ mb: 3, color: "text.main" }}>
+                    {items[0]?.section}
                   </Typography>
-
-                  <Chip label={aboutus.section} size="small" sx={{ mb: 1 }} />
-
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
+                  <Card
                     sx={{
-                      overflow: "hidden",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      boxShadow: 3,
                     }}
-                    dangerouslySetInnerHTML={{
-                      __html: aboutus.description,
-                    }}
-                  />
-                </CardContent>
+                  >
+                    {items.map((aboutus, idx) => (
+                      <Box key={aboutus.id}>
+                        {idx === 0 && (
+                          <>
+                            <CardMedia
+                              component="img"
+                              height="140"
+                              image={aboutus.image_url}
+                              alt={aboutus.title}
+                            />
+                            <CardActions
+                              sx={{ mt: "auto", justifyContent: "flex-end" }}
+                            >
+                              <IconButton
+                                onClick={() => handleEdit(aboutus.about_us_id)}
+                              >
+                                <Tooltip
+                                  title={direction === "ltr" ? "Edit" : "تعديل"}
+                                >
+                                  <ModeTwoToneIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </CardActions>
+                          </>
+                        )}
+                        <CardContent>
+                          <Typography variant="h6" gutterBottom>
+                            {aboutus.title}
+                          </Typography>
 
-                <CardActions
-                  sx={{
-                    mt: "auto",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {/* Edit */}
-                  <IconButton onClick={() => handleEdit(aboutus.about_us_id)}>
-                    <Tooltip title={direction === "ltr" ? "Edit" : "تعديل"}>
-                      <ModeTwoToneIcon />
-                    </Tooltip>
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              overflow: "hidden",
+                              display: "-webkit-box",
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: "vertical",
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html: aboutus.description,
+                            }}
+                          />
+                        </CardContent>
+                      </Box>
+                    ))}
+                  </Card>
+                </Box>
+              </Grid>
+            ))}
         </Grid>
         <Box sx={{ display: "flex", my: 2 }}>
           <Typography
@@ -137,7 +162,7 @@ const AboutusIndex = () => {
           setOpen={setOpen}
           link={"about/partners/" + partnerId}
           name={"logo_url"}
-        />  
+        />
         <Grid container spacing={3}>
           {partners?.data?.map((partner) => (
             <Grid item xs={12} md={6} lg={4} key={partner.id}>

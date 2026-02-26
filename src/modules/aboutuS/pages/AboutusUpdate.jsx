@@ -17,12 +17,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { _axios } from "interceptor/http-config";
 import { TextFieldStyled } from "components/styled/TextField";
 import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { _Aboutus } from "api/aboutus/aboutus";
 import Loader from "components/shared/Loader";
 import ButtonLoader from "components/shared/ButtonLoader";
 import EditorInput from "components/shared/EditorInput";
 import Image from "components/shared/Image";
+import { useSnackbar } from "notistack";
 
 /* ================= SCHEMA ================= */
 const schema = yup.object({
@@ -92,38 +93,37 @@ const AboutusUpdate = () => {
       });
     });
   }, [editedID, reset]);
+  const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
 
   /* ================= UPDATE ================= */
   const { mutate } = useMutation(
-    (formData) => _Aboutus.update({editedID, formData}),
+    (formData) => _Aboutus.update({ editedID, formData }),
     {
-      onSuccess: () => {
+      onSuccess: (res) => {
         setLoading(false);
         setEditedID(null);
+        queryClient.invalidateQueries(["aboutus"]);
+
+        if (res?.code === 200)
+          enqueueSnackbar("Updated successfully", { variant: "success" });
       },
       onError: () => setLoading(false),
-    }
+    },
   );
 
   const handleUpdate = (data) => {
     const formData = new FormData();
+    formData.append("ar[title]", data.ar.title || "");
+    formData.append("ar[description]", data.ar.description || "");
 
-    // Arabic
-    formData.append("ar[title]", data.ar.title);
-    formData.append("ar[description]", data.ar.description);
+    formData.append("en[title]", data.en.title || "");
+    formData.append("en[description]", data.en.description || "");
 
-    // English
-    formData.append("en[title]", data.en.title);
-    formData.append("en[description]", data.en.description);
+    formData.append("kr[title]", data.kr.title || "");
+    formData.append("kr[description]", data.kr.description || "");
 
-    // Kurdish
-    formData.append("kr[title]", data.kr.title);
-    formData.append("kr[description]", data.kr.description);
-
-    // Image (only if changed)
-    if (image) {
-      formData.append("image", image);
-    }
+    if (image?.[0]) formData.append("image_url", image[0]);
 
     setLoading(true);
     mutate(formData);
@@ -227,9 +227,6 @@ const AboutusUpdate = () => {
                 alignItems: "center",
               }}
             >
-              <Box sx={{ width: { md: "20vw", xs: "70vw" } }}>
-                <img src={currentImage} alt="item" style={{ width: "100%" }} />
-              </Box>
               <Typography variant="body1" color="initial" sx={{ mt: 2 }}>
                 replace current Media
               </Typography>
@@ -237,9 +234,9 @@ const AboutusUpdate = () => {
                 errors={errors?.image?.message}
                 control={control}
                 register={register}
-                name={"Media"}
-                setImage={(file) => setImage(file)}
-                multiple={false}
+                name={"Image"}
+                setImage={setImage}
+                image={currentImage}
               />
             </Grid>
           </Grid>
