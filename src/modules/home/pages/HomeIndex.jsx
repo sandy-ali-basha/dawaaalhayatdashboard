@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Typography, Skeleton, Button } from "@mui/material";
 import { useHome } from "hooks/home/useHome";
 import { settingsStore } from "store/settingsStore";
@@ -36,7 +36,7 @@ const HomeIndex = () => {
   const [tabValue, setTabValue] = useState(0);
   const [sortOpen, setSortOpen] = useState(false);
 
-  useEffect(() => {
+  useMemo(() => {
     _Home
       .getSortableSections()
       .then((res) => {
@@ -68,7 +68,7 @@ const HomeIndex = () => {
   } = data ?? {};
 
   const handleTabChange = (_, newValue) => setTabValue(newValue);
-
+console.log("TabValue:", tabValue);
   const handleEditClick = (section) => {
     setEditSection(section);
     setOpen(true);

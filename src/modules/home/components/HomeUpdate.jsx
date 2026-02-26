@@ -16,7 +16,10 @@ import ButtonLoader from "components/shared/ButtonLoader";
 import Image from "components/shared/Image";
 import EditorInput from "components/shared/EditorInput";
 
-const HomeUpdate = ({ id, type,setHome_section_id }) => {
+const HomeUpdate = ({ id, type, setHome_section_id }) => {
+  const [videoEn, setVideoEn] = useState(null);
+  const [videoAr, setVideoAr] = useState(null);
+  const [videoKr, setVideoKr] = useState(null);
   const { t } = useTranslation("index");
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
@@ -36,7 +39,7 @@ const HomeUpdate = ({ id, type,setHome_section_id }) => {
     _axios.get("/home_page/item/" + editedID).then((res) => {
       setData(res.data?.data);
     });
-  }, [id, editedID]);
+  }, [editedID]);
 
   const details = [
     {
@@ -117,12 +120,13 @@ const HomeUpdate = ({ id, type,setHome_section_id }) => {
         queryClient.invalidateQueries(["getHomeSection"]);
       });
   }
-const hanldeUpdate = (input) => {
+  const hanldeUpdate = (input) => {
     const formData = new FormData();
+
     formData.append("type", type);
 
     if (image && image.length > 0) {
-        formData.append("image", image[0]);
+      formData.append("image", image[0]);
     }
 
     formData.append("cta_link", input.cta_link);
@@ -134,10 +138,24 @@ const hanldeUpdate = (input) => {
     formData.append("description_kr", input.description_kr);
     formData.append("home_section_id", setHome_section_id);
 
+    // ✅ Append videos only if section = 4
+    if (Number(setHome_section_id) === 4) {
+      if (videoEn && videoEn.length > 0) {
+        formData.append("video_en", videoEn[0]);
+      }
+
+      if (videoAr && videoAr.length > 0) {
+        formData.append("video_ar", videoAr[0]);
+      }
+
+      if (videoKr && videoKr.length > 0) {
+        formData.append("video_kr", videoKr[0]);
+      }
+    }
+
     mutate(formData);
     setLoading(true);
-};
-
+  };
 
   return (
     <>
@@ -196,33 +214,76 @@ const hanldeUpdate = (input) => {
                   </Grid>
                 );
               })}
-              <Grid
-                item
-                md={12}
-                sx={{
-                  p: "10px",
-                  my: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Box sx={{ width: { md: "20vw", xs: "70vw" } }}>
-                  <img src={data?.image} alt="item" style={{ width: "100%" }} />
-                </Box>
-                <Typography variant="body1" color="initial" sx={{ mt: 2 }}>
-                  replace current Media
-                </Typography>
-                <Image
-                  errors={errors?.image?.message}
-                  control={control}
-                  register={register}
-                  name={"Media"}
-                  setImage={(file) => setImage(file)}
-                  multiple={false}
-                />
-              </Grid>
+              {Number(setHome_section_id) === 4 && (
+                <>
+                  {/* English Video */}
+                  <Grid item md={12} sx={{ p: "10px", my: 1 }}>
+                    <Typography variant="body1">
+                      Upload English Video
+                    </Typography>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => setVideoEn(e.target.files)}
+                    />
+                  </Grid>
+
+                  {/* Arabic Video */}
+                  <Grid item md={12} sx={{ p: "10px", my: 1 }}>
+                    <Typography variant="body1">Upload Arabic Video</Typography>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => setVideoAr(e.target.files)}
+                    />
+                  </Grid>
+
+                  {/* Kurdish Video */}
+                  <Grid item md={12} sx={{ p: "10px", my: 1 }}>
+                    <Typography variant="body1">
+                      Upload Kurdish Video
+                    </Typography>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => setVideoKr(e.target.files)}
+                    />
+                  </Grid>
+                </>
+              )}
+              {Number(setHome_section_id) !== 4 && (
+                <Grid
+                  item
+                  md={12}
+                  sx={{
+                    p: "10px",
+                    my: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box sx={{ width: { md: "20vw", xs: "70vw" } }}>
+                    <img
+                      src={data?.image}
+                      alt="item"
+                      style={{ width: "100%" }}
+                    />
+                  </Box>
+                  <Typography variant="body1" color="initial" sx={{ mt: 2 }}>
+                    replace current Media
+                  </Typography>
+                  <Image
+                    errors={errors?.image?.message}
+                    control={control}
+                    register={register}
+                    name={"Media"}
+                    setImage={(file) => setImage(file)}
+                    multiple={false}
+                  />
+                </Grid>
+              )}
             </Grid>
           </>
         )}
