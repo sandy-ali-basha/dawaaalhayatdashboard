@@ -36,12 +36,11 @@ const HomeIndex = () => {
   const [tabValue, setTabValue] = useState(0);
   const [sortOpen, setSortOpen] = useState(false);
 
-  useMemo(() => {
+  useEffect(() => {
     _Home
       .getSortableSections()
       .then((res) => {
         setSections(res || []);
-        console.log("Fetched sections:", res);
       })
       .catch((err) => {
         console.error("Failed to fetch sections:", err);
@@ -51,7 +50,6 @@ const HomeIndex = () => {
       .getAllSections()
       .then((res) => {
         setHomePagesections(res?.home_sections || []);
-        console.log("Fetched sections:", res?.home_sections);
       })
       .catch((err) => {
         console.error("Failed to fetch sections:", err);
@@ -68,7 +66,12 @@ const HomeIndex = () => {
   } = data ?? {};
 
   const handleTabChange = (_, newValue) => setTabValue(newValue);
-console.log("TabValue:", tabValue);
+
+  const activeHomeSection = useMemo(() => {
+    if (!Array.isArray(HomePagesections) || tabValue < 6) return null;
+
+    return HomePagesections[tabValue - 6] ?? null;
+  }, [HomePagesections, tabValue]);
   const handleEditClick = (section) => {
     setEditSection(section);
     setOpen(true);
@@ -218,13 +221,7 @@ console.log("TabValue:", tabValue);
           onEdit={handleEditClick}
         />
       )}
-      {Array.isArray(HomePagesections) &&
-        HomePagesections.map(
-          (section, index) =>
-            tabValue === index + 6 && (
-              <HomeSection key={section.id} id={section?.id} />
-            )
-        )}
+      {activeHomeSection && <HomeSection id={activeHomeSection?.id} />}
     </Box>
   );
 };
