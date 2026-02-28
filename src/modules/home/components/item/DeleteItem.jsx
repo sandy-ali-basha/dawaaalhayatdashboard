@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useQueryClient } from "react-query";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,22 +11,21 @@ import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { FolderDeleteOutlined } from "@mui/icons-material";
 import { useDeleteItem } from "hooks/home/useDeleteItem";
-import { useHomeSection } from "hooks/home/useHomeSection";
 
-const DeleteItem = ({ id, page, count }) => {
+const DeleteItem = ({ id, sectionId }) => {
   const { t } = useTranslation("index");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const delete_item = useDeleteItem({ page, count });
-  const handleClickOpen = (e) => setOpen(true);
+  const queryClient = useQueryClient();
+  const delete_item = useDeleteItem();
+  const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const { refetch } = useHomeSection(id);
   const Delete_item = () => {
     setLoading(true);
     delete_item.mutate(id, {
       onSuccess: () => {
         setOpen(false);
-        refetch();
+        queryClient.invalidateQueries(["getHomeSection", sectionId]);
       },
     });
   };

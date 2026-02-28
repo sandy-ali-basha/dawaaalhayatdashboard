@@ -37,6 +37,7 @@ export const useHomeSection = (id) => {
       }).then((res) => normalizeSectionResponse(res, id)),
     {
       enabled: !!id, // query runs only when id exists
+      retry: false,
     }
   );
 
