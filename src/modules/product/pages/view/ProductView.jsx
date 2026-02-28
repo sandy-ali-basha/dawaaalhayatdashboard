@@ -105,6 +105,18 @@ const ProductView = () => {
       head: t("name kurdish"),
       value: data?.translations?.find((t) => t.locale === "kr")?.name,
     },
+    {
+      head: t("tag english"),
+      value: data?.translations?.find((t) => t.locale === "en")?.tag,
+    },
+    {
+      head: t("tag arabic"),
+      value: data?.translations?.find((t) => t.locale === "ar")?.tag,
+    },
+    {
+      head: t("tag kurdish"),
+      value: data?.translations?.find((t) => t.locale === "kr")?.tag,
+    },
     { head: t("brand"), value: data?.brand?.name },
     { head: t("product type"), value: data?.product_type?.name },
     { head: t("status"), value: data?.status },

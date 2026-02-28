@@ -87,6 +87,11 @@ const ProductUpdate = ({ id }) => {
               ""
           );
           setValue(
+            "kr.tag",
+            fetchedData?.translations?.find((t) => t.locale === "kr")?.tag ||
+              ""
+          );
+          setValue(
             "kr.description",
             fetchedData?.translations?.find((t) => t.locale === "kr")
               ?.description || ""
@@ -97,6 +102,11 @@ const ProductUpdate = ({ id }) => {
               ""
           );
           setValue(
+            "ar.tag",
+            fetchedData?.translations?.find((t) => t.locale === "ar")?.tag ||
+              ""
+          );
+          setValue(
             "ar.description",
             fetchedData?.translations?.find((t) => t.locale === "ar")
               ?.description || ""
@@ -104,6 +114,11 @@ const ProductUpdate = ({ id }) => {
           setValue(
             "en.name",
             fetchedData?.translations?.find((t) => t.locale === "en")?.name ||
+              ""
+          );
+          setValue(
+            "en.tag",
+            fetchedData?.translations?.find((t) => t.locale === "en")?.tag ||
               ""
           );
           setValue(
@@ -130,6 +145,15 @@ const ProductUpdate = ({ id }) => {
       helperText: `${lang.code}.name`,
       defaultValue:
         data?.translations?.find((tr) => tr.language === lang.code)?.name || "",
+    },
+    {
+      head: t(`tag ${lang.name.toLowerCase()}`),
+      type: "text",
+      placeholder: t("tag"),
+      register: `${lang.code}.tag`,
+      helperText: `${lang.code}.tag`,
+      defaultValue:
+        data?.translations?.find((tr) => tr.language === lang.code)?.tag || "",
     },
   ]);
 
@@ -164,7 +188,7 @@ const ProductUpdate = ({ id }) => {
       register: "points",
       helperText: "points",
       defaultValue: data?.points,
-    }
+    },
   );
 
   useEffect(() => {
