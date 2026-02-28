@@ -87,22 +87,22 @@ const HomeSection = ({ id }) => {
       )}
 
       <Grid container spacing={2}>
-         {Array.isArray(section?.items) && section.items.map((item) => (
-          <Grid item xs={4}>
-            <Card key={item.id} sx={{ mt: 3, borderRadius: 2, boxShadow: 2 }}>
+        {Array.isArray(section?.items) && section.items.map((item) => (
+          <Grid item xs={4} key={item.id}>
+            <Card sx={{ mt: 3, borderRadius: 2, boxShadow: 2 }}>
               <IconButton onClick={() => handleEdit(item?.id, "grid")}>
                 <Edit />
               </IconButton>
 
-              {id === 4 && <DeleteItem id={item?.id} count={1} page={1} />}
-              {id === 4 ? (
-                <Box sx={{ p: 2 }}>
-                  {["en", "ar", "kr"].map((lang) =>
-                    item[`video_${lang}`] ? (
-                      <Box key={lang} sx={{ mb: 2 }}>
-                        <Typography variant="subtitle2" fontWeight="bold">
-                          {lang.toUpperCase()} Video
-                        </Typography>
+            {id === 4 && <DeleteItem id={item?.id} sectionId={id} />}
+{id === 4 ? (
+  <Box sx={{ p: 2 }}>
+    {["en", "ar", "kr"].map((lang) =>
+      item[`video_${lang}`] ? (
+        <Box key={lang} sx={{ mb: 2 }}>
+          <Typography variant="subtitle2" fontWeight="bold">
+            {lang.toUpperCase()} Video
+          </Typography>
 
                         <video
                           width="100%"

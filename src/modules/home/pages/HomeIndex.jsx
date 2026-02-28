@@ -24,6 +24,12 @@ import VideoUpdate from "../components/VedioUpdate";
 import HomeSection from "../components/tabs/HomeSection";
 import SortHomeSectionsDialog from "../components/SortHomeSectionsDialog";
 
+const isRootSection = (section) => {
+  if (!section || typeof section !== "object") return false;
+
+  return !(section.home_section_id ?? section.parent_id);
+};
+
 const HomeIndex = () => {
   const { data, isLoading } = useHome();
   const queryClient = useQueryClient();
@@ -49,7 +55,8 @@ const HomeIndex = () => {
     _Home
       .getAllSections()
       .then((res) => {
-        setHomePagesections(res?.home_sections || []);
+        const allSections = Array.isArray(res?.home_sections) ? res.home_sections : [];
+        setHomePagesections(allSections.filter(isRootSection));
       })
       .catch((err) => {
         console.error("Failed to fetch sections:", err);
