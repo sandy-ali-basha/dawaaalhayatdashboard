@@ -21,7 +21,7 @@ import ChangeStatus from "modules/home/pages/slider/ChangeStatus";
 const HomeSection = ({ id }) => {
   const { data: section, isLoading } = useHomeSection(id);
   const [type, setType] = useState();
-  
+
   const [editedID, setEditedID] = colorStore((state) => [
     state.editedID,
     state.setEditedID,
@@ -87,44 +87,47 @@ const HomeSection = ({ id }) => {
       )}
 
       <Grid container spacing={2}>
-        {section?.items.map((item) => (
+         {Array.isArray(section?.items) && section.items.map((item) => (
           <Grid item xs={4}>
             <Card key={item.id} sx={{ mt: 3, borderRadius: 2, boxShadow: 2 }}>
               <IconButton onClick={() => handleEdit(item?.id, "grid")}>
                 <Edit />
               </IconButton>
 
-            {id === 4 && <DeleteItem id={item?.id} count={1} page={1} />}
-{id === 4 ? (
-  <Box sx={{ p: 2 }}>
-    {["en", "ar", "kr"].map((lang) =>
-      item[`video_${lang}`] ? (
-        <Box key={lang} sx={{ mb: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {lang.toUpperCase()} Video
-          </Typography>
+              {id === 4 && <DeleteItem id={item?.id} count={1} page={1} />}
+              {id === 4 ? (
+                <Box sx={{ p: 2 }}>
+                  {["en", "ar", "kr"].map((lang) =>
+                    item[`video_${lang}`] ? (
+                      <Box key={lang} sx={{ mb: 2 }}>
+                        <Typography variant="subtitle2" fontWeight="bold">
+                          {lang.toUpperCase()} Video
+                        </Typography>
 
-          <video
-            width="100%"
-            height="200"
-            controls
-            style={{ borderRadius: 8, objectFit: "cover" }}
-          >
-            <source src={item[`video_${lang}`]} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </Box>
-      ) : null
-    )}
-  </Box>
-) : (
-  <CardMedia
-    component="img"
-    height="200"
-    image={item.image}
-    alt={`grid-item-${item.id}`}
-  />
-)}
+                        <video
+                          width="100%"
+                          height="200"
+                          controls
+                          style={{ borderRadius: 8, objectFit: "cover" }}
+                        >
+                          <source
+                            src={item[`video_${lang}`]}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      </Box>
+                    ) : null,
+                  )}
+                </Box>
+              ) : (
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={item.image}
+                  alt={`grid-item-${item.id}`}
+                />
+              )}
               <CardContent>
                 {["ar", "en", "kr"].map((lang) => (
                   <Box key={lang} mb={2}>
