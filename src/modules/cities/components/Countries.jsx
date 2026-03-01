@@ -227,7 +227,7 @@ const Countries = () => {
                             />
                             <Typography variant="body2" color="text.secondary">
                               <strong>Inventory:</strong>{" "}
-                              {city?.name || "غير معروف"}
+                              {city?.inv_name || "غير معروف"}
                             </Typography>
                           </Box>
 
@@ -240,7 +240,7 @@ const Countries = () => {
                               <strong>Shipping:</strong>{" "}
                               {city?.shipping_price
                                 ? `${city.shipping_price} ${
-                                    city.currency || ""
+                                    city.currency?.code || ""
                                   }`
                                 : "غير معروف"}
                             </Typography>
@@ -259,7 +259,7 @@ const Countries = () => {
                               fontSize="small"
                             />
                             <Typography variant="subtitle2" color="info.main">
-                              {city?.currency || "N/A"}
+                              {city?.currency?.name || "N/A"}
                             </Typography>
                           </Box>
                         </Stack>

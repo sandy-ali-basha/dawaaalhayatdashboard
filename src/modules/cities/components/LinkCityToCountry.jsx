@@ -22,6 +22,7 @@ import ButtonLoader from "components/shared/ButtonLoader";
 import Autocomplete from "@mui/material/Autocomplete";
 import CountryUpdate from "./CountryUpdate";
 import { useCities } from "hooks/cities/useCities";
+import { useQueryClient } from "react-query";
 
 const LinkCityToCountry = ({ openLink, setopenLink }) => {
   const { t } = useTranslation("index");
@@ -71,6 +72,7 @@ const LinkCityToCountry = ({ openLink, setopenLink }) => {
       cities.filter((city) => city.name.toLowerCase().includes(query)),
     );
   };
+  const queryClient = useQueryClient();
 
   const handleSave = async () => {
     if (!editedID?.id) return;
@@ -80,6 +82,7 @@ const LinkCityToCountry = ({ openLink, setopenLink }) => {
         editedID: editedID.id,
         formData: { cities: selectedCities.map((c) => c.id) },
       });
+      queryClient.invalidateQueries(["regions", "cities"]);
       if (response.code === 200) {
         handleClose();
       } else {
