@@ -61,7 +61,12 @@ const Countries = () => {
         <LinkCityToCountry openLink={openLink} setopenLink={setopenLink} />
       )}
       {editCity && (
-        <CitiesUpdate old_data={Prev_cityData} open={open} setOpen={setOpen} />
+         <CitiesUpdate
+          oldData={Prev_cityData}
+          setOldData={setPrev_cityData}
+          open={open}
+          setOpen={setOpen}
+        />
       )}
       <Box
         sx={{

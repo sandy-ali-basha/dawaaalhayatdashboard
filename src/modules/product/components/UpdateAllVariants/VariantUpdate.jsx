@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Grid,
@@ -28,6 +28,8 @@ import ButtonLoader from "components/shared/ButtonLoader";
 import FlavorAutocomplete from "../VariantsRepeater/FlavorAutocomplete";
 import PackingAutocomplete from "../VariantsRepeater/PackingAutocomplete";
 import { _Product } from "api/product/product";
+import { useQueryClient } from "react-query";
+import { useParams } from "react-router-dom";
 
 const VariantUpdate = ({
   variantData: initialVariant,
@@ -39,33 +41,9 @@ const VariantUpdate = ({
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [variantData, setVariantData] = useState(initialVariant || {});
+  const queryClient = useQueryClient();
 
-  // Handle normal input fields
-  const handleChange = (field, value) => {
-    setVariantData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // Handle flavor/packing select
-  const handleOptionChange = (type, value) => {
-    setVariantData((prev) => ({
-      ...prev,
-      option_value_ids:
-        type === "flavor"
-          ? [value, prev.option_value_ids?.[1]]
-          : [prev.option_value_ids?.[0], value],
-    }));
-  };
-
-  // Update variant API call
-  const handleUpdate = () => {
-    setLoading(true);
-    _Product
-      .updateVariant({ id: initialVariant.id, formData: variantData })
-      .then((res) => {
-        if (res.code === 200) setOpen(false);
-      })
-      .finally(() => setLoading(false));
-  };
+  // Fields configuration
   const cityFields = [
     {
       name: "price",
@@ -110,7 +88,7 @@ const VariantUpdate = ({
       icon: <Inventory2Outlined fontSize="small" />,
       type: "number",
       helperText:
-        "Total items physically in the warehouse.Includes all items—even reserved or damaged.",
+        "Total items physically in the warehouse. Includes all items—even reserved or damaged.",
     },
     {
       name: "unit_quantity",
@@ -127,10 +105,51 @@ const VariantUpdate = ({
     },
   ];
 
+  // Handle input change (auto detect number fields)
+  const handleChange = (field, value, type = "text") => {
+    setVariantData((prev) => ({
+      ...prev,
+      [field]:
+        type === "number"
+          ? value === ""
+            ? ""
+            : Number(value)
+          : value,
+    }));
+  };
+
+  // Handle flavor/packing select
+  const handleOptionChange = (type, value) => {
+    setVariantData((prev) => ({
+      ...prev,
+      option_value_ids:
+        type === "flavor"
+          ? [value, prev.option_value_ids?.[1]]
+          : [prev.option_value_ids?.[0], value],
+    }));
+  };
+const params = useParams();
+  // Update API
+  const handleUpdate = () => {
+    setLoading(true);
+
+    _Product.updateVariant({
+      id: initialVariant.id,
+      formData: variantData,
+    })
+      .then((res) => {
+        if (res.code === 200) {
+          queryClient.invalidateQueries(["product","id-"+ params.id]);
+          setOpen(false);
+        }
+      })
+      .finally(() => setLoading(false));
+  };
+
   return (
     <>
       <IconButton onClick={() => setOpen(true)}>
-        <EditOutlined color="primary.main" />
+        <EditOutlined color="primary" />
       </IconButton>
 
       <Dialog
@@ -158,6 +177,7 @@ const VariantUpdate = ({
             />
           </FormControl>
         </DialogTitle>
+
         <Box sx={{ p: 3 }}>
           <Grid container spacing={2}>
             {/* SKU */}
@@ -166,16 +186,20 @@ const VariantUpdate = ({
               <TextFieldStyled
                 sx={{ mt: 1 }}
                 fullWidth
-                value={variantData.sku || ""}
-                onChange={(e) => handleChange("sku", e.target.value)}
+                value={variantData.sku ?? ""}
+                onChange={(e) =>
+                  handleChange("sku", e.target.value)
+                }
               />
             </Grid>
 
             {/* Flavor */}
             <Grid item xs={12} md={4}>
               <FlavorAutocomplete
-                value={variantData.options[0]}
-                onChange={(value) => handleOptionChange("flavor", value)}
+                value={variantData.options?.[0]}
+                onChange={(value) =>
+                  handleOptionChange("flavor", value)
+                }
                 flavors={flavors}
                 flavorsIsLoading={flavorsIsLoading}
               />
@@ -184,14 +208,16 @@ const VariantUpdate = ({
             {/* Packing */}
             <Grid item xs={12} md={4}>
               <PackingAutocomplete
-                value={variantData.options[1]}
-                onChange={(value) => handleOptionChange("packing", value)}
+                value={variantData.options?.[1]}
+                onChange={(value) =>
+                  handleOptionChange("packing", value)
+                }
                 packings={packings}
                 packingsIsLoading={packingsIsLoading}
               />
             </Grid>
 
-            {/* City Fields */}
+            {/* City Data */}
             <Grid item xs={12}>
               <Box
                 sx={{
@@ -245,12 +271,17 @@ const VariantUpdate = ({
                           {field.icon}
                           {field.label}
                         </Typography>
+
                         <TextFieldStyled
                           type={field.type}
                           fullWidth
-                          value={variantData[field.name] || ""}
+                          value={variantData[field.name] ?? ""}
                           onChange={(e) =>
-                            handleChange(field.name, e.target.value)
+                            handleChange(
+                              field.name,
+                              e.target.value,
+                              field.type
+                            )
                           }
                           helperText={field.helperText}
                         />
@@ -267,6 +298,7 @@ const VariantUpdate = ({
           <Button onClick={() => setOpen(false)} sx={{ color: "text.main" }}>
             Cancel
           </Button>
+
           <ButtonLoader
             name="Update"
             onClick={handleUpdate}

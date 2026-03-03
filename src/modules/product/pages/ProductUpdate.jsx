@@ -153,7 +153,7 @@ const ProductUpdate = ({ id }) => {
       register: `${lang.code}.tag`,
       helperText: `${lang.code}.tag`,
       defaultValue:
-        data?.translations?.find((tr) => tr.language === lang.code)?.tag || "",
+      data?.translations?.find((tr) => tr.language === lang.code)?.tag || "",
     },
   ]);
 
@@ -234,10 +234,20 @@ const ProductUpdate = ({ id }) => {
       });
   }
 
-  const hanldeUpdate = (input) => {
-    mutate(input);
-    setLoading(true);
-  };
+const hanldeUpdate = (input) => {
+  // clone object
+  const formattedData = { ...input };
+
+  // check each language tag
+  ["ar", "kr", "en"].forEach((lang) => {
+    if (formattedData?.[lang]?.tag === "") {
+      formattedData[lang].tag = false;
+    }
+  });
+
+  mutate(formattedData);
+  setLoading(true);
+};
 
   return (
     <>

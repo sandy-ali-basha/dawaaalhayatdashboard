@@ -3,6 +3,8 @@ import { Box } from "@mui/system";
 import { _Product } from "api/product/product";
 import { useState } from "react";
 import CityVariantsBox from "./CityVariantsBox";
+import { useParams } from "react-router-dom";
+import { useQueryClient } from "react-query";
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -31,7 +33,7 @@ const VariantsByCityDialog = ({
   const variantsByCity = groupByCity(data);
   const handleVariantChange = (variantId, field, value) => {
     setData((prev) =>
-      prev.map((v) => (v.id === variantId ? { ...v, [field]: value } : v))
+      prev.map((v) => (v.id === variantId ? { ...v, [field]: value } : v)),
     );
 
     // فقط للـ options
@@ -64,6 +66,8 @@ const VariantsByCityDialog = ({
       return next;
     });
   };
+  const params = useParams();
+  const queryClient = useQueryClient();
 
   const saveAllVariants = async () => {
     if (dirtyIds.size === 0) return;
@@ -76,6 +80,7 @@ const VariantsByCityDialog = ({
           id: variant.id,
           formData: variant,
         });
+
         await delay(1000);
       } catch (err) {
         console.error("Failed to update variant", variant.id, err);
@@ -84,6 +89,7 @@ const VariantsByCityDialog = ({
     setDirtyIds(new Set());
     setSaving(false);
     setOpen(false);
+    queryClient.invalidateQueries(["product", "id-" + params.id]);
   };
 
   return (
