@@ -19,7 +19,6 @@ const SettingsCreate = () => {
     details,
   } = useSettingsCreate()
 
-
   return (
     <Box>
       {loading && <Loader />}

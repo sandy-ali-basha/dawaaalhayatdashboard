@@ -11,4 +11,14 @@ export const _Contactus = {
     delete: (id) => _axios.delete(Link+'/' + id).then((res) => res.data),
 
     update: ({ editedID, formData }) => _axios.put( Link +'/' + editedID, formData).then((res) => res?.data),
+
+    locationsIndex: () => _axios.get(Link + "/locations").then((res) => res.data),
+
+    locationsCreate: (data) => _axios.post(Link + "/locations", data).then((res) => res?.data),
+
+    locationsUpdate: ({ id, data }) =>
+      _axios.put(Link + "/locations/" + id, data).then((res) => res?.data),
+
+    locationsDelete: (id) =>
+      _axios.delete(Link + "/locations/" + id).then((res) => res?.data),
 };

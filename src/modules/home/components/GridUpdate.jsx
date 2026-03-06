@@ -101,6 +101,7 @@ const GridUpdate = ({ open, onClose, handleSave }) => {
   <Typography variant="body1" sx={{ mt: 1 }} color="text.primary">
                   Subtitle {lang}
                 </Typography>
+                
                 <EditorInput
                   name={`subtitle-${lang}-${sectionIndex}`}
                   initialValue={section[lang]?.subtitle || ""}
