@@ -59,12 +59,12 @@ const ContactusIndex = () => {
 
   const company = data?.data?.[0];
 
-  // const { data: locationsData, isLoading: isLoadingLocations } = useQuery(
-  //   ["contact-locations"],
-  //   () => _Contactus.locationsIndex(),
-  // );
+  const { data: locationsData, isLoading: isLoadingLocations } = useQuery(
+    ["contact-locations"],
+    () => _Contactus.locationsIndex(),
+  );
 
-  // const locations = useMemo(() => locationsData?.data || [], [locationsData]);
+  const locations = useMemo(() => locationsData?.data || [], [locationsData]);
 
   const createLocationMutation = useMutation(
     (payload) => _Contactus.locationsCreate(payload),
@@ -183,7 +183,7 @@ const ContactusIndex = () => {
   const isSubmittingLocation =
     createLocationMutation.isLoading || updateLocationMutation.isLoading;
 
-  if (isLoading) return <Loader />;
+  if (isLoading || isLoadingLocations) return <Loader />;
 
   if (!company) {
     return <Typography>No contact data found</Typography>;
@@ -270,7 +270,7 @@ const ContactusIndex = () => {
             </Stack>
           </Grid>
 
-          {company.locations.map((loc, index) => (
+          {locations.map((loc, index) => (
             <React.Fragment key={loc.id}>
               <Grid item xs={12} md={6}>
                 <Card variant="outlined">
