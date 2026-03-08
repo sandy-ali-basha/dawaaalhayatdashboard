@@ -6,7 +6,8 @@ import { HttpResponseInterceptor } from "interceptor/http-response.interceptor";
 import { HttpRequestInterceptor } from "interceptor/http-request.interceptor";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { registerDeviceTokenIfNeeded } from "services/notificationDeviceToken";
+import { registerDeviceTokenIfNeeded, saveDeviceToken } from "services/notificationDeviceToken";
+import { initPushToken } from "services/pushToken";
 
 function App() {
   const navigate = useNavigate();
@@ -15,9 +16,16 @@ function App() {
   useEffect(() => {
     HttpRequestInterceptor();
     HttpResponseInterceptor(navigate, enqueueSnackbar);
-    registerDeviceTokenIfNeeded().catch((e) => {
-      console.error("registerDeviceTokenIfNeeded failed", e);
-    });
+
+    const run = async () => {
+      const token = await initPushToken();
+      if (token) {
+        saveDeviceToken(token);
+        await registerDeviceTokenIfNeeded();
+      }
+    };
+
+    run().catch(console.error);
   }, [enqueueSnackbar, navigate]);
 
   return (
