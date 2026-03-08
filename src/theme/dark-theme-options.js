@@ -16,6 +16,8 @@ const colors = {
   },
   text: {
     main: "#FFF8F0",
+    primary: "#FFF8F0",
+    secondary: "#A7B4B3",
   },
   inactive: {
     main: "#3D3E3E",
@@ -132,6 +134,13 @@ export const darkThemeOptions = {
         },
       },
     },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          color: colors.text.primary,
+        },
+      },
+    },
 
     MuiIconButton: {
       styleOverrides: {
@@ -195,6 +204,11 @@ export const darkThemeOptions = {
 
   palette: {
     mode: "dark",
+    background: {
+      default: colors.background.main,
+      paper: colors.background.paper,
+      main: colors.background.main,
+    },
     ...colors,
   },
   typography: {
