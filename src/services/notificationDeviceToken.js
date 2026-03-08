@@ -1,28 +1,29 @@
 import { _Notifications } from "api/notifications/notifications";
 import { _AuthApi } from "api/auth";
 
-const DEVICE_TOKEN_KEY = "fcm_device_token";
-const REGISTERED_TOKEN_KEY = "registered_fcm_device_token";
+const DEVICE_TOKEN_KEY = "device_token";
+const REGISTERED_DEVICE_TOKEN_KEY = "registered_device_token";
 const ALLOWED_ROLES = new Set(["super_admin", "website_admin"]);
 
 const getRole = () => localStorage.getItem("role");
 
-export const saveFcmDeviceToken = (token) => {
+export const saveDeviceToken = (token) => {
   if (!token) return;
   localStorage.setItem(DEVICE_TOKEN_KEY, token);
 };
 
-export const getFcmDeviceToken = () => localStorage.getItem(DEVICE_TOKEN_KEY);
+export const getDeviceToken = () => localStorage.getItem(DEVICE_TOKEN_KEY);
 
-const getRegisteredToken = () => localStorage.getItem(REGISTERED_TOKEN_KEY);
+const getRegisteredToken = () =>
+  localStorage.getItem(REGISTERED_DEVICE_TOKEN_KEY);
 
 const setRegisteredToken = (token) => {
   if (!token) {
-    localStorage.removeItem(REGISTERED_TOKEN_KEY);
+    localStorage.removeItem(REGISTERED_DEVICE_TOKEN_KEY);
     return;
   }
 
-  localStorage.setItem(REGISTERED_TOKEN_KEY, token);
+  localStorage.setItem(REGISTERED_DEVICE_TOKEN_KEY, token);
 };
 
 const canRegisterForCurrentUser = () => {
@@ -32,7 +33,7 @@ const canRegisterForCurrentUser = () => {
 };
 
 export const registerDeviceTokenIfNeeded = async () => {
-  const token = getFcmDeviceToken();
+  const token = getDeviceToken();
 
   if (!token || !canRegisterForCurrentUser()) return;
   if (getRegisteredToken() === token) return;
@@ -42,7 +43,7 @@ export const registerDeviceTokenIfNeeded = async () => {
 };
 
 export const unregisterDeviceTokenOnLogout = async () => {
-  const token = getFcmDeviceToken();
+  const token = getDeviceToken();
 
   if (!token || !_AuthApi.getToken()) {
     setRegisteredToken("");
