@@ -2,13 +2,12 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 
 import { IconButton, Tooltip, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-
 import { _AuthApi } from "api/auth";
 import { useTranslation } from "react-i18next";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import { settingsStore } from "store/settingsStore";
+import { unregisterDeviceTokenOnLogout } from "services/notificationDeviceToken";
 const SettingsMenu = ({ open, hoverd }) => {
   const { t } = useTranslation("settingMenu");
 
@@ -18,7 +17,8 @@ const SettingsMenu = ({ open, hoverd }) => {
     state.setDirection,
   ]);
 
-  const logOut = (input) => {
+  const logOut = async (input) => {
+    await unregisterDeviceTokenOnLogout().catch(() => null);
     _AuthApi.destroyToken(input);
   };
 

@@ -4,7 +4,7 @@ import { drawerWidth } from "modules/dashboard/DashboardComponent";
 
 export const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) =>
-     prop !== "hoverd" && prop !== "ismobile",
+    prop !== "hoverd" && prop !== "ismobile",
 })(({ theme, open, hoverd, ismobile }) => {
   const isMobile = Boolean(ismobile);
 

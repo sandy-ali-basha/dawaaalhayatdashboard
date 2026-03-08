@@ -6,6 +6,7 @@ import { HttpResponseInterceptor } from "interceptor/http-response.interceptor";
 import { HttpRequestInterceptor } from "interceptor/http-request.interceptor";
 import {  useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { registerDeviceTokenIfNeeded } from "services/notificationDeviceToken";
 
 function App() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ function App() {
   useEffect(() => {
     HttpRequestInterceptor();
     HttpResponseInterceptor(navigate, enqueueSnackbar);
+    registerDeviceTokenIfNeeded().catch(() => null);
   }, [enqueueSnackbar, navigate]);
 
   return (
