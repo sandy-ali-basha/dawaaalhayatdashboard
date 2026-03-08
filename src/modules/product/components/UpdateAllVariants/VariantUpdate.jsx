@@ -239,7 +239,7 @@ const params = useParams();
                     p: 1,
                     borderRadius: 2,
                     boxShadow: 1,
-                    backgroundColor: "background.default",
+                    // backgroundColor: "background.default",
                   }}
                 >
                   <Typography

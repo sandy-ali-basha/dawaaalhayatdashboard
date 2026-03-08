@@ -13,6 +13,7 @@ export const saveFcmDeviceToken = (token) => {
 };
 
 export const getFcmDeviceToken = () => localStorage.getItem(DEVICE_TOKEN_KEY);
+console.log("getFcmDeviceToken",DEVICE_TOKEN_KEY)
 
 const getRegisteredToken = () => localStorage.getItem(REGISTERED_TOKEN_KEY);
 
@@ -33,7 +34,7 @@ const canRegisterForCurrentUser = () => {
 
 export const registerDeviceTokenIfNeeded = async () => {
   const token = getFcmDeviceToken();
-
+console.log("token",token)
   if (!token || !canRegisterForCurrentUser()) return;
   if (getRegisteredToken() === token) return;
 
