@@ -4,7 +4,7 @@ import AppRouting from "./AppRouting";
 import { Box } from "@mui/material";
 import { HttpResponseInterceptor } from "interceptor/http-response.interceptor";
 import { HttpRequestInterceptor } from "interceptor/http-request.interceptor";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { registerDeviceTokenIfNeeded } from "services/notificationDeviceToken";
 
@@ -15,7 +15,9 @@ function App() {
   useEffect(() => {
     HttpRequestInterceptor();
     HttpResponseInterceptor(navigate, enqueueSnackbar);
-    registerDeviceTokenIfNeeded().catch(() => null);
+    registerDeviceTokenIfNeeded().catch((e) => {
+      console.error("registerDeviceTokenIfNeeded failed", e);
+    });
   }, [enqueueSnackbar, navigate]);
 
   return (
