@@ -35,11 +35,16 @@ const canRegisterForCurrentUser = () => {
 export const registerDeviceTokenIfNeeded = async () => {
   const token = getDeviceToken();
 
-  if (!token || !canRegisterForCurrentUser()) return;
+  if (!token) return;
+  if (!canRegisterForCurrentUser()) return;
   if (getRegisteredToken() === token) return;
 
-  await _Notifications.registerDeviceToken(token, "web");
-  setRegisteredToken(token);
+  try {
+    await _Notifications.registerDeviceToken(token, "web");
+    setRegisteredToken(token);
+  } catch (e) {
+    console.error("registerDeviceToken failed", e);
+  }
 };
 
 export const unregisterDeviceTokenOnLogout = async () => {
