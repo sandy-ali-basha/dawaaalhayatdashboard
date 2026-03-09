@@ -1,5 +1,12 @@
 import { _axios } from "interceptor/http-config";
 
+const cleanupSession = () => {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("registered_device_token");
+  window.location.reload();
+};
+
 export const _AuthApi = {
   login: (data) => {
     return _axios.post("/admin/login", data).then((res) => {
@@ -15,9 +22,21 @@ export const _AuthApi = {
   getToken: () => localStorage.getItem("access_token"),
 
   destroyToken: () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("role");
-    window.location.reload();
+    const deviceToken = localStorage.getItem("device_token");
+
+    if (!deviceToken) {
+      cleanupSession();
+      return;
+    }
+
+    _axios
+      .delete("/notifications/device-token", { data: { token: deviceToken } })
+      .catch(() => {
+        // Best-effort cleanup; session should still be cleared on failures.
+      })
+      .finally(() => {
+        cleanupSession();
+      });
   },
 
   resetPass: (data) => {
