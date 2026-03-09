@@ -1,6 +1,7 @@
 import { _axios } from "../../interceptor/http-config";
 
 const Link = "/notifications";
+const DeviceTokenLink = "/notifications/device-token";
 
 export const _Notifications = {
   index: () => _axios.get(Link).then((res) => res.data),
@@ -8,4 +9,10 @@ export const _Notifications = {
     _axios.get(`${Link}/unread-count`).then((res) => res.data),
   markRead: (id) => _axios.post(`${Link}/${id}/read`).then((res) => res.data),
   markAllRead: () => _axios.patch(`${Link}/read`).then((res) => res.data),
+  registerDeviceToken: (token, platform = "web") =>
+    _axios
+      .post(DeviceTokenLink, { token, platform })
+      .then((res) => res.data),
+  deleteDeviceToken: (token) =>
+    _axios.delete(DeviceTokenLink, { data: { token } }).then((res) => res.data),
 };
