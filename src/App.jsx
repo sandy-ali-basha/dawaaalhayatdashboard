@@ -19,6 +19,7 @@ function App() {
 
     const run = async () => {
       const token = await initPushToken();
+      console.log("token",token)
       if (token) {
         saveDeviceToken(token);
         await registerDeviceTokenIfNeeded();
