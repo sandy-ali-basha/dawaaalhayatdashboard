@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { _Product_attributes } from "api/product_attributes/product_attributes";
 
@@ -18,6 +18,7 @@ const schema = yup.object().shape({
   en: yup.object().shape({
     title: yup.string().required("English title is required"),
   }),
+  active_filter: yup.number().required().oneOf([0, 1], "Active filter must be 0 or 1"),
 });
 
 export const useProduct_attributesCreate = () => {
@@ -61,6 +62,7 @@ export const useProduct_attributesCreate = () => {
     formData.append("en[title]", input?.en?.title || "");
     formData.append("kr[title]", input?.kr?.title || "");
     formData.append("status", 1);
+    formData.append("active_filter", input?.active_filter ?? 0);
     if (image?.[0]) formData.append("image_url", image[0]);
 
     mutate(formData);
@@ -94,5 +96,6 @@ export const useProduct_attributesCreate = () => {
     details,
     control,
     setImage,
+    Controller,
   };
 };

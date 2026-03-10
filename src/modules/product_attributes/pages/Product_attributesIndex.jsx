@@ -23,6 +23,7 @@ import DeleteDialog from "../components/Dialog";
 import { AccountTreeOutlined } from "@mui/icons-material";
 import ChangeStatus from "../components/ChangeStatus";
 import ChangeNavStatus from "../components/ChangeNavStatus";
+import ChangeActiveFilter from "../components/ChangeActiveFilter";
 
 const Product_attributesIndex = () => {
   const { t } = useTranslation("index");
@@ -44,6 +45,7 @@ const Product_attributesIndex = () => {
       t("title english"),
       t("status"),
       t("nav status"),
+      t("active filter"),
       t("operations"),
     ];
   }, [t]);
@@ -99,6 +101,11 @@ const Product_attributesIndex = () => {
           >
             {product_attributes.navActive === 1 ? "Active" : "Not Active"}
           </ChangeNavStatus>
+        </TableCell>
+        <TableCell sx={{ minWidth: 50 }}>
+          <ChangeActiveFilter id={product_attributes?.id}>
+            {product_attributes.active_filter === 1 ? "Active" : "Not Active"}
+          </ChangeActiveFilter>
         </TableCell>
 
         <TableCell

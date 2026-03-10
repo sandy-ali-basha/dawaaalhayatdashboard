@@ -1,4 +1,4 @@
-import { Typography, Box, Button, Grid } from "@mui/material";
+import { Typography, Box, Button, Grid, FormControlLabel, Switch } from "@mui/material";
 import { BoxStyled } from "components/styled/BoxStyled";
 import { TextFieldStyled } from "components/styled/TextField";
 import React from "react";
@@ -21,6 +21,7 @@ const Product_attributesCreate = () => {
     details,
     control,
     setImage,
+    Controller,
   } = useProduct_attributesCreate();
 
   return (
@@ -58,6 +59,27 @@ const Product_attributesCreate = () => {
                 register={register}
                 name={"image"}
                 setImage={setImage}
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ p: "10px" }}>
+              <Controller
+                name="active_filter"
+                control={control}
+                defaultValue={0}
+                sx={{color:"text.main"}}
+                render={({ field }) => (
+                  <FormControlLabel
+                    label="Active Filter"
+                    control={
+                      <Switch
+                        checked={field.value === 1}
+                        onChange={(e) =>
+                          field.onChange(e.target.checked ? 1 : 0)
+                        }
+                      />
+                    }
+                  />
+                )}
               />
             </Grid>
 

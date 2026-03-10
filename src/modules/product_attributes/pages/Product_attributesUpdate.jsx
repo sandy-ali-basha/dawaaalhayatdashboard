@@ -43,7 +43,7 @@ const Product_attributesUpdate = ({ id }) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
   const [image, setImage] = useState([]);
-
+console.log("errors",errors)
   useEffect(() => {
     _axios
       .get("/product_attributes/" + editedID + "?all=true", {
@@ -99,6 +99,7 @@ const Product_attributesUpdate = ({ id }) => {
     formData.append("en[title]", input?.en?.title || "");
     formData.append("kr[title]", input?.kr?.title || "");
     formData.append("status", input?.status ?? data?.status ?? 0);
+    formData.append("active_filter", input?.active_filter ? 1 : 0);
     if (image?.[0]) formData.append("image_url", image[0]);
 
     mutate(formData);
@@ -121,6 +122,26 @@ const Product_attributesUpdate = ({ id }) => {
                   render={({ field }) => (
                     <FormControlLabel
                       label="status"
+                      control={
+                        <Switch
+                          checked={field.value}
+                          onChange={(e) =>
+                            field.onChange(e.target.checked ? 1 : 0)
+                          }
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item md={12} sx={{ p: "10px" }}>
+                <Controller
+                  name="active_filter"
+                  control={control}
+                  defaultValue={data?.active_filter === 1}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      label="Active Filter"
                       control={
                         <Switch
                           checked={field.value}

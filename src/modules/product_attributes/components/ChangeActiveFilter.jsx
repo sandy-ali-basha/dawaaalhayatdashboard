@@ -1,0 +1,82 @@
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import Loader from "components/shared/Loader";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useProduct_attributes } from "hooks/product_attributes/useProduct_attributes";
+import { useChangeActiveFilter } from "../hooks/useChangeActiveFilter";
+
+const ChangeActiveFilter = ({ id, children }) => {
+  const { t } = useTranslation("index");
+  const { refetch } = useProduct_attributes();
+  const changeActiveFilter = useChangeActiveFilter({ id });
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleToggleChangeActiveFilter = () => {
+    setLoading(true);
+    changeActiveFilter.mutate(
+      {},
+      {
+        onSuccess: () => {
+          setOpen(false);
+          setLoading(false);
+          refetch();
+        },
+      }
+    );
+  };
+
+  return (
+    <>
+      <Button onClick={handleClickOpen}>{children}</Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        sx={{
+          "&.MuiDialog-container": {
+            backgroundColor: "error.main",
+          },
+        }}
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          sx={{ color: "text.main", textTransform: "capitalize" }}
+        >
+          {t("change item status")}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{ color: "text.main" }}
+          >
+            {t("Are you Sure you want to")} {t("change item status")}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>{t("Disagree")}</Button>
+          {loading && <Loader />}
+          <Button
+            autoFocus
+            variant="contained"
+            onClick={handleToggleChangeActiveFilter}
+          >
+            {t("Agree")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+
+export default ChangeActiveFilter;
