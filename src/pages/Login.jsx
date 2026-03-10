@@ -11,6 +11,7 @@ import LoginBg from "theme/LoginBg";
 import { useTranslation } from "react-i18next";
 import ButtonLoader from "components/shared/ButtonLoader";
 import { useState } from "react";
+import { registerDeviceTokenIfNeeded } from "services/notificationDeviceToken";
 
 let schema = yup.object().shape({
   email: yup
@@ -43,6 +44,7 @@ const Login = () => {
           navigate("/dashboard/anylatics");
           setLoading(true);
           localStorage.setItem("role", response?.data?.data?.roles[0]?.name);
+          registerDeviceTokenIfNeeded();
         }
       })
       .finally(() => setLoading(false));
