@@ -41,10 +41,16 @@ const Login = () => {
       .login(input)
       .then((response) => {
         if (response.data.code === 200) {
+          const role = response?.data?.data?.roles[0]?.name;
+          localStorage.setItem("role", role);
+          
+          // Small delay to ensure localStorage is updated
+          setTimeout(() => {
+            registerDeviceTokenIfNeeded();
+          }, 100);
+          
           navigate("/dashboard/anylatics");
           setLoading(true);
-          localStorage.setItem("role", response?.data?.data?.roles[0]?.name);
-          registerDeviceTokenIfNeeded();
         }
       })
       .finally(() => setLoading(false));

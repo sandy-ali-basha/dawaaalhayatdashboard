@@ -39,14 +39,40 @@ const canRegisterForCurrentUser = () => {
 
 export const registerDeviceTokenIfNeeded = async () => {
   const token = getDeviceToken();
+  const authToken = _AuthApi.getToken();
+  const role = getRole();
+  const registeredToken = getRegisteredToken();
 
-  if (!token) return;
-  if (!canRegisterForCurrentUser()) return;
-  if (getRegisteredToken() === token) return;
+  console.log("registerDeviceTokenIfNeeded check:", {
+    hasToken: !!token,
+    hasAuthToken: !!authToken,
+    role,
+    isAllowedRole: ALLOWED_ROLES.has(role),
+    alreadyRegistered: registeredToken === token,
+  });
+
+  if (!token) {
+    console.warn("No device token found");
+    return;
+  }
+  if (!authToken) {
+    console.warn("No auth token found");
+    return;
+  }
+  if (!ALLOWED_ROLES.has(role)) {
+    console.warn("User role not allowed for notifications:", role);
+    return;
+  }
+  if (registeredToken === token) {
+    console.log("Device token already registered");
+    return;
+  }
 
   try {
+    console.log("Registering device token with backend...");
     await _Notifications.registerDeviceToken(token, "web");
     setRegisteredToken(token);
+    console.log("Device token registered successfully");
   } catch (e) {
     console.error("registerDeviceToken failed", e);
   }

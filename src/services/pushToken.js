@@ -30,7 +30,10 @@ export const initPushToken = async () => {
     return null;
   }
 
+  console.log("Requesting notification permission...");
   const permission = await Notification.requestPermission();
+  console.log("Notification permission result:", permission);
+  
   if (permission !== "granted") {
     console.warn("Push permission not granted:", permission);
     return null;
@@ -48,9 +51,11 @@ export const initPushToken = async () => {
   }
 
   try {
+    console.log("Initializing Firebase messaging...");
     const messaging = getMessaging(app);
     const swReg = await ensureActiveServiceWorker();
 
+    console.log("Getting FCM token...");
     const token = await getToken(messaging, {
       vapidKey,
       serviceWorkerRegistration: swReg,
@@ -61,6 +66,7 @@ export const initPushToken = async () => {
       return null;
     }
 
+    console.log("FCM token obtained:", token.substring(0, 50) + "...");
     return token;
   } catch (error) {
     console.error("Failed to get FCM token:", error);

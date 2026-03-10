@@ -1,11 +1,18 @@
 self.addEventListener("push", (event) => {
-  if (!event.data) return;
+  console.log("🔔 Push event received", event);
+  
+  if (!event.data) {
+    console.warn("Push event has no data");
+    return;
+  }
 
   let payload = {};
   try {
     payload = event.data.json();
+    console.log("Push payload:", payload);
   } catch (_e) {
     payload = { body: event.data.text() };
+    console.log("Push text payload:", payload);
   }
 
   const title = payload?.notification?.title || payload?.title || "New notification";
@@ -16,10 +23,19 @@ self.addEventListener("push", (event) => {
     data: payload?.data || {},
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  console.log("Showing notification:", { title, options });
+
+  event.waitUntil(
+    self.registration.showNotification(title, options).then(() => {
+      console.log("✅ Notification displayed successfully");
+    }).catch((err) => {
+      console.error("❌ Failed to show notification:", err);
+    })
+  );
 });
 
 self.addEventListener("notificationclick", (event) => {
+  console.log("📲 Notification clicked");
   event.notification.close();
 
   const targetUrl =
