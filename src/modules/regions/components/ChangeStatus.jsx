@@ -34,7 +34,12 @@ import {
   
     return (
       <>
-        <Button onClick={handleClickOpen}>{children}</Button>
+        <Button
+          onClick={handleClickOpen}
+          sx={{ minWidth: 0, p: 0, color: "inherit" }}
+        >
+          {children}
+        </Button>
         <Dialog
           open={open}
           onClose={handleClose}

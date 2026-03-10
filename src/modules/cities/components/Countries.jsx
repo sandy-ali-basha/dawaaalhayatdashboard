@@ -17,6 +17,8 @@ import {
   LocalShippingOutlined,
   ModeEdit,
   ModeOutlined,
+  ToggleOff,
+  ToggleOn,
 } from "@mui/icons-material";
 import { useRegions } from "hooks/regions/useRegions";
 import { colorStore } from "store/ColorsStore";
@@ -25,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteCountry from "./DeleteCountry";
 import LinkCityToCountry from "./LinkCityToCountry";
 import CitiesUpdate from "../pages/CitiesUpdate";
+import ChangeStatus from "modules/regions/components/ChangeStatus";
 
 const Countries = () => {
   const { t } = useTranslation("index");
@@ -165,6 +168,34 @@ const Countries = () => {
                 {item?.name || "غير معروف"}
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "row" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    mr: 1,
+                    px: 1,
+                    borderRadius: 1,
+                    bgcolor: item?.is_active ? "success.light" : "error.light",
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: item?.is_active ? "success.dark" : "error.dark",
+                      fontWeight: 600,
+                      mr: 0.5,
+                    }}
+                  >
+                    {item?.is_active ? "Active" : "Not Active"}
+                  </Typography>
+                  <ChangeStatus id={item?.id}>
+                    {item?.is_active ? (
+                      <ToggleOn fontSize="small" />
+                    ) : (
+                      <ToggleOff fontSize="small" />
+                    )}
+                  </ChangeStatus>
+                </Box>
                 <IconButton color="error">
                   <DeleteCountry status={false} id={item?.id} />
                 </IconButton>
