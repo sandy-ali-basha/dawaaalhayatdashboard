@@ -40,7 +40,7 @@ self.addEventListener("notificationclick", (event) => {
 
   const targetUrl =
     event.notification?.data?.url ||
-    "/notifications";
+    "/dashboard/orders"; // default to orders page on click
 
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
