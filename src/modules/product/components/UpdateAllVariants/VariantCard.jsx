@@ -70,6 +70,38 @@ const VariantCard = ({
         </Grid>
         <Grid item md={2}>
           <TextField
+            label="compare price (Discount)"
+            type="number"
+            defaultValue={variant.compare_price}
+            onChange={(e) =>
+              onChange(variant.id, "compare_price", e.target.value)
+            }
+          />
+        </Grid>
+        <Grid item md={2}>
+          <TextField
+            label="Discount Start"
+            type="date"
+            defaultValue={variant.compare_price_start_date}
+            onChange={(e) =>
+              onChange(variant.id, "compare_price_start_date", e.target.value)
+            }
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        <Grid item md={2}>
+          <TextField
+            label="Discount End"
+            type="date"
+            defaultValue={variant.compare_price_end_date}
+            onChange={(e) =>
+              onChange(variant.id, "compare_price_end_date", e.target.value)
+            }
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        <Grid item md={2}>
+          <TextField
             label="Inventory"
             type="number"
             defaultValue={variant.inventory}
