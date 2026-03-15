@@ -9,6 +9,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TextField,
 } from "@mui/material";
 import Loader from "components/shared/Loader";
 import React, { useState } from "react";
@@ -21,6 +22,7 @@ const ChangeStatus = ({ id, children }) => {
   const { t } = useTranslation("index");
   const { refetch } = useOrders();
   const [status, setStatus] = useState("");
+  const [cancelReason, setCancelReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -49,7 +51,10 @@ const ChangeStatus = ({ id, children }) => {
 
   // Updated to pass the correct input data
   const handleUpdate = () => {
-    const inputData = { status }; // Create an object with the selected status
+    const inputData = { status };
+    if (status === "order_canceled") {
+      inputData.cancel_reason = cancelReason.trim();
+    }
     setLoading(true);
     mutate(inputData);
   };
@@ -89,7 +94,13 @@ const ChangeStatus = ({ id, children }) => {
             <Select
               labelId="status-select-label"
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => {
+                const nextStatus = e.target.value;
+                setStatus(nextStatus);
+                if (nextStatus !== "order_canceled") {
+                  setCancelReason("");
+                }
+              }}
               label={t("Select Status")}
             >
               <MenuItem value="order_requested">order requested</MenuItem>
@@ -102,6 +113,18 @@ const ChangeStatus = ({ id, children }) => {
               <MenuItem value="order_canceled">cancel order</MenuItem>
             </Select>
           </FormControl>
+          {status === "order_canceled" && (
+            <TextField
+              fullWidth
+              multiline
+              minRows={3}
+              sx={{ mt: 2 }}
+              label={t("Cancel reason")}
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              placeholder={t("Write the reason for cancellation")}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>{t("Disagree")}</Button>
@@ -110,7 +133,9 @@ const ChangeStatus = ({ id, children }) => {
             autoFocus
             variant="contained"
             onClick={handleUpdate} // Pass the input data by calling handleUpdate
-            disabled={!status} // Disable if no status is selected
+            disabled={
+              !status || (status === "order_canceled" && !cancelReason.trim())
+            }
           >
             {t("Agree")}
           </Button>
@@ -121,3 +146,4 @@ const ChangeStatus = ({ id, children }) => {
 };
 
 export default ChangeStatus;
+

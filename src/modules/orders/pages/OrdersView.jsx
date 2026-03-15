@@ -128,6 +128,11 @@ const OrdersView = () => {
             <Typography>
               {t("Reference")}: {item?.reference ?? "N/A"}
             </Typography>
+            {item?.status === "order_canceled" && (
+              <Typography>
+                {t("Cancel reason")}: {item?.cancel_reason ?? "N/A"}
+              </Typography>
+            )}
             <Typography>
               {t("Subtotal")}: {item?.sub_total ?? "N/A"}
             </Typography>
@@ -227,3 +232,4 @@ const OrdersView = () => {
 };
 
 export default OrdersView;
+
