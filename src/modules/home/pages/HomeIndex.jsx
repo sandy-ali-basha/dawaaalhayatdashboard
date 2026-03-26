@@ -14,6 +14,7 @@ import CtaTab from "../components/tabs/CtaTab";
 import TextSectionOneTab from "../components/tabs/TextSectionOneTab";
 import TextSectionTwoTab from "../components/tabs/TextSectionTwoTab";
 import VideoTab from "../components/tabs/VideoTab";
+import MultiLinksBannersSection from "../components/MultiLinksBannersSection";
 
 // Modals
 import StatsUpdate from "../components/StatesUpdate";
@@ -70,15 +71,17 @@ const HomeIndex = () => {
     "home.page.textSectionTwo": textSectionTwo,
     "home.page.video": video,
     "home.page.videoText": videoText,
+    "home.page.nav": nav,
   } = data ?? {};
 
   const handleTabChange = (_, newValue) => setTabValue(newValue);
 
   const activeHomeSection = useMemo(() => {
-    if (!Array.isArray(HomePagesections) || tabValue < 6) return null;
+    if (!Array.isArray(HomePagesections) || tabValue < 7) return null;
 
-    return HomePagesections[tabValue - 6] ?? null;
+    return HomePagesections[tabValue - 7] ?? null;
   }, [HomePagesections, tabValue]);
+  
   const handleEditClick = (section) => {
     setEditSection(section);
     setOpen(true);
@@ -224,6 +227,16 @@ const HomeIndex = () => {
         <VideoTab
           video={video}
           videoText={videoText}
+          direction={direction}
+          onEdit={handleEditClick}
+        />
+      )}
+      {tabValue === 6 && (
+        <MultiLinksBannersSection />
+      )}
+      {tabValue === 7 && (
+        <TextSectionOneTab
+          textSectionOne={nav}
           direction={direction}
           onEdit={handleEditClick}
         />

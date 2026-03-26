@@ -61,4 +61,23 @@ export const _Home = {
     _axios
       .post("home_page/reorder", sections)
       .then((res) => res?.data),
+      
+  getMultiLinksBanners: () =>
+    _axios
+      .get(Link + "/multi-link-banners", {
+        headers: {
+          translations: "true",
+        },
+      })
+      .then((res) => res.data?.data),
+
+  updateMultiLinksBanners: (data) =>
+    _axios
+      .post(Link + "/multi-link-banners/1", data, {
+        headers: {
+          translations: "true",
+        },
+      })
+      .then((res) => res.data?.data),
+
 };

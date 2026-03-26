@@ -22,6 +22,7 @@ const TabsNavigation = ({ tabValue, handleTabChange, sections }) => (
     <Tab label="Text Section One" />
     <Tab label="Text Section Two" />
     <Tab label="Video Section" />
+    <Tab label="Multi-Links Banners" />
 
     {Array.isArray(sections) &&
       sections.map((section, index) => (
