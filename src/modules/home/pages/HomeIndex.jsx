@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import { Box, Typography, Skeleton, Button } from "@mui/material";
 import { useHome } from "hooks/home/useHome";
 import { settingsStore } from "store/settingsStore";
@@ -24,6 +24,8 @@ import TextSectionTwoUpdate from "../components/TextSectionTowUpdate";
 import VideoUpdate from "../components/VedioUpdate";
 import HomeSection from "../components/tabs/HomeSection";
 import SortHomeSectionsDialog from "../components/SortHomeSectionsDialog";
+import NavTab from "../components/tabs/NavTab";
+import NavUpdate from "../components/NavUpdate";
 
 const isRootSection = (section) => {
   if (!section || typeof section !== "object") return false;
@@ -71,17 +73,18 @@ const HomeIndex = () => {
     "home.page.textSectionTwo": textSectionTwo,
     "home.page.video": video,
     "home.page.videoText": videoText,
-    "home.page.nav": nav,
+    "home.page.navbar": nav,
   } = data ?? {};
 
   const handleTabChange = (_, newValue) => setTabValue(newValue);
 
   const activeHomeSection = useMemo(() => {
-    if (!Array.isArray(HomePagesections) || tabValue < 7) return null;
+    const firstDynamicTab = 8;
+    if (!Array.isArray(HomePagesections) || tabValue < firstDynamicTab) return null;
 
-    return HomePagesections[tabValue - 7] ?? null;
+    return HomePagesections[tabValue - firstDynamicTab] ?? null;
   }, [HomePagesections, tabValue]);
-  
+
   const handleEditClick = (section) => {
     setEditSection(section);
     setOpen(true);
@@ -143,6 +146,15 @@ const HomeIndex = () => {
             onClose={handleClose}
             initialVideoData={video}
             initialTextData={videoText}
+            handleSave={handleUpdate}
+          />
+        );
+      case nav:
+        return (
+          <NavUpdate
+            open={open}
+            onClose={handleClose}
+            initialData={nav}
             handleSave={handleUpdate}
           />
         );
@@ -235,8 +247,8 @@ const HomeIndex = () => {
         <MultiLinksBannersSection />
       )}
       {tabValue === 7 && (
-        <TextSectionOneTab
-          textSectionOne={nav}
+        <NavTab
+          data={nav}
           direction={direction}
           onEdit={handleEditClick}
         />
