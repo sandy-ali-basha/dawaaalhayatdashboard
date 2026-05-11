@@ -7,6 +7,7 @@ import {
   Button,
   Box,
   ButtonGroup,
+  Chip,
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import EditMultiLinksModal from "./EditMultiLinksModal";
@@ -40,6 +41,15 @@ const MultiLinksBannersSection = () => {
             <Typography variant="h5" color="text.main">
               Multi Links Banner
             </Typography>
+            {!defaultValues.is_active && (
+              <Chip
+                label="Inactive"
+                color="error"
+                variant="outlined"
+                size="small"
+                sx={{ mr: 1 }}
+              />
+            )}
             <Button
               variant="contained"
               startIcon={<Edit />}
@@ -66,6 +76,8 @@ const MultiLinksBannersSection = () => {
               overflow: "hidden",
               mt: 2,
               mx: "auto",
+              filter: defaultValues.is_active ? "none" : "grayscale(0.6)",
+              opacity: defaultValues.is_active ? 1 : 0.7,
             }}
           >
             {defaultValues.image && (

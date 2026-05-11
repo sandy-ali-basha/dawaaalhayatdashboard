@@ -95,6 +95,11 @@ const HomeIndex = () => {
     setEditSection(null);
   };
 
+  const handleRemoveClick = async (id) => {
+    await _Home.deleteItem(id);
+    queryClient.invalidateQueries("home");
+  };
+
   const handleUpdate = async (formDataNew) => {
     const res = await _Home.update({ formData: formDataNew });
     if (res?.code === 200) handleClose();
@@ -251,6 +256,8 @@ const HomeIndex = () => {
           data={nav}
           direction={direction}
           onEdit={handleEditClick}
+          onAdd={() => handleEditClick(nav)}
+          onRemove={handleRemoveClick}
         />
       )}
       {activeHomeSection && <HomeSection id={activeHomeSection?.id} />}

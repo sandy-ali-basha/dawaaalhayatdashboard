@@ -10,6 +10,8 @@ import {
   DialogContent,
   ButtonGroup,
   Tooltip,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import { Save, Cancel, Add, Delete } from "@mui/icons-material";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
@@ -47,6 +49,7 @@ const schema = yup.object().shape({
     .string()
     .matches(/^#[0-9A-Fa-f]{6}$/, "Must be a valid hex color")
     .required("Button color is required"),
+  is_active: yup.boolean().required(),
   x: yup
     .number()
     .required("X position is required when link is provided")
@@ -104,6 +107,10 @@ const EditMultiLinksModal = ({ isOpen, handleOpenChange, defaultValues }) => {
       links: getTransformedLinks(defaultValues),
       x: defaultValues.x || 0,
       y: defaultValues.y || 0,
+      is_active:
+        typeof defaultValues.is_active === "boolean"
+          ? defaultValues.is_active
+          : true,
     },
   });
 
@@ -127,6 +134,7 @@ const EditMultiLinksModal = ({ isOpen, handleOpenChange, defaultValues }) => {
     formData.append("button_color", data.button_color);
     formData.append("x", data.x);
     formData.append("y", data.y);
+    formData.append("is_active", data.is_active ? 1 : 0);
 
     // Correct way to append array of objects
     data.links.forEach((link, index) => {
@@ -159,7 +167,7 @@ const EditMultiLinksModal = ({ isOpen, handleOpenChange, defaultValues }) => {
   const onDragEnd = (result) => {
     if (!result.destination || !fields) return;
 
-    const items = fields;
+    const items = [...fields];
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
@@ -283,6 +291,24 @@ const EditMultiLinksModal = ({ isOpen, handleOpenChange, defaultValues }) => {
                       label="Button Color"
                       error={!!errors.button_color}
                       helperText={errors.button_color?.message}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={3} display="flex" alignItems="center">
+                <Controller
+                  name="is_active"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          {...field}
+                          checked={field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
+                        />
+                      }
+                      label={field.value ? "Active" : "Inactive"}
                     />
                   )}
                 />

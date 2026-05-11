@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import MapComponent from "@terrestris/react-geo/dist/Map/MapComponent/MapComponent";
+
 import OlLayerTile from "ol/layer/Tile";
 import OlMap from "ol/Map";
 import { fromLonLat, toLonLat } from "ol/proj";
-import OlSourceOsm from "ol/source/OSM";
+import OlSourceXYZ from "ol/source/XYZ";
 import OlView from "ol/View";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
@@ -14,8 +14,8 @@ import Icon from "ol/style/Icon";
 import Style from "ol/style/Style";
 import Modify from "ol/interaction/Modify";
 import Collection from "ol/Collection";
+
 import "ol/ol.css";
-// import "@terrestris/react-geo/dist/style.css";
 
 const DEFAULT_CENTER = { lat: 33.3152, lng: 44.3661 };
 const DEFAULT_ZOOM = 16;
@@ -25,17 +25,19 @@ const PharmacyMapPicker = ({ value, onChange }) => {
   const [marker, setMarker] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [error, setError] = useState("");
-  const vectorSourceRef = useRef(new VectorSource({}));
-  const mapElement = useRef(null); // Ref for the map container
-  const isInternalUpdate = useRef(false); // To prevent loops
-  // 1. Initialize Map ONCE
+
+  const mapElement = useRef(null);
+  const vectorSourceRef = useRef(new VectorSource());
+  const isInternalUpdate = useRef(false);
+
+  // ✅ Initialize map ONCE
   useEffect(() => {
     const markerFeature = new Feature({
       geometry: new Point(
         fromLonLat([
           value?.lng || DEFAULT_CENTER.lng,
           value?.lat || DEFAULT_CENTER.lat,
-        ]),
+        ])
       ),
     });
 
@@ -43,17 +45,30 @@ const PharmacyMapPicker = ({ value, onChange }) => {
       new Style({
         image: new Icon({
           anchor: [0.5, 1],
-          src: "https://cdn-icons-png.flaticon.com/512/684/684908.png", // Use a valid icon URL
+          src: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
           scale: 0.05,
         }),
-      }),
+      })
     );
 
-    const vectorLayer = new VectorLayer({ source: vectorSourceRef.current });
+    const vectorLayer = new VectorLayer({
+      source: vectorSourceRef.current,
+    });
+
     vectorSourceRef.current.addFeature(markerFeature);
 
     const mapInstance = new OlMap({
-      layers: [new OlLayerTile({ source: new OlSourceOsm() }), vectorLayer],
+      target: mapElement.current || undefined,
+      layers: [
+        new OlLayerTile({
+          source: new OlSourceXYZ({
+            url: "https://{a-c}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+            crossOrigin: "anonymous",
+            maxZoom: 19,
+          }),
+        }),
+        vectorLayer,
+      ],
       view: new OlView({
         center: fromLonLat([
           value?.lng || DEFAULT_CENTER.lng,
@@ -63,129 +78,149 @@ const PharmacyMapPicker = ({ value, onChange }) => {
       }),
     });
 
-    const modify = new Modify({ features: new Collection([markerFeature]) });
+    // ✅ Drag interaction
+    const modify = new Modify({
+      features: new Collection([markerFeature]),
+    });
+
     modify.on("modifyend", () => {
       const coords = markerFeature.getGeometry().getCoordinates();
       const [lng, lat] = toLonLat(coords);
+
       isInternalUpdate.current = true;
       onChange({ lat, lng });
     });
 
+    // ✅ Click to move marker
     mapInstance.on("click", (event) => {
       markerFeature.getGeometry().setCoordinates(event.coordinate);
       const [lng, lat] = toLonLat(event.coordinate);
+
       isInternalUpdate.current = true;
       onChange({ lat, lng });
     });
 
     mapInstance.addInteraction(modify);
+
     setMarker(markerFeature);
     setMap(mapInstance);
 
-    return () => mapInstance.setTarget(undefined);
-  }, []); // Empty dependency array: run once
+    return () => {
+      mapInstance.setTarget(null);
+    };
+  }, []);
 
-  // 2. Sync Marker when "value" prop changes (e.g., after API load)
+  // ✅ Sync external value → map
   useEffect(() => {
     if (map && marker && value?.lat && value?.lng) {
       if (isInternalUpdate.current) {
         isInternalUpdate.current = false;
         return;
       }
+
       const coords = fromLonLat([value.lng, value.lat]);
       marker.getGeometry().setCoordinates(coords);
       map.getView().setCenter(coords);
     }
-  }, [value?.lat, value?.lng, map, marker]);
+  }, [value, map, marker]);
+
+  // ✅ Near me
   const handleNearMe = () => {
     if (!navigator.geolocation) {
-      setError("Geolocation is not supported in this browser.");
+      setError("Geolocation not supported");
       return;
     }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const coords = fromLonLat([
-          position.coords.longitude,
-          position.coords.latitude,
-        ]);
-        if (map) {
-          map.getView().setCenter(coords);
-          map.getView().setZoom(DEFAULT_ZOOM);
-        }
-        if (marker) {
-          marker.getGeometry().setCoordinates(coords);
-        }
-        onChange({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
+        const { latitude, longitude } = position.coords;
+        const coords = fromLonLat([longitude, latitude]);
+
+        map.getView().setCenter(coords);
+        map.getView().setZoom(DEFAULT_ZOOM);
+        marker.getGeometry().setCoordinates(coords);
+
+        onChange({ lat: latitude, lng: longitude });
         setError("");
       },
-      () => setError("Unable to access your location."),
+      () => setError("Unable to access your location")
     );
   };
-  // Move map function
+
+  // ✅ Move helper
   const moveTo = (lat, lng) => {
     if (!map || !marker) return;
+
     const coords = fromLonLat([lng, lat]);
     marker.getGeometry().setCoordinates(coords);
-    map.getView().animate({ center: coords, duration: 500 });
+
+    map.getView().animate({
+      center: coords,
+      duration: 500,
+    });
+
     onChange({ lat, lng });
   };
 
+  // ✅ Search location
   const handleSearch = async () => {
     if (!searchValue.trim()) return;
+
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchValue)}`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          searchValue
+        )}`
       );
+
       const data = await res.json();
+
       if (data.length > 0) {
         moveTo(Number(data[0].lat), Number(data[0].lon));
         setError("");
       } else {
-        setError("Not found");
+        setError("Location not found");
       }
     } catch {
-      setError("Search error");
+      setError("Search failed");
     }
   };
-
-  if (!map) return null;
 
   return (
     <Box>
       <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mb: 2 }}>
         <TextField
           value={searchValue}
-          onChange={(event) => setSearchValue(event.target.value)}
+          onChange={(e) => setSearchValue(e.target.value)}
           fullWidth
           label="Search location"
-          placeholder="Search on map"
         />
+
         <Button variant="outlined" onClick={handleSearch}>
           Search
         </Button>
+
         <Button variant="outlined" onClick={handleNearMe}>
           Near me
         </Button>
       </Stack>
 
-      <Typography sx={{ mb: 1, fontWeight: 600 }} color="text.main">
+      <Typography sx={{ mb: 1, fontWeight: 600 }}>
         Pick pharmacy location from map
       </Typography>
+
       {error && (
-        <Typography color="error.main" sx={{ mb: 1 }}>
+        <Typography color="error" sx={{ mb: 1 }}>
           {error}
         </Typography>
       )}
-      <MapComponent
-        map={map}
-        style={{
+
+      {/* ✅ Render the map only after the OpenLayers map instance is ready */}
+      <Box
+        ref={mapElement}
+        sx={{
           height: "360px",
-          flex: 1,
-          minWidth: "400px",
-          maxWidth: "100%",
+          width: "100%",
           borderRadius: "16px",
           overflow: "hidden",
         }}
