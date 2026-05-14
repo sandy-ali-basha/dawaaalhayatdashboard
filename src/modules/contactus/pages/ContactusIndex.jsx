@@ -183,7 +183,7 @@ const ContactusIndex = () => {
   const isSubmittingLocation =
     createLocationMutation.isLoading || updateLocationMutation.isLoading;
 
-  if (isLoading) return <Loader />;
+  if (isLoading || isLoadingLocations) return <Loader />;
 
   if (!company) {
     return <Typography>No contact data found</Typography>;
